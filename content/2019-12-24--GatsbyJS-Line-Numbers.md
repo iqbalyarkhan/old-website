@@ -151,6 +151,6 @@ require("prismjs/plugins/line-numbers/prism-line-numbers.css");
 
 We're now ready to use code blocks in our blog. To do so you'd have to use 3 back ticks at the start of your code block, choose the language you're about to enter (c++, js, css etc) and add the option of `{numberLines: true}` to show line numbers. Optionally, you can also give a starting line number if you don't want it to begin at line 1 by doing this: `{numberLines: 13}`.
 
-If you're interested, I'm using [prism-okadia](https://github.com/ocodia/okaidia-prismjs-theme/blob/master/okaidia.css) for this blog. You can find more prism themes [here](https://github.com/PrismJS/prism-themes/tree/master/themes).
+If you're interested, I'm using [prism-okadia](https://github.com/ocodia/okaidia-prismjs-theme/blob/master/okaidia.css) for this blog. You can find more prism themes [here](https://github.com/PrismJS/prism-themes/tree/master/themes) and [here](https://github.com/PrismJS/prism/).
 
 Happy coding!
