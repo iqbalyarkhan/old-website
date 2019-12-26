@@ -7,6 +7,9 @@ tags:
     - blog
 ---
 
+My notes as I learn ReactJS
+<!-- end -->
+
 This post is mostly a collection of notes I have while I learn ReactJS. This post came about after I realized the fact that I've created this website using [Gatsby](https://github.com/GatsbyCentral/gatsby-v2-starter-lumen) starter and have no idea how react works! 
 
 ### Table of Contents

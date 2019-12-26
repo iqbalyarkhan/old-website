@@ -28,7 +28,7 @@ import styles from  './PostsListing.module.scss'
           <Link to={post.path} key={post.title}>
             <article className={styles.articleBox}>
               <div className={styles.right}>
-                <h3>{post.title}</h3>
+                <h2>{post.title}</h2>
                 <div className={styles.meta}>{post.date}  &mdash; <span>{post.categories.join(' / ')}</span>  &mdash; {post.timeToRead} Min Read </div>
                 <p>{post.excerpt}</p>
               </div>

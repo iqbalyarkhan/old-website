@@ -7,6 +7,9 @@ tags:
     - blog
 ---
 
+How to add line numbers to code blocks in GatsbyJS
+<!-- end -->
+
 ### Introduction
 
 There are various methods to display code on one's blog. This post will discuss one such setup that would allow you to use code blocks and line numbers using [GatsbyJS](https://www.gatsbyjs.org/)
