@@ -14,6 +14,7 @@ const SEO = ({ postNode, postPath, postSEO }) => {
     description = postMeta.description
       ? postMeta.description
       : postNode.excerpt;
+    image = postMeta.cover;
     postURL = urljoin(config.siteUrl, config.pathPrefix, postPath);
   } else {
     title = config.siteTitle;
@@ -21,6 +22,7 @@ const SEO = ({ postNode, postPath, postSEO }) => {
     image = config.siteLogo;
   }
 
+  image = urljoin(config.siteUrl, config.pathPrefix, image);
   const blogURL = urljoin(config.siteUrl, config.pathPrefix);
   const schemaOrgJSONLD = [
     {

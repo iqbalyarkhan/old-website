@@ -1,6 +1,7 @@
 ---
 date: 2019-12-24
 title: "Gatsby JS Code block Line Numbers"
+cover: "https://unsplash.it/400/300/?random?BoldMage"
 categories: 
     - React
 tags:

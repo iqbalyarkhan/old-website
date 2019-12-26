@@ -1,6 +1,7 @@
 ---
 date: 2019-12-25
 title: "ReactJS Notes"
+cover: "https://unsplash.it/400/300/?random?BoldMage"
 categories: 
     - React
 tags:
