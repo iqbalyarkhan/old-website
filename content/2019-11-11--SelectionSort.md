@@ -80,10 +80,6 @@ $$$
 values <= out
 $$$
 
-$a + b = c$
-
-$a^2 + b^2 = c^2$
-
 are always in sorted order. That is because in every iteration, we look for the smallest element and place it at `a[out]` and increment `out`. 
 
 
