@@ -13,7 +13,7 @@ Yet another merge sort implementation!
 
 ### Introduction
 
-In this post I'll talk about a sorting alogrithm called Merge Sort. The idea behind merge sort is to start with breaking down an array into smaller pieces and then merging those smaller pieces back together in sorted order. This approach is commonly called **divide and conquer** where we divide our array into smaller chunks (via recursion) and perform the conquer operation of merging those smaller chunks back together. 
+In this post I'll talk about a sorting algorithm called Merge Sort. The idea behind merge sort is to start with breaking down an array into smaller pieces and then merging those smaller pieces back together in sorted order. This approach is commonly called **divide and conquer** where we divide our array into smaller chunks (via recursion) and perform the conquer operation of merging those smaller chunks back together. 
 
 ### Code
 
