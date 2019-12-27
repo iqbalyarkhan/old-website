@@ -6,7 +6,7 @@ const About = () => (
         Iqbal Khan
     </h1>
     <h3>
-          Software Engineer
+          This page is a work in progress....
     </h3>
   </>
 );

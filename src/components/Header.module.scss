@@ -1,9 +1,9 @@
 header {
+    transition: top 0.2s ease-in-out;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
-    position: sticky;
     top: 0;
     background: hsla(0, 0%, 100%, 0.75);
     -webkit-backdrop-filter: blur(7px);
