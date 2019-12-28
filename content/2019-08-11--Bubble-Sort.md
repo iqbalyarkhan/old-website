@@ -264,14 +264,40 @@ Array at the end:
 Program ended with exit code: 0
 ```
 
+### Analysis
+
 The above approach is simple: we've got two loops, an outer loop and an inner loop. The outer loop starts at the end of 
 the array and moves toward the beginning of the array. The inner loop starts at the beginning of the array and keeps moving 
 forward until it encounters `out`. This check prevents us from going farther than we have to since at the end of each outer loop iteration, 
 we're guaranteed to have positions greater than `out` in sorted order. This is possible because at the end of each iteration
-of `out`, the inner loop would've found the largest element so far and moved it to `A[out]`.
+of `out`, the inner loop would've found the largest element so far and moved it to `A[out]`. That is possible because in 
+each iteration of `in`, we're moving an element to the "right" if it is greater than its neighbor. As a result, when we're
+done, we'd have moved the largest element to the right.
+
+#### Example array:
+
+Say this is what our array looks like at the beginning:
+
+```cpp
+0 99 88 77 66 55 44 7
+in                 out
+```
+
+At the end of the first pass, this is what our array would look like:
+
+```cpp
+0 88 77 66 55 44 7  99
+in              out  
+```
+
+Notice how the largest element in the array is now where `out` used to be. This is after our entire inner loop is done running.
+
+Also notice that in the first pass, when`out` is equal to `A.size() - 1`, we're doing between $0$ and $N-1$ swaps. In the next pass,
+when we've got the largest element in `A[out]` and `out` is equal to `A.size() - 2`, we're doing between $0$ and $N-2$ swaps because 
+you know the last position, at `A.size() - 1`, already has the largest value. 
 
 ### Invariant
-In each sorting algorithm, there is a condition that is true at the end of each iteration adn we call this condition the **invariant**. The word invariant literally means "not changing" so what is the one thing that is not changing at the end of each iteration of bubble sort?  Our invariant, in this alternative is: 
+In each sorting algorithm, there is a condition that is true at the end of each iteration and we call this condition the **invariant**. The word invariant literally means "not changing" so what is the one thing that is not changing at the end of each iteration of bubble sort?  Our invariant, in this alternative is: 
 $$$
 values > out
 $$$
