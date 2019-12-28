@@ -216,6 +216,10 @@ Like I said earlier, this process continues until we don't have any more swaps t
 
 ### Alternative Approach
 This is all well and good but you can see we can make an improvement to our code: we, unnecessarily go all the way to the last element of the array on each iteration. This is not required since at the end of each iteration, the right most element in the array is guaranteed to be in the correct position. We can leverage this information my adding a small check to the code above. However, I've added another approach below that accomplishes the same task:
+Remember, the rules of the game are simple:
+- Compare two items
+- If one on the left is larger, swap them, else, do nothing
+- Move one position over and repeat until you reach the end
 
 ```cpp{numberLines}
 int main(){
@@ -226,7 +230,11 @@ int main(){
         cout << A[i] << " ";
     }
     
+    //We start our "out" counter at the end
+    //of the array and keep moving it inward
     for (int out = A.size() - 1; out > 1; out--){
+        //We take our "in" counter up till
+        //out. That is bec
         for (int in = 0; in < out; in++){
             if (A[in] > A[in + 1]){
                 //swap
@@ -256,7 +264,11 @@ Array at the end:
 Program ended with exit code: 0
 ```
 
-The above approach is simple: we've got two loops, an outer loop and an inner loop. The outer loop starts at the end of the array and moves toward the beginning of the array. The inner loop starts at the beginning of the array and keeps moving forward until it encounters `out`. This check prevents us from going farther than we have to since at the end of each outer loop, we're guaranteed to have positions greater than `out` in sorted order.
+The above approach is simple: we've got two loops, an outer loop and an inner loop. The outer loop starts at the end of 
+the array and moves toward the beginning of the array. The inner loop starts at the beginning of the array and keeps moving 
+forward until it encounters `out`. This check prevents us from going farther than we have to since at the end of each outer loop iteration, 
+we're guaranteed to have positions greater than `out` in sorted order. This is possible because at the end of each iteration
+of `out`, the inner loop would've found the largest element so far and moved it to `A[out]`.
 
 ### Invariant
 In each sorting algorithm, there is a condition that is true at the end of each iteration adn we call this condition the **invariant**. The word invariant literally means "not changing" so what is the one thing that is not changing at the end of each iteration of bubble sort?  Our invariant, in this alternative is: 
