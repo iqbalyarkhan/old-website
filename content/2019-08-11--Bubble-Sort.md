@@ -245,7 +245,7 @@ int main(){
     //of the array and keep moving it inward
     for (int out = A.size() - 1; out > 1; out--){
         //We take our "in" counter up till
-        //out. That is bec
+        //out.
         for (int in = 0; in < out; in++){
             if (A[in] > A[in + 1]){
                 //swap
@@ -284,6 +284,10 @@ we're guaranteed to have positions greater than `out` in sorted order. This is p
 of `out`, the inner loop would've found the largest element so far and moved it to `A[out]`. That is possible because in 
 each iteration of `in`, we're moving an element to the "right" if it is greater than its neighbor. As a result, when we're
 done, we'd have moved the largest element to the right.
+
+To summarize, we use `out` loop to keep track of position where we need to insert the new element while we use the `in` loop to find
+the element that would go at position `A[out]`.
+
 
 #### Example array:
 
