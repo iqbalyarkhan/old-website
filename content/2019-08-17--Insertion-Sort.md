@@ -168,4 +168,4 @@ The running time of insertion sort is $O(N^2)$. This is because at worst, we nee
 
 Why would someone use insertion sort at all when there are other more efficient algorithms present? It is because insertion sort is the preferred algorithm when you know your data is small and is almost sorted. In fact, insertion sort is commonly used as a part of a quicksort implementation.
 
-At best, insertion sort would run in O(N) time since we'd have to pass through the array once until `i` reaches the end of our array. 
+At best, insertion sort would run in O(N) time since we'd have to pass through the array once until `i` reaches the end of our array. We'd never enter the inner `while` condition since the tests for it would not be true for a sorted array.
