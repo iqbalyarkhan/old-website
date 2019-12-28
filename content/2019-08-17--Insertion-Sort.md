@@ -8,7 +8,7 @@ tags:
   - Insertion Sort
 ---
 
-description: "Yet another insertion sort implementation!"
+Yet another insertion sort implementation
 <!-- end -->
 
 ### Introduction
@@ -151,6 +151,8 @@ This process repeats again when our `i` is equal to 5 and `a[i] = 5`. Up till th
 `1 2 4 6 8` and unsorted portion is `5 3 7`:
 
 `1 2 4 6 8    5 3 7`
+
+As it is obvious by looking at the iterations above, our invariant is the fact that $elements <= i$ are in partially sorted order. Partially sorted means that the array is sorted based on the elements seen so far. They might not be in their final positions but are sorted at that point in time. 
 
 We then pick the value `5` from the unsorted portion and keep moving it down until we find the correct position for `5` in the sorted portion. Then our array would look like this:
 
