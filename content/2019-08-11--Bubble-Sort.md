@@ -13,9 +13,18 @@ Yet another bubble sort implementation!
 
 ### Introduction
 
-In this post I'll talk about one of the most common sorting algorithms called Bubble Sort. There are plenty of implementations available on the internet but I, instead of looking at someone else's code, decided to understand the logic and implement it on my own. I like to do things this way so that I remember how it's done. The best way to understand anything is to do it yourself! I'd hate to memorize bubble sort implementation thus I'm using this post as a 'note to self' to keep a track of the things I learned while implementing bubble sort. To make sure we get the most out of this post, instead of just copying and pasting code from my IDE, I'll explain each line of code and why I chose to do what I did. Let's begin.
+In this post I'll talk about one of the most common sorting algorithms called Bubble Sort. 
+There are plenty of implementations available on the internet but I, instead of looking at someone else's code, 
+decided to understand the logic and implement it on my own. I like to do things this way so that I remember how it's done. 
+The best way to understand anything is to do it yourself! I'd hate to memorize bubble sort implementation thus I'm using this 
+post as a 'note to self' to keep a track of the things I learned while implementing bubble sort. To make sure we get the most out 
+of this post, instead of just copying and pasting code from my IDE, I'll explain each line of code and why I chose to do what I did. Let's begin.
 
-The idea behind bubble sort is to build our array from the right end (part of the array with the largest index) and move gradually to the opposite end. We begin by looking at each adjacent pair `(i,j)` and checking whether the value `i` is greater than `j`. This could be changed if you're sorting your array in decreasing order (we'll then simply check if `i` is less than `j`). We keep repeating this until we find that **we've not made any swaps** in our iteration. As the algorithm progresses, the biggest item bubble up to the top end of the array. Simple! 
+The idea behind bubble sort is to build our array from the right end (part of the array with the largest index) and move 
+gradually to the opposite end. We begin by looking at each adjacent pair `(i,j)` and checking whether the value `i` is 
+greater than `j`. This could be changed if you're sorting your array in decreasing order (we'll then simply check if `i`
+ is less than `j`). We keep repeating this until we find that **we've not made any swaps** in our iteration. As the algorithm 
+ progresses, the biggest item bubble up to the top end of the array. Simple! 
 
 ### Code
 
@@ -215,7 +224,9 @@ and since `swapped` was 4 we continue to proceed inside this `while` loop and th
 Like I said earlier, this process continues until we don't have any more swaps to perform at which point our array is entirely sorted. 
 
 ### Alternative Approach
-This is all well and good but you can see we can make an improvement to our code: we, unnecessarily go all the way to the last element of the array on each iteration. This is not required since at the end of each iteration, the right most element in the array is guaranteed to be in the correct position. We can leverage this information my adding a small check to the code above. However, I've added another approach below that accomplishes the same task:
+This is all well and good but you can see we can make an improvement to our code: we, unnecessarily go all the way to the last element of the array on each iteration. 
+This is not required since at the end of each iteration, the right most element in the array is guaranteed to be in the correct position. 
+We can leverage this information my adding a small check to the code above. However, I've added another approach below that accomplishes the same task:
 Remember, the rules of the game are simple:
 - Compare two items
 - If one on the left is larger, swap them, else, do nothing
