@@ -166,6 +166,6 @@ The process then repeats until `i` reaches end of the array.
 
 The running time of insertion sort is $O(N^2)$. This is because at worst, we need to sort an array which is in reverse order and we need to keep picking an element and shifting it down to the left until we find the correct position. 
 
-Why would someone use insertion sort at all when there are other more efficient algorithms present? It is because insertion sort is the preferred algorithm when you know your data is small and is almost sorted. In fact, insertion sort is commonly used as a part of a quicksort implementation.
+Why would someone use insertion sort at all when there are other more efficient algorithms present? It is because insertion sort is the preferred algorithm when you know your data is small and is almost sorted. In fact, insertion sort is commonly used as a part of a quicksort implementation. Out of the three elementary sorts (insertion sort, [selection sort](/selection-sort) and [bubble sort](/bubble-sort)), insertion sort is the most used.
 
 At best, insertion sort would run in O(N) time since we'd have to pass through the array once until `i` reaches the end of our array. We'd never enter the inner `while` condition since the tests for it would not be true for a sorted array.
