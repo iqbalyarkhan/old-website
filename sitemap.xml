@@ -3,8 +3,8 @@
 <url> <loc>https://gatsby-markdown-blog-starter.netlify.com/react-js-notes</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://gatsby-markdown-blog-starter.netlify.com/gatsby-js-code-block-line-numbers</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://gatsby-markdown-blog-starter.netlify.com/priority-queues</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://gatsby-markdown-blog-starter.netlify.com/binary-search-trees</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://gatsby-markdown-blog-starter.netlify.com/selection-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://gatsby-markdown-blog-starter.netlify.com/binary-search-trees</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://gatsby-markdown-blog-starter.netlify.com/deque</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://gatsby-markdown-blog-starter.netlify.com/stack</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://gatsby-markdown-blog-starter.netlify.com/queue</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
@@ -17,9 +17,9 @@
 <url> <loc>https://gatsby-markdown-blog-starter.netlify.com/tags/blog/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://gatsby-markdown-blog-starter.netlify.com/tags/data-structures/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://gatsby-markdown-blog-starter.netlify.com/tags/c/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://gatsby-markdown-blog-starter.netlify.com/tags/binary-search-trees/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://gatsby-markdown-blog-starter.netlify.com/tags/sorting-algorithms/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://gatsby-markdown-blog-starter.netlify.com/tags/selection-sort/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://gatsby-markdown-blog-starter.netlify.com/tags/binary-search-trees/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://gatsby-markdown-blog-starter.netlify.com/tags/searching-algorithms/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://gatsby-markdown-blog-starter.netlify.com/tags/binary-search/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://gatsby-markdown-blog-starter.netlify.com/tags/merge-sort/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
