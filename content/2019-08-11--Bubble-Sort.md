@@ -21,7 +21,7 @@ post as a 'note to self' to keep a track of the things I learned while implement
 of this post, instead of just copying and pasting code from my IDE, I'll explain each line of code and why I chose to do what I did. Let's begin.
 
 The idea behind bubble sort is to build our array from the right end (part of the array with the largest index) and move 
-gradually to the opposite end. We begin by looking at each adjacent pair `(i,j)` and checking whether the value `i` is 
+gradually to the opposite end. We begin by looking at each adjacent pair `i` and  `j` and checking whether the value `i` is 
 greater than `j`. This could be changed if you're sorting your array in decreasing order (we'll then simply check if `i`
  is less than `j`). We keep repeating this until we find that **we've not made any swaps** in our iteration. As the algorithm 
  progresses, the biggest item bubble up to the top end of the array. Simple! 
