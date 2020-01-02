@@ -1,15 +1,13 @@
 ---
 date: 2019-08-11
-title: Bubble Sort 
+title: Bubble Sort
+extract: Explanation and implementation of bubble sort algorithm
 categories: 
     - Sorting Algorithms
 tags:
   - Sorting Algorithms
   - Bubble Sort
 ---
-
-Yet another bubble sort implementation!
-<!-- end -->
 
 ### Introduction
 
