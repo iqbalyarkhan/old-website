@@ -1,16 +1,13 @@
 ---
 title: Selection Sort
 date: 2019-11-11
+extract: Implementation and analysis of selection sort in C++
 categories: 
     - Sorting Algorithms
 tags:
   - Sorting Algorithms
   - Selection Sort
 ---
-
-Yet another selection sort implementation!
-<!-- end -->
-
 
 ### Introduction
 

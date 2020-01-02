@@ -1,15 +1,13 @@
 ---
 date: 2019-07-20
 title: C++ Standard input 
+extract: Common methods to extract input from user and its nuances
 categories: 
     - C++
 tags:
     - C++
     - Streams
 ---
-
-Common methods to extract input from user and its nuances
-<!-- end -->
 
 In this post I'll talk about some of the common methods to extract input from the user along with best practices and examples. There are plenty of resources on the web that talk about common techniques, this blog chronicles my journey (mostly headaches) while getting user input for specific scenarios.
 
