@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
 <url> <loc>https://iqbalyarkhan.github.io/react-js-notes</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/gatsby-js-code-block-line-numbers</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/priority-queues</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/binary-search-trees</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/selection-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/binary-search-trees</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/deque</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/stack</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/queue</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
@@ -17,9 +16,9 @@
 <url> <loc>https://iqbalyarkhan.github.io/tags/blog/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/data-structures/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/c/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/tags/binary-search-trees/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/sorting-algorithms/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/selection-sort/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/tags/binary-search-trees/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/searching-algorithms/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/binary-search/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/merge-sort/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
