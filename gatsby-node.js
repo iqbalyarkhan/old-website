@@ -50,7 +50,9 @@ exports.createPages = async ({ graphql, actions }) => {
   const markdownQueryResult = await graphql(
     `
       {
-        allMarkdownRemark {
+        allMarkdownRemark (
+          filter: { fields: { draft: { eq: false } } } # add
+        ){
           edges {
             node {
               fields {

@@ -1,5 +1,7 @@
 ---
 date: 2019-12-25
+title: ReactJS Notes
+draft: true
 title: "ReactJS Notes"
 extract: My notes as I learn ReactJS
 categories:

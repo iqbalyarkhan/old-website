@@ -1,7 +1,9 @@
 ---
 title: Priority Queues
 date: 2019-12-22
+draft: false
 extract: A brief overview showing the properties and usage of priority queue data structure
+
 categories: 
     - Data Structures
 tags:

@@ -1,5 +1,7 @@
 ---
 date: 2019-12-24
+title: Gatsby JS Code block Line Numbers
+draft: false
 title: "Gatsby JS Code block Line Numbers"
 extract: How to add line numbers to code blocks in GatsbyJS
 categories: 

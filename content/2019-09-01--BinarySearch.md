@@ -1,6 +1,7 @@
 ---
 title: Binary Search 
 date: 2019-09-01T15:42:34.101Z
+draft: false
 extract: Overview of how binary search works and its analysis
 categories: 
     - Searching Algorithms

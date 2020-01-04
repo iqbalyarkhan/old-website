@@ -1,6 +1,7 @@
 ---
 date: 2019-07-20
 title: C++ Standard input 
+draft: false
 extract: Common methods to extract input from user and its nuances
 categories: 
     - C++
