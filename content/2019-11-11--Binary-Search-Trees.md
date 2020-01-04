@@ -2,15 +2,13 @@
 title: Binary Search Trees
 date: 2019-11-11
 draft: false
+extract: An analysis of binary search trees in C++
 categories: 
     - Data Structures
 tags:
   - Data Structures
   - Binary Search Trees
 ---
-
-A deep look at binary search trees
-<!-- end -->
 
 ### Introduction
 

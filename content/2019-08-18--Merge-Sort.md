@@ -2,15 +2,13 @@
 title: Merge Sort 
 date: 2019-08-18
 draft: false
+extract: Explanation and implementation of merge sort algorithm
 categories: 
     - Sorting Algorithms
 tags:
   - Sorting Algorithms
   - Merge Sort
 ---
-
-Yet another merge sort implementation!
-<!-- end -->
 
 ### Introduction
 

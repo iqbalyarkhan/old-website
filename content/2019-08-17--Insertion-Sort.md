@@ -2,15 +2,13 @@
 title: Insertion Sort 
 date: 2019-08-17
 draft: false
+extract: Explanation and implementation of insertion sort algorithm
 categories: 
     - Sorting Algorithms
 tags:
   - Sorting Algorithms
   - Insertion Sort
 ---
-
-Yet another insertion sort implementation
-<!-- end -->
 
 ### Introduction
 

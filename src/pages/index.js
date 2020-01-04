@@ -39,6 +39,7 @@ export const pageQuery = graphql`
             tags
             date
             categories
+            extract
           }
         }
       }

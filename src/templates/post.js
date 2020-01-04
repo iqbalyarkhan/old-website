@@ -26,7 +26,8 @@ export default  ({ data, pageContext }) => {
         <SEO postPath={slug} postNode={postNode} postSEO />
         <div>
           <h1>{post.title}</h1>
-          <p className={styles.postMeta}>{date} &mdash; {postNode.timeToRead} Min Read  </p>
+          <h3>{post.extract}</h3>
+          <p className={styles.postMeta}>{date} </p>
           <div dangerouslySetInnerHTML={{ __html: postNode.html }} />
           <div className={styles.postMeta}>
             <PostTags tags={post.tags} />
@@ -64,6 +65,7 @@ export const pageQuery = graphql`
         title
         date
         categories
+        extract
         tags
       }
       fields {
