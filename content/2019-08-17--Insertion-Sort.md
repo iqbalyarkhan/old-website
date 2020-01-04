@@ -1,6 +1,7 @@
 ---
 title: Insertion Sort 
 date: 2019-08-17
+draft: false
 categories: 
     - Sorting Algorithms
 tags:

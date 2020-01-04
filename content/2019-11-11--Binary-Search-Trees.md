@@ -1,6 +1,7 @@
 ---
 title: Binary Search Trees
 date: 2019-11-11
+draft: false
 categories: 
     - Data Structures
 tags:

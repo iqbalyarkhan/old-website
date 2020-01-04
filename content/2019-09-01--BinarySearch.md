@@ -1,6 +1,7 @@
 ---
 title: Binary Search 
 date: 2019-09-01T15:42:34.101Z
+draft: false
 categories: 
     - Searching Algorithms
 tags:

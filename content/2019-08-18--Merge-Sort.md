@@ -1,6 +1,7 @@
 ---
 title: Merge Sort 
 date: 2019-08-18
+draft: false
 categories: 
     - Sorting Algorithms
 tags:

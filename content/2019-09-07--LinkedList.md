@@ -1,6 +1,7 @@
 ---
 title: Linked Lists
 date: 2019-09-07
+draft: false
 categories: 
     - Data Structures
 tags:

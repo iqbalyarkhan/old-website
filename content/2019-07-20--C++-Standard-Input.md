@@ -1,6 +1,7 @@
 ---
 date: 2019-07-20
 title: C++ Standard input 
+draft: false
 categories: 
     - C++
 tags:

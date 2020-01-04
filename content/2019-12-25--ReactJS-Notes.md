@@ -1,6 +1,7 @@
 ---
 date: 2019-12-25
-title: "ReactJS Notes"
+title: ReactJS Notes
+draft: true
 categories:
     - React
 tags:

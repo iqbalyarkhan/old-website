@@ -1,6 +1,7 @@
 ---
 title: Selection Sort
 date: 2019-11-11
+draft: false
 categories: 
     - Sorting Algorithms
 tags:

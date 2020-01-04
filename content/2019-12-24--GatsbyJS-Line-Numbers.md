@@ -1,6 +1,7 @@
 ---
 date: 2019-12-24
-title: "Gatsby JS Code block Line Numbers"
+title: Gatsby JS Code block Line Numbers
+draft: false
 categories: 
     - React
 tags:
