@@ -1,7 +1,7 @@
 ---
 date: 2020-01-06
 title: Recursion
-draft: true
+draft: false
 extract: Explanation of recursion and a survey of its applications
 categories: 
     - C++
@@ -35,7 +35,16 @@ $$$
 6 = 3 + 3
 $$$ 
 
-Writing the function for this becomes trivial:
+In general, the first term is 1 and $n^{th}$ term is obtained by adding $n$ to the $n-1^{st}$ term. Converting that to a mathematical formula we get:
+
+$$$
+a_{1} = 1
+$$$
+$$$
+a_{n} = a_{n-1} + n
+$$$
+
+Translating that to a function in c++, we get:
 
 ```cpp{numberLines: true}
 int triangularNumbers(int num){
@@ -44,3 +53,32 @@ int triangularNumbers(int num){
     return (num + triangularNumbers(num - 1));
 }
 ```
+
+#### Factorials
+
+Another overused example is that of factorials:
+
+$$$
+0! = 1
+$$$
+$$$
+1! = 1
+$$$
+$$$
+2! = 2 * 1
+$$$
+$$$
+3! = 3 * 2 * 1 
+$$$
+
+Mathematically, this is:
+
+$$$
+a_{0} = 1
+$$$
+$$$
+a_{1} = 1
+$$$
+$$$
+a_{n} = n * (n-1)!
+$$$
