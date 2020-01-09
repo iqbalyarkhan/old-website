@@ -1,7 +1,7 @@
 ---
 title: Binary Search 
 date: 2019-09-01T15:42:34.101Z
-draft: false
+draft: true
 extract: Overview of how binary search works and its analysis
 categories: 
     - Searching Algorithms
@@ -33,7 +33,11 @@ This is where we break our array in half and decide which half to search. If `ar
 ### Illustration : Value exists in array
 Let's say that this is what our sorted array looks like initially:
 
-`[2,5,6,9,11,13,21,25,31,49]`
+```cpp
+[2,5,6,9,11,13,21,25,31,49]
+```
+
+
 
 and we're searching for the element `25` (x = 25) in this array. Initially, our variables (I've substituted `l` for low, `m` for mid and `h` for high) would be calculated like this: (keep in mind that these variables are array indices): 
 
@@ -43,21 +47,21 @@ and we're searching for the element `25` (x = 25) in this array. Initially, our 
 
 `mid` would be `low + [(high - low)/2]`
 
-```
+```cpp
 [2, 5, 6, 9, 11, 13, 21, 25, 31, 49]
  l           m                    h
 ```
 
 We realize that `array[mid] < x` so we can discard all elements to the left of `m` and make `m + 1` our new `l`. Our `h` remains unchanged. So, this is what our array looks like now:
 
-```
+```cpp
 [2, 5, 6, 9, 11, 13, 21, 25, 31, 49]
                   l               h
 ```
 
 To calculate `m`, we do: `5 + [(9 - 5)/2]` which equals 7. Therefore, now we have:
 
-```
+```cpp
 [2, 5, 6, 9, 11, 13, 21, 25, 31, 49]
                   l      m        h
 ```
@@ -68,21 +72,21 @@ We then compare `array[mid]` with `x` and we find that `m` has the value `x` and
 
 Let's continue our operations and say that we're searching for `x = 39`. Steps up to this point from the previous section still hold for this case. So, as of now, this is what our array looks like:
 
-```
+```cpp
 [2, 5, 6, 9, 11, 13, 21, 25, 31, 49]
                   l      m        h
 ```
 
 We find that `array[mid] < x` so we make `m + 1` our new `l` and recalculate `m` to get this:
 
-```
+```cpp
 [2, 5, 6, 9, 11, 13, 21, 25, 31, 49]
                              lm   h
 ```
 
 We again compare `array[mid]` with `x` and find `array[mid] < x` so we make `m + 1` our new `l` and keep `h` as is. We now have our pointers in the following positions:
 
-```
+```cpp
 [2, 5, 6, 9, 11, 13, 21, 25, 31, 49]
                                  lh
 ```
@@ -93,7 +97,7 @@ Now, to calculate `m` we do the following:
 
 `9 + [(9 - 9)/2]` which makes `m = 9`. We see that `array[mid] > x` so we make `m - 1` our new `h` and keep `l` as is. This is the first time we've noticed that `h` has become less than `l` because this is what our array looks like now:
 
-```
+```cpp
 [2, 5, 6, 9, 11, 13, 21, 25, 31, 49]
                               h   l
 ```
@@ -241,49 +245,49 @@ On each iteration, we're approximately halving the number of elements we need to
 
 For better illustration, here is how we reduce our array's size:
 
-```
+```cpp
 [2, 5, 6, 9, 11, 13, 21, 25, 31, 49]
  l           m                    h
 ```
 
-```
+```cpp
 [.............., 13, 21, 25, 31, 49]
                   l      m        h
 ```
 
-```
+```cpp
 [.........................., 31, 49]
                              lm   h
 ```
 
-```
+```cpp
 [.............................., 49]
                                  lh
 ```
 
 So for 10 elements, we halved our array 3 times. We can extrapolate this to see how our halving would pan out with say `n = 32` elements and our elements are numbers 1 till 32 in increasing order. Also assume we're searching for the element 3, then this is how our search would proceed: (asterisks are elements that we've NOT discarded yet)
 
-```
+```cpp
 [l,***************,m,****************,h]    32
 ```
 
-```
+```cpp
 [l,******,m,*********,h,...............]    32/2
 ```
 
-```
+```cpp
 [l,****,m,****,h,......................]    16/2
 ```
 
-```
+```cpp
 [l,**,m,**,h,..........................]   8/2
 ```
 
-```
+```cpp
 [l,*,m,*,h,............................]   4/2
 ```
 
-```
+```cpp
 [.,l,m,h,..............................]   2/2
 ```
 
