@@ -171,7 +171,7 @@ if (A[i] > A[j]){
 ```
 which is true since `4 > 2`. Lines, 24-26 swap elements in position `A[i]` and `A[j]`. Once the swap is performed, our array would look like this:
 
-```
+```cpp
 {2,1,4,6,8,5,3,7}
 ```
 Once done, we increment our `i` and `j` so that now `i = 2` and `j = 3`. We also increment `swapped` which was initially 0 and is now 1. Since we're still inside the `while(true)` statement, we go through iteration 3.
@@ -181,19 +181,19 @@ Once done, we increment our `i` and `j` so that now `i = 2` and `j = 3`. We also
 Now since our `i = 2` and `j = 3` due to our increments at the end of iteration 2, our `A[i] = 4` and `A[j] = 6`. No swaps are needed here so we increment `i` and `j` again until we get to `i = 4` and `j = 5`. This is when `A[i] = 8` and `A[j] = 5`. 
 So far, our array looks like this:
 
-```
+```cpp
 {2,1,4,6,8,5,3,7}
          i j
 ```
 Notice now that we need to swap `A[i]` and `A[j]` after which our array looks like this:
 
-```
+```cpp
 {2,1,4,6,5,8,3,7}
            i j
 ```
 and our `swapped` counter is incremented to 2. These swaps are repeated until our array looks like this
 
-```
+```cpp
 {2,1,4,6,5,3,7,8}
                i j
 ```
