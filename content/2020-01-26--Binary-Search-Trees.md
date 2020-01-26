@@ -151,3 +151,55 @@ bool BinaryTree<T>::Find(T itemToFind) {
 ```
 
 The `Find` function, as the name suggests, checks to see if value exists in the tree. If so, we return `true` otherwise `false` is returned. The logic is that we start at the root and keep moving in the right direction: search in the left subtree if `itemToFind` is less than `curr` or right subtree if `itemToFind` is greater than `curr`. If we reach all the way to the end and find that `curr` is null, we return false. Otherwise we return true as soon as the value is found. 
+
+#### Max
+
+```cpp{numberLines: true}
+template<typename T>
+T BinaryTree<T>::FindMax(){
+    Node* curr = root;
+    while (curr->right != nullptr){
+        curr = curr->right;
+    }
+    return curr->item;
+}
+```
+
+The max value in the tree is the right-most node (it can be in the leaf position or an internal node with just the left child). For example, if you have this tree:
+
+```
+    10
+   /  \
+  4   21
+     /
+    20 
+
+```
+
+the max value is `21` even though it is not a leaf however it is the right-most node in the tree. A simpler example would be:
+
+```
+
+    10
+   /  \
+  4   21
+     /  \
+    20  32
+``` 
+
+Here, max is `32` which is the right-most node in the tree.
+
+#### Min
+
+```cpp{numberLines: true}
+template<typename T>
+T BinaryTree<T>::FindMin(){
+    Node* curr = root;
+    while (curr->left != nullptr){
+        curr = curr->left;
+    }
+    return curr->item;
+}
+```
+
+Here, the minimum element is the left-most node in the tree. 
