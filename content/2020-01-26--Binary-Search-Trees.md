@@ -1,7 +1,7 @@
 ---
 title: Binary Search Trees
 date: 2020-01-26
-draft: true
+draft: false
 extract: An analysis of binary search trees in C++
 categories: 
     - Data Structures
@@ -102,6 +102,60 @@ We then check to see if the root points to `nullptr`. This would happen when our
 
 If root is not null, we have to traverse down the tree to find the correct position to add this new node. To do so, we maintain 2 pointers: `prev` and `curr`. The `prev` pointer is to keep track of the parent of this newly created node. We continue going down the tree until `curr` is null at which point `prev` would be pointing to the parent node. At this point, we can add our new node in the leaf position as either a left child (if less than parent) or right child (if greater than parent).
 
+#### Recursive Insert
+
+You can insert a new node into the tree recursively as well since a tree can be considered a recursive structure. You can expose a public function that is called `RecursiveInsert(T newItem)` that takes in a new item that is to be inserted in the tree. This function can then in turn call a private function that has access to the root and can recursively insert items into the tree.
+
+```cpp{numberLines:true}
+template<typename T>
+void BinaryTree<T>::RecursiveInsert(Node*& curr, T newItem){
+    if (curr == nullptr){
+        Node* newNode = new Node;
+        newNode->item = newItem;
+        newNode->left = nullptr;
+        newNode->right = nullptr;
+        curr = newNode;
+        return;
+    }
+    if (newItem < curr->item)
+        RecursiveInsert(curr->left, newItem);
+    if (newItem > curr->item)
+        RecursiveInsert(curr->right, newItem);
+}
+```
+
+The function signature takes in a reference to a pointer. This reference is to the root of the tree since we're modifying the root. Now, once this function is called we've got 3 different cases to handle: 
+
+- one where the tree is empty and we're inserting for the first time (lines 3-9)
+- one where the item to be inserted is less than the current item we're on (line 12)
+- one where item to be inserted is greater than the current item we're on (line 14)
+
+In each case, we make a recursive call based on the value we received and the item we're on. So, if we've got these calls:
+
+```cpp
+    bt.Insert(10);
+    bt.Insert(4);
+    bt.Insert(3);
+    bt.Insert(6);
+    bt.Insert(18);
+    bt.Insert(13);
+    bt.Insert(11);
+    bt.Insert(12);
+    bt.Insert(21);
+    bt.Insert(20);
+```
+
+we'll have the following recursive call stack:
+
+```cpp
+bt.Insert(root, 10) --> first item being inserted therefore we execute lines 3-9
+
+bt.Insert(root, 4) --> root points to 10 so item to be inserted < curr->item so we call the function again with curr->left
+   bt.Insert(root->left, 4) --> We're now at nullptr so we can execute lines 3-9 and return  
+ 
+```
+
+This check and insert continues for each new insert. 
 
 #### Traversal
 
