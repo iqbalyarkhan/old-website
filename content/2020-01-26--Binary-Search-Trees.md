@@ -674,3 +674,187 @@ typename BinaryTree<T>::Node* BinaryTree<T>::RecursiveDeletePrivate(Node* root, 
 ```
 
 Finally, after all these operations are done, we can return `root`.
+
+Let's run through an example to see what is going on. Say our tree looks like this:
+
+```
+
+    10
+   /  \
+  4   21
+     /  \
+    15  32
+     \
+     20
+``` 
+
+#### Delete leaf node 20:
+
+We get this call from our client:
+
+```cpp
+    root = RecursiveDeletePrivate(root, 20);
+```
+
+Before we start executing `RecursiveDeletePrivate()`, here is what we've got now:
+
+```
+
+    10 ---> root
+   /  \
+  4   21
+     /  \
+    15  32
+     \
+     20
+``` 
+
+`root` is not `nullptr` and `itemToDelete > root->item` we fall to line 8:
+
+```cpp{numberLines: 8}
+       root->right = RecursiveDeletePrivate(root->right, itemToDelete);
+```
+
+At this point we halt execution of the current run and make a new recursive call:
+
+```cpp
+//Recursive call stack:
+10->right = RecursiveDeletePrivate(10->right, 20)
+```
+
+where `10->right` is actually the node with value 21. So now, this new call has our root positioned like so:
+
+```
+
+    10 
+   /  \
+  4   21 ---> root
+     /  \
+    15  32
+     \
+     20
+``` 
+
+So, we've called this: `RecursiveDeletePrivate(10->right, 20)` so our root is at node with value `21`. This time we fall to line 6:
+
+```cpp{numberLines: 6}
+       root->left = RecursiveDeletePrivate(root->left, itemToDelete);
+```
+
+so now our recursive call stack would look like this:
+
+```cpp
+//Recursive call stack:
+10->right = RecursiveDeletePrivate(10->right, 20) // root = 21
+        21->left = RecursiveDeletePrivate(21->left, 20) // root = 15
+```
+
+With this new call, we pause this recursive call on the call stack and start another recursive call with root as 15:
+
+```
+
+            10 
+           /  \
+          4   21 
+             /  \
+    root-->15   32
+            \
+            20
+```
+
+Again, we go inside `RecursiveDeletePrivate(21->left, 20)` and find that `itemToDelete > root->item` so we fall to line 8:
+
+```cpp{numberLines: 8}
+       root->right = RecursiveDeletePrivate(root->right, itemToDelete);
+
+```
+
+so we pause this recursive call and make another call. Our recursive call stack looks like this:
+
+```cpp
+//Recursive call stack:
+10->right = RecursiveDeletePrivate(10->right, 20) // root = 21
+        21->left = RecursiveDeletePrivate(21->left, 20) // root = 15
+            15->right = RecursiveDeletePrivate(15->right,20) // root = 20
+```
+
+Our tree now looks like this:
+
+```
+
+    10 
+   /  \
+  4   21 
+     /  \
+    15  32
+     \
+     20 ---> root
+``` 
+
+
+On this recursive call, we fall to line 9 since we've found the item we were looking to delete. Check on line 11 holds true since the node has no children. So what we do is delete this node, set it to `nullptr` and return this root. So our recursive call stack now starts to unwind:
+
+ ```cpp
+ //Recursive call stack:
+ 10->right = RecursiveDeletePrivate(10->right, 20) // root = 21
+         21->left = RecursiveDeletePrivate(21->left, 20) // root = 15
+             15->right = RecursiveDeletePrivate(15->right,20) // root = 20
+                root = 20 -> delete and return nullptr
+ ```
+
+The returned nullptr is assigned to `15->right`:
+
+ ```cpp
+ //Recursive call stack:
+ 10->right = RecursiveDeletePrivate(10->right, 20) // root = 21
+         21->left = RecursiveDeletePrivate(21->left, 20) // root = 15
+             15->right = RecursiveDeletePrivate(15->right,20) = nullptr // root = 20
+                root = 20 -> delete and return nullptr
+ ```
+
+So, `15-right = nullptr` so our mini returned tree looks like this:
+
+```
+    15
+     \
+    nullptr
+```
+
+After this returns, our call stack has these calls left:
+
+
+ ```cpp
+ //Recursive call stack:
+ 10->right = RecursiveDeletePrivate(10->right, 20) // root = 21
+         21->left = RecursiveDeletePrivate(21->left, 20) // root = 15
+ ```
+
+This mini tree is then returned to the call `21->left = RecursiveDeletePrivate(21->left, 20)` when it resumes. So our mini tree is attached to `21->left`:
+
+```
+     21
+     /
+    15
+     \
+    nullptr
+```
+
+Now our call stack has this call left:
+
+```cpp
+ //Recursive call stack:
+ 10->right = RecursiveDeletePrivate(10->right, 20) // root = 21
+ ```
+So for `10->right` we attach the result of `RecursiveDeletePrivate(10->right, 20)` which results in:
+
+```
+    10
+     \
+     21
+     /
+    15
+     \
+    nullptr
+```
+
+Now our call stack is empty and we finally return the root on line 46. Since we didn't touch any other nodes, all other connections remain as is. Notice how we went up the tree after deleting the node we were interested in. 
