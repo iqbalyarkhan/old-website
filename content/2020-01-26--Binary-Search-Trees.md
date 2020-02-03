@@ -258,472 +258,419 @@ T BinaryTree<T>::FindMin(){
 
 Here, the minimum element is the left-most node in the tree. Therefore, keep moving to the left child of current node until there is no left child to visit.
 
-#### Delete
+#### Delete: [Credit for this section](https://www.youtube.com/user/PaulProgramming/search?query=Binary+Search+Trees)
 
-This is the hardest operation you can perform on a binary search tree. That is because once a node is removed, we still want the tree to maintain its binary search properties (values in left sub-tree must be less than the root and values in the right subtree must be greater than the root). 
-
+This is the hardest operation you can perform on a binary search tree. That is because once a node is removed, we still want the tree to maintain its binary search properties (values in left sub-tree must be less than the root and values in the right subtree must be greater than the root).
 Let's have a look at the possibilities when we're deleting a node from the tree: the node marked for deletion can:
 - have no children
 - have one child
 - be root of a subtree (ie more than 1 children and grandchildren)
 
-Before we dive into each of the scenarios above, there is one piece of logic that is common for each case: before we can delete the element, we need to find it first, which is similar to what we've got for our [find](/binary-search-trees#find) function:
+Let's start with the main function that drives the delete operation:
 
 ```cpp{numberLines: true}
 template<typename T>
-void BinaryTree<T>::Delete(T itemToDelete){
-    size--;
-    Node* nodeToBeDeleted = root;
-    Node* prev = nullptr;
-    /*
-     First find the node we need to delete
-     while maintaining prev and curr pointers
-     */
-    while (nodeToBeDeleted != nullptr){
-        if (itemToDelete < nodeToBeDeleted->item){
-            //Item less than curr: look in left subtree
-            prev = nodeToBeDeleted;
-            nodeToBeDeleted = nodeToBeDeleted->left;
-        } else if (itemToDelete > nodeToBeDeleted->item) {
-            //Item greater than curr: look in right subtree
-            prev = nodeToBeDeleted;
-            nodeToBeDeleted = nodeToBeDeleted->right;
-        } else {
-            //We found the item
-            break;
-        }
-    }
-    
-    //nodeToBeDeleted now is pointing to the node to be deleted
-    //and prev is pointing either to null or parent of
-    //nodeToBeDeleted
+void BinaryTree<T>::RemoveNode(T itemToDelete){
+    RemoveNodePrivate(root, itemToDelete);
 }
 ```
 
-The code follows this logic: it starts with a pointer to root called `nodeToBeDeleted` and a `prev` pointer that'll follow `nodeToBeDeleted` but would be one step "slower" than `prev`. For example if we have this tree:
+This function takes in one argument: `itemToDelete` and calls the private helper function `RemoveNodePrivate(root,itemToDelete)` by passing in 2 arguments: 
+- root of the tree
+- the item to be deleted
 
-```
-    10
-   /  \
-  4   21 ---> prev
-     /  \
-    20  32  ---> nodeToBeDeleted
-
-```
-
-and want to delete leaf node with value 32, we want a prev for some housekeeping duties such as making `prev->right` null. Additionally, having a prev pointer would allow us to move nodes if our tree was larger (which I'll demonstrate in the coming sections).
-
-In short, once the code above executes, we'll have our 2 pointers `nodeToBeDeleted` (always pointing to node to be deleted) and `prev` (pointing either to the parent of the node to be deleted or nullptr if we're deleting the root).
-
-Ok, so we've got the node we want to delete and a `prev` pointer, let's consider the 3 cases we outlined above 
-
-##### Has no children
-
-Here, we're simply deleting the leaf node. For example, we might be deleting node with value 32 from this tree:
-
-```
-    10
-   /  \
-  4   21 ---> prev
-     /  \
-    20  32  ---> nodeToBeDeleted
-
-```
-
-In this case, we need to delete 32 (to free up memory being used by that node) and set `prev`'s right pointer (could be left if we had a different example) to null. All we have to do is, convert this logic to code: (I've added to the block of code that we saw above):
+This helper function is used because our client (other programs or users) using our class do not have access to our private `root` variable which points to the root of the tree. Let's have a look at the `RemoveNodePrivate` function:
 
 ```cpp{numberLines: true}
 template<typename T>
-void BinaryTree<T>::Delete(T itemToDelete){
-    size--;
-    Node* nodeToBeDeleted = root;
-    Node* prev = nullptr;
-    /*
-     First find the node we need to delete
-     while maintaining prev and curr pointers
-     */
-    while (nodeToBeDeleted != nullptr){
-        if (itemToDelete < nodeToBeDeleted->item){
-            //Item less than curr: look in left subtree
-            prev = nodeToBeDeleted;
-            nodeToBeDeleted = nodeToBeDeleted->left;
-        } else if (itemToDelete > nodeToBeDeleted->item) {
-            //Item greater than curr: look in right subtree
-            prev = nodeToBeDeleted;
-            nodeToBeDeleted = nodeToBeDeleted->right;
+void BinaryTree<T>::RemoveNodePrivate(Node* curr, T itemToDelete){
+    if (curr->item == itemToDelete){
+        //We've found the item in root.
+        RemoveRootMatch();
+    } else {
+        //Item not in root
+        if (itemToDelete < curr->item && curr->left != nullptr){
+            //Look in left subtree
+            //RemoveNode takes in curr, the child of curr and bool to tell if left child is being passed
+            curr->left->item == itemToDelete ? RemoveMatch(curr,curr->left,true) : RemoveNodePrivate(curr->left, itemToDelete);
+            
+        } else if (itemToDelete > curr->item && curr->right != nullptr){
+            //Look in right subtree
+            curr->right->item == itemToDelete ? RemoveMatch(curr, curr->right, false) : RemoveNodePrivate(curr->right, itemToDelete);
+            
         } else {
-            //We found the item
-            break;
+            //Key not present
+            cout << "Key: " << itemToDelete << " not present in tree" << endl;
         }
-    }
-    
-    //nodeToBeDeleted now is pointing to the node to be deleted
-    //and prev is pointing either to null or parent of
-    //nodeToBeDeleted
-
-    /**
-     Determine the type of node we're deleting:
-     -leaf
-     -node with 1 child
-     -node with 2 children
-     */
-    if (nodeToBeDeleted->left == nullptr && nodeToBeDeleted->right == nullptr){
-        //Deleting a leaf:
-        if (prev->left == nodeToBeDeleted){
-            prev->left = nullptr;
-        } else {
-            prev->right = nullptr;
-        }
-        delete nodeToBeDeleted;
-        nodeToBeDeleted = nullptr;
+        
     }
 }
 ```
 
-On line 35 we check to see if the left and right pointers for `nodeToBeDeleted` are `nullptr`s and if so we've got ourselves a leaf node. In that case, we check to see if the leaf `nodeToBeDeleted` is the left child or the right child. We then set the corresponding child to null and delete `nodeToBeDeleted` and set it to null as well. Now, our tree would look like this:
+We've passed in the `root` to this function so the first time it is called, `curr` would be pointing to `root`. Line 3 checks if the value is in `curr` (ie checks if the value is in the `root` node) and if so, we call another helper function called `RemoveRootMatch()`. We'll have a look at this function later. 
+
+Let's assume the value we're looking for is NOT in the root of the tree but is infact in one of the leaf nodes:
 
 ```
-    10
+    10 ---> curr / root
    /  \
-  4   21 ---> prev
-     / 
-    20  
-
-```
-
-##### Has one child
-
-What if the node we want to delete has a child? For example, we have this:
-
-```
-          10
-        /   \
-      4      18  -----> prev
-    /  \    /  \
-   3   6   13  21 -----> nodeToBeDeleted
-              /
-             20
-            /
-           19  
-```
-
-In that case, all we need to do is stick the children of `nodeToBeDeleted` in the same direction as `nodeToBeDeleted`. For example, in the tree above, `nodeToBeDeleted` is the right child of `prev`, so the left child of `nodeToBeDeleted` must be placed as the new right child of `prev`:
-
-```
-          10
-        /   \
-      4      18  -----> prev
-    /  \    /  \
-   3   6   13  20
-              /
-             19
-```
-When converting this logic to code, we get:
-
-```cpp{numberLines: true}
-template<typename T>
-void BinaryTree<T>::Delete(T itemToDelete){
-    size--;
-    Node* nodeToBeDeleted = root;
-    Node* prev = nullptr;
-    /*
-     First find the node we need to delete
-     while maintaining prev and curr pointers
-     */
-    while (nodeToBeDeleted != nullptr){
-        if (itemToDelete < nodeToBeDeleted->item){
-            //Item less than curr: look in left subtree
-            prev = nodeToBeDeleted;
-            nodeToBeDeleted = nodeToBeDeleted->left;
-        } else if (itemToDelete > nodeToBeDeleted->item) {
-            //Item greater than curr: look in right subtree
-            prev = nodeToBeDeleted;
-            nodeToBeDeleted = nodeToBeDeleted->right;
-        } else {
-            //We found the item
-            break;
-        }
-    }
-    
-    //nodeToBeDeleted now is pointing to the node to be deleted
-    //and prev is pointing either to null or parent of
-    //nodeToBeDeleted
-
-    /**
-     Determine the type of node we're deleting:
-     -leaf
-     -node with 1 child
-     -node with 2 children
-     */
-    if (nodeToBeDeleted->left == nullptr && nodeToBeDeleted->right == nullptr){
-        //Deleting a leaf:
-        if (prev->left == nodeToBeDeleted){
-            prev->left = nullptr;
-        } else {
-            prev->right = nullptr;
-        }
-        delete nodeToBeDeleted;
-        nodeToBeDeleted = nullptr;
-    } else if (nodeToBeDeleted->left == nullptr || nodeToBeDeleted->right == nullptr){
-        //Deleting node with just one child
-        Node* temp = nullptr;
-        nodeToBeDeleted->right == nullptr ? temp = nodeToBeDeleted->left : temp = nodeToBeDeleted->right;
-          
-        if (nodeToBeDeleted == prev->right){
-            delete nodeToBeDeleted;
-            nodeToBeDeleted = nullptr;
-            prev->right = temp;
-        } else {
-            delete nodeToBeDeleted;
-            nodeToBeDeleted = nullptr;
-            prev->left = temp;
-        }
-    } 
-}
-```
-
-On line 44 we check to see if either one of the children (left or right but not both) is a nullptr. If so, we first create a temporary pointer on line 45 called `temp` and check to see which child is not null. If right is null, we point `temp` to left child otherwise we point `temp` to right child. Next, we delete `nodeToBeDeleted` and stick temp in the right spot.
-
-##### Is root of a subtree (ie more than 1 children and grandchildren)
-
-Ok, so now what if we have a tree and want to delete the node marked:
-
-```
-          10  -----> prev
-        /   \
-      4      18  -----> nodeToBeDeleted
-    /  \    /  \
-   3   6   13  21 
-              /
-             20
-            /
-           19  
-```
-
-What node should replace the `nodeToBeDeleted`? The value there should still keep the binary search tree properties intact. To do so, we realize that the value that must go there should satisfy this inequality: 
-$$$ 
-18 <  X  < 21 
-$$$
-
-```
-          10  -----> prev
-        /   \
-      4      X  -----> new node here
-    /  \    /  \
-   3   6   13  21 
-              /
-             20
-            /
-           19  
-```
-
-- $X$ must be greater than 18 because all values greater than 18 would keep the subtree with node 13 (and possibly other nodes in that subtree if present) in line with binary search tree properties. 
-
-- $X$ must be less than 21 because 21 will be the right child of this new value and therefore must be greater than $X$. 
-
-That leaves us with 2 options in our tree: nodes with value 19 and 20. Say we choose 20, our tree will look like this:
-
-
-
-```
-          10  -----> prev
-        /   \
-      4      20  -----> new node here
-    /  \    /  \
-   3   6   13  21 
-              /
-             19  
-```
-
-This tree breaks the binary search tree properties since 19, which is less than 20, is in the right subtree of 20. That couldn't be right. Let's try 19 and see what our tree looks like:
-
-
-```
-          10  -----> prev
-        /   \
-      4      19   -----> new node here
-    /  \    /  \
-   3   6   13  21 
-              /
-             20
-```
-
-That looks alright! We've got the binary search tree properties intact and all nodes are in the right subtrees. 
-
-So, to summarize:
-
- **when we delete a node, we want the smallest value from the right subtree to replace the deleted node. This smallest value from the right subtree is the left most node in the right subtree**  
- 
- From our original tree:
-
-```
-          10  -----> prev
-        /   \
-      4      18  -----> nodeToBeDeleted
-    /  \    /  \
-   3   6   13  21 
-              /
-             20
-            /
-           19 
-          ~~~  
-```  
-
-19 is the value that is the smallest value from the right subtree of the node to be deleted:
-
-```
-
-       18  -----> nodeToBeDeleted
-      /  \
-     13  21 
-        /
-      20
+  4   21
      /
-    19 
-   ~~~  
-```  
+    20 ---> itemToDelete
 
-In the example we looked at above, the smallest value from the right subtree,19, had no right children. It could be that we might get a tree where the smallest value will have a right child. (Think about why it can't have a left child? That is because if it did, we'd be looking at that left child instead of its parent). If there is a right child of this left-most node, just make this right child the left child of the grandparent node:
+```
 
- To demonstrate this, say this is what our tree looks like:
+Next up, we determine whether to go down the left subtree or the right subtree to find `itemToDelete`. While doing so we also want to make sure that the left and right subtrees are actaully present (which is why we also check whether the left and right pointers are null or not). To do so, we've got this if else condition on lines 8 and 13 resepectively: 
+
+```cpp{numberLines: 8}
+  if (itemToDelete < curr->item && curr->left != nullptr){
+            //Look in left subtree
+            //RemoveNode takes in curr, the child of curr and bool to tell if left child is being passed
+            curr->left->item == itemToDelete ? RemoveMatch(curr,curr->left,true) : RemoveNodePrivate(curr->left, itemToDelete);
+            
+  } else if (itemToDelete > curr->item && curr->right != nullptr){
+            //Look in right subtree
+            curr->right->item == itemToDelete ? RemoveMatch(curr, curr->right, false) : RemoveNodePrivate(curr->right, itemToDelete);
+            
+  }
+```
+
+In our case, our `itemToDelete` > `curr->item` && `curr->right != nullptr` so we'll fall into the `else if` on line 13. Here, we've got 2 things that can be true: either `curr->right` might have the value we're looking for or it might not:
+
+ ```
+     10 ---> curr / root
+    /  \
+   4   21 ---> curr->right
+      /
+     20 ---> itemToDelete
  
  ```
-           10  ----> nodeToBeDeleted
-         /   \
-       4      20  
-     /  \    /  \
-    3   6   13  21 
-           /   /
-         11   19
-          \
-          12  
+SIDENOTE: C++ Ternary operator:
+
+`statement == condition ? (do this if true) : (do this if false)`
+
+So the ternary check on line 15 compares `curr->right->item` (which is 21) with `itemToDelete` which is 20. The equality operator (`==`) would return false so we'll go to the code to the right of our colon. Here, we find a recursive call to this same function but this time with `curr->right` as `curr`:
+
+```cpp{numberLines: 15}
+....  : RemoveNodePrivate(curr->right, itemToDelete);
+```
+
+When we call `RemoveNodePrivate(curr->right, itemToDelete)` again, here is what our pointer situation looks like:
+
  ```
-
-If we're deleting the root node, 10, we want the left-most node in the right sub-tree. We go down the tree and find that node with value 11 is the left-most node in the right subtree. But wait, 11 has a right child of value 12. If we remove 11, what would happen to 12:
-
+     10 
+    /  \
+   4   21 ---> curr
+      /
+     20 ---> itemToDelete
  
  ```
-           10  ----> nodeToBeDeleted
-         /   \
-       4      20  
-     /  \    /  \
-    3   6   13  21 
-           /   /
-11 gone->    19
-          \
-          12  -------> What to do with 12????
- ```
+Now notice that the `itemToDelete` is the left child of our `curr` pointer. We then fall to line 8 and the if condition holds true so we move to line 11. This time, we notice that the condition  
 
-All you need to do is make 12 and any children it might have, the left child of 13, its grandparent:
+```cpp
+curr->left->item == itemToDelete
+```
 
+is true so we go to the statement to the left of our colon:
+
+```cpp
+RemoveMatch(curr,curr->left,true)
+```
+
+This is another call to the function called `RemoveMatch().` Let's have a look at the function `RemoveMatch()`:
+
+```cpp{numberLines: true}
+template <typename T>
+void BinaryTree<T>::RemoveMatch(Node* prev, Node* curr, bool left){
+    //curr is node to be deleted
+    //prev is parent of curr
+    //left is to tell relationship b/w prev and curr
+    if (curr->left == nullptr && curr->right == nullptr){
+        if (left){
+            delete prev->left;
+            prev->left = nullptr;
+        } else {
+            delete prev->right;
+            prev->right = nullptr;
+        }
+    } else if (curr->left != nullptr && curr->right == nullptr){
+        if (left){
+            prev->left = curr->left;
+        } else {
+            prev->right = curr->left;
+        }
+        delete curr;
+        curr = nullptr;
+    } else if (curr->left == nullptr && curr->right != nullptr){
+        if (left){
+            prev->left = curr->right;
+        } else {
+            prev->right = curr->right;
+        }
+        delete curr;
+        curr = nullptr;
+    } else {
+        Node* temp = curr->right;
+        while (temp->left != nullptr){
+            temp = temp->left;
+        }
+        
+        curr->item = temp->item;
+        RemoveNodePrivate(curr->right, curr->item);
+        
+    }
+}
+```
+
+This function takes in 3 variables: 
+- `prev`: pointer to the parent of the node to be deleted
+- `curr`: pointer to the node to be deleted
+- `left`: bool to check whether curr is the left child of prev or not.
+
+Next we go through the 3 cases where we check whether the node to be deleted is a leaf node, has one child or has 2 children. If it is the first 2 cases, it is simple to delete the node based on the relationship between the parent and the child. If the node to be deleted has 2 children, then we need to find the smallest value from the right-subtree of the node to be deleted, copy that value to the node to be deleted and then delete the smalles value we found in the right subtree. That way, we've reduced the node with 2 child case to a more manageable node with one or no children case. Then we call the `RemoveNodePrivate()` function again but this time we pass `curr->right` pointer (because we want to search for the value in the right subtree) and the `curr->item` value (which is the value that needs to be deleted).
+
+Finally, let's have a look at `RemoveRootMatch()`
+
+```cpp{numberLines: true}
+
+template<typename T>
+void BinaryTree<T>::RemoveRootMatch(){
+    if (root != nullptr){
+        Node* temp = root;
+        //If root has no children
+        if (temp->left == nullptr && temp->right == nullptr){
+            delete root;
+            root = nullptr;
+            temp = nullptr;
+            return;
+        } else if (temp->left != nullptr && temp->right == nullptr ){
+            //Root has only left children
+            temp = temp->left;
+            delete root;
+            root = temp;
+        } else if (temp->left == nullptr && temp->right != nullptr) {
+            //Root has only right children
+            temp = temp->right;
+            delete root;
+            root = temp;
+        } else {
+            //Root has 2 children
+            temp = temp->right;
+            while (temp->left != nullptr){
+                temp = temp->left;
+            }
+            RemoveNodePrivate(root, temp->item);
+            root->item = temp->item;
+        }
+    } else {
+        cout << "Tree is empty" << endl;
+    }
+}
+```
+
+Again, we check for the 3 cases. The first 2 being root has no children or root has only 1 child. If it is the 3rd case (root with 2 children) we call `RemoveNodePrivate()` with the root and the item we need deleted after replacing root with the smallest value from the right subtree. 
+
+#### Delete: Another Approach [Credit](https://www.youtube.com/watch?v=gcULXE7ViZw&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P&index=36)
+
+That was a lot of code! There were various different scenarios that we had to keep in mind and be mindful of whether the child is the right or the left sub-child etc. We can use a recursive approach with the same logic we used above to delete a node that falls into either one of the 3 categories we discussed above 
  
- ```
-           11  ----> 11 added here
-         /   \
-       4      20  
-     /  \    /  \
-    3   6   13  21 
-           /   /
-          12  19
+ Let's look at a recursive approach that deletes a node from a BST:
+ 
+ This is the function that our client will be calling:
+ ```cpp{numberLines: true}
+ template <typename T>
+ void BinaryTree<T>::RecursiveDelete(T itemToDelete){
+     //Need to capture returned root because we might be
+     //deleting the actual root during the delete operation
+     root = RecursiveDeletePrivate(root, itemToDelete);
+ } 
  ```
 
-Ok, so to summarize, if you're deleting a node with both children present:
- - go to the right subtree of the node to be deleted 
- - look for the left most child of this right subtree (you can also search for right most child in left subtree)
- - make any children in the right subtree of this left most child the left children of its grandparent
- - replace deleted node with this left most child
- 
- Converting this logic to code, we get:
+As was explained earlier, this function takes in the `itemToDelete` and calls another private function with the `root` since the client won't have access to the root. The returned value of that private function is again captured by the `root` variable since our delete operation might edit the root of the tree as well.
+
+As mentioned, it takes in a pointer to the root of the tree and the value of the item to be deleted, due to which the private helper function signature looks like so: 
+
+```cpp
+template <typename T>
+typename BinaryTree<T>::Node* BinaryTree<T>::RecursiveDeletePrivate(Node* root, T itemToDelete){
+    //Do something....
+}
+```
+
+ First thing we want to do inside this function is to check whether the `root` passed is null which would occur when the tree is empty. We do so by adding this check:
  
  ```cpp{numberLines: true}
- template<typename T>
- void BinaryTree<T>::Delete(T itemToDelete){
-     size--;
-     Node* nodeToBeDeleted = root;
-     Node* prev = nullptr;
-     /*
-      First find the node we need to delete
-      while maintaining prev and curr pointers
-      */
-     while (nodeToBeDeleted != nullptr){
-         if (itemToDelete < nodeToBeDeleted->item){
-             //Item less than curr: look in left subtree
-             prev = nodeToBeDeleted;
-             nodeToBeDeleted = nodeToBeDeleted->left;
-         } else if (itemToDelete > nodeToBeDeleted->item) {
-             //Item greater than curr: look in right subtree
-             prev = nodeToBeDeleted;
-             nodeToBeDeleted = nodeToBeDeleted->right;
-         } else {
-             //We found the item
-             break;
-         }
+ template <typename T>
+ typename BinaryTree<T>::Node* BinaryTree<T>::RecursiveDeletePrivate(Node* root, T itemToDelete){
+     if (root == nullptr){
+         return nullptr;
      }
-     
-     //nodeToBeDeleted now is pointing to the node to be deleted
-     //and prev is pointing either to null or parent of
-     //nodeToBeDeleted
+```
+
+Next, if the root is not null, we want to check to see if the item to be deleted lies in left subtree (`if itemToDelete < root->item`) or in the right subtree (`if itemToDelete > root->item`). If it lies in the left sub-tree, we make a recursive call to the same function, `RecursiveDeletePrivate` but this time the root as `root->left`. If it lies in the right sub-tree, we make a recursive call with root as `root->right`. For each of these two calls, the returned value would be the modified sub-tree so we set the respective subtree (right or left) based on the case we have:
+
+ ```cpp{numberLines: true}
+template <typename T>
+typename BinaryTree<T>::Node* BinaryTree<T>::RecursiveDeletePrivate(Node* root, T itemToDelete){
+    if (root == nullptr){
+        return nullptr;
+    } else if (itemToDelete < root->item){
+        root->left = RecursiveDeletePrivate(root->left, itemToDelete);
+    } else if (itemToDelete > root->item){
+        root->right = RecursiveDeletePrivate(root->right, itemToDelete);
+    } 
+```
+
+If the value is not less than or greater than `root->item`, it means that `itemToDelete` == `root->item`. In this case, we need to check whether the node we're about to delete (pointed to by `root`) has:
+ - no children 
+ - a right only child
+ - a left only child 
+ - two children
  
-     /**
-      Determine the type of node we're deleting:
-      -leaf
-      -node with 1 child
-      -node with 2 children
-      */
-     if (nodeToBeDeleted->left == nullptr && nodeToBeDeleted->right == nullptr){
-         //Deleting a leaf:
-         if (prev->left == nodeToBeDeleted){
-             prev->left = nullptr;
-         } else {
-             prev->right = nullptr;
-         }
-         delete nodeToBeDeleted;
-         nodeToBeDeleted = nullptr;
-     } else if (nodeToBeDeleted->left == nullptr || nodeToBeDeleted->right == nullptr){
-         //Deleting node with just one child
-         Node* temp = nullptr;
-         nodeToBeDeleted->right == nullptr ? temp = nodeToBeDeleted->left : temp = nodeToBeDeleted->right;
-           
-         if (nodeToBeDeleted == prev->right){
-             delete nodeToBeDeleted;
-             nodeToBeDeleted = nullptr;
-             prev->right = temp;
-         } else {
-             delete nodeToBeDeleted;
-             nodeToBeDeleted = nullptr;
-             prev->left = temp;
-         }
+ If the root has no children, we can simply delete `root` and return `nullptr`:
+  ```cpp{numberLines: true}
+ template <typename T>
+ typename BinaryTree<T>::Node* BinaryTree<T>::RecursiveDeletePrivate(Node* root, T itemToDelete){
+     if (root == nullptr){
+         return nullptr;
+     } else if (itemToDelete < root->item){
+         root->left = RecursiveDeletePrivate(root->left, itemToDelete);
+     } else if (itemToDelete > root->item){
+         root->right = RecursiveDeletePrivate(root->right, itemToDelete);
      } else {
-       //Deleting node with 2 children
-       Node* replaceWith = nodeToBeDeleted->right;
-       Node* newPrev = nodeToBeDeleted->right;
-       while (replaceWith->left != nullptr){
-           newPrev = replaceWith;
-           replaceWith = replaceWith->left;
-       }
-       
-       if (replaceWith->right != nullptr){
-           newPrev->left = replaceWith->right;
-       } else {
-           newPrev->left = nullptr;
-       }
-       replaceWith->left = nodeToBeDeleted->left;
-       replaceWith->right = nodeToBeDeleted->right;
-       if (prev != nullptr){
-           if (nodeToBeDeleted == prev->right){
-               prev->right = replaceWith;
-           } else {
-               prev->left = replaceWith;
-           }
-       } else {
-           //We're deleting root
-           root = replaceWith;
-       }
-       
-       delete nodeToBeDeleted;
-       nodeToBeDeleted = nullptr;
+         //We found the item.
+         if (root->left == nullptr && root->right == nullptr){
+             //It is a leaf node
+             delete root;
+             root = nullptr;
+             return root;
+             
+         }
      }
  }
- ```
+```
+
+If the root has a right only child, we can make root point to this right child and delete root's old value:
+
+ ```cpp{numberLines: true}
+template <typename T>
+typename BinaryTree<T>::Node* BinaryTree<T>::RecursiveDeletePrivate(Node* root, T itemToDelete){
+    if (root == nullptr){
+        return nullptr;
+    } else if (itemToDelete < root->item){
+        root->left = RecursiveDeletePrivate(root->left, itemToDelete);
+    } else if (itemToDelete > root->item){
+        root->right = RecursiveDeletePrivate(root->right, itemToDelete);
+    } else {
+        //We found the item.
+        if (root->left == nullptr && root->right == nullptr){
+            //It is a leaf node
+            delete root;
+            root = nullptr;
+            return root;
+            
+        } else if (root->left == nullptr){
+            //Node to be deleted has right children
+            Node* temp = root;
+            root = root->right;
+            delete temp;
+            temp = nullptr;
+            return root;
+            
+        }
+    }
+}
+```
+
+If the root has a left only child, we can make the root point to this left child and delete the old root node:
  
+ ```cpp{numberLines: true}
+template <typename T>
+typename BinaryTree<T>::Node* BinaryTree<T>::RecursiveDeletePrivate(Node* root, T itemToDelete){
+    if (root == nullptr){
+        return nullptr;
+    } else if (itemToDelete < root->item){
+        root->left = RecursiveDeletePrivate(root->left, itemToDelete);
+    } else if (itemToDelete > root->item){
+        root->right = RecursiveDeletePrivate(root->right, itemToDelete);
+    } else {
+        //We found the item.
+        if (root->left == nullptr && root->right == nullptr){
+            //It is a leaf node
+            delete root;
+            root = nullptr;
+            return root;
+            
+        } else if (root->left == nullptr){
+            //Node to be deleted has right children
+            Node* temp = root;
+            root = root->right;
+            delete temp;
+            temp = nullptr;
+            return root;
+            
+        } else if (root->right == nullptr){
+            //Node to be deleted has left children
+            Node* temp = root;
+            root = root->left;
+            delete temp;
+            temp = nullptr;
+            return root;
+        }
+    }
+}
+```
+
+And finally, if none of those conditions hold, it means that the root points to a node that has 2 children. In this case, we need to search for the smallest value in the right subtree (or the largest value in the left subtree but the example below shows the former) and write to root this new value. We'd then have 2 nodes with the same value. To delete this smallest child in the right subtree, we'll again call our `RecursiveDeletePrivate()` function but this time with root's right child and the value we just copied over:
  
+ ```cpp{numberLines: true}
+template <typename T>
+typename BinaryTree<T>::Node* BinaryTree<T>::RecursiveDeletePrivate(Node* root, T itemToDelete){
+    if (root == nullptr){
+        return nullptr;
+    } else if (itemToDelete < root->item){
+        root->left = RecursiveDeletePrivate(root->left, itemToDelete);
+    } else if (itemToDelete > root->item){
+        root->right = RecursiveDeletePrivate(root->right, itemToDelete);
+    } else {
+        //We found the item.
+        if (root->left == nullptr && root->right == nullptr){
+            //It is a leaf node
+            delete root;
+            root = nullptr;
+            return root;
+            
+        } else if (root->left == nullptr){
+            //Node to be deleted has right children
+            Node* temp = root;
+            root = root->right;
+            delete temp;
+            temp = nullptr;
+            return root;
+            
+        } else if (root->right == nullptr){
+            //Node to be deleted has left children
+            Node* temp = root;
+            root = root->left;
+            delete temp;
+            temp = nullptr;
+            return root;
+        } else{
+            //Node to be deleted has 2 children - left and right
+            //Find min in right subtree
+            Node* temp = root->right;
+            
+            while (temp->left != nullptr){
+                temp = temp->left;
+            }
+            
+            root->item = temp->item;
+            root->right = RecursiveDeletePrivate(root->right, temp->item);
+            
+        }
+    }
+    return root;
+}
+```
+
+Finally, after all these operations are done, we can return `root`.
