@@ -35,6 +35,8 @@ tags:
 11. [Destructor](#destructor)
 
 12. [Running time analysis](#running-time-analysis)
+
+13. [Trees as arrays](#trees-as-arrays)
 ### Introduction
 
 In this post I'll talk about a data structure called Binary Search Tree. This post is related to my [binary search](/binary-search) post where we discussed the binary search algorithm. BSTs use a similar idea but allow us to store our data efficiently so that we don't have to iterate over an entire array to perform various operations on the data that we stored. We'll look at this in more detail as we go over the code.
@@ -1027,7 +1029,42 @@ $$$
 
 This holds true when the tree is full.
 
+# Trees as arrays
 
+A tree may also be represented as an array. It may not be too efficient if you have a sparse tree (where each level is not completely filled) since that may leave too many empty entries in the array. But if your tree is almost full at each level and you're mostly concerned with finds (deletes would require us to move entries in the array which would be time consuming), an array representation would be beneficial. 
+
+Pros:
+- Faster lookup
+- Less memory taken as compared to nodes with left and right pointers
+
+Cons:
+- Wasted space if tree is not full
+- Deletions can be burdensome
+
+A sample representation of a tree as an array:
+
+
+![Tree-As_Array](./images/trees/tree-as-array.png)
+
+If the node's position is represented by `index`, then:
+ 
+to get a node's left child:
+
+$$$
+2*index + 1
+$$$
+
+to get a node's right child:
+
+$$$
+2*index + 2
+$$$
+
+and to get its parent:
+
+$$$
+(index-1) / 2
+$$$
 
 
     
