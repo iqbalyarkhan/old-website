@@ -73,7 +73,6 @@ public:
     void PostOrderTraversal();
     T FindMax();
     T FindMin();
-    void RemoveNode(T itemToDelete);
     void RecursiveDelete(T itemToDelete);
     
 };
