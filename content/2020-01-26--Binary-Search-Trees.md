@@ -858,3 +858,270 @@ So for `10->right` we attach the result of `RecursiveDeletePrivate(10->right, 20
 ```
 
 Now our call stack is empty and we finally return the root on line 46. Since we didn't touch any other nodes, all other connections remain as is. Notice how we went up the tree after deleting the node we were interested in. 
+
+#### Delete node with one child 15:
+Let's assume our tree looks like this:
+
+```
+
+    10 ---> root
+   /  \
+  4   21
+     /  \
+    15  32
+     \
+     20
+``` 
+
+Here is what the call stack would look like after each call (I've abbreviated the steps so that we can get to the point):
+
+
+```cpp
+ //Recursive call stack:
+ 10->right = RecursiveDeletePrivate(10->right, 15) // root = 21
+    21->left = RecursiveDeletePrivate(21->left, 15) // root = 15
+        root->15 : found our element-> return something...
+ ```
+
+At this point, here is what the tree looks like:
+
+```
+
+            10 
+           /  \
+          4   21 
+             /  \
+    root-->15   32
+            \
+            20
+```
+
+After root is pointing to 15, we've found our node to delete and we fall into the else on line 9. Here, we find that the case is:
+`else if (root->left == nullptr)` and we go into this else if statement. Next, we create a `temp` pointer that also points to node with value 15:
+
+```
+
+            10 
+           /  \
+          4   21 
+             /  \
+temp/root-->15   32
+             \
+             20
+```
+
+and `root` moves to `root->right`:
+
+ ```
+ 
+             10 
+            /  \
+           4   21 
+              /  \
+     temp-->15   32
+             \
+     root--> 20
+ ```
+
+Next, we delete `temp` and make `temp` point to `nullptr`:
+
+ ```
+ 
+             10 
+            /  \
+           4   21 
+              /  \
+    temp-->NULL  32
+             \
+     root--> 20
+ ```
+
+and we finally return `root`. Now remember, the recursive call stack uptill this point is still this:
+
+```cpp
+ //Recursive call stack:
+ 10->right = RecursiveDeletePrivate(10->right, 15) // root = 21
+    21->left = RecursiveDeletePrivate(21->left, 15) // root = 15
+        root->15 : found our element-> return something...
+ ```
+
+So, when we return root, we're returning the pointer pointing to node 20. Thus, our call stack starts to unwind like so:
+
+We return 20:
+```cpp
+ //Recursive call stack:
+ 10->right = RecursiveDeletePrivate(10->right, 15) // root = 21
+    21->left = RecursiveDeletePrivate(21->left, 15) // root = 15
+        root->15 : found our element-> return something ie 20
+ ```
+
+Therefore, the `21->left` call now has a value that it can be assigned:
+
+```cpp
+ //Recursive call stack:
+ 10->right = RecursiveDeletePrivate(10->right, 15) // root = 21
+    21->left = RecursiveDeletePrivate(21->left, 15) = 20
+ ```
+
+so our mini tree is:
+
+```
+
+     21
+    /
+  20 
+```
+
+and then that call returns back to give a value for `10->right`:
+
+```cpp
+ //Recursive call stack:
+ 10->right = RecursiveDeletePrivate(10->right, 15) = 21->left's result
+ ```
+
+so our mini tree now is:
+
+
+```
+   10
+     \
+     21
+    /
+  20 
+```
+
+at which point 10 returns by returning root on line 46 and our recursive call stack is empty. Notice how `15`'s old spot is now occupied by 20. The tree above only shows the links that we went through while we were going up our recursive call stack. All other nodes and their children remained untouched.  
+
+#### Delete node with two children 21:
+
+And finally the last case that could happen, delete node with 2 children, ie 21:
+
+```
+
+    10 ---> root
+   /  \
+  4   21
+     /  \
+    15  32
+     \
+     20
+``` 
+
+Again, let's go down the recursive call stack. Since 21 > 10, we go into the else if on line 7 and make the call to `Delete`:
+
+```cpp
+ //Recursive call stack:
+ 10->right = RecursiveDeletePrivate(10->right, 21) // root = 21
+   we've found our element, do something....
+ ```
+
+Our tree looks like this now:
+
+```
+
+    10 
+   /  \
+  4   21 ---> root
+     /  \
+    15  32
+     \
+     20
+``` 
+
+Next, we find that our `root->item == itemToDelete` so we fall into the else on line 9. Here, we fall all the way down to line 32 since our `root` has 2 children. So, wwe create a `temp` pointer and point to `root->right`:
+
+```
+
+    10 
+   /  \
+  4   21 ---> root
+     /  \
+    15  32 ---> temp
+     \
+     20
+``` 
+Next, we keep moving to the left child of `temp` until `temp->left == nullptr` which occurs on the very first iteration so we break out of the `while` loop. Next, we assign `temp`'s value to `root`:
+
+ ```
+ 
+     10 
+    /  \
+   4   32 ---> root
+      /  \
+     15  32 ---> temp
+      \
+      20
+ ``` 
+
+Now notice, we've got 2 nodes with the same value. We need to delete the node that temp is pointing to. Before we do that, let's remind ourselves what the recursive call stack looks like:
+
+```cpp
+ //Recursive call stack:
+ 10->right = RecursiveDeletePrivate(10->right, 21) // root = 21
+    we've found our element, do something....
+ ```
+
+Next, we make the following call: 
+
+```cpp
+root->right = RecursiveDeletePrivate(root->right, temp->item);
+```
+
+due to which our tree pointers look like this:
+
+
+ ```
+ 
+     10 
+    /  \
+   4   32 
+      /  \
+     15  32 ---> root
+      \
+      20
+ ``` 
+
+
+which adds this to our recursive call stack:
+
+```cpp
+ //Recursive call stack:
+ 10->right = RecursiveDeletePrivate(10->right, 32) // root = 21
+   32->right = RecursiveDeletePrivate(32->right, 32)
+ ```
+
+Ok, so we call `RecursiveDeletePrivate(32->right, 32)`. Here, we find that root actually points to the value we want to delete and, as a result, we immediately fall all the way down to line 11 and find that the root, now pointing to 32, has no children. Here, we delete `root`, point `root` to `nullptr` and return `root`.
+
+```cpp
+ //Recursive call stack:
+ 10->right = RecursiveDeletePrivate(10->right, 32) // root = 21
+   32->right = RecursiveDeletePrivate(32->right, 32) = nullptr
+ ```  
+So, our tree, due to this return looks like this:
+
+
+ ```
+    32
+      \
+     NULL 
+ ``` 
+
+and our call stack looks like this:
+
+```cpp
+ //Recursive call stack:
+ 10->right = RecursiveDeletePrivate(10->right, 32) = 32->right = nullptr
+ ```  
+at which point we add 32 and its `nullptr` right child back to 10->right:
+
+
+ ```
+   10
+    \
+     32
+      \
+      NULL 
+ ``` 
+We then return root.
+
+That's it!
