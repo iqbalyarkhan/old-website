@@ -37,6 +37,8 @@ tags:
 12. [Running time analysis](#running-time-analysis)
 
 13. [Trees as arrays](#trees-as-arrays)
+
+14. [Conclusion](#conclusion)
 ### Introduction
 
 In this post I'll talk about a data structure called Binary Search Tree. This post is related to my [binary search](/binary-search) post where we discussed the binary search algorithm. BSTs use a similar idea but allow us to store our data efficiently so that we don't have to iterate over an entire array to perform various operations on the data that we stored. We'll look at this in more detail as we go over the code.
@@ -1029,7 +1031,7 @@ $$$
 
 This holds true when the tree is full.
 
-# Trees as arrays
+### Trees as arrays
 
 A tree may also be represented as an array. It may not be too efficient if you have a sparse tree (where each level is not completely filled) since that may leave too many empty entries in the array. But if your tree is almost full at each level and you're mostly concerned with finds (deletes would require us to move entries in the array which would be time consuming), an array representation would be beneficial. 
 
@@ -1066,5 +1068,6 @@ $$$
 (index-1) / 2
 $$$
 
+### Conclusion
 
-    
+Binary search trees work well with randomized data where a node can have both left and right children. However, if our data is partially sorted, our tree may degenerate to a linked list. Think about what would happen if we insert numbers from 0 till 7 in a tree. Each node added would be the right child of its parent node. This would defeat the purpose of a binary search tree. In cases like these, we need to rebalance our tree so that we can take advantage of the $lgN$ properties of a tree. I'll talk more about balanced trees in my AVL tree post and red-black tree post. 
