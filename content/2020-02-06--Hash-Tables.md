@@ -65,7 +65,7 @@ Meaning that 36, should be placed in our array at index 4. Do so for each input 
 
 ### Collisions
 
-$^*$ Herein lies the catch with hash tables: if you have another value, say 20, and you pass it to your hash function. The hash function again returns the value 4 and you go to place 20 at index 4, you'll find that there already exists a value at that index. This is called a **collision**. Collisions are bound to happen when you're using a hash table. There are plenty of ways to address collisions:
+$^*$ Herein lies the catch with hash tables: if you have another value, say 20, and you pass it to your hash function. The hash function again returns the value 4 and you go to place 20 at index 4, you'll find that there already exists a value at that index. This is called a **collision**. Collisions are bound to happen when you're using a hash table. It is a good idea to have a set **load factor**: A value that determines when the hash table capacity needs to be increased. For example, if there are 1000 slots in the table and 750 are filled, you may want to double the size. In this case, load factor = 750/1000 = 0.75. In addition to doubling the size of your table, you can also use various techniques to address collisions:
 
 #### Separate Chaining 
 
@@ -163,5 +163,9 @@ void HashTable<T>::PrintTable(){
     }
 }
 ```
+
+### Conclusion
+
+Hash tables are an efficient data structure if you quickly want to store and retrieve items. However, there is some work that needs to be done on the developer's part to make sure that the function places values evenly across all available slots.
 
 
