@@ -1,7 +1,7 @@
 ---
 title: Hash Tables
 date: 2020-02-06
-draft: true
+draft: false
 extract: An analysis of hash table data structure
 categories: 
     - Data Structures
@@ -24,13 +24,9 @@ tags:
 
 4. [Delete](#delete)
 
-11. [Destructor](#destructor)
+5. [Code](#code)
 
-12. [Running time analysis](#running-time-analysis)
-
-13. [Trees as arrays](#trees-as-arrays)
-
-14. [Conclusion](#conclusion)
+5. [Conclusion](#conclusion)
 ### Introduction
 
 In this post I'll talk about a type data structure called hash table. Each data structure we've seen has offered some pros and cons and depending on your use case, you'd weigh those pros and cons and choose the relevant data structure. Similarly, hash tables have their pros and cons that make them suitable for certain scenarios and disadvantageous for others. Let's have a look at the properties of a hash table.
@@ -84,5 +80,88 @@ Using this technique, whenever a collision is encountered, we move on to the nex
 ### Delete
 
 Deleting from a hash table is simple if there were no collisions present. You can simply delete the entry from the hash table. However, if you're using some collision strategy such as separate chaining, you'd have to perform additional steps after each delete. For example, you'd have to move the first item from the list into the array so that the search function wouldn't falsely return that no value exists at that index. 
+
+
+### Code
+
+Let's have a look at a sample HashTable in C++. Example below uses separate chaining.
+
+```cpp{numberLines: true}
+template <typename T>
+class HashTable{
+private:
+    class Node{
+    public:
+        Node* next;
+        T item;
+    };
+    int size;
+    Node* root;
+    vector<Node*> table;
+    int HashFunction(T item);
+    
+public:
+    HashTable();
+    void Insert(T item);
+    void PrintTable();
+};
+
+template <typename T>
+HashTable<T>::HashTable(){
+    //Initializing our table with 10 null items
+    for (int i = 0; i < 10; i++){
+        table.push_back(nullptr);
+    }
+    size = int(table.size());
+}
+
+template <typename T>
+void HashTable<T>::Insert(T item){
+    //Getting position
+    int position = HashFunction(item);
+    //Creating a temp node
+    Node* temp = new Node;
+    temp->item = item;
+    temp->next = nullptr;
+    //Checking if collision
+    if (table[position] == nullptr){
+        //No collision, just add item
+        table[position] = temp;
+    } else {
+        //Collision..
+        Node* curr = table[position];
+        //Use separate chaining and append
+        //to end
+        while (curr->next != nullptr){
+            curr = curr->next;
+        }
+        curr->next = temp;
+    }
+}
+
+template <typename T>
+int HashTable<T>::HashFunction(T item){
+    //Simple modulus hash function
+    return (item % size);
+}
+
+template <typename T>
+void HashTable<T>::PrintTable(){
+    //Printing table for sanity check
+    for (int i = 0; i < size; i++){
+        if (table[i] != nullptr){
+            Node* curr = table[i];
+            cout << i << " --> ";
+            while (curr != nullptr){
+                cout << curr->data << " ";
+                curr = curr->next;
+            }
+            cout << endl;
+        } else {
+            cout << i << " --> " << "nullptr" << endl;
+        }
+    }
+}
+```
 
 
