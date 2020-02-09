@@ -16,21 +16,13 @@ tags:
 
 2. [Structure](#structure)
 
-3. [Constructor](#constructor)
+3. [Collisions](#collisions)
 
-4. [Insert](#insert)
+    * [Separate Chaining](#separate-chaining)
+    
+    * [Linear Probing](#linear-probing)
 
-5. [Recursive Insert](#recursive-insert)
-
-6. [Traversal](#traversal)
-
-7. [Find](#find)
-
-8. [Max](#max)
-
-9. [Min](#min)
-
-10. [Delete](#delete)
+4. [Delete](#delete)
 
 11. [Destructor](#destructor)
 
@@ -41,11 +33,11 @@ tags:
 14. [Conclusion](#conclusion)
 ### Introduction
 
-In this post I'll talk about a type data structure called hash table. Staying true to our theme so far, each data structure we've seen has offered some pros and cons and depending on your use case, you'd weigh those pros and cons and choose the relevant data structure. Similarly, hash tables have their pros and cons that make them suitable for certain scenarios and disadvantageous for others. Let's have a look at the properties of a hash table.
+In this post I'll talk about a type data structure called hash table. Each data structure we've seen has offered some pros and cons and depending on your use case, you'd weigh those pros and cons and choose the relevant data structure. Similarly, hash tables have their pros and cons that make them suitable for certain scenarios and disadvantageous for others. Let's have a look at the properties of a hash table.
 
 Hash tables offer very fast insertion and deletion. No matter how many items there are$^*$, hash tables offer $O(1)$ insert, search and deletion. That sounds too good to be true! It is because in some cases this might not hold however hash tables do offer faster lookup, insert and delete than tree data structures. 
 
-On the other hand, hash tables are built on top of arrays and as we know, expanding the capacity of an array is expensive once it has been intialized. Additionally, hash tables are not ideal when you need to access/visit items in an order.
+On the other hand, hash tables are built on top of arrays and as we know, expanding the capacity of an array is expensive once it has been initialized. Additionally, hash tables are not ideal when you need to access/visit items in an order.
 
 In short, if you have a fairly good idea of how many elements you're going to be adding to your table in advance and do not need to access items in a particular order (for example smallest to largest), then hash tables are the way to go!
 
@@ -73,5 +65,24 @@ Meaning that 36, should be placed in our array at index 4. Do so for each input 
 
 
 ![Array-Structure-With-Hash-Function](images/hashtables/hash2.png) [Image Credit](https://cse.iitkgp.ac.in/~wbcm/wbcm/assignment/public/cs290032015s/asgn12/common/)
+
+
+### Collisions
+
+$^*$ Herein lies the catch with hash tables: if you have another value, say 20, and you pass it to your hash function. The hash function again returns the value 4 and you go to place 20 at index 4, you'll find that there already exists a value at that index. This is called a **collision**. Collisions are bound to happen when you're using a hash table. There are plenty of ways to address collisions:
+
+#### Separate Chaining 
+
+Using this technique, whenever you get a collision, you create a linked list and keep appending to that list for each collision. Ofcourse, if a horrible hash function is used, you degenerate the $O(1)$ time to $O(N)$ where all entries end up at the same array index.
+
+![Separate-Chaining](images/hashtables/separatechaining.png) [Image Credit for Separate Chaining](https://en.wikipedia.org/wiki/Hash_table#Separate_chaining)
+
+#### Linear Probing
+
+Using this technique, whenever a collision is encountered, we move on to the next open space in the array and place the item there. To find the next open space, we proceed linearly. For example, if a new entry needs to go to index 4 and it is occupied, we look at index 5, then index 6 and so on, until we find an empty slot. 
+
+### Delete
+
+Deleting from a hash table is simple if there were no collisions present. You can simply delete the entry from the hash table. However, if you're using some collision strategy such as separate chaining, you'd have to perform additional steps after each delete. For example, you'd have to move the first item from the list into the array so that the search function wouldn't falsely return that no value exists at that index. 
 
 
