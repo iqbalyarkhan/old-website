@@ -14,6 +14,7 @@ tags:
 2. [String Streams](#string-streams)
     * [String to int and back](#int-to-string-and-back)
 
+3. [Declaring a generic object](#declaring-a-generic-object)
 ### Reading numbers separated by whitespace
 
 Say input is:
@@ -112,4 +113,15 @@ Example:
         cout << "num + 1 = " << num + 1 << endl;
         return num;
     }
+```
+
+### Declaring a generic object
+
+If you've got a class that is generic and want to initialize a generic object for some reason in that class, use the following syntax:
+```cpp
+//T is the generic type here:
+Vertex<T> v = T();
+//You can do the same for ints, strings,chars,bools etc:
+int t = int();
+bool t = bool(); //and so on...
 ```
