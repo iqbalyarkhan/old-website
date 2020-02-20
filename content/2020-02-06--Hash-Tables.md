@@ -239,13 +239,14 @@ int main(int argc, const char * argv[]) {
 - You can find more about unordered_set [here](https://en.cppreference.com/w/cpp/container/unordered_set)
 
 ```cpp{numberLines}
-// Creating an unoredered_set of int
-std::unordered_set<int> setOfNum;
- 
-// Inserting few elements in set
-setOfNum.insert(2);
-setOfNum.insert(6);
-setOfNum.insert(1);
+unordered_set<string> names;
+names.insert("James");
+names.insert("Bond");
+
+auto itr = names.find("James");
+if (itr != names.end()){
+    cout << "Found it! " << *itr << endl; // Prints James
+}
 ```
  
  
