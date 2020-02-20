@@ -182,7 +182,7 @@ The C++ STL has two associative containers that use a hash table behind the scen
 
 - Just like other containers, you'd have to define an iterator to search using the `find()` function.
 
-- You can find more about unordered_map [here](https://en.cppreference.com/w/cpp/container/unordered_map)
+- You can find more about unordered_map here: [https://en.cppreference.com/w/cpp/container/unordered_map]
 
 ```cpp{numberLines: true}
 #include <iostream>
@@ -236,7 +236,7 @@ int main(int argc, const char * argv[]) {
 
 - Just like other containers, you'd have to define an iterator to search using the `find()` function.
 
-- You can find more about unordered_set [here](https://en.cppreference.com/w/cpp/container/unordered_set)
+- You can find more about unordered_set here: [https://en.cppreference.com/w/cpp/container/unordered_set]
 
 ```cpp{numberLines}
 unordered_set<string> names;
