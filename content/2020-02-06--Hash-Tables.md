@@ -26,6 +26,10 @@ tags:
 
 5. [Code](#code)
 
+6. [STL Hash Table](#stl-hash-table)
+
+    * [Unordered Map](#unordered-map)
+
 5. [Conclusion](#conclusion)
 ### Introduction
 
@@ -164,6 +168,63 @@ void HashTable<T>::PrintTable(){
 }
 ```
 
+### STL Hash Table
+
+The C++ STL has two associative containers that use a hash table behind the scenes:
+
+#### Unordered Map
+
+- `unordered_map` is an associative container that contains key value pairs with unique keys. Since a hashtable is used to implement it, search, delete and insert are done in $O(1)$ time. Just like the properties of hash tables mentioned above, there is no particular order to the elements stored in an `unordered_map`. Each key is stored in a bucket based on the hashed value determined by the hash function.
+
+- Collisions are not handled by `unordered_map`: if there are 2 equivalent keys, the new key will overwrite the old key.
+
+- Just like other containers, you'd have to define an iterator to search using the `find()` function.
+
+- You can find more about unordered_map [here](https://en.cppreference.com/w/cpp/container/unordered_map)
+
+```cpp{numberLines: true}
+#include <iostream>
+#include <unordered_map>
+#include <string>
+#include <stdio.h>
+
+int main(int argc, const char * argv[]) {
+    unordered_map<string, string> months;
+    //Adding elements to our map
+    months["1"] = "January";
+    months["2"] = "February";
+    months["3"] = "March";
+    months["4"] = "April";
+    months["5"] = "May";
+    //Looking to see if an element is in
+    //the map:
+    while (true){
+        cout << "Enter string you're looking for or press q to quit: " << endl;
+        string input;
+        cin >> input;
+        if (input == "q"){
+            break;
+        }
+        //Initializing an iterator
+        unordered_map<string, string>::iterator itr = months.find(input);
+        //If itr is not at end of unordered_map
+        if (itr != months.end()){
+            //Means item found: print it
+            cout << "Found: " << itr->first << " --> " << itr->second << endl;
+        } else {
+            cout << input << " key not found." << endl;
+        }
+    }
+    //Iterating over all elements in the hash table.
+    for (auto &m : months){
+        cout <<"Month number " <<m.first << " is " << m.second << endl;
+    }
+    
+    return 0;
+}
+```
+ 
+ 
 ### Conclusion
 
 Hash tables are an efficient data structure if you quickly want to store and retrieve items. However, there is some work that needs to be done on the developer's part to make sure that the function places values evenly across all available slots.
