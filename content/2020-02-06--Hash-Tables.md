@@ -29,6 +29,8 @@ tags:
 6. [STL Hash Table](#stl-hash-table)
 
     * [Unordered Map](#unordered-map)
+    
+    * [Unordered Set](#unordered-set)
 
 5. [Conclusion](#conclusion)
 ### Introduction
@@ -222,6 +224,28 @@ int main(int argc, const char * argv[]) {
     
     return 0;
 }
+```
+
+#### Unordered Set
+
+- `unordered_map` is an associative container that contains unique objects of type key. Since a hashtable is used to implement it, search, delete and insert are done in $O(1)$ time. Just like the properties of hash tables mentioned above, there is no particular order to the elements stored in an `unordered_set`. Each key is stored in a bucket based on the hashed value determined by the hash function.
+
+- Collisions are not handled by `unordered_set` either
+
+- To insert elements, you'd use the `insert()` function
+
+- Just like other containers, you'd have to define an iterator to search using the `find()` function.
+
+- You can find more about unordered_set [here](https://en.cppreference.com/w/cpp/container/unordered_set)
+
+```cpp{numberLines}
+// Creating an unoredered_set of int
+std::unordered_set<int> setOfNum;
+ 
+// Inserting few elements in set
+setOfNum.insert(2);
+setOfNum.insert(6);
+setOfNum.insert(1);
 ```
  
  
