@@ -17,6 +17,8 @@ tags:
 3. [Declaring a generic object](#declaring-a-generic-object)
 
 4. [STL unordered_set](#stl-unordered-set)
+
+5. [STL stack](#stl-stack)
 ### Reading numbers separated by whitespace
 
 Say input is:
@@ -156,3 +158,37 @@ if (search != s.end()){
 
 Unordered_set uses [hash table](hash-tables) therefore lookup,insert and deletes would take $O(1)$ time.
 
+### STL Stack
+
+Defined in the 
+```cpp 
+#include <stack>
+``` 
+header, you can push on the stack using ```cpp .push() ``` function. You might think that calling the `.pop()` function would return the element that can be captured in a variable, that is not the case:
+
+```cpp
+stack<int> s;
+s.push(2);
+s.push(3);
+s.push(4);
+int curr = s.pop(); //ERROR -> SINCE POP RETURNS TYPE VOID
+``` 
+
+To get the value that is at the top, use `top()` function and then use `.pop()` to remove the top element:
+
+```cpp
+stack<int> s;
+s.push(2);
+s.push(3);
+s.push(4);
+int curr = s.top(); //Returns top element = 4
+s.pop(); //Stack no longer contains 4.
+``` 
+
+### STL Queue
+
+Defined in the 
+```cpp 
+#include <queue>
+``` 
+header, the queue stl container uses the `.front()` method to get the item at the front of the queue and `.pop()` method actually removes the item in the front of the queue.
