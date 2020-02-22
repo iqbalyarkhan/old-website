@@ -15,6 +15,8 @@ tags:
     * [String to int and back](#int-to-string-and-back)
 
 3. [Declaring a generic object](#declaring-a-generic-object)
+
+4. [STL unordered_set](#stl-unordered-set)
 ### Reading numbers separated by whitespace
 
 Say input is:
@@ -125,3 +127,32 @@ Vertex<T> v = T();
 int t = int();
 bool t = bool(); //and so on...
 ```
+
+### STL Unordered Set
+
+To use the unordered set, you'd include this header: 
+```cpp 
+#include <unoredered_set>
+```
+
+Then declare an unordered set and  insert:
+
+```cpp
+unordered_set<string> s;
+s.insert("string one");
+```
+
+To check if the set contains an element:
+
+
+```cpp
+auto search = s.find("steing one");
+if (search != s.end()){
+   cout << "Found item in set" << endl;
+} else {
+    cout << "Couldn't find item in set" << endl;
+}
+```
+
+Unordered_set uses [hash table](hash-tables) therefore lookup,insert and deletes would take $O(1)$ time.
+
