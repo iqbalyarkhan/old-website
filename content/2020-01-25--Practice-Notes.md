@@ -19,6 +19,8 @@ tags:
 4. [STL unordered_set](#stl-unordered-set)
 
 5. [STL stack](#stl-stack)
+
+6. [Erase from vectors](#erase-from-vectors)
 ### Reading numbers separated by whitespace
 
 Say input is:
@@ -192,3 +194,47 @@ Defined in the
 #include <queue>
 ``` 
 header, the queue stl container uses the `.front()` method to get the item at the front of the queue and `.pop()` method actually removes the item in the front of the queue.
+
+
+### Erase From Vectors
+
+Since erasing an element from a vector invalidates the iterator, we can't just iterate and erase:
+
+```cpp
+    for (int i = 0; i < vectorSize; i++){
+        auto itr = myVec.begin();
+        while (itr != myVec.end()){
+            if (*itr == v){
+                itr = myVec.erase(itr);
+            } else {
+                itr++;
+            }
+        }
+    }
+```
+
+Here, we iterate over each element and check to see if its value is the one we're looking to delete. If so, we delete and move on to the next iteration.
+We do not increment the iterator because once the element is deleted, the elements in the vector are moved one place to the left. Say itr is at index 4 (ie pointing to 2) and we want to delete 2: 
+
+```
+       itr
+        |
+4 8 6 3 2 9 5 4
+0 1 2 3 4 5 6 7
+```
+
+We call erase and 2 is deleted and elements to the right of 2 are all moved to the left one position and vector size is decreased by 1:
+
+```
+       itr
+        |
+4 8 6 3 9 5 4
+0 1 2 3 4 5 6 
+```
+
+Notice how itr is now automatically pointing to the next element over. `erase()` returns the modified iterator that we need to capture hence the line:
+```cpp
+itr = myVec.erase(itr);
+```
+
+We can then continue processing our vector.
