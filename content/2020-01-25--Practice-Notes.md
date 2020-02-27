@@ -187,6 +187,16 @@ int curr = s.top(); //Returns top element = 4
 s.pop(); //Stack no longer contains 4.
 ``` 
 
+To print all elements in a stack while popping:
+
+```cpp
+while (!s.empty()) {
+      int curr = s.top();
+      cout << curr;
+      s.pop();
+ }
+```
+You can't use `.size()` because the size changes every time you `pop`. So if you have 4 elements and you want to print all using a for loop, it'll only print the first 2 elements.
 ### STL Queue
 
 Defined in the 
@@ -198,7 +208,7 @@ header, the queue stl container uses the `.front()` method to get the item at th
 
 ### Erase From Vectors
 
-Since erasing an element from a vector invalidates the iterator, we can't just iterate and erase:
+Since erasing an element from a vector invalidates the iterator, we can't just iterate and erase. We have to use `std::iterator`:
 
 ```cpp
     for (int i = 0; i < vectorSize; i++){
