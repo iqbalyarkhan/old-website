@@ -20,7 +20,11 @@ tags:
 
 5. [STL stack](#stl-stack)
 
-6. [Erase from vectors](#erase-from-vectors)
+6. [Vectors](#vectors)
+
+    * [Erase from vectors](#erase-from-vectors)
+    
+    * [Vector of vectors](#vector-of-vectors)
 ### Reading numbers separated by whitespace
 
 Say input is:
@@ -205,8 +209,15 @@ Defined in the
 ``` 
 header, the queue stl container uses the `.front()` method to get the item at the front of the queue and `.pop()` method actually removes the item in the front of the queue.
 
+### Vectors
 
-### Erase From Vectors
+#### Initialize a vector
+
+```cpp
+vector<int> v(5); //[0,0,0,0,0]
+```
+
+#### Erase From Vectors
 
 Since erasing an element from a vector invalidates the iterator, we can't just iterate and erase. We have to use `std::iterator`:
 
@@ -248,3 +259,9 @@ itr = myVec.erase(itr);
 ```
 
 We can then continue processing our vector.
+
+#### Vector of vectors
+
+```cpp
+vector<vector<int>> adjList;
+```
