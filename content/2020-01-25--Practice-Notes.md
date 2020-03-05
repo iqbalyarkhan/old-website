@@ -22,6 +22,8 @@ tags:
 
 6. [Vectors](#vectors)
 
+    * [Initialize a vector](#initialize-a-vector)
+
     * [Erase from vectors](#erase-from-vectors)
     
     * [Vector of vectors](#vector-of-vectors)
@@ -215,6 +217,7 @@ header, the queue stl container uses the `.front()` method to get the item at th
 
 ```cpp
 vector<int> v(5); //[0,0,0,0,0]
+vector<int> v(5, -1); //[-1,-1,-1,-1,-1]
 ```
 
 #### Erase From Vectors
