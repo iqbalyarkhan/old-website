@@ -53,7 +53,39 @@ and we call DFS starting at vertex `0`, then 0 would find that `1` is unvisited 
 
 To keep track of the parent we'd have to modify the signature of our `DFS` function so that we can pass parent to each recursive call.
 
-Why does this work? It works because if there is a cycle, there has to be a back edge between two edges. In our graph above, the back edge is the edge connecting vertices 4 and 5. 
+Why does this work? It works because if there is a cycle, there has to be a back edge between two edges. In our graph above, the back edge is the edge connecting vertices 4 and 5. Let's have a look at the graph again to better understand why this works. 
+
+Assume we've visited nodes 0 - 4 and the visited nodes are marked in red. Now, we're considering 4's adjacency list and about to make DFS calls based off it:
+
+![Undirected-Graph-1](images/cycledetection/example_visited_1.png) [Image Credit - Cycle Graph 2](https://graphonline.ru/en/)
+
+At this point, 4 was called from vertex 2 so 2 is the parent here. This is 4's adjacency list:
+
+```css
+4 -> 2 -> 5 -> 6
+```
+We pick 2 and see it has already been visited and check to see if 2 is 4's parent which it is so we move on to the next element. Next we find 5 and see it has not been visited so we mark it as visited and call DFS again but this time with vertex as 5 and parent as 4:
+
+
+![Undirected-Graph-1](images/cycledetection/example_visited_2.png) [Image Credit - Cycle Graph 3](https://graphonline.ru/en/)
+
+Again we look in 5's adjacency list:
+
+```css
+5 -> 4 -> 6
+```
+
+and find 4. 4 is already visited and is the parent so we move on to the next vertex in the list. Next we find 6, 6 is not visited so we call DFS with 6 as the vertex and 5 as the parent:
+
+![Undirected-Graph-1](images/cycledetection/example_visited_3.png) [Image Credit - Cycle Graph 4](https://graphonline.ru/en/)
+
+For vertex 6, we find this adjacency list:
+
+```css
+6 -> 4 -> 5 
+```
+
+and we choose the first vertex in the list which is 4. We find that 4 is already visited BUT this time, we also find that 4, even though is visited, it is NOT the parent vertex. We've found a link to the grandparent (in terms of recursive calls). We have a cycle. This check for parent is necessary for undirected graphs because the current vertex's parent is already visited because we got to the current vertex through its parent. We're only interested in the vertex if the visited vertex is NOT the parent which was true for the last case above. 
 
 ### Code
 
@@ -85,7 +117,7 @@ void AdjList::CycleDFS(int v, int parent){
 }
 ```
 
-We've got a helper function that calls `CycleDFS()` initially with vertex 0 and parent as -1 since vertex 0 has no parent. We continue calling the function and marking the `visited` array. At one point, we reach the point where we process vertex 6 and it is called by vertex 5 (5 is the parent). At this point, we find 4 in 6's adjacency list which has already been visited (we reached 5 via 4 so 4 has already been visited). We check to see if neighbor, which is 4, is not equal to the parent, which is 5. The neighbor is indeed not equal to the parent and we have a cycle.
+We've got a helper function that calls `CycleDFS()` initially with vertex 0 and parent as -1 since vertex 0 has no parent. We continue calling the function and marking the `visited` array. At one point, we reach the case where we process vertex 6 and it is called by vertex 5 (5 is the parent). At this point, we find 4 in 6's adjacency list which has already been visited (we reached 5 via 4 so 4 has already been visited). We check to see if neighbor, which is 4, is not equal to the parent, which is 5. The neighbor is indeed not equal to the parent and we have a cycle.
 
 ### Resources
 
