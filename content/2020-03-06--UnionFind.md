@@ -1,20 +1,21 @@
 ---
 title: Union Find
 date: 2020-03-06
-draft: false
+draft: true
 extract: Union Find
 categories: 
+    - Algorithms
     - C++
 tags:
   - C++
-  - Pointers
+  - Algorithms
 ---
 
 ### Table of Contents
 
 1. [Introduction](#introduction)
 
-2. [Pointers](#pointers)
+2. [Setup](#setup)
 
 3. [Pointer to Pointer](#pointer-to-pointer)
 
@@ -23,232 +24,53 @@ tags:
 
 ### Introduction
 
-In this post I'll talk about a fundamental data type in C++ called pointers. To understand pointers in C++, we must understand how a program makes use of memory in C++. Each byte of memory in a computer has a unique address associated with it that increases as we move along. If our first byte has address 201, the next byte would have address 202. A boolean variable is saved in 1 byte of memory, so a boolean can occupy the address 201:
+In this post I'll talk about an alogrithm called the union find algorithm. Union find can be used to figure out whether two elements belong to the same set. This set could represent a network of connected computers and you want to know whether two components in this network are connected. Before we dive in, let's define what it means to be connected. **Connected** can be thought of as an equivalence relation:
+
+- Reflexive: $A$ is connected to itself.
+- Symmetric: If $A$ is connected to $B$, it also means that $B$ is connected to $A$.
+- Transitive: If $A$ is connected to $B$, and $B$ is connected to $C$ then $A$ is connected to $C$.
  
- ```
 
-bool b;
-int i;
+### Setup
 
-    b  |---- i -------|
-    __  __  __  __  __  __  __  
-    201 202 203 204 205 206 207
-<--                           -->
+Before we begin, we need to create a bijection (or a one to one mapping) that translates a computer name to an integer value. This integer will be in the range $[0, N)$ where $N$ is the total number of computers in the network. Once we have this mapping, we can represent these computers using the assigned integer values. Now, we're ready to manipulate these integers. Before we can do that, we need to store our integers in an array since we need some sort of association among the objects themselves. Remember our aim is to figure out whether two objects are connected. Initially, each of our components is disconnected from every other component. So this is what our array looks like with say 10 components:
+
 ```
- 
- 
- Usually, an integer variable takes up 4 bytes of memory. So, if we declare an int, it can be saved at address 202-205. To remember where these variables are saved, a computer has a lookup table that would have 2 entries: `bool b 201` and `int i 202`. When these variables are initialized, their binary representation take up the allocated bytes in memory.
- 
- How do we access or operate on the addresses of these variables? To do so, we use pointers:
- 
- ### Pointers
- 
- A pointer is a variable that stores the address of another variable. Let's say, we've got this memory diagram so far:
- 
-  ```
- 
- bool b = false;
- int i = 5;
- 
-     0  |---- 5 -------|
-     __  __  __  __  __  __  __  
-     201 202 203 204 205 206 207
- <--                           -->
- ```
 
-At address 201, we've got a boolean variable stored and at addresses 202-205 we've got an integer saved. Let's say we declare a pointer to an integer:
+0 1 2 3 4 5 6 7 8 9
 
+```
+We want to manipulate our array in such a way that we'd be able to answer questions such as:
+
+- Is the information represented in the structure correctly depict the connections?
+- Can we `union()` items - ie connect two components?
+- Can we `find()` the component number for the given component?
+- Can we tell if two components are `connected()`?
+- Finally, can we get the `count()` of the number of components present? 
+
+### Union
+
+Ok, so we've got our array setup where each element is disconnected fom every other component. So, initially, the number of components in our structures equals the number of ojects (10 in our example). Let's say we want to union 2 objects by calling the`union(int p, int q)` function. Say, we call union like so: 
 ```cpp
-int* p;
+union(4, 3)
 ```
 
-This syntax means that `p is a pointer to an integer`. Next, we need to initialize `p` to some value. Since pointers store addresses, we need to save the address of an integer in this variable `p`:
-
+In doing so, we make one element the child (or parent) of the other. The choice I made is arbitrary so I chose this convention: 
 ```cpp
-bool b = false;
-int i = 5;
-int* p;
-p = &i;
+union(p,q)
+``` 
+would mean make `q` the child of `p`. So, if we perform $union(4,3)$, we make $3$ the child of $4$:
+
 ```
-
-Now, `p` stores the address of integer i (`&` is the `address of` operator). Let's say our pointer is stored at address 207-210 (pointers also need space to be stored just like an int, bool or char would):
-
-  ```
+0 1 2 4 5 6 7 8 9
+      |
+      3
+```
  
-bool b = false;
-int i = 5;
-int* p;
-p = &i;
- 
-     0  |---- 5 -------|     |------ p ----|
-     __  __  __  __  __  __  __  __  __  __   
-     201 202 203 204 205 206 207 208 209 210
- <--                                         -->
- ```
-
-Since `p` is holding the address of an integer, our memory diagram would look like this:
-
-  ```
- 
-bool b = false;
-int i = 5;
-int* p;
-p = &i;
- 
-     0  |---- 5 -------|     |----- 202 ---|
-     __  __  __  __  __  __  __  __  __  __   
-     201 202 203 204 205 206 207 208 209 210
- <--                                         -->
- ```
-
-If you print p, you'd get the address stored in p:
-
-```cpp
- 
-bool b = false;
-int i = 5;
-int* p;
-p = &i;
-cout << p << endl; //prints 202
-```
-
-To get to the actual value in `p`, you'd have to dereference p:
-
-```cpp
- 
-bool b = false;
-int i = 5;
-int* p;
-p = &i;
-cout << p << endl; //prints 202
-cout << *p << endl; //prints 5
-cout << &p << endl; //prints 207
-```
-
-You can also change the value being pointed to by `p`:
-
-```cpp
- 
-bool b = false;
-int i = 5;
-int* p;
-p = &i;
-*p = 10; //Changing 5 to 10
-cout << p << endl; //prints 202
-cout << *p << endl; //prints 10
-cout << &p << endl; //prints 207
-```
-
-### Pointer to Pointer
-
-If you really want to get fancy, you can have a pointer to pointer as well. This means that we can have a pointer that stores the address of another pointer:
+Now, to represent this in our array, we'll replace `array[q]` with the value `p` because `p` is 4. Once we do this, our array looks like this:
 
 ```
-int i = 5;
-int* p;
-p = &i;
- 
-        |---- 5 -------|     |------ p ----|
-     __  __  __  __  __  __  __  __  __  __   
-     201 202 203 204 205 206 207 208 209 210
- <--                                         -->
- ```
-
-Let's say, we have a pointer to a pointer called `q`, that'll store the address of p. To declare `q`, we use this syntax: `int** q;`: 
-
+     arr[3]'s parent is 4
+      |
+0 1 2 4 4 5 6 7 8 9
 ```
-int i = 5;
-int* p;
-p = &i;
-int** q;
-q = &p;
- 
-        |---- 5 -------|     |------ p ----|
-     __  __  __  __  __  __  __  __  __  __   
-     201 202 203 204 205 206 207 208 209 210
- <--                                         -->
- ```
-
-So, now, if `q` is stored at address 220, this is what our memory diagram would look like:
-
-
-```
-int i = 5;
-int* p;
-p = &i;
-int** q;
-q = &p;
- 
-        |---- 5 -------|     |-- p = 202 --|              |-- q = 207 --|  
-     __  __  __  __  __  __  __  __  __  __  __  __ ..... __  __  __  __  __    
-     201 202 203 204 205 206 207 208 209 210 211 212 .... 220 221 222 223 224 
- <--                                         -->
- ```
-
-So here is what we have now:
-- `int i`
-- pointer to int `p`: `int* p`
-- pointer to pointer to an int: `q`: `int** q`
-
-### Heap
-
-In C++, you can create dynamic memory using the `new` keyword and access it via a pointer. For example, let's say we've got an integer pointer:
-
-```cpp
-int* arr;
-```
-
-`foo` needs to point to the address of an integer. We can declare an array of integers and have `foo` point to the first element in that array. It is technically correct to do so since we're saving the address of the first integer in that array in our `foo` variable. To do so, we need to declare this new dynamically allocated array using the `new` keyword. Unlike static arrays, size of a dynamic array can be declare at run time:
-
-```cpp
-int* arr;
-arr = new int[5];
-```
-What we've done here is that we've asked the `new` operator to reserve a block of contiguous memory on the heap equal to the size of 5 integers. Then, return the address of the start of that block. We then capture that address in our variable called `arr`. Our memory diagram would look like this:
-
-```
-
-___ ___ ___ ___ ___ 
- |
-arr 
-
-```
-
-We can then access each element of the array like so:
-
-```cpp
-int* arr;
-arr = new int[5];
-arr[0] = 1;
-arr[1] = 2;
-arr[2] = 3;
-arr[3] = 4;
-arr[4] = 5;
-for (int i = 0; i < 5; i++)
-    cout << arr[i] << " ";
-```
-
-`arr[0]` would access the first dynamically allocated integer spot in the array and so on. Saying `arr[0]` is the same as saying `*(arr)`, `arr[1]` is the same as saying `*(arr + 1)` and so on. Incase your `new` operator call is not able to find memory on heap for some reason, you can catch it like so:
-
-```cpp
-char* c = new (std::nothrow) char[100];
-if (!c) {
-  // Handle error...
-} else {
-  // Do something with the new memory...
-}
-```
-
-Once done with the array, we'd have to explicitly call the `delete` function on it:
-
-
-```cpp
-int* foo;
-foo = new int[5];
-// do something with the array,
-// then delete it:
-delete[] foo;
-```
-
-  
-
