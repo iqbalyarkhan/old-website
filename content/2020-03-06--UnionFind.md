@@ -2,13 +2,13 @@
 title: Union Find
 date: 2020-03-06
 draft: true
-extract: Union Find
+extract: Analysis of the Union Find algorithm
 categories: 
-    - Algorithms
+    - General Algorithms
     - C++
 tags:
   - C++
-  - Algorithms
+  - General Algorithms
 ---
 
 ### Table of Contents
