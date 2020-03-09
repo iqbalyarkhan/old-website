@@ -18,6 +18,10 @@ tags:
 
 4. [STL unordered_set](#stl-unordered-set)
 
+5. [STL Map](#stl-map)
+
+6. [STL Unordered Map](#stl-unordered-map)
+
 5. [STL stack](#stl-stack)
 
 6. [Vectors](#vectors)
@@ -142,7 +146,7 @@ bool t = bool(); //and so on...
 
 To use the unordered set, you'd include this header: 
 ```cpp 
-#include <unoredered_set>
+#include <unordered_set>
 ```
 
 Then declare an unordered set and  insert:
@@ -164,7 +168,88 @@ if (search != s.end()){
 }
 ```
 
-Unordered_set uses [hash table](hash-tables) therefore lookup,insert and deletes would take $O(1)$ time.
+Unordered_set uses [hash table](/hash-tables) therefore lookup,insert and deletes would take $O(1)$ time.
+
+### STL Map
+In a map, the elements are sorted by key and lookup is $O(log N)$ as the standard library uses balanced trees behind the scenes. Ordered map is defined in the
+
+```cpp
+#include <map>
+```
+
+header. Once defined, you can declare a map with data type and populate it like so:
+
+```cpp
+map<string, int> m;
+m["one"] = 1;
+m["two"] = 2;
+m["3"] = 3;
+m["four"] = 4;
+```
+
+To check if key exists:
+
+```cpp
+if (m.find("four") != m.end()){
+   cout << "Found it!" << endl;
+}
+```
+To print use the `auto` keyword:
+
+```cpp
+//print the map:
+for (auto i: m){
+    cout << "Key: " << i.first << " Value: " << i.second << endl;
+}
+```
+
+Output would be printed in sorted order based on key:
+
+```
+Key: four Value: 4
+Key: one Value: 1
+Key: three Value: 3
+Key: two Value: 2
+```
+
+
+### STL Unordered Map
+
+Defined in the 
+```cpp
+#include <unordered_map>
+```
+header, `unordered_map` uses hash table behind the scenes for $O(1)$ insert, find and delete operations. Similar to `map`, here is the syntax for insert, find and print:
+
+```cpp
+int main(){
+    unordered_map<string, int> m;
+    m["one"] = 1;
+    m["two"] = 2;
+    m["three"] = 3;
+    m["four"] = 4;
+    
+    if (m.find("four") != m.end()){
+        cout << m["four"] << endl;
+    } else{
+        cout << "not found" << endl;
+    }
+    
+    for (auto i : m){
+        cout <<i.first << " -> " << i.second << endl;
+    }
+}
+```
+
+Only difference here is that the output will not be in sorted order:
+
+```css
+4
+four -> 4
+three -> 3
+two -> 2
+one -> 1
+```
 
 ### STL Stack
 
