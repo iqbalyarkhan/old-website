@@ -1,8 +1,8 @@
 ---
-title: Graphs
+title: Undirected Graphs
 date: 2020-02-14
 draft: false
-extract: An analysis of graphs
+extract: An analysis of undirected graphs
 categories: 
     - Data Structures
 tags:
@@ -47,7 +47,7 @@ tags:
 
 ### Introduction
 
-In this post I'll talk about a type data structure called graph. We've already seen a type of a graph: binary search tree. Graphs can be used to model your data depending on the type of problem you have. Graphs do not have a rigid, well defined shape (unlike trees) and can be created to solve the problem at hand.
+In this post I'll talk about a type data structure called graph (particularly undirected graphs). We've already seen a type of a graph: binary search tree. Graphs can be used to model your data depending on the type of problem you have. Graphs do not have a rigid, well defined shape (unlike trees) and can be created to solve the problem at hand.
 
 ### Definitions
 
