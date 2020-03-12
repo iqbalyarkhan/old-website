@@ -1,7 +1,7 @@
 ---
 title: Topological Sort
 date: 2020-03-12
-draft: true
+draft: false
 extract: Analysis of topological sort algorithm
 categories: 
     - Sorting Algorithms
@@ -44,4 +44,28 @@ Notice how we take the introductory courses first and then proceed to more advan
 ABCFDEGH
 ```
 
-Creating this course plan from the possible courses directed graph requires the use of topological sort.
+Creating this course plan from possible courses' directed graph requires the use of topological sort. So think about the problem: we start our academic careers by signing up for classes that have no pre-reqs. In our graph, these classes are labelled A,B and C. Next, we're eligible to sign up for classes that come immediately AFTER those intro classes: D,E or F and the process continues until we graduate! 
+
+So the idea is to start with the vertex that has no arrows going into it: no incoming edges. That would mean, these vertices are our starting point and then we'd have to somehow iterate over all the connected edges from these starting vertices. This iteration can be done using either [depth first search](/directed-graphs#depth-first-search) or you can also use breadth first search.
+
+Before we start operating on our digraph, let's convert it to its integer representation and have a look at its adjacency list as well:
+
+In the image below, all we've done is replace vertices labelled A-H to 0-7:
+![Topological-Sort-Image-2](images/topologicalsort/topologicalsort_2.png)
+
+The corresponding adjacency list would be:
+
+```
+0 -> 3 -> 4
+1 -> 4
+2 -> 5
+3 -> 6
+4 -> 6
+5 -> 7
+6 -> 7
+7
+```
+
+Ok,so if we run [digraph dfs](/directed-graphs#depth-first-search) on this graph, we'd get this output:
+
+
