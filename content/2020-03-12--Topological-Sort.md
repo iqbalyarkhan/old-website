@@ -22,7 +22,7 @@ tags:
 
 5. [Explanation](#explanation)
 
-5. [Resource](#resources)
+5. [Conclusion](#conclusion)
 
 In this post, I'll assume you have sufficient directed graph knowledge. If not, feel free to browse through my post on [directed graphs](/directed-graphs).
 
@@ -201,3 +201,342 @@ void Digraph::RecursiveDFS(int v){
 
  Let's look at how having `reversePost` in that position and using a stack allows us to get a topologically sorted order of vertices:
  
+ From the explanations earlier, it is clear that we want to start our academic career by taking a class that has no pre-requisites. Let's examine the vertices of our graph:
+ 
+ 
+![Topological-Sort-Image-2](images/topologicalsort/topologicalsort_2.png)
+
+which is represented by this adjacency list:
+
+```
+0 -> 3 -> 4
+1 -> 4
+2 -> 5
+3 -> 6
+4 -> 6
+5 -> 7
+6 -> 7
+7
+```
+
+It is clear that we want to end at 7 (where 7 = degree attained). We can start with either 2,1 or 0 and then move on from there. Let's say we start our DFS function at vertex 0. DFS will continue searching away from 0 until it runs into a dead-end. That dead-end occurs for us at vertex 7. At this point we push 7 to our stack. We then unwind the recursive call and go to 6 which had called 7. 6 is only connected to 7 so 6's execution ends and we push 6 onto the stack. We keep doing this until we've run out of elements to push. So, this is what we see when we print `reversePost`:
+
+```
+2 5 1 0 4 3 6 7
+```
+
+The key insight here is this: the last thing to go onto the `reversePost` stack is the vertex that has no dependencies. So, when we start popping items off this stack, it'll be from the vertex that has no dependencies and continues until the last vertex.
+
+Let's step through the 2 functions and look at how `reversePost` is populated:
+
+```cpp{numberLines: 27}
+void Digraph::RecursiveDFS(){
+    for (int i = 0; i < visited.size(); i++){
+        if (!visited[i]){
+            RecursiveDFS(i);
+        }
+    }
+}
+
+void Digraph::RecursiveDFS(int v){
+    visited[v] = true;
+    pre.push(v);
+    for (int i = 0; i < adjList[v].size(); i++){
+        int curr = adjList[v][i];
+        if (!visited[curr]){
+            edgeTo[curr] = v;
+            RecursiveDFS(curr);
+        }
+    }
+    post.push(v);
+    reversePost.push(v);
+}
+```
+
+Ok, so the client calls `RecursiveDFS()` on line 27 which starts our loop by checking `visited`. Initially this is what our `visited` array, call stack and `reversePost` stack look like:
+
+```
+
+visited
+0   F
+1   F
+2   F
+3   F
+4   F
+5   F
+6   F       ___________     ________________
+7   F       reversePost     call stack for v
+```
+
+We start with 0, and call `RecursiveDFS(0)`. In this function we set `visited[0]` to true and pick up `0`'s adjacency list:
+
+```
+
+visited
+0   T
+1   F
+2   F
+3   F
+4   F
+5   F                              0
+6   F       ___________     ________________
+7   F       reversePost     call stack for v
+```
+
+In `0`'s adjacency list, we find `3` which is also unvisited, so we halt `0`'s execution and call `RecursiveDFS(3)`. Here, we set `visited[3]` as true and look at 3's adjacency list:
+
+```
+
+visited
+0   T
+1   F
+2   F
+3   T
+4   F                              3
+5   F                              0
+6   F       ___________     ________________
+7   F       reversePost     call stack for v
+```
+
+In 3's adjacency list, we find `6` which is unvisited as well so we call `RecursiveDFS(6)`. Here, we set `visited[6]` as true and look at 6's adjacency list:
+
+```
+
+visited
+0   T
+1   F
+2   F
+3   T                              6
+4   F                              3
+5   F                              0
+6   T       ___________     ________________
+7   F       reversePost     call stack for v
+```
+
+In 6's adjacency list, we find `7` which is unvisited as well so we call `RecursiveDFS(7)`. Here, we set `visited[7]` as true and look at 7's adjacency list:
+
+```
+
+visited
+0   T
+1   F
+2   F                              7
+3   T                              6
+4   F                              3
+5   F                              0
+6   T       ___________     ________________
+7   T       reversePost     call stack for v
+```
+
+7's adjacency list is empty, so there's nothing to visit. We're currently at 7 so we fall through the for loop on line 38 and push `v` to `reversePost`:
+
+```
+
+visited
+0   T
+1   F
+2   F                              7
+3   T                              6
+4   F                              3
+5   F           7                  0
+6   T       ___________     ________________
+7   T       reversePost     call stack for v
+```
+
+We're done with 7, so we pop 7 off the call stack for v and continue with 6:
+
+
+```
+
+visited
+0   T
+1   F
+2   F                              
+3   T                              6
+4   F                              3
+5   F           7                  0
+6   T       ___________     ________________
+7   T       reversePost     call stack for v
+```
+
+We continue to inspect 6's adjacency list which doesn't have any other vertices other than 7. So, again, we fall through the for loop on line 38 for vertex 6 and push the current `v` to `reversePost`:
+
+```
+
+visited
+0   T
+1   F
+2   F                              
+3   T                              
+4   F           6                  3
+5   F           7                  0
+6   T       ___________     ________________
+7   T       reversePost     call stack for v
+```
+
+Next, we find 3 on the call stack and we go to 3's adjacency list that, again, has nothing but 6 so we fall though the for loop for vertex 3 and push current `v` to `reversePost`:
+
+```
+
+visited
+0   T
+1   F
+2   F                              
+3   T           3                   
+4   F           6                  
+5   F           7                  0
+6   T       ___________     ________________
+7   T       reversePost     call stack for v
+```
+
+We're now back to 0. 0's adjacency list has more vertices so we pick up the next available vertex which is 4. We call `RecursiveDFS(4)` and set `visited[4]` to true. Our new `v` is now 4:
+
+```
+
+visited
+0   T
+1   F
+2   F                              
+3   T           3                   
+4   T           6                  4
+5   F           7                  0
+6   T       ___________     ________________
+7   T       reversePost     call stack for v
+```
+
+4's adjacency list has 6 which is already visited so we're done with 4. We fall through the for loop on line 38 and push 4 to the `reversePost` stack:
+
+```
+
+visited
+0   T
+1   F
+2   F           4                   
+3   T           3                   
+4   T           6                  
+5   F           7                  0
+6   T       ___________     ________________
+7   T       reversePost     call stack for v
+```
+
+We're now back to 0 that doesn't have any more unvisited neighbors. So, we fall through to line 38 for 0 and push 0 onto `reversePost` stack:
+
+```
+
+visited
+0   T
+1   F           0
+2   F           4                   
+3   T           3                   
+4   T           6                  
+5   F           7                  
+6   T       ___________     ________________
+7   T       reversePost     call stack for v
+```
+
+We send control back up to the original `RecursiveDFS()` function on line 27. Here, we continue looking for unvisited vertices and find that 1 is unvisited. We, therefore make this call: `RecursiveDFS(1)`. For this call, we mark `visited[1]` as true, and check out 1's adjacency list:
+
+```
+
+visited
+0   T
+1   T           0
+2   F           4                   
+3   T           3                   
+4   T           6                  
+5   F           7                  1
+6   T       ___________     ________________
+7   T       reversePost     call stack for v
+```
+
+We find that 4 is already visited so we fall through to line 47 and push the current v onto the `reversePost` stack after which we're done with this v which is popped of call stack for v:
+
+```
+
+visited
+0   T           1
+1   T           0
+2   F           4                   
+3   T           3                   
+4   T           6                  
+5   F           7                  
+6   T       ___________     ________________
+7   T       reversePost     call stack for v
+```
+
+We send control back up to the original `RecursiveDFS()` function on line 27. Here, we continue looking for unvisited vertices and find that 2 is unvisited. We, therefore make this call: `RecursiveDFS(2)`. For this call, we mark `visited[2]` as true, and check out 2's adjacency list:
+
+```
+
+visited
+0   T           1
+1   T           0
+2   T           4                   
+3   T           3                   
+4   T           6                  
+5   F           7                  2
+6   T       ___________     ________________
+7   T       reversePost     call stack for v
+```
+
+We look in 2's adjacency list and find 5. 5 is unvisited so we make another recursive call with 5 and halt 2's execution. For 5, we mark it as true:
+
+```
+
+visited
+0   T           1
+1   T           0
+2   T           4                   
+3   T           3                   
+4   T           6                  5
+5   T           7                  2
+6   T       ___________     ________________
+7   T       reversePost     call stack for v
+```
+
+and then we check out 5's adjacency list which only has 7 which has already been visited. So, for 5, we fall down to line 47, push 5 onto `reversePost` and pop 5 off call stack for v:
+
+
+```
+
+visited         
+                5
+0   T           1
+1   T           0
+2   T           4                   
+3   T           3                   
+4   T           6                  
+5   T           7                  2
+6   T       ___________     ________________
+7   T       reversePost     call stack for v
+```
+
+We then continue with 2 where we left off and find that 2 has no more neighbors. We fall to line 47 for 2, push to `reversePost` and pop 2 off stack:
+
+```
+
+visited         
+                2
+                5
+0   T           1
+1   T           0
+2   T           4                   
+3   T           3                   
+4   T           6                  
+5   T           7                  
+6   T       ___________     ________________
+7   T       reversePost     call stack for v
+```
+
+We send control back up to the original `RecursiveDFS()` function on line 27. Here, we continue looking for unvisited vertices and find that all vertices have been visited now. We're done with creating our `reversePost` stack. 
+
+### Conclusion
+
+Notice how the last element we pushed on stack were in reverse order based on their dependencies. For example if 5 is dependent on 2, we pushed 5 first and then we pushed 2. Now when we print `reversePost` by popping off each element, we get this order:
+
+```
+2 5 1 0 4 3 6 7 
+```
+
+This order clearly complies with all the dependencies before we get to graduation!!!
+
