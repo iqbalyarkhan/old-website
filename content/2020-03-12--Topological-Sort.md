@@ -68,4 +68,13 @@ The corresponding adjacency list would be:
 
 Ok,so if we run [digraph dfs](/directed-graphs#depth-first-search) on this graph, we'd get this output:
 
+```
+0 3 6 7 4 1 2 5 
+```
+
+Although this actually follows the correct sequence of courses, it doesn't end at `7` and also it's a coincidence that we start at 0 and it happens to be the vertex that is without any pre-reqs, otherwise it would've failed at that part too. So, it is clear that a simple DFS won't do. 
+
+Also, topoligcal sort won't be possible for a graph that has a cycle. That is because if I need to complete $X$ before $Y$ and $Y$ before $Z$ and $Z$ before $X$, then theer's a problem in the logic!
+
+Therefore, our topological sort algorithm should be able to do this: **Given a digraph, put the vertices in an order such that all directed edges point from a vertex earlier in the sequence to a vertex later in the sequence. Otherwise return that such an arrangement is not possible.**
 
