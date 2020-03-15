@@ -244,9 +244,18 @@ public:
     void AddVertex(int);
     void DeleteVertex(int);
     void DFS();
+    void RecursiveDFS();
     void RecursiveDFS(int v);
     void MST();
 };
+
+void AdjList::RecursiveDFS(){
+    for (int i = 0; i < visited.size(); i++){
+        if (!visited[i]){
+            RecursiveDFS(i);
+        }
+    }
+}
 
 void AdjList::RecursiveDFS(int v){
     visited[v] = true;
@@ -637,9 +646,18 @@ We use a stack to backtrack our way to the next available path that can be follo
 4 --> <vector for 4>
 ```
 
-and then for each vertex, we need to step through its edges which is represented by `<vector for index>`. Therefore, the total running time is $O(V + E)$. The approach above makes use of an extra stack which is extra space that is required. There is another recursive approach that runs with the same upper bound for time complexity and 0 extra space. This is made possible because we use an implicit call stack while making our recursive calls that allows us to backtrack:
+and then for each vertex, we need to step through its edges which is represented by `<vector for index>`. Therefore, the total running time is $O(V + E)$. The approach above makes use of an extra stack which is extra space that is required. There is another recursive approach that runs with the same upper bound for time complexity and 0 extra space. This is made possible because we use an implicit call stack while making our recursive calls that allows us to backtrack. Here are the two functions that allow us to call `RecursiveDFS()`.   
 
-```cpp{numberLines: 19}
+```cpp{numberLines: 20}
+
+void AdjList::RecursiveDFS(){
+    for (int i = 0; i < visited.size(); i++){
+        if (!visited[i]){
+            RecursiveDFS(i);
+        }
+    }
+}
+
 void AdjList::RecursiveDFS(int v){
     visited[v] = true;
     cout << v << " ";
@@ -651,6 +669,8 @@ void AdjList::RecursiveDFS(int v){
     }
 }
 ```
+
+The first function iterates over the `visited` array to make sure we've visited all the vertices. For each unvisited vertex, it calls the second `RecursiveDFS(int v)` function that then visits that vertex's unvisited neighbors.
 
 This function allows us to pass in any vertex you want and it'll print out all the vertices that can be reached from the passed vertex. The logic behind this function is this:
 - Take in the passed vertex and mark the vertex in array, `visited` to true. This array is an [instance variable (bound to the instance of the class)](https://en.wikipedia.org/wiki/Instance_variable) for the class. (If you want to use the test client to call `RecursiveDFS()` multiple times, you'd have to change the function signature and pass in this `visited` array on each recursive call by reference. Or have a helper function that clears the array first for each `RecursiveDFS()` function call.)

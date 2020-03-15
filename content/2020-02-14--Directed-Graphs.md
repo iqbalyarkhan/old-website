@@ -102,6 +102,7 @@ public:
     void AddEdge(int,int);
     void Print();
     void BFS(int);
+    void RecursiveDFS();
     void RecursiveDFS(int v);
     void PrintEdgeTo();
     void FindPath(int v, int w);
@@ -128,6 +129,13 @@ void Digraph::BFS(int v){
     cout << endl;
 }
 
+void Digraph::RecursiveDFS(){
+    for (int i = 0; i < visited.size(); i++){
+        if (!visited[i]){
+            RecursiveDFS(i);
+        }
+    }
+}
 
 void Digraph::RecursiveDFS(int v){
     visited[v] = true;
@@ -232,9 +240,17 @@ void Digraph::AddEdge(int i, int j){
 
 ### Depth First Search
 
-There is no difference between undirected graph dfs and digraph dfs. Remember the idea is to get as far away from the starting vertex as possible before unwinding our way back.To do so, we have a recursive function that starts off with a vertex and repeatedly calls unvisited neighbors of this vertex. On each call to the neighbor, the neighbor's neighbor is then visited and so on:
+There is no difference between undirected graph dfs and digraph dfs. Remember the idea is to get as far away from the starting vertex as possible before unwinding our way back.To do so, we have a recursive function that starts off with a vertex and repeatedly calls unvisited neighbors of this vertex. On each call to the neighbor, the neighbor's neighbor is then visited and so on. The first `RecursiveDFS()` function is what the client uses to call this function. This function, on line 44, iterates over the unvisited vertices and for each unvisited vertex, it calls `RecursiveDFS(int v)` that iterates over its neighbors: 
 
 ```cpp{numberLines: 44}
+void Digraph::RecursiveDFS(){
+    for (int i = 0; i < visited.size(); i++){
+        if (!visited[i]){
+            RecursiveDFS(i);
+        }
+    }
+}
+
 void Digraph::RecursiveDFS(int v){
     visited[v] = true;
     cout << v << " ";

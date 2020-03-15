@@ -16,9 +16,13 @@ tags:
 
 2. [Logic](#logic)
 
-3. [Code](#code)
+3. [Depth First Orders](#depth-first-orders)
 
-4. [Resource](#resources)
+4. [Code](#code)
+
+5. [Explanation](#explanation)
+
+5. [Resource](#resources)
 
 In this post, I'll assume you have sufficient directed graph knowledge. If not, feel free to browse through my post on [directed graphs](/directed-graphs).
 
@@ -78,3 +82,122 @@ Also, topoligcal sort won't be possible for a graph that has a cycle. That is be
 
 Therefore, our topological sort algorithm should be able to do this: **Given a digraph, put the vertices in an order such that all directed edges point from a vertex earlier in the sequence to a vertex later in the sequence. Otherwise return that such an arrangement is not possible.**
 
+### Depth First Orders
+
+It turns out, topological sort is quite easy to implement using DFS. As we've already seen, [DFS](directed-graphs#depth-first-search) visits each vertex exactly once. For our reference, here is recursive DFS again:
+
+```cpp{numberLines: true}
+void Digraph::RecursiveDFS(int v){
+    visited[v] = true;
+    cout << v << " ";
+    for (int i = 0; i < adjList[v].size(); i++){
+        int curr = adjList[v][i];
+        if (!visited[curr]){
+            edgeTo[curr] = v;
+            RecursiveDFS(curr);
+        }
+    }
+}
+```
+
+If we save the current vertex we're on in an appropriate data structure ([queue](/queue) or [stack](/stack)), and iterate over these populated data structures, we'd be able to get our vertices in a certain order based on the data structure used and the point in the `RecursiveDFS()` function where we push the vertex on the said data structure. Having said that, there are 3 vertex orderings that can be generated: 
+
+- PreOrder
+- PostOrder
+- Reverse PostOrder
+
+We've already seen PreOrder and PostOrder in the [binary search trees](/binary-search-trees#traversal) post. Here's what this traversal order means for digraphs:
+
+- PreOrder: Put the vertex on queue **before** recursive call: **This is recording of vertices in order based on DFS calls made**
+- PostOrder: Put the vertex on queue **after** recursive call: **This is the recording of vertices in order based on which vertices are completed first**
+- ReversePostOrder: Put the vertex on stack **after** recursive call: **This generates a topological sort for us from the digraph**
+
+### Code
+
+The code is exactly the same as what we've seen so far for directed graphs. The only difference is in the `RecursiveDFS()` function and we've also created a helper function to print the depth first search in the order we discussed in the previous section. Here are the functions we updated:
+
+```cpp{numberLines: true}
+//Private instance variables for data structures:
+    queue<int> pre;
+    queue<int> post;
+    stack<int> reversePost; 
+
+void Digraph::PrintOrder(){
+    cout << "Pre: " << endl;
+    while (!pre.empty()){
+        cout << pre.front() << " ";
+        pre.pop();
+    }
+    cout << endl;
+    cout << "Post: " << endl;
+    while (!post.empty()){
+        cout << post.front() << " ";
+        post.pop();
+    }
+    cout << endl;
+    cout << "Reverse Post: " << endl;
+    while (!reversePost.empty()){
+        cout << reversePost.top() << " ";
+        reversePost.pop();
+    }
+    cout << endl;
+}
+
+void Digraph::RecursiveDFS(){
+    for (int i = 0; i < visited.size(); i++){
+        if (!visited[i]){
+            RecursiveDFS(i);
+        }
+    }
+}
+
+void Digraph::RecursiveDFS(int v){
+    visited[v] = true;
+//    cout << v << " ";
+    pre.push(v);
+    for (int i = 0; i < adjList[v].size(); i++){
+        int curr = adjList[v][i];
+        if (!visited[curr]){
+            edgeTo[curr] = v;
+            RecursiveDFS(curr);
+        }
+    }
+    post.push(v);
+    reversePost.push(v);
+}
+```
+
+As usual, we've got 2 `RecursiveDFS()` functions: the one on line 27 is called by the client and it iterates over the visited array. This function then, for each unvisited vertex, calls the `RecursiveDFS(int v)` function which then populates our `pre`, `post` and `reversePost` data structures. 
+
+```cpp{numberLines: 27}
+void Digraph::RecursiveDFS(){
+    for (int i = 0; i < visited.size(); i++){
+        if (!visited[i]){
+            RecursiveDFS(i);
+        }
+    }
+}
+
+void Digraph::RecursiveDFS(int v){
+    visited[v] = true;
+//    cout << v << " ";
+    pre.push(v);
+    for (int i = 0; i < adjList[v].size(); i++){
+        int curr = adjList[v][i];
+        if (!visited[curr]){
+            edgeTo[curr] = v;
+            RecursiveDFS(curr);
+        }
+    }
+    post.push(v);
+    reversePost.push(v);
+}
+```
+`pre` is populated as soon as we visit the vertex as denoted on line 38 by pushing the vertex to the queue.
+`post` is populated after we're done processing a vertex and visiting all its neighbors as denoted on line 46 by pushing the vertex to the queue.
+`reversePost` is populated after we're done processing a vertex and visiting all its neighbors as denoted on line 47 by pushing the vertex to the stack.
+
+### Explanation
+
+ Let's look at how having `reversePost` in that position and using a stack allows us to get a topologically sorted order of vertices:
+ 
