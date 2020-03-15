@@ -93,8 +93,12 @@ Let's have a look at the modified `DFS` function that I've called `CycleDFS`:
 
 ```cpp
 bool AdjList::CyclePresent(){
-    //Calls function with parent as -1
-    CycleDFS(0, -1);
+    for (int i = 0; i < vectorSize; i++){
+        if (!visited[i])
+            CycleDFS(i, -1);
+    }
+    if (hasCycle)
+        cout << "There is a cycle!" << endl;
     return hasCycle;
 }
 
