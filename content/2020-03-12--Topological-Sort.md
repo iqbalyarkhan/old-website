@@ -24,6 +24,8 @@ tags:
 
 5. [Conclusion](#conclusion)
 
+6. [Digraphs, Cycles and Topological Sort](#digraphs-cycles-and-topological-sort)
+
 In this post, I'll assume you have sufficient directed graph knowledge. If not, feel free to browse through my post on [directed graphs](/directed-graphs).
 
 ### Motivation
@@ -540,3 +542,10 @@ Notice how the last element we pushed on stack were in reverse order based on th
 
 This order clearly complies with all the dependencies before we get to graduation!!!
 
+### Digraphs, Cycles and Topological Sort
+
+Now that we've looked at [digraphs](/directed-graphs), [cycles](/cycle-detection) and [topological sort](/topological-sort#logic), we've completed all the important parts of a job-scheduling application:
+
+- You specify the tasks and the relevant constraints for those tasks (which task needs to be performed first, second, and so on): this is the digraph
+- You make sure that there are no cycles
+- You then generate an order in which the tasks can be completed based on the constraints specified using the digraph: this is where topological sort comes in.
