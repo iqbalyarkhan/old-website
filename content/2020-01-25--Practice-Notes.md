@@ -31,6 +31,8 @@ tags:
     * [Erase from vectors](#erase-from-vectors)
     
     * [Vector of vectors](#vector-of-vectors)
+
+7. [C++ Ternary Operator](#c-ternary-operator)
 ### Reading numbers separated by whitespace
 
 Say input is:
@@ -352,4 +354,14 @@ We can then continue processing our vector.
 
 ```cpp
 vector<vector<int>> adjList;
+```
+
+### C++ Ternary Operator
+
+```cpp
+int a = 10;
+int b = 20;
+// max = is a > b ? (Yes, a > b then max = a) : (No, a < b then max = b)
+int max = a > b ? a : b;
+cout << "Maximum value = " << max << endl;
 ```

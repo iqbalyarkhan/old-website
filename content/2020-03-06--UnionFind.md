@@ -16,9 +16,11 @@ tags:
 
 2. [Setup](#setup)
 
-3. [Pointer to Pointer](#pointer-to-pointer)
+3. [Union](#union)
 
-4. [Heap](#heap)
+4. [Analysis](#analysis)
+
+5. [Code](#code)
 
 
 ### Introduction
@@ -146,3 +148,14 @@ If you go through all the union operations, your tree and array would look like 
  ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
   0   1   2   3   4   5   6   7   8   9   10  11  
 ```
+
+### Analysis
+
+The algorithm we discussed above is formally called **weighted quick union**. 
+- Weighted: because we check the weights of the two roots before we unionize. This allows us to change fewest possible entries in the array
+- Quick union: because the union operation is fast: all we need to do is update one array entry
+
+As a result, the depth of a tree generated using WQU is at most $log(N)$
+
+### Code
+
