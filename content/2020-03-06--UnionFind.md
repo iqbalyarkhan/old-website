@@ -1,7 +1,7 @@
 ---
 title: Union Find
 date: 2020-03-06
-draft: true
+draft: false
 extract: Analysis of the Union Find algorithm
 categories: 
     - General Algorithms
@@ -149,6 +149,25 @@ If you go through all the union operations, your tree and array would look like 
   0   1   2   3   4   5   6   7   8   9   10  11  
 ```
 
+Notice the final connections array above: you'd expect every entry to be `9` since 9 is the root of every object. However, since this is quick union, we are not going to determine the top level root for each object. This would make our `find` operation a bit expensive. For example, if we want to see whether 5 and 11 are in the same component, we'll go through these steps until `arr[index] = index`:
+
+```
+//For 5
+arr[5] = 6
+arr[6] = 9
+arr[9] = 9
+
+
+//For 11
+arr[11] = 8
+arr[8] = 0
+arr[0] = 9
+arr[9] = 9
+
+``` 
+
+Since roots of 5 and 11 are the same, as expected, they belong to the same component.
+
 ### Analysis
 
 The algorithm we discussed above is formally called **weighted quick union**. 
@@ -158,4 +177,83 @@ The algorithm we discussed above is formally called **weighted quick union**.
 As a result, the depth of a tree generated using WQU is at most $log(N)$
 
 ### Code
+
+```cpp{numberLines:true}
+class UF{
+private:
+    vector<int> connectionsArray;
+    vector<int> children;
+    int numberOfSites;
+    
+public:
+    UF(int);
+    void Union(int,int);
+    int FindRoot(int);
+    void Unionize(int,int);
+    void PrintAllVectors();
+};
+
+
+/// Constructor that takes in the number of sites
+/// @param num number of sites
+UF::UF(int num) : numberOfSites(num){
+    for (int i = 0; i < numberOfSites; i++){
+        connectionsArray.push_back(i);
+    }
+    children.resize(numberOfSites);
+    
+}
+
+/// Function that'll be called by the client with parent and child
+/// @param child integer that is to be designated as child
+/// @param parent integer that is to be designated as parent
+void UF::Union(int child, int parent){
+    int childRoot = FindRoot(child);
+    int parentRoot = FindRoot(parent);
+    
+    //If the two don't already belong to the same component
+    if (childRoot != parentRoot){
+        if (children[childRoot] == children[parentRoot] || children[childRoot] < children[parentRoot]){
+            //Same number of children in both roots, make childRoot the child of parentRoot
+            Unionize(parentRoot, childRoot);
+        } else {
+            Unionize(childRoot, parentRoot);
+        }
+    } else {
+        cout << child << " and " << parent << " are part of the same component with root: " << childRoot << endl;
+    }
+}
+
+/// Function to find the root for the items being unioned
+/// @param r The item being unioned
+int UF::FindRoot(int r){
+    while(true){
+        if (connectionsArray[r] == r)
+            break;
+        r = connectionsArray[r];
+    }
+    
+    return r;
+}
+
+/// Function to actually perform the union operation
+/// @param parent integer being designated as parent
+/// @param child integer being designated as child
+void UF::Unionize(int parent, int child){
+    connectionsArray[child] = parent;
+    children[parent] += children[child] + 1;
+}
+
+/// Function to print vectors
+void UF::PrintAllVectors(){
+    cout << "Connections Array: " << endl;
+    for (auto i : connectionsArray)
+        cout << i << " ";
+    cout << endl;
+    cout << "Children array: " << endl;
+    for (auto i : children)
+        cout << i << " ";
+    cout << endl;
+}
+```
 
