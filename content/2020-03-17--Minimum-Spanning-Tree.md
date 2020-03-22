@@ -16,11 +16,11 @@ tags:
 
 2. [Kruskal's Alogrithm](#kruskals-algorithm)
 
-In this post, I'll assume you have sufficient undirected graph knowledge. If not, feel free to browse through my post on [undirected graphs](/undirected-graphs).
+In this post, I'll assume you have sufficient [weighted undirected graph](/weighted-undirected-graphs) and [union find](/union-find) knowledge. If not, feel free to browse through the relevant posts.
 
 ### Motivation
 
-Before we begin talking about minimal spanning trees,we need to introduce the idea of edge-weighted graphs. In these graphs, each edge has a weight associated with it. For example, if the vertices are cities then edges could be the ticket price for a flight between the two cities. We'd obviously be interested in finding the cheapest flight that go through multiple cities. 
+Before we begin talking about minimal spanning trees,we need to understand the role of edge-weighted graphs. In these graphs, each edge has a weight associated with it. For example, if the vertices are cities then edges could be the ticket price for a flight between the two cities. We'd obviously be interested in finding the cheapest flight that go through multiple cities. 
 
 To find such a flight we'd have to make use of minimal spanning tree. We'd be able to answer the question: given an undirected edge weighted graph, find a minimum spanning tree for that graph
 
@@ -44,3 +44,11 @@ Here are the steps behind Kruskal's algorithm:
 1. Pick the edge with the least weight (need to keep our edges in sorted order)
 2. Add this picked edge to the MST IF it doesn't create a cycle
 3. Go back to step 1 until there are no more edges left
+
+There are a few questions that we need to answer before we can begin implementing Kruskal's algorithm:
+
+1. Pick the edge with the least weight (need to keep our edges in sorted order): **How do we sort the edges efficiently?**
+
+To keep our edges in sorted order, we'll create a priority queue
+
+2. Add this picked edge to the MST IF it doesn't create a cycle: **How do we make sure a cycle is not created?**
