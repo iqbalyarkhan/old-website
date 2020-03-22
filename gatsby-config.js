@@ -48,6 +48,12 @@ module.exports = {
         excerpt_separator: `<!-- end -->`,
         plugins: [
           {
+            resolve: "@weknow/gatsby-remark-twitter",
+            options: {
+              debug: true
+            }
+          },
+          {
             resolve: "gatsby-remark-katex",
             options: {
               strict: "ignore"
