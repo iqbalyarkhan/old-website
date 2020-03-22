@@ -14,7 +14,7 @@ tags:
 
 1. [Motivation](#motivation)
 
-In this post, I'll assume you have sufficient directed graph knowledge. If not, feel free to browse through my post on [undirected graphs](/undirected-graphs).
+In this post, I'll assume you have sufficient undirected graph knowledge. If not, feel free to browse through my post on [undirected graphs](/undirected-graphs).
 
 ### Motivation
 
@@ -26,7 +26,7 @@ A **spanning tree** of a graph is a connected subgraph with no cycles that conne
 
 Therefore, the requirements are:
 - The tree needs to be connected
-- The tree needs to be acyclic
+- The tree needs to be acyclic (when adding a node to the tree, it shouldn't create a cycle)
 - The tree needs to have the minimum weight
 
 An observation: once you have a minimum spanning tree, this condition would hold true:
