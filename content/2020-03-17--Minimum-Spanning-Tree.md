@@ -14,6 +14,8 @@ tags:
 
 1. [Motivation](#motivation)
 
+2. [Kruskal's Alogrithm](#kruskals-algorithm)
+
 In this post, I'll assume you have sufficient undirected graph knowledge. If not, feel free to browse through my post on [undirected graphs](/undirected-graphs).
 
 ### Motivation
@@ -22,7 +24,7 @@ Before we begin talking about minimal spanning trees,we need to introduce the id
 
 To find such a flight we'd have to make use of minimal spanning tree. We'd be able to answer the question: given an undirected edge weighted graph, find a minimum spanning tree for that graph
 
-A **spanning tree** of a graph is a connected subgraph with no cycles that connects all the vertices: there's a path from every vertex to every other vertex in the graph. Finding a minimum spanning tree for an edge weighted graph would mean finding a spanning tree where the sum of this tree's edges is as small as possible (when you consider all possible paths through the graph). 
+A **spanning tree** of a graph is a connected subgraph with no cycles that connects all the vertices: **there's a path from every vertex to every other vertex in the graph**. Finding a minimum spanning tree for an edge weighted graph would mean finding a spanning tree where the sum of this tree's edges is as small as possible (when you consider all possible paths through the graph). 
 
 Therefore, the requirements are:
 - The tree needs to be connected
@@ -33,3 +35,12 @@ An observation: once you have a minimum spanning tree, this condition would hold
 $$$
 Edges = Vertices - 1
 $$$
+
+Remember, the aim is to find a path through the graph that connects each edge to every other edge BUT making sure the path we found has the least total weight.
+
+### Kruskal's Algorithm
+
+Here are the steps behind Kruskal's algorithm: 
+1. Pick the edge with the least weight (need to keep our edges in sorted order)
+2. Add this picked edge to the MST IF it doesn't create a cycle
+3. Go back to step 1 until there are no more edges left

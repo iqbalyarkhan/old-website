@@ -33,6 +33,8 @@ tags:
     * [Vector of vectors](#vector-of-vectors)
 
 7. [C++ Ternary Operator](#c-ternary-operator)
+
+8. [Pair](#pair)
 ### Reading numbers separated by whitespace
 
 Say input is:
@@ -364,4 +366,20 @@ int b = 20;
 // max = is a > b ? (Yes, a > b then max = a) : (No, a < b then max = b)
 int max = a > b ? a : b;
 cout << "Maximum value = " << max << endl;
+```
+
+### Pair
+
+Defined in the `<utility>` header, a pair holds a pair of data types:
+
+```cpp
+#include <utility>
+
+pair<int,string> pairOne(1,"one");
+pair<int,string> pairTwo(2,"two");
+
+cout << pairOne.first << " " << pairTwo.second << endl;
+
+//Output:
+// 1 two 
 ```
