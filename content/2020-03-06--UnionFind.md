@@ -22,6 +22,8 @@ tags:
 
 5. [Code](#code)
 
+6. [Conclusion](#conclusion)
+
 
 ### Introduction
 
@@ -174,7 +176,7 @@ The algorithm we discussed above is formally called **weighted quick union**.
 - Weighted: because we check the weights of the two roots before we unionize. This allows us to change fewest possible entries in the array
 - Quick union: because the union operation is fast: all we need to do is update one array entry
 
-As a result, the depth of a tree generated using WQU is at most $log(N)$
+As a result, the depth of a tree generated using WQU is at most $log(N)$ due to which our `Union` and `Find` would take $O(logN)$ time.
 
 ### Code
 
@@ -257,3 +259,97 @@ void UF::PrintAllVectors(){
 }
 ```
 
+On line 16, we define our constructor that takes in the number of objects we're about to specify:
+
+```cpp{numberLines: 16}
+/// Constructor that takes in the number of sites
+/// @param num number of sites
+UF::UF(int num) : numberOfSites(num){
+    for (int i = 0; i < numberOfSites; i++){
+        connectionsArray.push_back(i);
+    }
+    children.resize(numberOfSites);
+    
+}
+```
+This constructor then initializes the connections array with value $0$ till $N - 1$ where $N$ is the number of objects. This connections array signifies, initially, that each site is connected to itself. The constructor also initializes the `children` array to all $0$s since initially each site has $0$ children.
+
+Next, we're ready to perform union operations on pairs of sites. Let's start with this union operation: 
+```cpp
+Union(4,9)
+```
+ 
+ where child is `4` and parent `9`:
+ 
+![Union-Find-1](images/unionfind/uf1.png) [Image Credit - Union Find](https://csacademy.com/app/graph_editor/)
+
+Here's the function called for performing the union operation:
+
+```cpp{numberLines: 26}
+/// Function that'll be called by the client with parent and child
+/// @param child integer that is to be designated as child
+/// @param parent integer that is to be designated as parent
+void UF::Union(int child, int parent){
+    int childRoot = FindRoot(child);
+    int parentRoot = FindRoot(parent);
+    
+    //If the two don't already belong to the same component
+    if (childRoot != parentRoot){
+        if (children[childRoot] == children[parentRoot] || children[childRoot] < children[parentRoot]){
+            //Same number of children in both roots, make childRoot the child of parentRoot
+            Unionize(parentRoot, childRoot);
+        } else {
+            Unionize(childRoot, parentRoot);
+        }
+    } else {
+        cout << child << " and " << parent << " are part of the same component with root: " << childRoot << endl;
+    }
+}
+```
+
+The first thing we do in this function is to check whether the `childRoot` and `parentRoot` are the same. Notice, we're not checking whether the chlid and the parent are the same, but the root of the child and root of the parent. To find that root, we call the function called `FindRoot`:
+
+```cpp{numberLines: 46}
+/// Function to find the root for the items being unioned
+/// @param r The item being unioned
+int UF::FindRoot(int r){
+    while(true){
+        if (connectionsArray[r] == r)
+            break;
+        r = connectionsArray[r];
+    }
+    
+    return r;
+}
+```
+
+This function goes through the `connectionsArray` until the value at `connectionsArray[item]` = `item`. If so, return the root. Once we get our roots, back, we check if the roots are the same. If so, the items we're unionizing are already children of the same root so no need to unionize. If not, we then check to see which one of the two (childRoot or parentRoot) has more children. If one has more children, we make it the parent. If both are same, we make childRoot the child of parentRoot. This is the **weighted** part of WQU. Once that is determined, we call the `Unionize` function:
+
+```cpp{numberLines: 58}
+/// Function to actually perform the union operation
+/// @param parent integer being designated as parent
+/// @param child integer being designated as child
+void UF::Unionize(int parent, int child){
+    connectionsArray[child] = parent;
+    children[parent] += children[child] + 1;
+}
+``` 
+
+that makes the child to parent connection by changing values in the `connectionsArray` and also updates the number of children for the parent in the `children` array. 
+
+Once we're done with all the union operations, this is what our `connectionsArray` and `children` array would look like:
+
+```
+Connections Array: 
+9 0 9 9 9 6 9 0 0 9 6 8 
+Children array: 
+4 0 0 0 0 0 2 0 1 11 0 0 
+```
+
+Notice how `children[9]` shows `11` which means every site's root is `9`. 
+
+If you notice, we haven't addressed the main reason we wrote this entire `UnionFind` class: to check if two sites are part of the same component. Or if two vertices in a graph are already connected. We don't need a new function for it because we've already got one for it: `FindRoot(int r)`. Our client can call this function for the two sites they're interested in. If `FindRoot(int r)` returns the same root for both, then the sites are connected, otherwise they're not.
+
+### Conclusion
+
+WQU is an efficient method to determine connectivity among objects. We'll see it in action when we talk about graph algorithms.  
