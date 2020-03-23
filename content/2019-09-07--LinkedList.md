@@ -1,6 +1,7 @@
 ---
 title: Linked Lists
 date: 2019-09-07
+thumbnail: /post-images/links.png
 draft: false
 extract: Implementation of a linked list template class in C++
 categories: 

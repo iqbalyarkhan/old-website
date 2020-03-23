@@ -1,6 +1,7 @@
 ---
 title: Selection Sort
 date: 2019-11-11
+thumbnail: /post-images/selection.png
 draft: false
 extract: Implementation and analysis of selection sort in C++
 categories: 

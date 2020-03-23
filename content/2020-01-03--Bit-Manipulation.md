@@ -1,6 +1,7 @@
 ---
 date: 2020-01-03
 title: Bit Manipulation
+thumbnail: content/images/weightedundirectedgraph/graph-1.png
 draft: true
 extract: Common methods to perform operations using bit manipulation
 categories: 

@@ -2,6 +2,7 @@
 title: Directed Graphs
 date: 2020-03-09
 draft: false
+thumbnail: /post-images/directed-graph.png
 extract: An analysis of directed graphs
 categories: 
     - Data Structures

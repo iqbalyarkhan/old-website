@@ -3,6 +3,7 @@ title: Weighted Undirected Graphs
 date: 2020-03-22
 draft: false
 extract: An analysis of weighted undirected graphs
+thumbnail: /post-images/tree.png
 categories: 
     - Data Structures
 tags:

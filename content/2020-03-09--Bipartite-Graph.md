@@ -1,6 +1,7 @@
 ---
 title: Bipartite Graphs
 date: 2020-03-09
+thumbnail: /post-images/bipartite.png
 draft: false
 extract: Analysis of an algorithm to detect whether a graph is bipartite
 categories: 

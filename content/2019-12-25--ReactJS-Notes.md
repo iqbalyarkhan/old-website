@@ -1,6 +1,7 @@
 ---
 date: 2019-12-25
 draft: false
+thumbnail: /post-images/notes.png
 title: ReactJS Notes
 extract: My notes as I learn ReactJS
 categories:

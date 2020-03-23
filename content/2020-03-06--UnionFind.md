@@ -1,6 +1,7 @@
 ---
 title: Union Find
 date: 2020-03-06
+thumbnail: /post-images/union-find.png
 draft: false
 extract: Analysis of the Union Find algorithm
 categories: 

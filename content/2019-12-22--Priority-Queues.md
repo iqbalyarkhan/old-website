@@ -1,6 +1,7 @@
 ---
 title: Priority Queues
 date: 2019-12-22
+thumbnail: /post-images/priority-queue.png
 draft: false
 extract: A brief overview showing the properties and usage of priority queue data structure
 

@@ -184,6 +184,7 @@ module.exports = {
                 categories: edge.node.frontmatter.tags,
                 date: edge.node.fields.date,
                 title: edge.node.frontmatter.title,
+                thumbnail: edge.node.frontmatter.thumbnail,
                 description: edge.node.excerpt,
                 url: rssMetadata.site_url + edge.node.fields.slug,
                 guid: rssMetadata.site_url + edge.node.fields.slug,
@@ -213,6 +214,7 @@ module.exports = {
                       title
                       date
                       extract
+                      thumbnail
                       categories
                       tags
                     }

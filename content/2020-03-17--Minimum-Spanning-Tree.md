@@ -1,6 +1,7 @@
 ---
 title: Minimum Spanning Tree
 date: 2020-03-17
+thumbnail: content/images/weightedundirectedgraph/graph-1.png
 draft: true
 extract: Analysis of minimum spanning trees
 categories: 

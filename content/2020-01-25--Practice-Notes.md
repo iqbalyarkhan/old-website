@@ -1,6 +1,7 @@
 ---
 date: 2020-01-25
 title: Practice Notes
+thumbnail: /post-images/notes.png
 draft: false
 extract: Notes as I solve various practice problems
 categories: 

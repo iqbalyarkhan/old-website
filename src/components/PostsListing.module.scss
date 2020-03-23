@@ -26,6 +26,10 @@
     }
 }
 
+img{
+    margin-bottom: -2em;
+}
+
 @media (max-width: 768px) {
     .article-list {
         grid-template-columns: 100%;

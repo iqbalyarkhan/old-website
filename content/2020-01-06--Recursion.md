@@ -1,6 +1,7 @@
 ---
 date: 2020-01-06
 title: Recursion
+thumbnail: content/images/weightedundirectedgraph/graph-1.png
 draft: true
 extract: Explanation of recursion and a survey of its applications
 categories: 

@@ -41,6 +41,7 @@ export const pageQuery = graphql`
             date
             categories
             extract
+            thumbnail
           }
         }
       }

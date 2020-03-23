@@ -1,6 +1,7 @@
 ---
 title: Insertion Sort 
 date: 2019-08-17
+thumbnail: /post-images/insertion.png
 draft: false
 extract: Explanation and implementation of insertion sort algorithm
 categories: 

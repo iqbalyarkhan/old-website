@@ -11,6 +11,7 @@ import styles from  './PostsListing.module.scss'
         tags: postEdge.node.frontmatter.tags,
         categories: postEdge.node.frontmatter.categories,
         extract: postEdge.node.frontmatter.extract,
+        thumbnail: postEdge.node.frontmatter.thumbnail,
         cover: postEdge.node.frontmatter.cover,
         title: postEdge.node.frontmatter.title,
         date: postEdge.node.fields.date,
@@ -29,6 +30,7 @@ import styles from  './PostsListing.module.scss'
           <Link to={post.path} key={post.title}>
             <article className={styles.articleBox}>
               <div className={styles.right}>
+                <img src={post.thumbnail}/>
                 <h2>{post.title}</h2>
                 <div className={styles.meta}>{post.date}  &mdash; <span>{post.categories.join(' / ')}</span>  &mdash; {post.timeToRead} Min Read </div>
                 <p>{post.extract}</p>

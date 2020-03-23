@@ -1,6 +1,7 @@
 ---
 title: Cycle Detection
 date: 2020-03-08
+thumbnail: /post-images/cycle.png
 draft: false
 extract: Analysis of an algorithm to detect whether an undirected graph has a cycle
 categories: 

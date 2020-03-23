@@ -1,6 +1,7 @@
 ---
 title: Merge Sort 
 date: 2019-08-18
+thumbnail: /post-images/merge.png
 draft: false
 extract: Explanation and implementation of merge sort algorithm
 categories: 

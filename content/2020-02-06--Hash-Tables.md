@@ -1,6 +1,7 @@
 ---
 title: Hash Tables
 date: 2020-02-06
+thumbnail: /post-images/hash.png
 draft: false
 extract: An analysis of hash table data structure
 categories: 
