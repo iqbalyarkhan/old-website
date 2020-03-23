@@ -38,6 +38,8 @@ This post is mostly a collection of notes I have while I learn ReactJS. This pos
 
 2. [React Classes](#react-classes)
 
+3. [Data Flow](#data-flow)
+
 
 
 
@@ -585,3 +587,13 @@ class App extends React.Component{
 
 export default App;
 ```
+
+### Data Flow
+
+In react the data flows from markdown to graphql to js to html. So, for example, if you want to show a thumbnail with each post, have a `thumbnail` field in your markdown:
+
+```
+thumbnail: /images/image.jpg
+```
+
+Have the graphql query capture this in the `frontmatter` section. Refer to it in the .js and then display it.
