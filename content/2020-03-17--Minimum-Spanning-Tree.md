@@ -1,8 +1,8 @@
 ---
 title: Minimum Spanning Tree
 date: 2020-03-17
-thumbnail: content/images/weightedundirectedgraph/graph-1.png
-draft: true
+thumbnail: /post-images/mst.png
+draft: false
 extract: Analysis of minimum spanning trees
 categories: 
     - General Algorithms
