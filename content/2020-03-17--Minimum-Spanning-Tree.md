@@ -2,7 +2,7 @@
 title: Minimum Spanning Tree
 date: 2020-03-17
 thumbnail: /post-images/mst.png
-draft: false
+draft: true
 extract: Analysis of minimum spanning trees
 categories: 
     - General Algorithms
@@ -15,7 +15,9 @@ tags:
 
 1. [Motivation](#motivation)
 
-2. [Kruskal's Alogrithm](#kruskals-algorithm)
+2. [Prim's Algorithm](#prims-algorithm)
+
+2. [Kruskal's Algorithm](#kruskals-algorithm)
 
 In this post, I'll assume you have sufficient [weighted undirected graph](/weighted-undirected-graphs) and [union find](/union-find) knowledge. If not, feel free to browse through the relevant posts.
 
@@ -39,6 +41,22 @@ $$$
 
 Remember, the aim is to find a path through the graph that connects each edge to every other edge BUT making sure the path we found has the least total weight.
 
+### Prim's Algorithm
+
+Here are the steps behind Prim's algorithm:
+1. Start with an arbitrary edge and add it to the empty tree
+2. Look for the edge with the least weight and add it to the tree IF that edge doesn't create a cycle
+3. Repeat step 2 until there are no more edges left to visit
+
+Let's look at the graph we'd be operating on:
+
+![MST-Graph](images/mst/graph.png) [Image Credit - MST Graph](https://csacademy.com/app/graph_editor/)
+
+Let's walk through and see how the above graph can be processed by Prim's. Before we do that, here's the adjacency list for the undirected weighted graph:
+
+```css
+```
+
 ### Kruskal's Algorithm
 
 Here are the steps behind Kruskal's algorithm: 
@@ -53,3 +71,4 @@ There are a few questions that we need to answer before we can begin implementin
 To keep our edges in sorted order, we'll create a priority queue
 
 2. Add this picked edge to the MST IF it doesn't create a cycle: **How do we make sure a cycle is not created?**
+
