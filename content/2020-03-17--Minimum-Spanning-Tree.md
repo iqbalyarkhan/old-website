@@ -2,7 +2,7 @@
 title: Minimum Spanning Tree
 date: 2020-03-17
 thumbnail: /post-images/mst.png
-draft: true
+draft: false
 extract: Analysis of minimum spanning trees
 categories: 
     - General Algorithms
@@ -15,9 +15,10 @@ tags:
 
 1. [Motivation](#motivation)
 
-2. [Prim's Algorithm](#prims-algorithm)
-
 2. [Kruskal's Algorithm](#kruskals-algorithm)
+
+3. [Prim's Algorithm](#prims-algorithm)
+
 
 In this post, I'll assume you have sufficient [weighted undirected graph](/weighted-undirected-graphs) and [union find](/union-find) knowledge. If not, feel free to browse through the relevant posts.
 
@@ -41,6 +42,30 @@ $$$
 
 Remember, the aim is to find a path through the graph that connects each edge to every other edge BUT making sure the path we found has the least total weight.
 
+### Kruskal's Algorithm
+
+Here are the steps behind Kruskal's algorithm: 
+1. Pick the edge with the least weight (need to keep our edges in sorted order)
+2. Add this picked edge to the MST IF it doesn't create a cycle
+3. Go back to step 1 until there are no more edges left
+
+There are a few questions that we need to answer before we can begin implementing Kruskal's algorithm:
+
+1. Pick the edge with the least weight (need to keep our edges in sorted order): **How do we sort the edges efficiently?**
+
+To keep our edges in sorted order, we'll create a min heap
+
+2. Add this picked edge to the MST IF it doesn't create a cycle: **How do we make sure a cycle is not created?**
+
+Let's look at a graph and walk through how Kruskal's would find its MST:
+
+![Directed-Graph](images/mst/graph.jpg) [Image Credit - Geek for Geeks](https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-algorithm-greedy-algo-2/)
+
+For this tree, this is what our 
+```css
+7-6
+```
+
 ### Prim's Algorithm
 
 Here are the steps behind Prim's algorithm:
@@ -56,19 +81,4 @@ Let's walk through and see how the above graph can be processed by Prim's. Befor
 
 ```css
 ```
-
-### Kruskal's Algorithm
-
-Here are the steps behind Kruskal's algorithm: 
-1. Pick the edge with the least weight (need to keep our edges in sorted order)
-2. Add this picked edge to the MST IF it doesn't create a cycle
-3. Go back to step 1 until there are no more edges left
-
-There are a few questions that we need to answer before we can begin implementing Kruskal's algorithm:
-
-1. Pick the edge with the least weight (need to keep our edges in sorted order): **How do we sort the edges efficiently?**
-
-To keep our edges in sorted order, we'll create a priority queue
-
-2. Add this picked edge to the MST IF it doesn't create a cycle: **How do we make sure a cycle is not created?**
 

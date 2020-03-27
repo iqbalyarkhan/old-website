@@ -36,6 +36,8 @@ tags:
 7. [C++ Ternary Operator](#c-ternary-operator)
 
 8. [Pair](#pair)
+
+9. [Tuple](#tuple)
 ### Reading numbers separated by whitespace
 
 Say input is:
@@ -383,4 +385,30 @@ cout << pairOne.first << " " << pairTwo.second << endl;
 
 //Output:
 // 1 two 
+```
+
+### Tuple
+Defined in the 
+```cpp
+#include <tuple>
+```
+header, a tuple is a heterogeneous collection: it can be thought of as a row in a database. For example, if our database stores a Person, a tuple consisting of the person's name, number of accounts and average daily balance would be: ["John",2,31000.25]. 
+
+You make a `tuple` using the `make_tuple()` function call:
+
+```cpp
+int main(){
+    auto t = make_tuple("John", 2, 31000.25);
+}
+```
+
+To extract items from a tuple you'd use the `get<index>(tuple_name)` call:
+
+
+```cpp
+int main(){
+    auto t = make_tuple("John", 2, 31000.25);
+    cout << get<2>(t) << endl; //prints 31000.25
+    cout << get<0>(t) << endl; //prints John
+}
 ```
