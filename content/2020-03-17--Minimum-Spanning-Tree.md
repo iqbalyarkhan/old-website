@@ -2,7 +2,7 @@
 title: Minimum Spanning Tree
 date: 2020-03-17
 thumbnail: /post-images/mst.png
-draft: false
+draft: true
 extract: Analysis of minimum spanning trees
 categories: 
     - General Algorithms
@@ -17,9 +17,7 @@ tags:
 
 2. [Kruskal's Algorithm](#kruskals-algorithm)
 
-3. [Prim's Algorithm](#prims-algorithm)
-
-
+3. [Code for Kruskal's](#code-for-kruskals)
 In this post, I'll assume you have sufficient [weighted undirected graph](/weighted-undirected-graphs) and [union find](/union-find) knowledge. If not, feel free to browse through the relevant posts.
 
 ### Motivation
@@ -59,26 +57,393 @@ To keep our edges in sorted order, we'll create a min heap
 
 Let's look at a graph and walk through how Kruskal's would find its MST:
 
-![Directed-Graph](images/mst/graph.jpg) [Image Credit - Geek for Geeks](https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-algorithm-greedy-algo-2/)
+![Directed-Graph](images/mst/mst-1.png)
 
-For this tree, this is what our 
-```css
-7-6
+For this tree, these are the steps Kruskal's will perform:
+
+First, we need to sort the edges from least weight to the one with the most weight. 
+
+Then we start with lowest weight edge: 3 options, either 1-2, 4-6 or 5-1. Let's pick 1-2:
+
+```cpp
+1-2
 ```
 
-### Prim's Algorithm
+After 1-2 is picked, we check to see if they are part of the same component. If they are, we ignore this edge since it'd cause a cycle otherwise we perform the weighted quick union operation on the two to represent that vertices 1 and 2 belong to the same component:
 
-Here are the steps behind Prim's algorithm:
-1. Start with an arbitrary edge and add it to the empty tree
-2. Look for the edge with the least weight and add it to the tree IF that edge doesn't create a cycle
-3. Repeat step 2 until there are no more edges left to visit
+```cpp
+1-2 and Union(1,2);
+```
+![Directed-Graph](images/mst/mst-2.png)
 
-Let's look at the graph we'd be operating on:
+Next, we pick the next smallest edge which is 4-6. Check if 4-6 are part of the same component which they aren't so we can add the connection between 4-6:
 
-![MST-Graph](images/mst/graph.png) [Image Credit - MST Graph](https://csacademy.com/app/graph_editor/)
-
-Let's walk through and see how the above graph can be processed by Prim's. Before we do that, here's the adjacency list for the undirected weighted graph:
-
-```css
+```cpp
+1-2
+4-6 and Union(4,6)
 ```
 
+![Directed-Graph](images/mst/mst-3.png)
+
+Next, we pick the next smallest edge which is 5-6. Check if 5-6 are part of the same component which they aren't so we can add the connection between 5-6:
+
+```cpp
+1-2
+4-6
+5-6 and Union(5,6)
+```
+
+![Directed-Graph](images/mst/mst-4.png)
+
+We keep adding edges 1-3 and 0-2:
+```cpp
+1-2
+4-6
+5-6
+1-3
+0-2
+```
+ 
+ ![Directed-Graph](images/mst/mst-5.png)
+ 
+ 
+ Next we get to 2-3. We find that 2-3 are already in the same component:
+
+
+
+that's because 1-2 and 1-3 and we're trying to add the 2-3 connection which would create the 1-2-3 cycle so we ignore 2-3. 0-1 would also create a cycle which is also ignored. We then finally add the last edge, 3-4 and complete the MST:
+
+![Directed-Graph](images/mst/mst-6.png)
+
+
+### Code for Kruskal's
+
+```cpp{numberLines: true}
+class MST{
+private:
+    //From weighted undirected graph
+    vector<vector<pair<int,int>>> graph;
+    vector<tuple<int,int,int>> minHeap;
+    queue<tuple<int,int,int>> actualMST;
+    
+    //From UnionFind implementation
+    vector<int> connectionsArray;
+    vector<int> children;
+    int numberOfSites;
+    
+    //From heaps implementation
+    void trickleUp(tuple<int,int,int>);
+    void trickleDown(tuple<int,int,int>);
+    
+    
+public:
+    //From weighted undirected graph
+    int GetNumberOfVertices();
+    void Insert(int,int, int);
+    
+    //From UnionFind Implementation
+    void Union(int,int);
+    int FindRoot(int);
+    void Unionize(int,int);
+    
+    //From heaps implementation
+    void HeapInsert(tuple<int,int,int>);
+    tuple<int,int,int> HeapGetMin();
+    
+    //MST
+    MST(int v);
+    void createMST();
+};
+
+tuple<int,int,int> MST::HeapGetMin(){
+    tuple<int,int,int> minElement = minHeap[0];
+    int replacement = int(minHeap.size() - 1);
+    minHeap[0] = minHeap[replacement];
+    minHeap.erase(minHeap.end() - 1);
+    if (int(minHeap.size()) != 1)
+        trickleDown(minHeap[0]);
+    return minElement;
+}
+
+void MST::createMST(){
+    int count = 0;
+    int weight = 0;
+    while (count != (numberOfSites - 1)){
+        tuple<int,int,int> minElement = HeapGetMin();
+        int child = get<0>(minElement);
+        int parent = get<1>(minElement);
+        if (FindRoot(child) != FindRoot(parent)){
+            weight += get<2>(minElement);
+            cout << child << " - " << parent << " " << endl;
+            Union(child, parent);
+            count++;
+        } else {
+            cout << child << " - " << parent << " would cause a cycle" << endl;
+        }
+    }
+    cout << "And min weight is: " << weight << endl;
+    cout << endl;
+}
+
+void MST::trickleUp(tuple<int,int,int> item){
+    //Trickle up will always start at
+    //the last index and will work its
+    //way up the array
+    int curr = int(minHeap.size() - 1);
+    while (curr != 0){
+        //Get parent index
+        int parent = ((curr - 1) / 2);
+        if (get<2>(minHeap[curr]) < get<2>(minHeap[parent]) ){
+            //Newly added node's weight < parent's weight
+            //Move up the newly added node and re-check
+            tuple<int,int,int> temp = minHeap[parent];
+            minHeap[parent] = minHeap[curr];
+            minHeap[curr] = temp;
+            curr = parent;
+        } else {
+            //Parent was not > child,
+            //we're done
+            break;
+        }
+    }
+}
+
+void MST::trickleDown(tuple<int,int,int> item){
+    //Trickle down will always begin from root,
+    //so we'll always assume that the index is 0
+    //for the item to be trickled down.
+    int currIndex = 0;
+    int arraySize = int(minHeap.size()) - 1;
+    while (true){
+        int leftChildIndex = (currIndex * 2) + 1;
+        int rightChildIndex = (currIndex * 2) + 2;
+        if (leftChildIndex <= arraySize && rightChildIndex <= arraySize){
+            //We have both, a left and a right child
+            if (get<2>(minHeap[leftChildIndex]) < get<2>(minHeap[currIndex]) && get<2>(minHeap[leftChildIndex]) < get<2>(minHeap[rightChildIndex])){
+                //Left child is less than curr AND is also less than right child
+                //Swap curr with left child
+                tuple<int,int,int> temp = minHeap[leftChildIndex];
+                minHeap[leftChildIndex] = minHeap[currIndex];
+                minHeap[currIndex] = temp;
+                currIndex = leftChildIndex;
+            } else if (get<2>(minHeap[rightChildIndex]) < get<2>(minHeap[currIndex]) && get<2>(minHeap[rightChildIndex]) < get<2>(minHeap[leftChildIndex])){
+                //Right child is less than curr AND is also less than left child
+                //Swap curr with right child
+                tuple<int,int,int> temp = minHeap[rightChildIndex];
+                minHeap[rightChildIndex] = minHeap[currIndex];
+                minHeap[currIndex] = temp;
+                currIndex = rightChildIndex;
+            } else {
+                //Left and right child have the same weight, just pick one at random
+                tuple<int,int,int> temp = minHeap[rightChildIndex];
+                minHeap[rightChildIndex] = minHeap[currIndex];
+                minHeap[currIndex] = temp;
+                currIndex = rightChildIndex;
+            }
+        } else if (leftChildIndex <= arraySize && get<2>(minHeap[leftChildIndex]) < get<2>(minHeap[currIndex])){
+            //Only left child exists and this left child
+            //is less than the element we're swapping
+            tuple<int,int,int> temp = minHeap[leftChildIndex];
+            minHeap[leftChildIndex] = minHeap[currIndex];
+            minHeap[currIndex] = temp;
+            currIndex = leftChildIndex;
+        } else if (rightChildIndex <= arraySize && get<2>(minHeap[rightChildIndex]) < get<2>(minHeap[currIndex])){
+            //Only right child exists and this right child
+            //is less than the element we're swapping
+            tuple<int,int,int> temp = minHeap[rightChildIndex];
+            minHeap[rightChildIndex] = minHeap[currIndex];
+            minHeap[currIndex] = temp;
+            currIndex = rightChildIndex;
+        } else {
+            return;
+        }
+        
+    }
+    
+}
+
+MST::MST(int v) : numberOfSites(v){
+    for (int i = 0; i < numberOfSites; i++)
+        connectionsArray.push_back(i);
+    children.resize(numberOfSites);
+    graph.resize(numberOfSites);
+}
+
+void MST::Insert(int from, int to, int weight){
+    //Add edges to graph representation
+    pair<int,int> edge1(from, weight);
+    pair<int,int> edge2(to,weight);
+    graph[from].push_back(edge2);
+    graph[to].push_back(edge1);
+    //Add edges to our min heap
+    tuple<int,int,int> newItemForHeap(from,to,weight);
+    HeapInsert(newItemForHeap);
+}
+
+void MST::Unionize(int parent, int child){
+    connectionsArray[child] = parent;
+    children[parent] += children[child] + 1;
+}
+
+int MST::FindRoot(int r){
+    while(true){
+        if (connectionsArray[r] == r)
+            break;
+        r = connectionsArray[r];
+    }
+    
+    return r;
+}
+
+void MST::Union(int child, int parent){
+    int childRoot = FindRoot(child);
+    int parentRoot = FindRoot(parent);
+    if (children[childRoot] == children[parentRoot] || children[childRoot] < children[parentRoot]){
+        //Same number of children in both roots, make childRoot the child of parentRoot
+        Unionize(parentRoot, childRoot);
+    } else {
+        Unionize(childRoot, parentRoot);
+    }
+}
+
+void MST::HeapInsert(tuple<int, int, int>curr){
+    //Adding to end of vector
+    minHeap.push_back(curr);
+    trickleUp(curr);
+}
+```
+
+We've seen all most of these functions before in the [union find](/union-find) post and [heap](/heap) post so I won't go into their details. Here're the functions we haven't seen or are a modified version of their former selves:
+
+Let's start with the client:
+
+```cpp
+int main(int argc, const char * argv[]) {
+    MST mst(7);
+    mst.Insert(0, 1, 4);
+    mst.Insert(0, 2, 3);
+    mst.Insert(1, 2, 1);
+    mst.Insert(1, 3, 2);
+    mst.Insert(2, 3, 3);
+    mst.Insert(3, 4, 5);
+    mst.Insert(3, 5, 7);
+    mst.Insert(4, 5, 6);
+    mst.Insert(4, 6, 1);
+    mst.Insert(5, 6, 1);
+    mst.createMST();
+    return 0;
+}
+```
+
+The client does nothing but insert elements into our graph and calls the `createMST()` function.
+
+Here's what the insert function is doing:
+```cpp{numberLines: 151}
+void MST::Insert(int from, int to, int weight){
+    //Add edges to our min heap
+    tuple<int,int,int> newItemForHeap(from,to,weight);
+    HeapInsert(newItemForHeap);
+}
+``` 
+
+The function takes in 3 integers: the from vertex, the to vertex and the weight. Next we create a the `newItemForHeap` tuple called `newItemForHeap`. Next, we call the `HeapInsert` function that creates our `minHeap`. The `minHeap` allows us to grab the smallest weight edge in $O(1)$ time.
+
+Let's look at the `HeapInsert` function:
+
+```cpp{numberLines:188}
+void MST::HeapInsert(tuple<int, int, int>curr){
+    //Adding to end of vector
+    minHeap.push_back(curr);
+    trickleUp(curr);
+}
+``` 
+
+that which takes in the tuple we created from the insert call and creates the `minHeap` vector. Any adjustments required to maintain the heap property are done by the call to `trickleUp` function. 
+
+This process of inserting into the heap continues until all the edges and their weights are added to the `minHeap`. Remember, `minHeap` is our heap that has the edge with the least weight at index 0 at all times (after removal and inserts).
+
+Next, the client then calls the `createMST()` function. At this point, the only thing that is ready is our `minHeap` with our edges. Here's what `createMST()` looks like:
+
+```cpp{numberLines:47}
+void MST::createMST(){
+    int count = 0;
+    int weight = 0;
+    while (count != (numberOfSites - 1)){
+        tuple<int,int,int> minElement = HeapGetMin();
+        int child = get<0>(minElement);
+        int parent = get<1>(minElement);
+        if (FindRoot(child) != FindRoot(parent)){
+            weight += get<2>(minElement);
+            cout << child << " - " << parent << " " << endl;
+            Union(child, parent);
+            count++;
+        } else {
+            cout << child << " - " << parent << " would cause a cycle" << endl;
+        }
+    }
+    cout << "And min weight is: " << weight << endl;
+    cout << endl;
+}
+```
+
+This function declares the `count` variable that is used to stop our loop later. This `count` would let us know when the number of edges is one less than the number of vertices. We also initialize the `weight` variable that will keep track of the total weight of the MST so far:
+
+```cpp
+int count = 0;
+int weight = 0;
+while (count != (numberOfSites - 1)){
+//.....
+}
+```
+
+We then enter the while loop and extract the smallest element from our `minHeap` and get the two vertices:
+
+```cpp
+int count = 0;
+int weight = 0;
+while (count != (numberOfSites - 1)){
+    tuple<int,int,int> minElement = HeapGetMin();
+    int child = get<0>(minElement);
+    int parent = get<1>(minElement);
+}
+```
+
+If this is our first iteration, we would've grabbed this tuple: 
+```cpp
+<1,2,1>
+```
+
+meaning the edge from vertex 1 to vertex 2 with weight 1. Then we check to see if vertex 1 and 2 are already in the same set by calling `FindRoot` which is the same function we saw in the union find post:
+
+```cpp
+int count = 0;
+int weight = 0;
+while (count != (numberOfSites - 1)){
+    tuple<int,int,int> minElement = HeapGetMin();
+    int child = get<0>(minElement);
+    int parent = get<1>(minElement);
+    if (FindRoot(child) != FindRoot(parent)){
+        //....
+    }
+}
+```
+
+If they're not in the same component, we go ahead and add them to the same component using the `Union` function which again is something we've already seen. We also go ahead and add the weight of this edge to the total `weight` variable. We also increment the count.
+
+```cpp
+int count = 0;
+int weight = 0;
+while (count != (numberOfSites - 1)){
+    tuple<int,int,int> minElement = HeapGetMin();
+    int child = get<0>(minElement);
+    int parent = get<1>(minElement);
+    if (FindRoot(child) != FindRoot(parent)){
+        weight += get<2>(minElement);
+        cout << child << " - " << parent << " " << endl;
+        Union(child, parent);
+        count++;
+    }
+}
+```
+
+We continue doing so until the condition in the `while` loop is not satisfied. 

@@ -38,6 +38,8 @@ tags:
 8. [Pair](#pair)
 
 9. [Tuple](#tuple)
+
+10. [Min Heap Using STL Containers](#min-heap-using-stl-containers)
 ### Reading numbers separated by whitespace
 
 Say input is:
