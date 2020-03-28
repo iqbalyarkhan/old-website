@@ -2,7 +2,7 @@
 title: Shortest Path Algorithms
 date: 2020-03-28
 thumbnail: /post-images/spa.png
-draft: false
+draft: true
 extract: Analysis of shortest path algorithms
 categories: 
     - General Algorithms
@@ -16,6 +16,8 @@ tags:
 1. [Motivation](#motivation)
 
 2. [Dijkstra's Algorithm](#dikjstras-algorithm--single-source)
+
+3. [Analysis](#analysis)
 
 In this post, I'll assume you have sufficient [digraph](/directed-graphs) knowledge
 
@@ -223,3 +225,7 @@ stack
 We're done since we've reached 0. Now popping off stack we get:
 
 0 - 7 - 2 - 6 
+
+### Analysis
+
+Running time for Dijkstra's with min priority queue is $O(V + E Log V)$
