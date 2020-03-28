@@ -2,7 +2,7 @@
 title: Minimum Spanning Tree
 date: 2020-03-17
 thumbnail: /post-images/mst.png
-draft: true
+draft: false
 extract: Analysis of minimum spanning trees
 categories: 
     - General Algorithms
@@ -18,6 +18,9 @@ tags:
 2. [Kruskal's Algorithm](#kruskals-algorithm)
 
 3. [Code for Kruskal's](#code-for-kruskals)
+
+4. [Analysis](#analysis)
+
 In this post, I'll assume you have sufficient [weighted undirected graph](/weighted-undirected-graphs) and [union find](/union-find) knowledge. If not, feel free to browse through the relevant posts.
 
 ### Motivation
@@ -446,4 +449,14 @@ while (count != (numberOfSites - 1)){
 }
 ```
 
-We continue doing so until the condition in the `while` loop is not satisfied. 
+We continue doing so until the condition in the `while` loop is not satisfied.
+
+### Analysis
+
+1. **Building the heap**
+As we saw above, whenever the client calls insert, we take in that edge and build our `minHeap`. This building process is done $E$ times where $E$ is the number of edges. The process itself involves trickling up if the an edge is added that has the least weight of all the edges seen so far. Trickling up takes $O(logN)$ time or each $E$. So overall, building out our `minHeap` takes $O(E logN)$ time. 
+
+The heap itself takes up $O(E)$ space since it needs to store the weight of each edge.
+
+2. **Building Union Find**
+Our union find is actually weighted quick union where building up the `connectionsArray` takes up $O(V)$ space: Since the array's length equals the number of vertices. The union operation takes $O(logV)$ where $V$ is the number of vertices. It takes the same time for `findRoot()` operation. 
