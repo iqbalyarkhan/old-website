@@ -43,7 +43,7 @@ Let's start with an algorithm that'll help us answer the question: **What is the
 
 The algorithm makes use of two arrays: 
 
-- an `edgeTo` array (which we've already seen being used with DFS and BFS) to find the paths from source to a vertex
+- an `edgeTo` array (which we've already seen being used with DFS and BFS) to find the paths from source to a vertex. It keeps track of the last edge that takes us to `edgeTo[index]`.
 - a `distanceTo` array which will hold the weight from one vertex to another
 
 The information above is nothing new. What is new is how we'd change the entries in the two arrays. Let's walk through this graph and and see how we'd go about filling out the two arrays:
