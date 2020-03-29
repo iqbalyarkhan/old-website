@@ -518,4 +518,4 @@ Running time for Dijkstra's with min priority queue is $O(V + E Log V)$
 
 ### Next
 
-I suggest looking at my acyclic edge-weighted digraphs post. 
+I suggest looking at my acyclic edge-weighted digraphs post. Dijkstra's allowed us to handle graphs that had cycles. If our graph is guaranteed to be acyclic, there's a better algorithm to answer the questions we asked earlier. 
