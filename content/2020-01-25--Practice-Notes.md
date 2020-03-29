@@ -360,6 +360,19 @@ itr = myVec.erase(itr);
 
 We can then continue processing our vector.
 
+Another way to delete is by index:
+
+```cpp
+vector<int> sortedEdges;
+sortedEdges.push_back(12);
+sortedEdges.push_back(13);
+sortedEdges.push_back(14);
+sortedEdges.push_back(15);
+sortedEdges.erase(sortedEdges.begin()); // deletes at index 0 ie 12
+sortedEdges.erase(sortedEdges.begin() + 1); // deletes at index 1 ie 13
+sortedEdges.erase(sortedEdges.begin() + 2); // deletes at index 2 ie 14
+```
+
 #### Vector of vectors
 
 ```cpp
