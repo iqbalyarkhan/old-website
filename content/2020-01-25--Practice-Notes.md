@@ -41,7 +41,8 @@ tags:
 
 9. [Tuple](#tuple)
 
-10. [Min Heap Using STL Containers](#min-heap-using-stl-containers)
+10. [Setting an integer to infinity](#setting-an-integer-to-infinity)
+
 ### Reading numbers separated by whitespace
 
 Say input is:
@@ -426,3 +427,17 @@ int main(){
     cout << get<0>(t) << endl; //prints John
 }
 ```
+
+### Setting an integer to infinity
+Defined in the 
+```cpp
+#include <limits>
+```
+
+header, you can set an integer to infinity like so:
+
+```cpp
+int a = numeric_limits<int>::max();
+```
+
+Which would be 2^31 - 1 (or 2 147 483 647) if int is 32 bits wide on your implementation.
