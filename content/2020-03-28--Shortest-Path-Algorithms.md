@@ -19,6 +19,8 @@ tags:
 
 3. [Analysis](#analysis)
 
+4. [Next](#next)
+
 In this post, I'll assume you have sufficient [digraph](/directed-graphs) knowledge
 
 ### Motivation
@@ -513,3 +515,7 @@ int Digraph::GetNumberOfVertices(){
 ### Analysis
 
 Running time for Dijkstra's with min priority queue is $O(V + E Log V)$
+
+### Next
+
+I suggest looking at my acyclic edge-weighted digraphs post. 
