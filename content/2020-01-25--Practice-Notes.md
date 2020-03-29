@@ -32,6 +32,8 @@ tags:
     * [Erase from vectors](#erase-from-vectors)
     
     * [Vector of vectors](#vector-of-vectors)
+    
+    * [Assign and vectors](#assign-and-vectors)
 
 7. [C++ Ternary Operator](#c-ternary-operator)
 
@@ -361,6 +363,16 @@ We can then continue processing our vector.
 
 ```cpp
 vector<vector<int>> adjList;
+```
+
+#### Assign and vectors
+
+The assign() function either gives the current vector the values from start to end, or gives it num copies of val.
+For example, the following code uses assign() to put 10 copies of the integer 42 into a vector:
+
+```cpp
+ vector<int> v;
+ v.assign( 13, 42 ); //[42, 42, 42]
 ```
 
 ### C++ Ternary Operator
