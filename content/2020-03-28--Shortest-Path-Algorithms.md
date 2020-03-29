@@ -43,8 +43,8 @@ Let's start with an algorithm that'll help us answer the question: **What is the
 
 The algorithm makes use of two arrays: 
 
-- an `edgeTo` array (which we've already seen being used with DFS and BFS) to find the paths from source to a vertex. It keeps track of the last edge that takes us to `edgeTo[index]`.
-- a `distanceTo` array which will hold the weight from one vertex to another
+- an `edge` array (which we've already seen being used with DFS and BFS) to find the paths from source to a vertex. It keeps track of the last edge that takes us to `edge[index]`. Therefore `edge[v]`is the edge that connects v to its parent in the shortest path tree
+- a `dist` array which will hold the weight from one vertex to another. `dist[v]` is the length of the shortest known path from source to v  
 
 The information above is nothing new. What is new is how we'd change the entries in the two arrays. Let's walk through this graph and and see how we'd go about filling out the two arrays:
 
@@ -288,7 +288,7 @@ Notice how the order of the pair is <weight,edge> which allows us to sort based 
 int s = sortedEdges[0].second;
 ```
 
-and remove it from the array (like popping from a min priority queue). Next, we call the `Relax()` function which updates the `dist` and `edge` arrays based on the logic we discussed eariler:
+and remove it from the array (like popping from a min priority queue). Next, we call the `Relax()` function which updates the `dist` and `edge` arrays based on the logic we discussed earlier:
 
 ```cpp
 void Digraph::Relax(int s){
