@@ -3,7 +3,7 @@ title: Shortest Path Algorithms
 date: 2020-03-28
 thumbnail: /post-images/spa.png
 draft: false
-extract: Analysis of shortest path algorithms
+extract: Analysis of shortest path algorithm for Acyclic Digraphs
 categories: 
     - General Algorithms
 tags:
@@ -518,4 +518,4 @@ Running time for Dijkstra's with min priority queue is $O(V + E Log V)$
 
 ### Next
 
-I suggest looking at my acyclic edge-weighted digraphs post. Dijkstra's allowed us to handle graphs that had cycles. If our graph is guaranteed to be acyclic, there's a better algorithm to answer the questions we asked earlier. 
+I suggest looking at my [acyclic edge-weighted digraphs post](/shortest-paths-directed-acyclic-digraphs). Dijkstra's allowed us to handle graphs that had cycles. If our graph is guaranteed to be acyclic, there's a better algorithm to answer the questions we asked earlier. 
