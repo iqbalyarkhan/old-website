@@ -24,7 +24,6 @@ const Categories = (props) => {
               activeClassName={props.activeClassName}
             >
               {category.fieldValue}
-              <strong> ({category.totalCount})</strong>
             </Link>
           </li>
         ))}

@@ -15,13 +15,13 @@ tags:
 
 1. [Introduction](#introduction)
 
-5. [Depth First Search](#depth-first-search)
+2. [Depth First Search](#depth-first-search)
 
-6. [Finding Paths Using DFS](#finding-paths-using-dfs)
+3. [Finding Paths Using DFS](#finding-paths-using-dfs)
 
-9. [Connected Components](#connected-components)
+4. [Connected Components](#connected-components)
 
-10. [Conclusion](#conclusion)
+5. [Conclusion](#conclusion)
 
 ### Introduction
 
@@ -83,9 +83,72 @@ Let's step through this logic using this graph as an example:
 
 ![Undirected-Graph-1](images/graphs/path1.png) [Image Credit - Undirected Graph 1](https://graphonline.ru/en/)
 
+Here's the adjacency list for this graph
+
+```css
+0 -> 1 -> 2 -> 5
+1 -> 0 -> 2
+2 -> 0 -> 1 -> 3 -> 4
+3 -> 2 -> 4 -> 5
+4 -> 2 -> 3
+5 -> 0 -> 3
+```
+
+Client calls our `RecursiveDFS()` function on line 1 that starts with looping through the `visited` array which initially looks like so:
+
+```css
+visited[0] = F
+visited[1] = F 
+visited[2] = F
+visited[3] = F
+visited[5] = F
+```
+
+we then jump to line 10 and mark `visited[v]` (v = i = 0) to true and print `v`
+
+```css
+printed: 0
+visited[0] = T
+visited[1] = F 
+visited[2] = F
+visited[3] = F
+visited[5] = F
+```
+
+Next, we iterate over the adjacency list of 0 and assign the first unvisited neighbor to curr:
+```css
+printed: 0
+visited[0] = T
+visited[1] = F 
+visited[2] = F
+visited[3] = F
+visited[5] = F
+
+     |
+0 -> 1 -> 2 -> 5
+
+```
+
+1 is unvisited, so we halt the `RecursiveDFS(0)` call and initiate another call to `RecursiveDFS` but this time with the value of `v` as 1. We then mark 1 as visited, print it out and iterate over its neighbors: 
+
+```css
+printed: 0
+visited[0] = T
+visited[1] = T 
+visited[2] = F
+visited[3] = F
+visited[5] = F
+
+     |
+1 -> 0 -> 2
+
+```
+
+We find that 0 is already visited so move to 2. We find 2 is unvisited so we halt the `RecursiveDFS(1)` call and call `RecursiveDFS(2)`. We continue this process until all vertices are visited.
+
 ### Finding Paths Using DFS
 
-We've discussed algorithms for searching (BFS and DFS) but these algorithms can be modified slightly to answer more questions that we asked in the graph search section. Specifically, we're usually interested in answering questions such as **Is there a path from A to B and if so what is it?**. There is a surprisingly simple way to answer that question using DFS:
+DFS can be modified slightly to answer this question: **is there a path from A to B and if so what is it?**. There is a surprisingly simple way to answer that question using DFS:
 
 ```cpp{numberLines: true}
 void AdjList::RecursiveDFS(int v){
@@ -159,7 +222,7 @@ Go to edgeTo[2] = 0
 We're now at v vertex: 0
 ```
 
-This algorithm builds a path in time proportional to the number of vertices visited. Worst case, we need to go through all the vertices therefore the run time is $O(N)$.
+This algorithm builds a path in time proportional to the number of vertices visited. Worst case, we need to go through all the vertices therefore the run time is $O(V)$.
 
 Notice how in the algorithm above we've got the vertex trace but we need to print the trace in reverse order, ie last in first out: the algorithm went in this order`5 3 2 0` but the actual path we took was `0 2 3 5`. Since the nature of our output is LIFO, we can use a stack and keep pushing to our stack as we visit each vertex in the algorithm above:
 
@@ -209,169 +272,6 @@ void AdjList::FindPath(int v, int w){
     cout << endl;
 }
 ```
-
-### Breadth First Search
-
-Notice how depth first search took a long route to find the path from 0 to 5 in the section above. That is because DFS is not designed to find the shortest route. It is used to find **a** route. Therefore, DFS helped us answer whether a path existed, BFS will help us find the shortest path from the starting node. 
-
-In breadth first search, we start the search from elements closest to the starting node. The only difference between the code for depth first and breadth first is that breadth first uses `queue` instead of `stack`. The algorithm has 3 main steps:
-
-- Remove a vertex from the queue
-- Mark all vertices adjacent to current vertex and push them onto the queue
-- Repeat until queue is empty
-
-```cpp{numberLines: true}
-void AdjList::BFS(int v){
-    vector<int> marked(vectorSize);
-    queue<int> q;
-    marked[v] = true;
-    q.push(v);
-    while (!q.empty()){
-        int curr = q.front();
-        cout << curr << " ";
-        q.pop();
-        for (int i = 0; i < adjList[curr].size(); i++){
-            int neighbor = adjList[curr][i];
-            if (!marked[neighbor]){
-                edgeTo[neighbor] = curr;
-                marked[neighbor] = true;
-                q.push(neighbor);
-            }
-        }
-    }
-    cout << endl;
-}
-```
- The code above first creates a boolean vector to keep track of visited elements called `marked`.
- 
- We also create a queue to push elements so that we can visit them later. We want first in first out for breadth first search because we want to explore all the nodes closest to the starting node first. 
-
- Next we push the passed element, `v`, onto the queue and mark it. Then we enter a while loop until the queue is empty. 
-
- We pop an element off the queue, call it `curr`, and start to visit and mark all the elements that are adjacent to `curr`. In the process, we also go ahead and mark these adjacent vertices. This is because we're **visiting** them at this time and this is because BFS is interested in the vertices closest to the passed in vertex. At this point we also populate the `edgeTo` array to record how we got to the current vertex. 
- 
-We then push each one of these visited vertices onto the queue.
-
-Let's walk through an example again. Here is the graph we're using:
-
-![Undirected-Graph-1](images/graphs/path1.png) [Image Credit - Undirected Graph 1](https://graphonline.ru/en/)
-
-Let's say we start at vertex 0 and our queue is empty and the marked array has each entry as false and edgeTo array is empty:
-
-```
-queue:             
-
-marked[0] =        
-marked[1] = 
-marked[2] = 
-marked[3] = 
-marked[4] =
-marked[5] =  
-
-edgeTo[0] =        
-edgeTo[1] = 
-edgeTo[2] = 
-edgeTo[3] = 
-edgeTo[4] = 
-edgeTo[5] = 
-```
-Since we start at 0, we push and mark it:
-
-
-```
-                   current Vertex: 0
-queue:                  0
-
-marked[0] =             T
-marked[1] = 
-marked[2] = 
-marked[3] = 
-marked[4] =
-marked[5] =  
-
-edgeTo[0] =             0
-edgeTo[1] = 
-edgeTo[2] = 
-edgeTo[3] = 
-edgeTo[4] = 
-edgeTo[5] = 
-```
-
-We then go inside the `while` loop, pop 0 from queue, visit all its neighbors, mark them and push them on queue:
-
-```cpp
-                   current Vertex: 0
-queue:                 2,1,5
-
-marked[0] =             T
-marked[1] =             T
-marked[2] =             T
-marked[3] = 
-marked[4] =
-marked[5] =             T
-
-edgeTo[0] =             0
-edgeTo[1] =             0
-edgeTo[2] =             0
-edgeTo[3] =     
-edgeTo[4] = 
-edgeTo[5] =             0
-```
-
-Next, we go back to the top of the while loop and pop another element off the queue which is 2:
-```cpp
-                   current Vertex: 2
-queue:                 1,5
-
-marked[0] =             T
-marked[1] =             T
-marked[2] =             T
-marked[3] = 
-marked[4] =
-marked[5] =             T
-
-edgeTo[0] =             0
-edgeTo[1] =             0
-edgeTo[2] =             0
-edgeTo[3] =     
-edgeTo[4] = 
-edgeTo[5] =             0
-```
-We then move through the adjacency list for 2 and mark each vertex and push each to the queue as well:
-
-```cpp
-                   current Vertex: 2
-queue:                 1,5
-
-marked[0] =             T
-marked[1] =             T
-marked[2] =             T
-marked[3] =             T
-marked[4] =             T
-marked[5] =             T
-
-edgeTo[0] =             0
-edgeTo[1] =             0
-edgeTo[2] =             0
-edgeTo[3] =             2
-edgeTo[4] =             2
-edgeTo[5] =             0
-```
-
-Although the marking is done and our `edgeTo` array is fully created, the algorithm keeps running until all the elements from the queue are popped off. Notice how the `edgeTo` list now notes that we got to 1,2 and 5 from 0 and we got to 3 and 4 from 2. So if you were to call the `FindPath()` function, it'll provide you with the shortest path from any vertex to any other vertex. 
-
-Notice in DFS we mark a vertex not as soon as we visit it while go through another vertex's adjacency list but it is marked when it is its turn to be popped off the stack. However, in BFS, we mark the element as soon as we visit it while exploring another vertex's adjacency list. 
-
-Similar to DFS, the running time for BFS is also $O(V + E)$.
-
-### BFS vs DFS
-When do we choose one over the other? 
-
-**BFS**
-Helps us find all the vertices that are one edge away from the starting position, then 2 edges away and so on. BFS, therefore, is to be used when you're looking to find the shortest path to a vertex. 
-
-**DFS**
-Helps us actually answer the question whether a path exists between the vertices we're interested in. 
 
 ### Connected Components
 
@@ -491,4 +391,4 @@ We can now check if `components[v] == components[w]` to see if two components ar
 
 ### Conclusion
 
-Relationship between objects that can be represented using undirected graphs and a lot of questions can be answered about the said objects using the algorithms we've discussed in this section. Happy coding! 
+Relationship between objects that can be represented using undirected graphs and a lot of questions can be answered about the said objects using the DFS as we've discussed in this section. Happy coding! 
