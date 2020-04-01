@@ -5,7 +5,7 @@ thumbnail: /post-images/spa.png
 draft: false
 extract: Analysis of shortest path algorithm for Acyclic Digraphs
 categories: 
-    - General Algorithms
+    - Graphs
 tags:
   - Graphs
   - General Algorithms

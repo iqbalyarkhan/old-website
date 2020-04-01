@@ -5,7 +5,7 @@ thumbnail: /post-images/acyclicddag.png
 draft: true
 extract: Analysis of shortest path algorithms
 categories: 
-    - General Algorithms
+    - Graphs
 tags:
   - Graphs
   - General Algorithms

@@ -5,7 +5,7 @@ thumbnail: /post-images/line-numbers.png
 draft: false
 extract: How to add line numbers to code blocks in GatsbyJS
 categories: 
-    - React
+    - General
 tags:
     - blog
 ---

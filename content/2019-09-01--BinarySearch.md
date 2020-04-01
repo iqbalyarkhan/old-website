@@ -5,7 +5,7 @@ thumbnail: /post-images/binary-search.png
 draft: false
 extract: Overview of how binary search works and its analysis
 categories: 
-    - Searching Algorithms
+    - Algorithms
 tags:
   - Searching Algorithms
   - Binary Search

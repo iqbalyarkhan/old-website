@@ -5,7 +5,7 @@ thumbnail: /post-images/cycle.png
 draft: false
 extract: Analysis of an algorithm to detect whether an undirected graph has a cycle
 categories: 
-    - General Algorithms
+    - Graphs
 tags:
   - Graphs
   - General Algorithms

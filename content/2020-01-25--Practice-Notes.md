@@ -5,7 +5,7 @@ thumbnail: /post-images/notes.png
 draft: false
 extract: Notes as I solve various practice problems
 categories: 
-    - C++
+    - General
 tags:
     - C++
 ---

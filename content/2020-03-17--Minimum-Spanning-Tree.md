@@ -5,7 +5,7 @@ thumbnail: /post-images/mst.png
 draft: false
 extract: Analysis of minimum spanning trees
 categories: 
-    - General Algorithms
+    - Graphs
 tags:
   - Graphs
   - General Algorithms

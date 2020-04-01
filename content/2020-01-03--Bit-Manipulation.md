@@ -5,7 +5,7 @@ thumbnail: content/images/weightedundirectedgraph/graph-1.png
 draft: true
 extract: Common methods to perform operations using bit manipulation
 categories: 
-    - C++
+    - General
 tags:
     - C++
     - Bits
