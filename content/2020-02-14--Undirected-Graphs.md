@@ -63,7 +63,7 @@ Here is what an undirected graph looks like:
 
 ![Undirected-Graph](images/graphs/undirectedgraph.png) [Image Credit - Undirected Graph](http://www.algolist.net/Data_structures/Graph/Internal_representation)
 
-How would we go about representing a graph in our code? As you can notice, there is no defined structure. It is hard to determine what our left and right child is going to be for each node. To represent a graph in memory, we've got 2 methods: (the methods below are for undirected graphs)
+How would we go about representing a graph in our code? As you can notice, there is no defined structure. It is hard to determine what our left and right child is going to be for each node. To represent an undirected graph in memory, we've got 2 options:
 
 
 
@@ -211,6 +211,8 @@ In this function, we are initializing our vector of vectors. First, we initializ
 **Tha bad**
 - Notice in the matrix above, more than half the entries are $0$. Our matrix is a sparse matrix and requires $O(V^2)$ space where $V$ is the number of vertices. Therefore, if we have a large graph, a matrix would take up a lot of space  
 
+**Due to these cons, I'll be using an adjacency list for this and upcoming posts on graphs**.
+
 ### Adjacency List
 
 An adjacency list also tells us what vertices are connected. As the name suggests, it is a linked list of connected items. For our image above, this is what the adjacency list would look like:
@@ -324,60 +326,13 @@ void AdjList::AddEdge(int i, int j){
     adjList[i].push_back(j);
     adjList[j].push_back(i);
 }
-
-void AdjList::MST(){
-    //Need an array to keep track of visited
-    //nodes. All values will be initialized to 0
-    vector<bool> visited(vectorSize);
-    stack<int> elemStack;
-    int curr = 0;
-    elemStack.push(curr);
-    while (elemStack.size() != 0){
-        if (!visited[curr]){
-            cout << curr << " ";
-            visited[curr] = true;
-        }
-        
-        for (int j = 0; j < adjList[curr].size(); j++){
-            int neighbor = adjList[curr][j];
-            if (!visited[neighbor]){
-                elemStack.push(neighbor);
-            }
-        }
-        
-        curr = elemStack.top();
-        elemStack.pop();
-    }
-}
-
-void AdjList::DFS(){
-    //Need an array to keep track of visited
-    //nodes. All values will be initialized to 0
-    vector<bool> visited(vectorSize);
-//    stack<int> elemStack;
-    queue<int> elemStack;
-    int curr = 0;
-    elemStack.push(curr);
-    while (elemStack.size() != 0){
-        if (!visited[curr]){
-            cout << curr << " ";
-            visited[curr] = true;
-        }
-        
-        for (int j = 0; j < adjList[curr].size(); j++){
-            int neighbor = adjList[curr][j];
-            if (!visited[neighbor]){
-                elemStack.push(neighbor);
-            }
-        }
-        
-        curr = elemStack.front();
-        elemStack.pop();
-    }
-}
-
 ```
-To create our list, we're using a vector of vectors declared on line 8. If you're using the default constructor, the number of vertices default to 5. So, if the default constructor is called, we'd have this:
+To create our list, we're using a vector of vectors declared on line 8. This is because using a vector allows us to: 
+
+- Add edges in constant time by using `push_back()`
+- Given a vertex, we can access its edges in constant time by using `adjList[v]` syntax where `v` is the vertex.
+
+If you're using the default constructor, the number of vertices default to 5. So, if the default constructor is called, we'd have this:
 
 ```
 0 -> <empty vector>
@@ -894,7 +849,7 @@ edgeTo[5] =
 
 We then go inside the `while` loop, pop 0 from queue, visit all its neighbors, mark them and push them on queue:
 
-```
+```cpp
                    current Vertex: 0
 queue:                 2,1,5
 
@@ -914,7 +869,7 @@ edgeTo[5] =             0
 ```
 
 Next, we go back to the top of the while loop and pop another element off the queue which is 2:
-```
+```cpp
                    current Vertex: 2
 queue:                 1,5
 
@@ -934,7 +889,7 @@ edgeTo[5] =             0
 ```
 We then move through the adjacency list for 2 and mark each vertex and push each to the queue as well:
 
-```
+```cpp
                    current Vertex: 2
 queue:                 1,5
 
