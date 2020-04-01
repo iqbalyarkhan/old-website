@@ -40,7 +40,7 @@
         }
       }
     })
-  </script><link rel="preconnect dns-prefetch" href="https://www.google-analytics.com"/><link rel="sitemap" type="application/xml" href="/sitemap.xml"/><link rel="manifest" href="/manifest.webmanifest"/><meta name="theme-color" content="#c62828"/><link rel="apple-touch-icon" sizes="48x48" href="/logos/logo-48.png"/><link rel="apple-touch-icon" sizes="1024x1024" href="/logos/logo-1024.png"/><link rel="alternate" type="application/rss+xml" title="/rss.xml" href="/rss.xml"/><link as="script" rel="preload" href="/app-925f8e7cd5d7002aaa99.js"/><link as="script" rel="preload" href="/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js"/><link as="script" rel="preload" href="/styles-f86521059755ea08c76b.js"/><link as="script" rel="preload" href="/commons-385294df8f1e93f4d05a.js"/><link as="script" rel="preload" href="/webpack-runtime-f1d907a7d12743bf9eb1.js"/><link as="fetch" rel="preload" href="/page-data/topological-sort/page-data.json" crossorigin="anonymous"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" role="group" id="gatsby-focus-wrapper"><header><h1><a href="/">Iqbal Khan</a></h1><nav><ul class="Header-module--main-nav--2C0n8"><li><a href="/">All Posts</a></li><li><a href="/algorithms">Algorithms<strong> (<!-- -->5<!-- -->)</strong></a></li><li><a href="/data-structures">Data Structures<strong> (<!-- -->9<!-- -->)</strong></a></li><li><a href="/general">General<strong> (<!-- -->7<!-- -->)</strong></a></li><li><a href="/graphs">Graphs<strong> (<!-- -->10<!-- -->)</strong></a></li></ul></nav></header><main><div><h1>Topological Sort</h1><h3>Analysis of topological sort algorithm</h3><p class="post-module--post-meta--1ci95">March 12, 2020<!-- --> </p><div><h3 id="table-of-contents"><a href="#table-of-contents" aria-label="table of contents permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table of Contents</h3>
+  </script><link rel="preconnect dns-prefetch" href="https://www.google-analytics.com"/><link rel="sitemap" type="application/xml" href="/sitemap.xml"/><link rel="manifest" href="/manifest.webmanifest"/><meta name="theme-color" content="#c62828"/><link rel="apple-touch-icon" sizes="48x48" href="/logos/logo-48.png"/><link rel="apple-touch-icon" sizes="1024x1024" href="/logos/logo-1024.png"/><link rel="alternate" type="application/rss+xml" title="/rss.xml" href="/rss.xml"/><link as="script" rel="preload" href="/app-925f8e7cd5d7002aaa99.js"/><link as="script" rel="preload" href="/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js"/><link as="script" rel="preload" href="/styles-f86521059755ea08c76b.js"/><link as="script" rel="preload" href="/commons-ae723fa4c39c9410a771.js"/><link as="script" rel="preload" href="/webpack-runtime-b1530556a783bf95bb26.js"/><link as="fetch" rel="preload" href="/page-data/topological-sort/page-data.json" crossorigin="anonymous"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" role="group" id="gatsby-focus-wrapper"><header><h1><a href="/">Iqbal Khan</a></h1><nav><ul class="Header-module--main-nav--2C0n8"><li><a href="/">All Posts</a></li><li><a href="/algorithms">Algorithms</a></li><li><a href="/data-structures">Data Structures</a></li><li><a href="/general">General</a></li><li><a href="/graphs">Graphs</a></li></ul></nav></header><main><div><h1>Topological Sort</h1><h3>Analysis of topological sort algorithm</h3><p class="post-module--post-meta--1ci95">March 12, 2020<!-- --> </p><div><h3 id="table-of-contents"><a href="#table-of-contents" aria-label="table of contents permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table of Contents</h3>
 <ol>
 <li><a href="#motivation">Motivation</a></li>
 <li><a href="#logic">Logic</a></li>
@@ -77,9 +77,9 @@
       />
     </span><a href="https://www.pearson.com/us/higher-education/program/Lafore-Data-Structures-and-Algorithms-in-Java-2nd-Edition/PGM32075.html">Image Credit - La Fore Data Structures</a></p>
 <p>The directed graph above shows that before you enroll for Senior Seminar, you need to have passed Advanced Algebra and before you can enroll for Advanced Algebra, you need to have successfully passed Algebra. Therefore, one possible path to getting a degree is:</p>
-<div class="gatsby-highlight" data-language="css"><pre class="language-css"><code class="language-css">CABFDEGH</code></pre></div>
-<p>Notice how we take the introductory courses first and then proceed to more advanced courses. There is no course taken out of order. Also, the arrangement of courses for a given degree plan might not be a unique solution. For example, instead of completing <code class="language-text">CAB</code> first in that order, one might choose to complete the requirements in this order: </p>
-<div class="gatsby-highlight" data-language="css"><pre class="language-css"><code class="language-css">ABCFDEGH</code></pre></div>
+<div class="gatsby-highlight" data-language="css"><pre class="language-cppcss"><code class="language-cppcss">CABFDEGH</code></pre></div>
+<p>Notice how we take the introductory courses first and then proceed to more advanced courses. There is no course taken out of order. Also, the arrangement of courses for a given degree plan might not be a unique solution. For example, instead of completing <code class="language-cpptext">CAB</code> first in that order, one might choose to complete the requirements in this order: </p>
+<div class="gatsby-highlight" data-language="css"><pre class="language-cppcss"><code class="language-cppcss">ABCFDEGH</code></pre></div>
 <p>Creating this course plan from possible courses' directed graph requires the use of topological sort. So think about the problem: we start our academic careers by signing up for classes that have no pre-reqs. In our graph, these classes are labelled A,B and C. Next, we're eligible to sign up for classes that come immediately AFTER those intro classes: D,E or F and the process continues until we graduate! </p>
 <p>So the idea is to start with the vertex that has no arrows going into it: no incoming edges. That would mean, these vertices are our starting point and then we'd have to somehow iterate over all the connected edges from these starting vertices. This iteration can be done using either <a href="/directed-graphs#depth-first-search">depth first search</a> or you can also use breadth first search.</p>
 <p>Before we start operating on our digraph, let's convert it to its integer representation and have a look at its adjacency list as well:</p>
@@ -114,7 +114,7 @@
   </a>
     </span></p>
 <p>The corresponding adjacency list would be:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">0 -&gt; 3 -&gt; 4
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">0 -&gt; 3 -&gt; 4
 1 -&gt; 4
 2 -&gt; 5
 3 -&gt; 6
@@ -123,13 +123,13 @@
 6 -&gt; 7
 7</code></pre></div>
 <p>Ok,so if we run <a href="/directed-graphs#depth-first-search">digraph dfs</a> on this graph, we'd get this output:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">0 3 6 7 4 1 2 5 </code></pre></div>
-<p>Although this actually follows the correct sequence of courses, it doesn't end at <code class="language-text">7</code> and also it's a coincidence that we start at 0 and it happens to be the vertex that is without any pre-reqs, otherwise it would've failed at that part too. So, it is clear that a simple DFS won't do. </p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">0 3 6 7 4 1 2 5 </code></pre></div>
+<p>Although this actually follows the correct sequence of courses, it doesn't end at <code class="language-cpptext">7</code> and also it's a coincidence that we start at 0 and it happens to be the vertex that is without any pre-reqs, otherwise it would've failed at that part too. So, it is clear that a simple DFS won't do. </p>
 <p>Also, topoligcal sort won't be possible for a graph that has a cycle. That is because if I need to complete <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span> before <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi></mrow><annotation encoding="application/x-tex">Y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span></span></span></span> and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi></mrow><annotation encoding="application/x-tex">Y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span></span></span></span> before <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Z</mi></mrow><annotation encoding="application/x-tex">Z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07153em;">Z</span></span></span></span> and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Z</mi></mrow><annotation encoding="application/x-tex">Z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07153em;">Z</span></span></span></span> before <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span>, then theer's a problem in the logic!</p>
 <p>Therefore, our topological sort algorithm should be able to do this: <strong>Given a digraph, put the vertices in an order such that all directed edges point from a vertex earlier in the sequence to a vertex later in the sequence. Otherwise return that such an arrangement is not possible.</strong></p>
 <h3 id="depth-first-orders"><a href="#depth-first-orders" aria-label="depth first orders permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Depth First Orders</h3>
 <p>It turns out, topological sort is quite easy to implement using DFS. As we've already seen, <a href="directed-graphs#depth-first-search">DFS</a> visits each vertex exactly once. For our reference, here is recursive DFS again:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">void</span> Digraph<span class="token operator">::</span><span class="token function">RecursiveDFS</span><span class="token punctuation">(</span><span class="token keyword">int</span> v<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token keyword">void</span> Digraph<span class="token operator">::</span><span class="token function">RecursiveDFS</span><span class="token punctuation">(</span><span class="token keyword">int</span> v<span class="token punctuation">)</span><span class="token punctuation">{</span>
     visited<span class="token punctuation">[</span>v<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
     cout <span class="token operator">&lt;&lt;</span> v <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span><span class="token punctuation">;</span>
     <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> adjList<span class="token punctuation">[</span>v<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
@@ -140,7 +140,7 @@
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
-<p>If we save the current vertex we're on in an appropriate data structure (<a href="/queue">queue</a> or <a href="/stack">stack</a>), and iterate over these populated data structures, we'd be able to get our vertices in a certain order based on the data structure used and the point in the <code class="language-text">RecursiveDFS()</code> function where we push the vertex on the said data structure. Having said that, there are 3 vertex orderings that can be generated: </p>
+<p>If we save the current vertex we're on in an appropriate data structure (<a href="/queue">queue</a> or <a href="/stack">stack</a>), and iterate over these populated data structures, we'd be able to get our vertices in a certain order based on the data structure used and the point in the <code class="language-cpptext">RecursiveDFS()</code> function where we push the vertex on the said data structure. Having said that, there are 3 vertex orderings that can be generated: </p>
 <ul>
 <li>PreOrder</li>
 <li>PostOrder</li>
@@ -153,8 +153,8 @@
 <li>ReversePostOrder: Put the vertex on stack <strong>after</strong> recursive call: <strong>This generates a topological sort for us from the digraph</strong></li>
 </ul>
 <h3 id="code"><a href="#code" aria-label="code permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Code</h3>
-<p>The code is exactly the same as what we've seen so far for directed graphs. The only difference is in the <code class="language-text">RecursiveDFS()</code> function and we've also created a helper function to print the depth first search in the order we discussed in the previous section. Here are the functions we updated:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cpp line-numbers"><code class="language-cpp"><span class="token comment">//Private instance variables for data structures:</span>
+<p>The code is exactly the same as what we've seen so far for directed graphs. The only difference is in the <code class="language-cpptext">RecursiveDFS()</code> function and we've also created a helper function to print the depth first search in the order we discussed in the previous section. Here are the functions we updated:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token comment">//Private instance variables for data structures:</span>
     queue<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> pre<span class="token punctuation">;</span>
     queue<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> post<span class="token punctuation">;</span>
     stack<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> reversePost<span class="token punctuation">;</span> 
@@ -202,8 +202,8 @@
     post<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span><span class="token punctuation">;</span>
     reversePost<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
-<p>As usual, we've got 2 <code class="language-text">RecursiveDFS()</code> functions: the one on line 27 is called by the client and it iterates over the visited array. This function then, for each unvisited vertex, calls the <code class="language-text">RecursiveDFS(int v)</code> function which then populates our <code class="language-text">pre</code>, <code class="language-text">post</code> and <code class="language-text">reversePost</code> data structures. </p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 26" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">void</span> Digraph<span class="token operator">::</span><span class="token function">RecursiveDFS</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+<p>As usual, we've got 2 <code class="language-cpptext">RecursiveDFS()</code> functions: the one on line 27 is called by the client and it iterates over the visited array. This function then, for each unvisited vertex, calls the <code class="language-cpptext">RecursiveDFS(int v)</code> function which then populates our <code class="language-cpptext">pre</code>, <code class="language-cpptext">post</code> and <code class="language-cpptext">reversePost</code> data structures. </p>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 26" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token keyword">void</span> Digraph<span class="token operator">::</span><span class="token function">RecursiveDFS</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
     <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> visited<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>visited<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
             <span class="token function">RecursiveDFS</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -225,11 +225,11 @@
     post<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span><span class="token punctuation">;</span>
     reversePost<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
-<p><code class="language-text">pre</code> is populated as soon as we visit the vertex as denoted on line 38 by pushing the vertex to the queue.
-<code class="language-text">post</code> is populated after we're done processing a vertex and visiting all its neighbors as denoted on line 46 by pushing the vertex to the queue.
-<code class="language-text">reversePost</code> is populated after we're done processing a vertex and visiting all its neighbors as denoted on line 47 by pushing the vertex to the stack.</p>
+<p><code class="language-cpptext">pre</code> is populated as soon as we visit the vertex as denoted on line 38 by pushing the vertex to the queue.
+<code class="language-cpptext">post</code> is populated after we're done processing a vertex and visiting all its neighbors as denoted on line 46 by pushing the vertex to the queue.
+<code class="language-cpptext">reversePost</code> is populated after we're done processing a vertex and visiting all its neighbors as denoted on line 47 by pushing the vertex to the stack.</p>
 <h3 id="explanation"><a href="#explanation" aria-label="explanation permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Explanation</h3>
-<p> Let's look at how having <code class="language-text">reversePost</code> in that position and using a stack allows us to get a topologically sorted order of vertices:</p>
+<p> Let's look at how having <code class="language-cpptext">reversePost</code> in that position and using a stack allows us to get a topologically sorted order of vertices:</p>
 <p> From the explanations earlier, it is clear that we want to start our academic career by taking a class that has no pre-requisites. Let's examine the vertices of our graph:</p>
 <p><span
       class="gatsby-resp-image-wrapper"
@@ -261,7 +261,7 @@
   </a>
     </span></p>
 <p>which is represented by this adjacency list:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">0 -&gt; 3 -&gt; 4
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">0 -&gt; 3 -&gt; 4
 1 -&gt; 4
 2 -&gt; 5
 3 -&gt; 6
@@ -269,11 +269,11 @@
 5 -&gt; 7
 6 -&gt; 7
 7</code></pre></div>
-<p>It is clear that we want to end at 7 (where 7 = degree attained). We can start with either 2,1 or 0 and then move on from there. Let's say we start our DFS function at vertex 0. DFS will continue searching away from 0 until it runs into a dead-end. That dead-end occurs for us at vertex 7. At this point we push 7 to our stack. We then unwind the recursive call and go to 6 which had called 7. 6 is only connected to 7 so 6's execution ends and we push 6 onto the stack. We keep doing this until we've run out of elements to push. So, this is what we see when we print <code class="language-text">reversePost</code>:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">2 5 1 0 4 3 6 7</code></pre></div>
-<p>The key insight here is this: the last thing to go onto the <code class="language-text">reversePost</code> stack is the vertex that has no dependencies. So, when we start popping items off this stack, it'll be from the vertex that has no dependencies and continues until the last vertex.</p>
-<p>Let's step through the 2 functions and look at how <code class="language-text">reversePost</code> is populated:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 26" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">void</span> Digraph<span class="token operator">::</span><span class="token function">RecursiveDFS</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+<p>It is clear that we want to end at 7 (where 7 = degree attained). We can start with either 2,1 or 0 and then move on from there. Let's say we start our DFS function at vertex 0. DFS will continue searching away from 0 until it runs into a dead-end. That dead-end occurs for us at vertex 7. At this point we push 7 to our stack. We then unwind the recursive call and go to 6 which had called 7. 6 is only connected to 7 so 6's execution ends and we push 6 onto the stack. We keep doing this until we've run out of elements to push. So, this is what we see when we print <code class="language-cpptext">reversePost</code>:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">2 5 1 0 4 3 6 7</code></pre></div>
+<p>The key insight here is this: the last thing to go onto the <code class="language-cpptext">reversePost</code> stack is the vertex that has no dependencies. So, when we start popping items off this stack, it'll be from the vertex that has no dependencies and continues until the last vertex.</p>
+<p>Let's step through the 2 functions and look at how <code class="language-cpptext">reversePost</code> is populated:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 26" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token keyword">void</span> Digraph<span class="token operator">::</span><span class="token function">RecursiveDFS</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
     <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> visited<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>visited<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
             <span class="token function">RecursiveDFS</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -294,8 +294,8 @@
     post<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span><span class="token punctuation">;</span>
     reversePost<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
-<p>Ok, so the client calls <code class="language-text">RecursiveDFS()</code> on line 27 which starts our loop by checking <code class="language-text">visited</code>. Initially this is what our <code class="language-text">visited</code> array, call stack and <code class="language-text">reversePost</code> stack look like:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<p>Ok, so the client calls <code class="language-cpptext">RecursiveDFS()</code> on line 27 which starts our loop by checking <code class="language-cpptext">visited</code>. Initially this is what our <code class="language-cpptext">visited</code> array, call stack and <code class="language-cpptext">reversePost</code> stack look like:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   F
 1   F
 2   F
@@ -304,8 +304,8 @@
 5   F
 6   F       ___________     ________________
 7   F       reversePost     call stack for v</code></pre></div>
-<p>We start with 0, and call <code class="language-text">RecursiveDFS(0)</code>. In this function we set <code class="language-text">visited[0]</code> to true and pick up <code class="language-text">0</code>'s adjacency list:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<p>We start with 0, and call <code class="language-cpptext">RecursiveDFS(0)</code>. In this function we set <code class="language-cpptext">visited[0]</code> to true and pick up <code class="language-cpptext">0</code>'s adjacency list:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   T
 1   F
 2   F
@@ -314,8 +314,8 @@
 5   F                              0
 6   F       ___________     ________________
 7   F       reversePost     call stack for v</code></pre></div>
-<p>In <code class="language-text">0</code>'s adjacency list, we find <code class="language-text">3</code> which is also unvisited, so we halt <code class="language-text">0</code>'s execution and call <code class="language-text">RecursiveDFS(3)</code>. Here, we set <code class="language-text">visited[3]</code> as true and look at 3's adjacency list:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<p>In <code class="language-cpptext">0</code>'s adjacency list, we find <code class="language-cpptext">3</code> which is also unvisited, so we halt <code class="language-cpptext">0</code>'s execution and call <code class="language-cpptext">RecursiveDFS(3)</code>. Here, we set <code class="language-cpptext">visited[3]</code> as true and look at 3's adjacency list:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   T
 1   F
 2   F
@@ -324,8 +324,8 @@
 5   F                              0
 6   F       ___________     ________________
 7   F       reversePost     call stack for v</code></pre></div>
-<p>In 3's adjacency list, we find <code class="language-text">6</code> which is unvisited as well so we call <code class="language-text">RecursiveDFS(6)</code>. Here, we set <code class="language-text">visited[6]</code> as true and look at 6's adjacency list:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<p>In 3's adjacency list, we find <code class="language-cpptext">6</code> which is unvisited as well so we call <code class="language-cpptext">RecursiveDFS(6)</code>. Here, we set <code class="language-cpptext">visited[6]</code> as true and look at 6's adjacency list:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   T
 1   F
 2   F
@@ -334,8 +334,8 @@
 5   F                              0
 6   T       ___________     ________________
 7   F       reversePost     call stack for v</code></pre></div>
-<p>In 6's adjacency list, we find <code class="language-text">7</code> which is unvisited as well so we call <code class="language-text">RecursiveDFS(7)</code>. Here, we set <code class="language-text">visited[7]</code> as true and look at 7's adjacency list:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<p>In 6's adjacency list, we find <code class="language-cpptext">7</code> which is unvisited as well so we call <code class="language-cpptext">RecursiveDFS(7)</code>. Here, we set <code class="language-cpptext">visited[7]</code> as true and look at 7's adjacency list:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   T
 1   F
 2   F                              7
@@ -344,8 +344,8 @@
 5   F                              0
 6   T       ___________     ________________
 7   T       reversePost     call stack for v</code></pre></div>
-<p>7's adjacency list is empty, so there's nothing to visit. We're currently at 7 so we fall through the for loop on line 38 and push <code class="language-text">v</code> to <code class="language-text">reversePost</code>:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<p>7's adjacency list is empty, so there's nothing to visit. We're currently at 7 so we fall through the for loop on line 38 and push <code class="language-cpptext">v</code> to <code class="language-cpptext">reversePost</code>:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   T
 1   F
 2   F                              7
@@ -355,7 +355,7 @@
 6   T       ___________     ________________
 7   T       reversePost     call stack for v</code></pre></div>
 <p>We're done with 7, so we pop 7 off the call stack for v and continue with 6:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   T
 1   F
 2   F                              
@@ -364,8 +364,8 @@
 5   F           7                  0
 6   T       ___________     ________________
 7   T       reversePost     call stack for v</code></pre></div>
-<p>We continue to inspect 6's adjacency list which doesn't have any other vertices other than 7. So, again, we fall through the for loop on line 38 for vertex 6 and push the current <code class="language-text">v</code> to <code class="language-text">reversePost</code>:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<p>We continue to inspect 6's adjacency list which doesn't have any other vertices other than 7. So, again, we fall through the for loop on line 38 for vertex 6 and push the current <code class="language-cpptext">v</code> to <code class="language-cpptext">reversePost</code>:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   T
 1   F
 2   F                              
@@ -374,8 +374,8 @@
 5   F           7                  0
 6   T       ___________     ________________
 7   T       reversePost     call stack for v</code></pre></div>
-<p>Next, we find 3 on the call stack and we go to 3's adjacency list that, again, has nothing but 6 so we fall though the for loop for vertex 3 and push current <code class="language-text">v</code> to <code class="language-text">reversePost</code>:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<p>Next, we find 3 on the call stack and we go to 3's adjacency list that, again, has nothing but 6 so we fall though the for loop for vertex 3 and push current <code class="language-cpptext">v</code> to <code class="language-cpptext">reversePost</code>:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   T
 1   F
 2   F                              
@@ -384,8 +384,8 @@
 5   F           7                  0
 6   T       ___________     ________________
 7   T       reversePost     call stack for v</code></pre></div>
-<p>We're now back to 0. 0's adjacency list has more vertices so we pick up the next available vertex which is 4. We call <code class="language-text">RecursiveDFS(4)</code> and set <code class="language-text">visited[4]</code> to true. Our new <code class="language-text">v</code> is now 4:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<p>We're now back to 0. 0's adjacency list has more vertices so we pick up the next available vertex which is 4. We call <code class="language-cpptext">RecursiveDFS(4)</code> and set <code class="language-cpptext">visited[4]</code> to true. Our new <code class="language-cpptext">v</code> is now 4:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   T
 1   F
 2   F                              
@@ -394,8 +394,8 @@
 5   F           7                  0
 6   T       ___________     ________________
 7   T       reversePost     call stack for v</code></pre></div>
-<p>4's adjacency list has 6 which is already visited so we're done with 4. We fall through the for loop on line 38 and push 4 to the <code class="language-text">reversePost</code> stack:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<p>4's adjacency list has 6 which is already visited so we're done with 4. We fall through the for loop on line 38 and push 4 to the <code class="language-cpptext">reversePost</code> stack:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   T
 1   F
 2   F           4                   
@@ -404,8 +404,8 @@
 5   F           7                  0
 6   T       ___________     ________________
 7   T       reversePost     call stack for v</code></pre></div>
-<p>We're now back to 0 that doesn't have any more unvisited neighbors. So, we fall through to line 38 for 0 and push 0 onto <code class="language-text">reversePost</code> stack:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<p>We're now back to 0 that doesn't have any more unvisited neighbors. So, we fall through to line 38 for 0 and push 0 onto <code class="language-cpptext">reversePost</code> stack:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   T
 1   F           0
 2   F           4                   
@@ -414,8 +414,8 @@
 5   F           7                  
 6   T       ___________     ________________
 7   T       reversePost     call stack for v</code></pre></div>
-<p>We send control back up to the original <code class="language-text">RecursiveDFS()</code> function on line 27. Here, we continue looking for unvisited vertices and find that 1 is unvisited. We, therefore make this call: <code class="language-text">RecursiveDFS(1)</code>. For this call, we mark <code class="language-text">visited[1]</code> as true, and check out 1's adjacency list:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<p>We send control back up to the original <code class="language-cpptext">RecursiveDFS()</code> function on line 27. Here, we continue looking for unvisited vertices and find that 1 is unvisited. We, therefore make this call: <code class="language-cpptext">RecursiveDFS(1)</code>. For this call, we mark <code class="language-cpptext">visited[1]</code> as true, and check out 1's adjacency list:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   T
 1   T           0
 2   F           4                   
@@ -424,8 +424,8 @@
 5   F           7                  1
 6   T       ___________     ________________
 7   T       reversePost     call stack for v</code></pre></div>
-<p>We find that 4 is already visited so we fall through to line 47 and push the current v onto the <code class="language-text">reversePost</code> stack after which we're done with this v which is popped of call stack for v:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<p>We find that 4 is already visited so we fall through to line 47 and push the current v onto the <code class="language-cpptext">reversePost</code> stack after which we're done with this v which is popped of call stack for v:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   T           1
 1   T           0
 2   F           4                   
@@ -434,8 +434,8 @@
 5   F           7                  
 6   T       ___________     ________________
 7   T       reversePost     call stack for v</code></pre></div>
-<p>We send control back up to the original <code class="language-text">RecursiveDFS()</code> function on line 27. Here, we continue looking for unvisited vertices and find that 2 is unvisited. We, therefore make this call: <code class="language-text">RecursiveDFS(2)</code>. For this call, we mark <code class="language-text">visited[2]</code> as true, and check out 2's adjacency list:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<p>We send control back up to the original <code class="language-cpptext">RecursiveDFS()</code> function on line 27. Here, we continue looking for unvisited vertices and find that 2 is unvisited. We, therefore make this call: <code class="language-cpptext">RecursiveDFS(2)</code>. For this call, we mark <code class="language-cpptext">visited[2]</code> as true, and check out 2's adjacency list:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   T           1
 1   T           0
 2   T           4                   
@@ -445,7 +445,7 @@
 6   T       ___________     ________________
 7   T       reversePost     call stack for v</code></pre></div>
 <p>We look in 2's adjacency list and find 5. 5 is unvisited so we make another recursive call with 5 and halt 2's execution. For 5, we mark it as true:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited
 0   T           1
 1   T           0
 2   T           4                   
@@ -454,8 +454,8 @@
 5   T           7                  2
 6   T       ___________     ________________
 7   T       reversePost     call stack for v</code></pre></div>
-<p>and then we check out 5's adjacency list which only has 7 which has already been visited. So, for 5, we fall down to line 47, push 5 onto <code class="language-text">reversePost</code> and pop 5 off call stack for v:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited         
+<p>and then we check out 5's adjacency list which only has 7 which has already been visited. So, for 5, we fall down to line 47, push 5 onto <code class="language-cpptext">reversePost</code> and pop 5 off call stack for v:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited         
                 5
 0   T           1
 1   T           0
@@ -465,8 +465,8 @@
 5   T           7                  2
 6   T       ___________     ________________
 7   T       reversePost     call stack for v</code></pre></div>
-<p>We then continue with 2 where we left off and find that 2 has no more neighbors. We fall to line 47 for 2, push to <code class="language-text">reversePost</code> and pop 2 off stack:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited         
+<p>We then continue with 2 where we left off and find that 2 has no more neighbors. We fall to line 47 for 2, push to <code class="language-cpptext">reversePost</code> and pop 2 off stack:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">visited         
                 2
                 5
 0   T           1
@@ -477,10 +477,10 @@
 5   T           7                  
 6   T       ___________     ________________
 7   T       reversePost     call stack for v</code></pre></div>
-<p>We send control back up to the original <code class="language-text">RecursiveDFS()</code> function on line 27. Here, we continue looking for unvisited vertices and find that all vertices have been visited now. We're done with creating our <code class="language-text">reversePost</code> stack. </p>
+<p>We send control back up to the original <code class="language-cpptext">RecursiveDFS()</code> function on line 27. Here, we continue looking for unvisited vertices and find that all vertices have been visited now. We're done with creating our <code class="language-cpptext">reversePost</code> stack. </p>
 <h3 id="conclusion"><a href="#conclusion" aria-label="conclusion permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Conclusion</h3>
-<p>Notice how the last element we pushed on stack were in reverse order based on their dependencies. For example if 5 is dependent on 2, we pushed 5 first and then we pushed 2. Now when we print <code class="language-text">reversePost</code> by popping off each element, we get this order:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">2 5 1 0 4 3 6 7 </code></pre></div>
+<p>Notice how the last element we pushed on stack were in reverse order based on their dependencies. For example if 5 is dependent on 2, we pushed 5 first and then we pushed 2. Now when we print <code class="language-cpptext">reversePost</code> by popping off each element, we get this order:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">2 5 1 0 4 3 6 7 </code></pre></div>
 <p>This order clearly complies with all the dependencies before we get to graduation!!!</p>
 <h3 id="digraphs-cycles-and-topological-sort"><a href="#digraphs-cycles-and-topological-sort" aria-label="digraphs cycles and topological sort permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Digraphs, Cycles and Topological Sort</h3>
 <p>Now that we've looked at <a href="/directed-graphs">digraphs</a>, <a href="/cycle-detection">cycles</a> and <a href="/topological-sort#logic">topological sort</a>, we've completed all the important parts of a job-scheduling application:</p>
@@ -488,7 +488,7 @@
 <li>You specify the tasks and the relevant constraints for those tasks (which task needs to be performed first, second, and so on): this is the digraph</li>
 <li>You make sure that there are no cycles</li>
 <li>You then generate an order in which the tasks can be completed based on the constraints specified using the digraph: this is where topological sort comes in.</li>
-</ul></div><div class="post-module--post-meta--1ci95"><div class="PostTags-module--tag-container--ksSgQ"><a href="/tags/graphs"><span>Graphs</span></a><a href="/tags/sorting-algorithms"><span>Sorting Algorithms</span></a></div><div class="SocialLinks-module--social-links--1RDpJ"><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--reddit"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--reddit "><g><circle cx="32" cy="32" r="31" fill="#5f99cf"></circle></g><g><path d="m 52.8165,31.942362 c 0,-2.4803 -2.0264,-4.4965 -4.5169,-4.4965 -1.2155,0 -2.3171,0.4862 -3.128,1.2682 -3.077,-2.0247 -7.2403,-3.3133 -11.8507,-3.4782 l 2.5211,-7.9373 6.8272,1.5997 -0.0102,0.0986 c 0,2.0281 1.6575,3.6771 3.6958,3.6771 2.0366,0 3.6924,-1.649 3.6924,-3.6771 0,-2.0281 -1.6575,-3.6788 -3.6924,-3.6788 -1.564,0 -2.8968,0.9758 -3.4357,2.3443 l -7.3593,-1.7255 c -0.3213,-0.0782 -0.6477,0.1071 -0.748,0.4233 L 32,25.212062 c -4.8246,0.0578 -9.1953,1.3566 -12.41,3.4425 -0.8058,-0.7446 -1.8751,-1.2104 -3.0583,-1.2104 -2.4905,0 -4.5152,2.0179 -4.5152,4.4982 0,1.649 0.9061,3.0787 2.2389,3.8607 -0.0884,0.4794 -0.1462,0.9639 -0.1462,1.4569 0,6.6487 8.1736,12.0581 18.2223,12.0581 10.0487,0 18.224,-5.4094 18.224,-12.0581 0,-0.4658 -0.0493,-0.9248 -0.1275,-1.377 1.4144,-0.7599 2.3885,-2.2304 2.3885,-3.9406 z m -29.2808,3.0872 c 0,-1.4756 1.207,-2.6775 2.6894,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 -1.4824,0 -2.6894,-1.2002 -2.6894,-2.6758 z m 15.4037,7.9373 c -1.3549,1.3481 -3.4816,2.0043 -6.5008,2.0043 l -0.0221,-0.0051 -0.0221,0.0051 c -3.0209,0 -5.1476,-0.6562 -6.5008,-2.0043 -0.2465,-0.2448 -0.2465,-0.6443 0,-0.8891 0.2465,-0.2465 0.6477,-0.2465 0.8942,0 1.105,1.0999 2.9393,1.6337 5.6066,1.6337 l 0.0221,0.0051 0.0221,-0.0051 c 2.6673,0 4.5016,-0.5355 5.6066,-1.6354 0.2465,-0.2465 0.6477,-0.2448 0.8942,0 0.2465,0.2465 0.2465,0.6443 0,0.8908 z m -0.3213,-5.2615 c -1.4824,0 -2.6877,-1.2002 -2.6877,-2.6758 0,-1.4756 1.2053,-2.6775 2.6877,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--twitter"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--twitter "><g><circle cx="32" cy="32" r="31" fill="#00aced"></circle></g><g><path d="M48,22.1c-1.2,0.5-2.4,0.9-3.8,1c1.4-0.8,2.4-2.1,2.9-3.6c-1.3,0.8-2.7,1.3-4.2,1.6 C41.7,19.8,40,19,38.2,19c-3.6,0-6.6,2.9-6.6,6.6c0,0.5,0.1,1,0.2,1.5c-5.5-0.3-10.3-2.9-13.5-6.9c-0.6,1-0.9,2.1-0.9,3.3 c0,2.3,1.2,4.3,2.9,5.5c-1.1,0-2.1-0.3-3-0.8c0,0,0,0.1,0,0.1c0,3.2,2.3,5.8,5.3,6.4c-0.6,0.1-1.1,0.2-1.7,0.2c-0.4,0-0.8,0-1.2-0.1 c0.8,2.6,3.3,4.5,6.1,4.6c-2.2,1.8-5.1,2.8-8.2,2.8c-0.5,0-1.1,0-1.6-0.1c2.9,1.9,6.4,2.9,10.1,2.9c12.1,0,18.7-10,18.7-18.7 c0-0.3,0-0.6,0-0.8C46,24.5,47.1,23.4,48,22.1z" fill="white"></path></g></svg></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--facebook"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--facebook "><g><circle cx="32" cy="32" r="31" fill="#3b5998"></circle></g><g><path d="M34.1,47V33.3h4.6l0.7-5.3h-5.3v-3.4c0-1.5,0.4-2.6,2.6-2.6l2.8,0v-4.8c-0.5-0.1-2.2-0.2-4.1-0.2 c-4.1,0-6.9,2.5-6.9,7V28H24v5.3h4.6V47H34.1z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--linkedin"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--linkedin "><g><circle cx="32" cy="32" r="31" fill="#007fb1"></circle></g><g><path d="M20.4,44h5.4V26.6h-5.4V44z M23.1,18c-1.7,0-3.1,1.4-3.1,3.1c0,1.7,1.4,3.1,3.1,3.1 c1.7,0,3.1-1.4,3.1-3.1C26.2,19.4,24.8,18,23.1,18z M39.5,26.2c-2.6,0-4.4,1.4-5.1,2.8h-0.1v-2.4h-5.2V44h5.4v-8.6 c0-2.3,0.4-4.5,3.2-4.5c2.8,0,2.8,2.6,2.8,4.6V44H46v-9.5C46,29.8,45,26.2,39.5,26.2z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div></div></div><hr/></div><nav><ul class="post-module--pagination--1F-V0"><li><a rel="prev" href="/minimum-spanning-tree">← <!-- -->Minimum Spanning Tree</a></li><li><a rel="next" href="/directed-graphs">Directed Graphs<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--3Dvn1"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2uglW">Copyright © 2020. All rights reserved.</div></div></footer></div></div><script>
+</ul></div><div class="post-module--post-meta--1ci95"><div class="PostTags-module--tag-container--ksSgQ"><a href="/tags/graphs"><span>Graphs</span></a><a href="/tags/sorting-algorithms"><span>Sorting Algorithms</span></a></div><div class="SocialLinks-module--social-links--1RDpJ"><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--reddit"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--reddit "><g><circle cx="32" cy="32" r="31" fill="#5f99cf"></circle></g><g><path d="m 52.8165,31.942362 c 0,-2.4803 -2.0264,-4.4965 -4.5169,-4.4965 -1.2155,0 -2.3171,0.4862 -3.128,1.2682 -3.077,-2.0247 -7.2403,-3.3133 -11.8507,-3.4782 l 2.5211,-7.9373 6.8272,1.5997 -0.0102,0.0986 c 0,2.0281 1.6575,3.6771 3.6958,3.6771 2.0366,0 3.6924,-1.649 3.6924,-3.6771 0,-2.0281 -1.6575,-3.6788 -3.6924,-3.6788 -1.564,0 -2.8968,0.9758 -3.4357,2.3443 l -7.3593,-1.7255 c -0.3213,-0.0782 -0.6477,0.1071 -0.748,0.4233 L 32,25.212062 c -4.8246,0.0578 -9.1953,1.3566 -12.41,3.4425 -0.8058,-0.7446 -1.8751,-1.2104 -3.0583,-1.2104 -2.4905,0 -4.5152,2.0179 -4.5152,4.4982 0,1.649 0.9061,3.0787 2.2389,3.8607 -0.0884,0.4794 -0.1462,0.9639 -0.1462,1.4569 0,6.6487 8.1736,12.0581 18.2223,12.0581 10.0487,0 18.224,-5.4094 18.224,-12.0581 0,-0.4658 -0.0493,-0.9248 -0.1275,-1.377 1.4144,-0.7599 2.3885,-2.2304 2.3885,-3.9406 z m -29.2808,3.0872 c 0,-1.4756 1.207,-2.6775 2.6894,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 -1.4824,0 -2.6894,-1.2002 -2.6894,-2.6758 z m 15.4037,7.9373 c -1.3549,1.3481 -3.4816,2.0043 -6.5008,2.0043 l -0.0221,-0.0051 -0.0221,0.0051 c -3.0209,0 -5.1476,-0.6562 -6.5008,-2.0043 -0.2465,-0.2448 -0.2465,-0.6443 0,-0.8891 0.2465,-0.2465 0.6477,-0.2465 0.8942,0 1.105,1.0999 2.9393,1.6337 5.6066,1.6337 l 0.0221,0.0051 0.0221,-0.0051 c 2.6673,0 4.5016,-0.5355 5.6066,-1.6354 0.2465,-0.2465 0.6477,-0.2448 0.8942,0 0.2465,0.2465 0.2465,0.6443 0,0.8908 z m -0.3213,-5.2615 c -1.4824,0 -2.6877,-1.2002 -2.6877,-2.6758 0,-1.4756 1.2053,-2.6775 2.6877,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--twitter"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--twitter "><g><circle cx="32" cy="32" r="31" fill="#00aced"></circle></g><g><path d="M48,22.1c-1.2,0.5-2.4,0.9-3.8,1c1.4-0.8,2.4-2.1,2.9-3.6c-1.3,0.8-2.7,1.3-4.2,1.6 C41.7,19.8,40,19,38.2,19c-3.6,0-6.6,2.9-6.6,6.6c0,0.5,0.1,1,0.2,1.5c-5.5-0.3-10.3-2.9-13.5-6.9c-0.6,1-0.9,2.1-0.9,3.3 c0,2.3,1.2,4.3,2.9,5.5c-1.1,0-2.1-0.3-3-0.8c0,0,0,0.1,0,0.1c0,3.2,2.3,5.8,5.3,6.4c-0.6,0.1-1.1,0.2-1.7,0.2c-0.4,0-0.8,0-1.2-0.1 c0.8,2.6,3.3,4.5,6.1,4.6c-2.2,1.8-5.1,2.8-8.2,2.8c-0.5,0-1.1,0-1.6-0.1c2.9,1.9,6.4,2.9,10.1,2.9c12.1,0,18.7-10,18.7-18.7 c0-0.3,0-0.6,0-0.8C46,24.5,47.1,23.4,48,22.1z" fill="white"></path></g></svg></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--facebook"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--facebook "><g><circle cx="32" cy="32" r="31" fill="#3b5998"></circle></g><g><path d="M34.1,47V33.3h4.6l0.7-5.3h-5.3v-3.4c0-1.5,0.4-2.6,2.6-2.6l2.8,0v-4.8c-0.5-0.1-2.2-0.2-4.1-0.2 c-4.1,0-6.9,2.5-6.9,7V28H24v5.3h4.6V47H34.1z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--linkedin"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--linkedin "><g><circle cx="32" cy="32" r="31" fill="#007fb1"></circle></g><g><path d="M20.4,44h5.4V26.6h-5.4V44z M23.1,18c-1.7,0-3.1,1.4-3.1,3.1c0,1.7,1.4,3.1,3.1,3.1 c1.7,0,3.1-1.4,3.1-3.1C26.2,19.4,24.8,18,23.1,18z M39.5,26.2c-2.6,0-4.4,1.4-5.1,2.8h-0.1v-2.4h-5.2V44h5.4v-8.6 c0-2.3,0.4-4.5,3.2-4.5c2.8,0,2.8,2.6,2.8,4.6V44H46v-9.5C46,29.8,45,26.2,39.5,26.2z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div></div></div><hr/></div><nav><ul class="post-module--pagination--1F-V0"><li><a rel="prev" href="/minimum-spanning-tree">← <!-- -->Minimum Spanning Tree</a></li><li><a rel="next" href="/bipartite-graphs">Bipartite Graphs<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--3Dvn1"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2uglW">Copyright © 2020. All rights reserved.</div></div></footer></div></div><script>
   
   
   if(true) {
@@ -504,4 +504,4 @@
       
       
       
-      }</script><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/topological-sort";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"app":["/app-925f8e7cd5d7002aaa99.js"],"component---node-modules-gatsby-plugin-offline-app-shell-js":["/component---node-modules-gatsby-plugin-offline-app-shell-js-87ef582ba388a83f73c0.js"],"component---src-templates-post-js":["/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js"],"component---src-templates-tag-js":["/component---src-templates-tag-js-1f844a6cae6c3edb6be3.js"],"component---src-templates-category-js":["/component---src-templates-category-js-25552af11a0e1c0342fc.js"],"component---src-pages-404-js":["/component---src-pages-404-js-6f6862aba34aedf6f536.js"],"component---src-pages-about-js":["/component---src-pages-about-js-5f796b0947e25f9214c7.js"],"component---src-pages-contact-js":["/component---src-pages-contact-js-0bba9bff5e05e6cc31df.js"],"component---src-pages-index-js":["/component---src-pages-index-js-7870bbedaf7bf2b74b0b.js"]};/*]]>*/</script><script src="/webpack-runtime-f1d907a7d12743bf9eb1.js" async=""></script><script src="/commons-385294df8f1e93f4d05a.js" async=""></script><script src="/styles-f86521059755ea08c76b.js" async=""></script><script src="/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js" async=""></script><script src="/app-925f8e7cd5d7002aaa99.js" async=""></script></body></html>
+      }</script><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/topological-sort";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"app":["/app-925f8e7cd5d7002aaa99.js"],"component---node-modules-gatsby-plugin-offline-app-shell-js":["/component---node-modules-gatsby-plugin-offline-app-shell-js-87ef582ba388a83f73c0.js"],"component---src-templates-post-js":["/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js"],"component---src-templates-tag-js":["/component---src-templates-tag-js-1f844a6cae6c3edb6be3.js"],"component---src-templates-category-js":["/component---src-templates-category-js-5aef66e58578c64d36fe.js"],"component---src-pages-404-js":["/component---src-pages-404-js-6f6862aba34aedf6f536.js"],"component---src-pages-about-js":["/component---src-pages-about-js-5f796b0947e25f9214c7.js"],"component---src-pages-contact-js":["/component---src-pages-contact-js-0bba9bff5e05e6cc31df.js"],"component---src-pages-index-js":["/component---src-pages-index-js-7870bbedaf7bf2b74b0b.js"]};/*]]>*/</script><script src="/webpack-runtime-b1530556a783bf95bb26.js" async=""></script><script src="/commons-ae723fa4c39c9410a771.js" async=""></script><script src="/styles-f86521059755ea08c76b.js" async=""></script><script src="/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js" async=""></script><script src="/app-925f8e7cd5d7002aaa99.js" async=""></script></body></html>

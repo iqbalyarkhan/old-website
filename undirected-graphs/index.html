@@ -40,7 +40,7 @@
         }
       }
     })
-  </script><link rel="preconnect dns-prefetch" href="https://www.google-analytics.com"/><link rel="sitemap" type="application/xml" href="/sitemap.xml"/><link rel="manifest" href="/manifest.webmanifest"/><meta name="theme-color" content="#c62828"/><link rel="apple-touch-icon" sizes="48x48" href="/logos/logo-48.png"/><link rel="apple-touch-icon" sizes="1024x1024" href="/logos/logo-1024.png"/><link rel="alternate" type="application/rss+xml" title="/rss.xml" href="/rss.xml"/><link as="script" rel="preload" href="/app-925f8e7cd5d7002aaa99.js"/><link as="script" rel="preload" href="/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js"/><link as="script" rel="preload" href="/styles-f86521059755ea08c76b.js"/><link as="script" rel="preload" href="/commons-385294df8f1e93f4d05a.js"/><link as="script" rel="preload" href="/webpack-runtime-f1d907a7d12743bf9eb1.js"/><link as="fetch" rel="preload" href="/page-data/undirected-graphs/page-data.json" crossorigin="anonymous"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" role="group" id="gatsby-focus-wrapper"><header><h1><a href="/">Iqbal Khan</a></h1><nav><ul class="Header-module--main-nav--2C0n8"><li><a href="/">All Posts</a></li><li><a href="/algorithms">Algorithms<strong> (<!-- -->5<!-- -->)</strong></a></li><li><a href="/data-structures">Data Structures<strong> (<!-- -->9<!-- -->)</strong></a></li><li><a href="/general">General<strong> (<!-- -->7<!-- -->)</strong></a></li><li><a href="/graphs">Graphs<strong> (<!-- -->10<!-- -->)</strong></a></li></ul></nav></header><main><div><h1>Undirected Graphs</h1><h3>An analysis of undirected graphs</h3><p class="post-module--post-meta--1ci95">February 14, 2020<!-- --> </p><div><h3 id="table-of-contents"><a href="#table-of-contents" aria-label="table of contents permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table of Contents</h3>
+  </script><link rel="preconnect dns-prefetch" href="https://www.google-analytics.com"/><link rel="sitemap" type="application/xml" href="/sitemap.xml"/><link rel="manifest" href="/manifest.webmanifest"/><meta name="theme-color" content="#c62828"/><link rel="apple-touch-icon" sizes="48x48" href="/logos/logo-48.png"/><link rel="apple-touch-icon" sizes="1024x1024" href="/logos/logo-1024.png"/><link rel="alternate" type="application/rss+xml" title="/rss.xml" href="/rss.xml"/><link as="script" rel="preload" href="/app-925f8e7cd5d7002aaa99.js"/><link as="script" rel="preload" href="/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js"/><link as="script" rel="preload" href="/styles-f86521059755ea08c76b.js"/><link as="script" rel="preload" href="/commons-ae723fa4c39c9410a771.js"/><link as="script" rel="preload" href="/webpack-runtime-b1530556a783bf95bb26.js"/><link as="fetch" rel="preload" href="/page-data/undirected-graphs/page-data.json" crossorigin="anonymous"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" role="group" id="gatsby-focus-wrapper"><header><h1><a href="/">Iqbal Khan</a></h1><nav><ul class="Header-module--main-nav--2C0n8"><li><a href="/">All Posts</a></li><li><a href="/algorithms">Algorithms</a></li><li><a href="/data-structures">Data Structures</a></li><li><a href="/general">General</a></li><li><a href="/graphs">Graphs</a></li></ul></nav></header><main><div><h1>Undirected Graphs</h1><h3>An analysis of undirected graphs</h3><p class="post-module--post-meta--1ci95">February 14, 2020<!-- --> </p><div><h3 id="table-of-contents"><a href="#table-of-contents" aria-label="table of contents permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table of Contents</h3>
 <ol>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#definitions">Definitions</a></li>
@@ -60,11 +60,8 @@
 <li><a href="#pros-and-cons-of-adjacency-list">Pros and Cons of Adjacency List</a></li>
 </ul>
 </li>
-<li><a href="#depth-first-search">Depth First Search</a></li>
-<li><a href="#finding-paths-using-dfs">Finding Paths Using DFS</a></li>
 <li><a href="#breadth-first-search">Breadth First Search</a></li>
 <li><a href="#bfs-vs-dfs">BFS vs DFS</a></li>
-<li><a href="#connected-components">Connected Components</a></li>
 <li><a href="#conclusion">Conclusion</a></li>
 </ol>
 <h3 id="introduction"><a href="#introduction" aria-label="introduction permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Introduction</h3>
@@ -99,7 +96,7 @@
         loading="lazy"
       />
     </span> <a href="http://www.algolist.net/Data_structures/Graph/Internal_representation">Image Credit - Undirected Graph</a></p>
-<p>How would we go about representing a graph in our code? As you can notice, there is no defined structure. It is hard to determine what our left and right child is going to be for each node. To represent a graph in memory, we've got 2 methods: (the methods below are for undirected graphs)</p>
+<p>How would we go about representing a graph in our code? As you can notice, there is no defined structure. It is hard to determine what our left and right child is going to be for each node. To represent an undirected graph in memory, we've got 2 options:</p>
 <h3 id="adjacency-matrix"><a href="#adjacency-matrix" aria-label="adjacency matrix permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Adjacency Matrix</h3>
 <p>A matrix is nothing but a 2D array where the size of each array is equal to the number of vertices in our graph. A value of 1 at a particular index would mean that the vertex is connected to another vertex. A value of 0 would signify that no connection is present. So, for the above graph, a 1 at <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>2</mn><mo separator="true">,</mo><mn>4</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(2,4)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">2</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">4</span><span class="mclose">)</span></span></span></span> and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>4</mn><mo separator="true">,</mo><mn>2</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(4,2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">4</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mclose">)</span></span></span></span> would signify that 2 is connected to 4 and 4 is connected to 2. Let's create an adjacency matrix for the image above:</p>
 <table>
@@ -380,7 +377,7 @@
 </tbody>
 </table>
 <h3 id="adjacency-matrix-code"><a href="#adjacency-matrix-code" aria-label="adjacency matrix code permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Adjacency Matrix code</h3>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">class</span> <span class="token class-name">AdjMatrix</span><span class="token punctuation">{</span>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token keyword">class</span> <span class="token class-name">AdjMatrix</span><span class="token punctuation">{</span>
 <span class="token keyword">private</span><span class="token operator">:</span>
     vector<span class="token operator">&lt;</span>vector<span class="token operator">&lt;</span><span class="token keyword">bool</span><span class="token operator">>></span> matrix<span class="token punctuation">;</span>
     <span class="token keyword">int</span> vertices <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
@@ -426,16 +423,16 @@ AdjMatrix<span class="token operator">::</span><span class="token function">AdjM
     matrix<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
 <p>On lines 3 and 4:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 2" class="language-cpp line-numbers"><code class="language-cpp">    vector<span class="token operator">&lt;</span>vector<span class="token operator">&lt;</span><span class="token keyword">bool</span><span class="token operator">>></span> matrix<span class="token punctuation">;</span>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 2" class="language-cppcpp line-numbers"><code class="language-cppcpp">    vector<span class="token operator">&lt;</span>vector<span class="token operator">&lt;</span><span class="token keyword">bool</span><span class="token operator">>></span> matrix<span class="token punctuation">;</span>
     <span class="token keyword">int</span> vertices <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span></span></pre></div>
-<p>we're declaring our matrix of type <code class="language-text">bool</code> and the number of vertices in the graph. In the constructor, we call the <code class="language-text">InitAdjMatrix</code> helper function. If number of vertices is not passed in by the user, we default to 5 vertices, otherwise we set it to whatever value was passed. </p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 34" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">void</span> AdjMatrix<span class="token operator">::</span><span class="token function">InitAdjMatrix</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+<p>we're declaring our matrix of type <code class="language-cpptext">bool</code> and the number of vertices in the graph. In the constructor, we call the <code class="language-cpptext">InitAdjMatrix</code> helper function. If number of vertices is not passed in by the user, we default to 5 vertices, otherwise we set it to whatever value was passed. </p>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 34" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token keyword">void</span> AdjMatrix<span class="token operator">::</span><span class="token function">InitAdjMatrix</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
     matrix<span class="token punctuation">.</span><span class="token function">resize</span><span class="token punctuation">(</span>vertices<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> row <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> row <span class="token operator">&lt;</span> vertices<span class="token punctuation">;</span> row<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
         matrix<span class="token punctuation">[</span>row<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">resize</span><span class="token punctuation">(</span>vertices<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
-<p>In this function, we are initializing our vector of vectors. First, we initialize the outer vector using the <code class="language-text">matrix.resize(vertices)</code> call that takes in the number of vertices passed. The <code class="language-text">resize()</code> function is used to resize the matrix once it has been declared. After this call on line 36, we've created our outer vector. Each element of this outer vector is also a vector so we need to initialize this inner vector as well. To do so, we loop through this outer vector and at each index, we call <code class="language-text">resize()</code> again so that we initialize the inner vector. By default, a vector of booleans will be initialized to false. Once our initialization is complete, we've created a 2D vector of booleans. The client can then initialize the adjacency matrix and add edges as needed.</p>
+<p>In this function, we are initializing our vector of vectors. First, we initialize the outer vector using the <code class="language-cpptext">matrix.resize(vertices)</code> call that takes in the number of vertices passed. The <code class="language-cpptext">resize()</code> function is used to resize the matrix once it has been declared. After this call on line 36, we've created our outer vector. Each element of this outer vector is also a vector so we need to initialize this inner vector as well. To do so, we loop through this outer vector and at each index, we call <code class="language-cpptext">resize()</code> again so that we initialize the inner vector. By default, a vector of booleans will be initialized to false. Once our initialization is complete, we've created a 2D vector of booleans. The client can then initialize the adjacency matrix and add edges as needed.</p>
 <h3 id="pros-and-cons-of-adjacency-matrix"><a href="#pros-and-cons-of-adjacency-matrix" aria-label="pros and cons of adjacency matrix permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Pros and Cons of Adjacency Matrix</h3>
 <p><strong>The good</strong></p>
 <ul>
@@ -446,9 +443,10 @@ AdjMatrix<span class="token operator">::</span><span class="token function">AdjM
 <ul>
 <li>Notice in the matrix above, more than half the entries are <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn></mrow><annotation encoding="application/x-tex">0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span>. Our matrix is a sparse matrix and requires <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><msup><mi>V</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(V^2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> space where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi></mrow><annotation encoding="application/x-tex">V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.22222em;">V</span></span></span></span> is the number of vertices. Therefore, if we have a large graph, a matrix would take up a lot of space  </li>
 </ul>
+<p><strong>Due to these cons, I'll be using an adjacency list for this and upcoming posts on graphs</strong>.</p>
 <h3 id="adjacency-list"><a href="#adjacency-list" aria-label="adjacency list permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Adjacency List</h3>
 <p>An adjacency list also tells us what vertices are connected. As the name suggests, it is a linked list of connected items. For our image above, this is what the adjacency list would look like:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">1 -&gt; 4
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">1 -&gt; 4
 2 -&gt; 4 -&gt; 5
 3 -&gt; 5
 4 -&gt; 1 -&gt; 2 -&gt; 5
@@ -475,7 +473,7 @@ AdjMatrix<span class="token operator">::</span><span class="token function">AdjM
         loading="lazy"
       />
     </span> <a href="http://www.algolist.net/Data_structures/Graph/Internal_representation">Image Credit - Undirected Graph</a></p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">class</span> <span class="token class-name">AdjList</span><span class="token punctuation">{</span>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token keyword">class</span> <span class="token class-name">AdjList</span><span class="token punctuation">{</span>
 <span class="token keyword">private</span><span class="token operator">:</span>
     <span class="token keyword">int</span> vectorSize<span class="token punctuation">;</span>
     vector<span class="token operator">&lt;</span>vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">>></span> adjList<span class="token punctuation">;</span>
@@ -567,81 +565,35 @@ AdjList<span class="token operator">::</span><span class="token function">AdjLis
 <span class="token keyword">void</span> AdjList<span class="token operator">::</span><span class="token function">AddEdge</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token punctuation">,</span> <span class="token keyword">int</span> j<span class="token punctuation">)</span><span class="token punctuation">{</span>
     adjList<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span><span class="token punctuation">;</span>
     adjList<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">void</span> AdjList<span class="token operator">::</span><span class="token function">MST</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token comment">//Need an array to keep track of visited</span>
-    <span class="token comment">//nodes. All values will be initialized to 0</span>
-    vector<span class="token operator">&lt;</span><span class="token keyword">bool</span><span class="token operator">></span> <span class="token function">visited</span><span class="token punctuation">(</span>vectorSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    stack<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> elemStack<span class="token punctuation">;</span>
-    <span class="token keyword">int</span> curr <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-    elemStack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>curr<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">while</span> <span class="token punctuation">(</span>elemStack<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>visited<span class="token punctuation">[</span>curr<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            cout <span class="token operator">&lt;&lt;</span> curr <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span><span class="token punctuation">;</span>
-            visited<span class="token punctuation">[</span>curr<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> adjList<span class="token punctuation">[</span>curr<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token keyword">int</span> neighbor <span class="token operator">=</span> adjList<span class="token punctuation">[</span>curr<span class="token punctuation">]</span><span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>visited<span class="token punctuation">[</span>neighbor<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-                elemStack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>neighbor<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        
-        curr <span class="token operator">=</span> elemStack<span class="token punctuation">.</span><span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        elemStack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">void</span> AdjList<span class="token operator">::</span><span class="token function">DFS</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token comment">//Need an array to keep track of visited</span>
-    <span class="token comment">//nodes. All values will be initialized to 0</span>
-    vector<span class="token operator">&lt;</span><span class="token keyword">bool</span><span class="token operator">></span> <span class="token function">visited</span><span class="token punctuation">(</span>vectorSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">//    stack&lt;int> elemStack;</span>
-    queue<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> elemStack<span class="token punctuation">;</span>
-    <span class="token keyword">int</span> curr <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-    elemStack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>curr<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">while</span> <span class="token punctuation">(</span>elemStack<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>visited<span class="token punctuation">[</span>curr<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            cout <span class="token operator">&lt;&lt;</span> curr <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span><span class="token punctuation">;</span>
-            visited<span class="token punctuation">[</span>curr<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> adjList<span class="token punctuation">[</span>curr<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token keyword">int</span> neighbor <span class="token operator">=</span> adjList<span class="token punctuation">[</span>curr<span class="token punctuation">]</span><span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>visited<span class="token punctuation">[</span>neighbor<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-                elemStack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>neighbor<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        
-        curr <span class="token operator">=</span> elemStack<span class="token punctuation">.</span><span class="token function">front</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        elemStack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
-<p>To create our list, we're using a vector of vectors declared on line 8. If you're using the default constructor, the number of vertices default to 5. So, if the default constructor is called, we'd have this:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">0 -&gt; &lt;empty vector&gt;
+<span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
+<p>To create our list, we're using a vector of vectors declared on line 8. This is because using a vector allows us to: </p>
+<ul>
+<li>Add edges in constant time by using <code class="language-cpptext">push_back()</code></li>
+<li>Given a vertex, we can access its edges in constant time by using <code class="language-cpptext">adjList[v]</code> syntax where <code class="language-cpptext">v</code> is the vertex.</li>
+</ul>
+<p>If you're using the default constructor, the number of vertices default to 5. So, if the default constructor is called, we'd have this:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">0 -&gt; &lt;empty vector&gt;
 1 -&gt; &lt;empty vector&gt;
 2 -&gt; &lt;empty vector&gt;
 3 -&gt; &lt;empty vector&gt;
 4 -&gt; &lt;empty vector&gt;
 5 -&gt; &lt;empty vector&gt;</code></pre></div>
-<p>Where 0-5 is one vector and each element in that vector is also a vector at that position. Note the use of <code class="language-text">adjList.resize(vectorSize)</code> which is used to set the size of a vector after it is declared. We're using a vector because if we're given a vertex, say 4, we can access the adjacent vertices for 4 in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> time. </p>
-<p>Since arrays and vectors start at 0 index, to keep consistent with the graph shown above, we'll add the 0th vector as well but will start adding at index 1. Next, when we call the <code class="language-text">AddEdge()</code> function, we pass in the edge that needs to be created. So, when <code class="language-text">AddEdge()</code> is called with 1 and 4, it performs the following actions:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 38" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">void</span> AdjList<span class="token operator">::</span><span class="token function">AddEdge</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token punctuation">,</span> <span class="token keyword">int</span> j<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<p>Where 0-5 is one vector and each element in that vector is also a vector at that position. Note the use of <code class="language-cpptext">adjList.resize(vectorSize)</code> which is used to set the size of a vector after it is declared. We're using a vector because if we're given a vertex, say 4, we can access the adjacent vertices for 4 in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> time. </p>
+<p>Since arrays and vectors start at 0 index, to keep consistent with the graph shown above, we'll add the 0th vector as well but will start adding at index 1. Next, when we call the <code class="language-cpptext">AddEdge()</code> function, we pass in the edge that needs to be created. So, when <code class="language-cpptext">AddEdge()</code> is called with 1 and 4, it performs the following actions:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 38" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token keyword">void</span> AdjList<span class="token operator">::</span><span class="token function">AddEdge</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token punctuation">,</span> <span class="token keyword">int</span> j<span class="token punctuation">)</span><span class="token punctuation">{</span>
     adjList<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span><span class="token punctuation">;</span>
     adjList<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span></span></pre></div>
-<p>The function goes to the <code class="language-text">adjList[1]</code> and pushes back 4 and conversely, goes to <code class="language-text">adjList[4]</code> and pushes a 1. Since our graph is undirected, it means that if 1 is connected to 4, then 4 is also connected to 1. If it is a directed graph, we'd only add one edge instead of two. If it is a directed weighted graph, we can use <code class="language-text">std::pair</code>. Once the connection is made, our vectors would look like this:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">0 -&gt; &lt;empty vector&gt;
+<p>The function goes to the <code class="language-cpptext">adjList[1]</code> and pushes back 4 and conversely, goes to <code class="language-cpptext">adjList[4]</code> and pushes a 1. Since our graph is undirected, it means that if 1 is connected to 4, then 4 is also connected to 1. If it is a directed graph, we'd only add one edge instead of two. If it is a directed weighted graph, we can use <code class="language-cpptext">std::pair</code>. Once the connection is made, our vectors would look like this:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">0 -&gt; &lt;empty vector&gt;
 1 -&gt; &lt;4&gt;
 2 -&gt; &lt;empty vector&gt;
 3 -&gt; &lt;empty vector&gt;
 4 -&gt; &lt;1&gt;
 5 -&gt; &lt;empty vector&gt;</code></pre></div>
-<p>The process repeats until no more edges are to be added. We do not have a check in our <code class="language-text">addEdge()</code> function to see if an edge already exists because we assume that the client will always pass in distinct edges. Notice how the vectors are only populated as needed ie there is no wasted space. </p>
+<p>The process repeats until no more edges are to be added. We do not have a check in our <code class="language-cpptext">addEdge()</code> function to see if an edge already exists because we assume that the client will always pass in distinct edges. Notice how the vectors are only populated as needed ie there is no wasted space. </p>
 <p>Client code for this class:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     AdjList l<span class="token punctuation">;</span>
     l<span class="token punctuation">.</span><span class="token function">AddEdge</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     l<span class="token punctuation">.</span><span class="token function">AddEdge</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -653,14 +605,14 @@ AdjList<span class="token operator">::</span><span class="token function">AdjLis
 <span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
 <h3 id="add-vertex"><a href="#add-vertex" aria-label="add vertex permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Add Vertex</h3>
 <p>What if, after initialization, we realize we need to add more vertices to the graph? We want to add more vectors to the outer vector:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 17" class="language-cpp line-numbers"><code class="language-cpp"><span class="token comment">//Function that takes in the additional</span>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 17" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token comment">//Function that takes in the additional</span>
 <span class="token comment">//number of vertices that you want</span>
 <span class="token keyword">void</span> AdjList<span class="token operator">::</span><span class="token function">AddVertex</span><span class="token punctuation">(</span><span class="token keyword">int</span> num<span class="token punctuation">)</span><span class="token punctuation">{</span>
     vectorSize<span class="token operator">+=</span> num<span class="token punctuation">;</span>
     adjList<span class="token punctuation">.</span><span class="token function">resize</span><span class="token punctuation">(</span>vectorSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
-<p>In this function, we're first incrementing the private local variable <code class="language-text">vectorSize</code> to the new size. It is expected the client will pass in the additional number of vertices to be added to our graph. For example, if our graph currently has 4 vertices and this function is called like so:<code class="language-text">g.AddVertex(2)</code>,  we're to increase the graph size to 6. Therefore, we call the <code class="language-text">resize()</code> function with this new updated size. Here is the sample client code and the corresponding output for the above calls:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cpp"><code class="language-cpp">    AdjList <span class="token function">l</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<p>In this function, we're first incrementing the private local variable <code class="language-cpptext">vectorSize</code> to the new size. It is expected the client will pass in the additional number of vertices to be added to our graph. For example, if our graph currently has 4 vertices and this function is called like so:<code class="language-cpptext">g.AddVertex(2)</code>,  we're to increase the graph size to 6. Therefore, we call the <code class="language-cpptext">resize()</code> function with this new updated size. Here is the sample client code and the corresponding output for the above calls:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">    AdjList <span class="token function">l</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     l<span class="token punctuation">.</span><span class="token function">AddEdge</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     l<span class="token punctuation">.</span><span class="token function">AddEdge</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     l<span class="token punctuation">.</span><span class="token function">AddEdge</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -671,7 +623,7 @@ AdjList<span class="token operator">::</span><span class="token function">AdjLis
     cout <span class="token operator">&lt;&lt;</span> <span class="token string">"After adding 3 more vertices: "</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
     l<span class="token punctuation">.</span><span class="token function">Print</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
 <p>output:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">Number of vertices was passed as: 5
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">Number of vertices was passed as: 5
 0 -&gt; 1 -&gt; 2 -&gt; 3
 1 -&gt; 0 -&gt; 2
 2 -&gt; 0 -&gt; 1 -&gt; 4
@@ -689,7 +641,7 @@ After adding 3 more vertices:
 7</code></pre></div>
 <h3 id="delete-vertex"><a href="#delete-vertex" aria-label="delete vertex permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Delete Vertex</h3>
 <p>This function is a bit more complicated: we first need to remove the vertex from the outer vector and then we need to loop through each adjacency list for each other vector and remove that vertex from that adjacency list:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 18" class="language-cpp line-numbers"><code class="language-cpp"><span class="token comment">//Function to delete vertex passed</span>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 18" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token comment">//Function to delete vertex passed</span>
 <span class="token keyword">void</span> AdjList<span class="token operator">::</span><span class="token function">DeleteVertex</span><span class="token punctuation">(</span><span class="token keyword">int</span> v<span class="token punctuation">)</span><span class="token punctuation">{</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>v <span class="token operator">></span> vectorSize<span class="token punctuation">)</span>
         <span class="token keyword">return</span><span class="token punctuation">;</span>
@@ -708,21 +660,21 @@ After adding 3 more vertices:
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
-<p>Here, we first call the <code class="language-text">.clear()</code> function that completely removes the adjacency list for 2. This is the before and after results when <code class="language-text">.clear()</code> is called for say, vertex 2:</p>
+<p>Here, we first call the <code class="language-cpptext">.clear()</code> function that completely removes the adjacency list for 2. This is the before and after results when <code class="language-cpptext">.clear()</code> is called for say, vertex 2:</p>
 <p>Before</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">0 -&gt; 1 -&gt; 2 -&gt; 3
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">0 -&gt; 1 -&gt; 2 -&gt; 3
 1 -&gt; 0 -&gt; 2
 2 -&gt; 0 -&gt; 1 -&gt; 4
 3 -&gt; 0
 4 -&gt; 2</code></pre></div>
 <p>After</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">0 -&gt; 1 -&gt; 2 -&gt; 3
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">0 -&gt; 1 -&gt; 2 -&gt; 3
 1 -&gt; 0 -&gt; 2
 2 
 3 -&gt; 0
 4 -&gt; 2</code></pre></div>
 <p>Notice how 2 still exists in adjacency lists for 0,1 and 4. To remove those, we need to iterate through each vertex's list and find the item and remove it from that list. To do so, we use the following logic:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cpp"><code class="language-cpp">    <span class="token comment">//Looks through other adjacency lists and removes</span>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">    <span class="token comment">//Looks through other adjacency lists and removes</span>
     <span class="token comment">//v from those lists.</span>
     <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> vectorSize<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
         <span class="token keyword">auto</span> itr <span class="token operator">=</span> adjList<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -734,7 +686,7 @@ After adding 3 more vertices:
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre></div>
-<p>Here we need to use the <code class="language-text">erase()</code> call to delete the matched element in the vector and re-capture the iterator. Therefore, once this function returns, 2's adjacency list is empty (it is not technically removed but is good enough for our purposes) and no other vertex has the deleted item in its adjacency list.</p>
+<p>Here we need to use the <code class="language-cpptext">erase()</code> call to delete the matched element in the vector and re-capture the iterator. Therefore, once this function returns, 2's adjacency list is empty (it is not technically removed but is good enough for our purposes) and no other vertex has the deleted item in its adjacency list.</p>
 <h3 id="pros-and-cons-of-adjacency-list"><a href="#pros-and-cons-of-adjacency-list" aria-label="pros and cons of adjacency list permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Pros and Cons of Adjacency List</h3>
 <p><strong>The good</strong></p>
 <ul>
@@ -750,222 +702,15 @@ After adding 3 more vertices:
 <li>Takes time to check whether two vertices are connected.</li>
 <li>Edge insertion and deletion also takes more time.</li>
 </ul>
-<h3 id="graph-search"><a href="#graph-search" aria-label="graph search permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Graph Search</h3>
-<p>One of the questions most frequently asked about graphs is some variant of the following:</p>
-<ul>
-<li>Is there a path from A to B?</li>
-<li>What is the shortest path from A to B? (Either in terms of number of hops, or distances or costs which may be stored on edges.)</li>
-<li>What is the distance from A to every other node in the graph (or every node that can be reached from A)?</li>
-</ul>
-<p>All of these problems fall under the broad area of graph search or computation of shortest paths (or just paths). These problems have many important applications:</p>
-<ul>
-<li>Finding fast or cheap ways to go from one place to another, by utilizing road networks (optimizing distance or time), or airline or train networks (optimizing time or cost).</li>
-<li>Finding social distance in a social network.</li>
-</ul>
-<p>A lot of real-world problems are extremely naturally modeled as shortest path searches in suitably defined graphs. There are plenty of follow up questions that can be asked when we're talking about graph search:</p>
-<ul>
-<li>Do we just want to know whether a path exists, or do we need to find it?</li>
-<li>If we need to find a path, do we want the shortest path, or will any path do?</li>
-<li>If we don’t need to find it, do we need the exact distance between nodes, or just whether a path exists? </li>
-<li>Do edges have lengths/costs associated with them, or are we just interested in the number of hops.</li>
-<li>If edges have costs associated with them, can they be negative?</li>
-</ul>
-<p>Let's start with an algorithm that'll help us answer the question <strong>whether a path exists from A to B</strong>:</p>
-<h3 id="depth-first-search"><a href="#depth-first-search" aria-label="depth first search permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Depth First Search</h3>
-<p>The idea behind depth first search is to go as deep down a path as possible until you hit a dead-end and then backtrack your way to the next available path that can be taken. </p>
-<p>For example, if we have this undirected graph:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">0-----3
-|\
-| \
-|  \
-1---2---4</code></pre></div>
-<p>The algorithm could print the following when the function, <code class="language-text">DFS()</code> is called on it:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">0 3 2 4 1</code></pre></div>
-<p>We start at 0, and push to stack its neighbors:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">  3
-  2  
-  1
- ____
- stack
-
-output: 0</code></pre></div>
-<p>Here is the code for DFS using a stack:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">void</span> AdjList<span class="token operator">::</span><span class="token function">DFS</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token comment">//Need an array to keep track of visited</span>
-    <span class="token comment">//nodes. All values will be initialized to 0</span>
-    vector<span class="token operator">&lt;</span><span class="token keyword">bool</span><span class="token operator">></span> <span class="token function">visited</span><span class="token punctuation">(</span>vectorSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    stack<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> elemStack<span class="token punctuation">;</span>
-    <span class="token keyword">int</span> curr <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-    elemStack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>curr<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">while</span> <span class="token punctuation">(</span>elemStack<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>visited<span class="token punctuation">[</span>curr<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            cout <span class="token operator">&lt;&lt;</span> curr <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span><span class="token punctuation">;</span>
-            visited<span class="token punctuation">[</span>curr<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> adjList<span class="token punctuation">[</span>curr<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token keyword">int</span> neighbor <span class="token operator">=</span> adjList<span class="token punctuation">[</span>curr<span class="token punctuation">]</span><span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>visited<span class="token punctuation">[</span>neighbor<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-                elemStack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>neighbor<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        
-        curr <span class="token operator">=</span> elemStack<span class="token punctuation">.</span><span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        elemStack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
-<p>We use a stack to backtrack our way to the next available path that can be followed. The running time of DFS is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>V</mi><mo>+</mo><mi>E</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(V + E)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.22222em;">V</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">E</span><span class="mclose">)</span></span></span></span>. That is because we have to step through each vertex in our outer vector of the adjacency list:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">0 --&gt; &lt;vector for 0&gt;
-1 --&gt; &lt;vector for 1&gt;
-2 --&gt; &lt;vector for 2&gt;
-3 --&gt; &lt;vector for 3&gt;
-4 --&gt; &lt;vector for 4&gt;</code></pre></div>
-<p>and then for each vertex, we need to step through its edges which is represented by <code class="language-text">&lt;vector for index&gt;</code>. Therefore, the total running time is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>V</mi><mo>+</mo><mi>E</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(V + E)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.22222em;">V</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">E</span><span class="mclose">)</span></span></span></span>. The approach above makes use of an extra stack which is extra space that is required. There is another recursive approach that runs with the same upper bound for time complexity and 0 extra space. This is made possible because we use an implicit call stack while making our recursive calls that allows us to backtrack. Here are the two functions that allow us to call <code class="language-text">RecursiveDFS()</code>.   </p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 19" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">void</span> AdjList<span class="token operator">::</span><span class="token function">RecursiveDFS</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> visited<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>visited<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token function">RecursiveDFS</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">void</span> AdjList<span class="token operator">::</span><span class="token function">RecursiveDFS</span><span class="token punctuation">(</span><span class="token keyword">int</span> v<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    visited<span class="token punctuation">[</span>v<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-    cout <span class="token operator">&lt;&lt;</span> v <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span><span class="token punctuation">;</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> adjList<span class="token punctuation">[</span>v<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">int</span> curr <span class="token operator">=</span> adjList<span class="token punctuation">[</span>v<span class="token punctuation">]</span><span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>visited<span class="token punctuation">[</span>curr<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token function">RecursiveDFS</span><span class="token punctuation">(</span>curr<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
-<p>The first function iterates over the <code class="language-text">visited</code> array to make sure we've visited all the vertices. For each unvisited vertex, it calls the second <code class="language-text">RecursiveDFS(int v)</code> function that then visits that vertex's unvisited neighbors.</p>
-<p>This function allows us to pass in any vertex you want and it'll print out all the vertices that can be reached from the passed vertex. The logic behind this function is this:</p>
-<ul>
-<li>Take in the passed vertex and mark the vertex in array, <code class="language-text">visited</code> to true. This array is an <a href="https://en.wikipedia.org/wiki/Instance_variable">instance variable (bound to the instance of the class)</a> for the class. (If you want to use the test client to call <code class="language-text">RecursiveDFS()</code> multiple times, you'd have to change the function signature and pass in this <code class="language-text">visited</code> array on each recursive call by reference. Or have a helper function that clears the array first for each <code class="language-text">RecursiveDFS()</code> function call.)</li>
-<li>Once the vertex is marked, print the vertex and iterate through the current vertex's adjacency list.</li>
-<li>In this list, if the <code class="language-text">curr</code> vertex is not visited, call the function again with this new, un-visited vertex. </li>
-</ul>
-<h3 id="finding-paths-using-dfs"><a href="#finding-paths-using-dfs" aria-label="finding paths using dfs permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Finding Paths Using DFS</h3>
-<p>We've discussed algorithms for searching (BFS and DFS) but these algorithms can be modified slightly to answer more questions that we asked in the graph search section. Specifically, we're usually interested in answering questions such as <strong>Is there a path from A to B and if so what is it?</strong>. There is a surprisingly simple way to answer that question using DFS:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">void</span> AdjList<span class="token operator">::</span><span class="token function">RecursiveDFS</span><span class="token punctuation">(</span><span class="token keyword">int</span> v<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    visited<span class="token punctuation">[</span>v<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-    cout <span class="token operator">&lt;&lt;</span> v <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span><span class="token punctuation">;</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> adjList<span class="token punctuation">[</span>v<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">int</span> curr <span class="token operator">=</span> adjList<span class="token punctuation">[</span>v<span class="token punctuation">]</span><span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>visited<span class="token punctuation">[</span>curr<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            edgeTo<span class="token punctuation">[</span>curr<span class="token punctuation">]</span> <span class="token operator">=</span> v<span class="token punctuation">;</span>
-            <span class="token function">RecursiveDFS</span><span class="token punctuation">(</span>curr<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
-<p>Only addition we've made to DFS from earlier is that we've now got a new array called <code class="language-text">edgeTo</code> which is equal to the size of the vertices in our graph (we initialized it in the constructor). Next, whenever we find an unvisited edge in a vertex's adjacency list, we're going to that index in the <code class="language-text">edgeTo</code> array and populating that index with the value <code class="language-text">v</code>. This helps us keep a note of what vertex we used to get to the current vertex, ie, what is the predecessor vertex to the current vertex that was used to get to the current vertex. Let's walk through an example:</p>
-<p>Initially our <code class="language-text">edgeTo</code> list is empty. Assume we've got 6 vertices labelled 0-5 in our graph:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">edgeTo[0] = ___
-edgeTo[1] = ___
-edgeTo[2] = ___
-edgeTo[3] = ___
-edgeTo[4] = ___
-edgeTo[5] = ___</code></pre></div>
-<p>and this is our graph:</p>
-<p><span
-      class="gatsby-resp-image-wrapper"
-      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 423px;"
-    >
-      <span
-    class="gatsby-resp-image-background-image"
-    style="padding-bottom: 75.41371158392435%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAPCAYAAADkmO9VAAAACXBIWXMAAAsSAAALEgHS3X78AAABr0lEQVQ4y5VUy07DMBDshyNx4CO48A2AeNw4wA0kpBYhVSDxUlq1oFZJG9txbMcZdk2TJml5rbSyk/WOx7Nr98qyBBuPvvRh/KtX1pz3uj/+YzI3cEXRAu351eRhOsHx4BbGODhjkWuDPMuhlUYmMyihIJcyuKbvJBbYOz/G9ctzyPfetwH7UYSDq0vM32MoSjIEGJxYWNrAuQKl/5KEN4o/YtwMnzAXss2wmnhK8HnBEahUBWZdYxbMsGILOk1Bm1WA7DUgs+CFlTE7kYjARtA8ow1EkqIgzbTUsLlFsdrgW0DWqlukGWm1c3qGwWv0tc66GoTBm4CtIzta2ASspaBxMJ5AkJZsKbGsClCu5Gl+twFFm2G3nRTFWYJmjHM491fAJmhBznG5kBtx1t00CrMGdK4uyrbbIBYiaNYFdFxpvQWQxIJRZqNVMmsxjMahyiGpE9fE7nE0gd+8KVPsX14gpmNlxDQlRk7m6L+8YffsCNNZAk0FEKvbwowttc/9W0RdcIhZqtpVHsUJTu4GyKjn6iORWzrmnLTd+jhwnC7EdCnWDH96HH57MrpxxvkEECqUXQvSv5wAAAAASUVORK5CYII='); background-size: cover; display: block;"
-  ></span>
-  <img
-        class="gatsby-resp-image-image"
-        alt="Undirected-Graph-1"
-        title="Undirected-Graph-1"
-        src="/static/e302006a5aa2e4f676efbd57fdc17139/d7276/path1.png"
-        srcset="/static/e302006a5aa2e4f676efbd57fdc17139/27f03/path1.png 173w,
-/static/e302006a5aa2e4f676efbd57fdc17139/376d0/path1.png 345w,
-/static/e302006a5aa2e4f676efbd57fdc17139/d7276/path1.png 423w"
-        sizes="(max-width: 423px) 100vw, 423px"
-        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
-        loading="lazy"
-      />
-    </span> <a href="https://graphonline.ru/en/">Image Credit - Undirected Graph 1</a></p>
-<p>and this is our adjacency list for the corresponding graph:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">0 -&gt; 2 -&gt; 1 -&gt; 5
-1 -&gt; 0 -&gt; 2
-2 -&gt; 0 -&gt; 1 -&gt; 3 -&gt; 4
-3 -&gt; 2 -&gt; 4 -&gt; 5
-4 -&gt; 2 -&gt; 3
-5 -&gt; 0 -&gt; 3</code></pre></div>
-<p>Let's say we start at vertex 0 so initially <code class="language-text">edgeTo[0]</code> would equal 0. Next we look at 2 in 0's adjacency list so <code class="language-text">curr</code> would equal 2. 2 is unvisited so we go inside the <code class="language-text">if</code> statement in the function and mark <code class="language-text">edgeTo[curr]</code> to <code class="language-text">v</code>. <code class="language-text">v</code> initially is 0 so <code class="language-text">edgeTo[2] = 0</code>:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">edgeTo[0] = ___
-edgeTo[1] = ___
-edgeTo[2] = 0
-edgeTo[3] = ___
-edgeTo[4] = ___
-edgeTo[5] = ___</code></pre></div>
-<p>In essence, <code class="language-text">edgeTo[curr] = v</code> means that the edge <code class="language-text">v - curr</code> was taken (or <code class="language-text">0 - 2</code> in the example above) to visit <code class="language-text">curr</code> for the first time. When we're done with all the edges, this is what <code class="language-text">edgeTo</code> would look like:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">edgeTo[0] = 0
-edgeTo[1] = 2
-edgeTo[2] = 0
-edgeTo[3] = 2
-edgeTo[4] = 3
-edgeTo[5] = 3</code></pre></div>
-<p>The <code class="language-text">edgeTo</code> array allows us to capture the vertex that was taken to get to <code class="language-text">edgeTo[curr]</code> vertex. How do we actually transform this information to something useful? For example, <strong>what was the path taken to get to vertex 5 from vertex 0?</strong> To do so, we need to follow the path information stored in <code class="language-text">edgeTo</code> array. For example, to get to 5 (let's say 5 is our <code class="language-text">w</code>) from 0 (let's say 0 is our <code class="language-text">v</code>) we can step through the array like so:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">Begin at the w vertex: 5
-Check edgeTo[endVertex] = edgeTo[5] = 3.
-Go to edgeTo[3] = 2
-Go to edgeTo[2] = 0
-We&#39;re now at v vertex: 0</code></pre></div>
-<p>This algorithm builds a path in time proportional to the number of vertices visited. Worst case, we need to go through all the vertices therefore the run time is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>.</p>
-<p>Notice how in the algorithm above we've got the vertex trace but we need to print the trace in reverse order, ie last in first out: the algorithm went in this order<code class="language-text">5 3 2 0</code> but the actual path we took was <code class="language-text">0 2 3 5</code>. Since the nature of our output is LIFO, we can use a stack and keep pushing to our stack as we visit each vertex in the algorithm above:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">Begin at the w vertex: 5 (push 5 on the stack)
-Check edgeTo[endVertex] = edgeTo[5] = 3. (push 3 on the stack)
-Go to edgeTo[3] = 2 (push 2 on the stack)
-Go to edgeTo[2] = 0 (push 0 on the stack)
-We&#39;re now at v vertex: 0
-
-Stack:
-  0
-  2
-  3
-  5
-_____</code></pre></div>
-<p>We can now pop elements off the stack and print them to get our actual path. Here's the code for this logic:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">void</span> AdjList<span class="token operator">::</span><span class="token function">FindPath</span><span class="token punctuation">(</span><span class="token keyword">int</span> v<span class="token punctuation">,</span> <span class="token keyword">int</span> w<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token comment">/**
-     Begin at the w vertex: 5 (push 5 on the stack)
-     Check edgeTo[w] = edgeTo[5] = 3. (push 3 on the stack)
-     Go to edgeTo[3] = 2 (push 2 on the stack)
-     Go to edgeTo[2] = 0 (push 0 on the stack)
-     We're now at v vertex: 0
-     */</span>
-    stack<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> s<span class="token punctuation">;</span>
-    <span class="token keyword">int</span> end <span class="token operator">=</span> w<span class="token punctuation">;</span>
-    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        s<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>end<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>end <span class="token operator">==</span> v<span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token keyword">break</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        end <span class="token operator">=</span> edgeTo<span class="token punctuation">[</span>end<span class="token punctuation">]</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    
-    cout <span class="token operator">&lt;&lt;</span> <span class="token string">"Path from "</span> <span class="token operator">&lt;&lt;</span> v <span class="token operator">&lt;&lt;</span> <span class="token string">" to "</span> <span class="token operator">&lt;&lt;</span> w <span class="token operator">&lt;&lt;</span><span class="token string">": "</span><span class="token operator">&lt;&lt;</span>endl<span class="token punctuation">;</span>
-    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">!</span>s<span class="token punctuation">.</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        cout <span class="token operator">&lt;&lt;</span> s<span class="token punctuation">.</span><span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span><span class="token punctuation">;</span>
-         s<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    
-    cout <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
 <h3 id="breadth-first-search"><a href="#breadth-first-search" aria-label="breadth first search permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Breadth First Search</h3>
-<p>Notice how depth first search took a long route to find the path from 0 to 5 in the section above. That is because DFS is not designed to find the shortest route. It is used to find <strong>a</strong> route. Therefore, DFS helped us answer whether a path existed, BFS will help us find the shortest path from the starting node. </p>
-<p>In breadth first search, we start the search from elements closest to the starting node. The only difference between the code for depth first and breadth first is that breadth first uses <code class="language-text">queue</code> instead of <code class="language-text">stack</code>. The algorithm has 3 main steps:</p>
+<p>Notice how depth first search took a long route to find a path. That is because DFS is not designed to find the shortest route. It is used to find <strong>a</strong> route. Therefore, DFS helped us answer whether a path existed, BFS will help us find the shortest path from the starting node. </p>
+<p>In breadth first search, we start the search from elements closest to the starting node. The only difference between the code for depth first and breadth first is that breadth first uses <code class="language-cpptext">queue</code> instead of <code class="language-cpptext">stack</code>. The algorithm has 3 main steps:</p>
 <ul>
 <li>Remove a vertex from the queue</li>
 <li>Mark all vertices adjacent to current vertex and push them onto the queue</li>
 <li>Repeat until queue is empty</li>
 </ul>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">void</span> AdjList<span class="token operator">::</span><span class="token function">BFS</span><span class="token punctuation">(</span><span class="token keyword">int</span> v<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token keyword">void</span> AdjList<span class="token operator">::</span><span class="token function">BFS</span><span class="token punctuation">(</span><span class="token keyword">int</span> v<span class="token punctuation">)</span><span class="token punctuation">{</span>
     vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> <span class="token function">marked</span><span class="token punctuation">(</span>vectorSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
     queue<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> q<span class="token punctuation">;</span>
     marked<span class="token punctuation">[</span>v<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
@@ -985,10 +730,10 @@ _____</code></pre></div>
     <span class="token punctuation">}</span>
     cout <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
-<p> The code above first creates a boolean vector to keep track of visited elements called <code class="language-text">marked</code>.</p>
+<p> The code above first creates a boolean vector to keep track of visited elements called <code class="language-cpptext">marked</code>.</p>
 <p> We also create a queue to push elements so that we can visit them later. We want first in first out for breadth first search because we want to explore all the nodes closest to the starting node first. </p>
-<p> Next we push the passed element, <code class="language-text">v</code>, onto the queue and mark it. Then we enter a while loop until the queue is empty. </p>
-<p> We pop an element off the queue, call it <code class="language-text">curr</code>, and start to visit and mark all the elements that are adjacent to <code class="language-text">curr</code>. In the process, we also go ahead and mark these adjacent vertices. This is because we're <strong>visiting</strong> them at this time and this is because BFS is interested in the vertices closest to the passed in vertex. At this point we also populate the <code class="language-text">edgeTo</code> array to record how we got to the current vertex. </p>
+<p> Next we push the passed element, <code class="language-cpptext">v</code>, onto the queue and mark it. Then we enter a while loop until the queue is empty. </p>
+<p> We pop an element off the queue, call it <code class="language-cpptext">curr</code>, and start to visit and mark all the elements that are adjacent to <code class="language-cpptext">curr</code>. In the process, we also go ahead and mark these adjacent vertices. This is because we're <strong>visiting</strong> them at this time and this is because BFS is interested in the vertices closest to the passed in vertex. At this point we also populate the <code class="language-cpptext">edgeTo</code> array to record how we got to the current vertex. </p>
 <p>We then push each one of these visited vertices onto the queue.</p>
 <p>Let's walk through an example again. Here is the graph we're using:</p>
 <p><span
@@ -1013,7 +758,7 @@ _____</code></pre></div>
       />
     </span> <a href="https://graphonline.ru/en/">Image Credit - Undirected Graph 1</a></p>
 <p>Let's say we start at vertex 0 and our queue is empty and the marked array has each entry as false and edgeTo array is empty:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">queue:             
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">queue:             
 
 marked[0] =        
 marked[1] = 
@@ -1029,7 +774,7 @@ edgeTo[3] =
 edgeTo[4] = 
 edgeTo[5] = </code></pre></div>
 <p>Since we start at 0, we push and mark it:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">                   current Vertex: 0
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">                   current Vertex: 0
 queue:                  0
 
 marked[0] =             T
@@ -1045,58 +790,58 @@ edgeTo[2] =
 edgeTo[3] = 
 edgeTo[4] = 
 edgeTo[5] = </code></pre></div>
-<p>We then go inside the <code class="language-text">while</code> loop, pop 0 from queue, visit all its neighbors, mark them and push them on queue:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">                   current Vertex: 0
-queue:                 2undefined1undefined5
+<p>We then go inside the <code class="language-cpptext">while</code> loop, pop 0 from queue, visit all its neighbors, mark them and push them on queue:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">                   current Vertex<span class="token operator">:</span> <span class="token number">0</span>
+queue<span class="token operator">:</span>                 <span class="token number">2</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">5</span>
 
-marked[0] =             T
-marked[1] =             T
-marked[2] =             T
-marked[3] = 
-marked[4] =
-marked[5] =             T
+marked<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span>             T
+marked<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span>             T
+marked<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span>             T
+marked<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span> 
+marked<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span> <span class="token operator">=</span>
+marked<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span> <span class="token operator">=</span>             T
 
-edgeTo[0] =             0
-edgeTo[1] =             0
-edgeTo[2] =             0
-edgeTo[3] =     
-edgeTo[4] = 
-edgeTo[5] =             0</code></pre></div>
+edgeTo<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span>             <span class="token number">0</span>
+edgeTo<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span>             <span class="token number">0</span>
+edgeTo<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span>             <span class="token number">0</span>
+edgeTo<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span>     
+edgeTo<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span> <span class="token operator">=</span> 
+edgeTo<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span> <span class="token operator">=</span>             <span class="token number">0</span></code></pre></div>
 <p>Next, we go back to the top of the while loop and pop another element off the queue which is 2:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">                   current Vertex: 2
-queue:                 1undefined5
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">                   current Vertex<span class="token operator">:</span> <span class="token number">2</span>
+queue<span class="token operator">:</span>                 <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">5</span>
 
-marked[0] =             T
-marked[1] =             T
-marked[2] =             T
-marked[3] = 
-marked[4] =
-marked[5] =             T
+marked<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span>             T
+marked<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span>             T
+marked<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span>             T
+marked<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span> 
+marked<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span> <span class="token operator">=</span>
+marked<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span> <span class="token operator">=</span>             T
 
-edgeTo[0] =             0
-edgeTo[1] =             0
-edgeTo[2] =             0
-edgeTo[3] =     
-edgeTo[4] = 
-edgeTo[5] =             0</code></pre></div>
+edgeTo<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span>             <span class="token number">0</span>
+edgeTo<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span>             <span class="token number">0</span>
+edgeTo<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span>             <span class="token number">0</span>
+edgeTo<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span>     
+edgeTo<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span> <span class="token operator">=</span> 
+edgeTo<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span> <span class="token operator">=</span>             <span class="token number">0</span></code></pre></div>
 <p>We then move through the adjacency list for 2 and mark each vertex and push each to the queue as well:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">                   current Vertex: 2
-queue:                 1undefined5
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">                   current Vertex<span class="token operator">:</span> <span class="token number">2</span>
+queue<span class="token operator">:</span>                 <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">5</span>
 
-marked[0] =             T
-marked[1] =             T
-marked[2] =             T
-marked[3] =             T
-marked[4] =             T
-marked[5] =             T
+marked<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span>             T
+marked<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span>             T
+marked<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span>             T
+marked<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span>             T
+marked<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span> <span class="token operator">=</span>             T
+marked<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span> <span class="token operator">=</span>             T
 
-edgeTo[0] =             0
-edgeTo[1] =             0
-edgeTo[2] =             0
-edgeTo[3] =             2
-edgeTo[4] =             2
-edgeTo[5] =             0</code></pre></div>
-<p>Although the marking is done and our <code class="language-text">edgeTo</code> array is fully created, the algorithm keeps running until all the elements from the queue are popped off. Notice how the <code class="language-text">edgeTo</code> list now notes that we got to 1,2 and 5 from 0 and we got to 3 and 4 from 2. So if you were to call the <code class="language-text">FindPath()</code> function, it'll provide you with the shortest path from any vertex to any other vertex. </p>
+edgeTo<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span>             <span class="token number">0</span>
+edgeTo<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span>             <span class="token number">0</span>
+edgeTo<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span>             <span class="token number">0</span>
+edgeTo<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span>             <span class="token number">2</span>
+edgeTo<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span> <span class="token operator">=</span>             <span class="token number">2</span>
+edgeTo<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span> <span class="token operator">=</span>             <span class="token number">0</span></code></pre></div>
+<p>Although the marking is done and our <code class="language-cpptext">edgeTo</code> array is fully created, the algorithm keeps running until all the elements from the queue are popped off. Notice how the <code class="language-cpptext">edgeTo</code> list now notes that we got to 1,2 and 5 from 0 and we got to 3 and 4 from 2. So if you were to call the <code class="language-cpptext">FindPath()</code> function, it'll provide you with the shortest path from any vertex to any other vertex. </p>
 <p>Notice in DFS we mark a vertex not as soon as we visit it while go through another vertex's adjacency list but it is marked when it is its turn to be popped off the stack. However, in BFS, we mark the element as soon as we visit it while exploring another vertex's adjacency list. </p>
 <p>Similar to DFS, the running time for BFS is also <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>V</mi><mo>+</mo><mi>E</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(V + E)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.22222em;">V</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">E</span><span class="mclose">)</span></span></span></span>.</p>
 <h3 id="bfs-vs-dfs"><a href="#bfs-vs-dfs" aria-label="bfs vs dfs permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>BFS vs DFS</h3>
@@ -1105,120 +850,8 @@ edgeTo[5] =             0</code></pre></div>
 Helps us find all the vertices that are one edge away from the starting position, then 2 edges away and so on. BFS, therefore, is to be used when you're looking to find the shortest path to a vertex. </p>
 <p><strong>DFS</strong>
 Helps us actually answer the question whether a path exists between the vertices we're interested in. </p>
-<h3 id="connected-components"><a href="#connected-components" aria-label="connected components permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Connected Components</h3>
-<p>In graph theory, connected components in an undirected graph are vertices that are connected to each other. The <strong>is connected</strong> relation is an equivalence relation which means:</p>
-<ul>
-<li>Connectivity is reflexive: <code class="language-text">v</code> is connected to <code class="language-text">v</code></li>
-<li>Connectivity is symmetric: if <code class="language-text">v</code> is connected to <code class="language-text">u</code> then <code class="language-text">u</code>is connected to <code class="language-text">v</code></li>
-<li>Connectivity is transitive: if <code class="language-text">v</code> is connected to <code class="language-text">u</code> and <code class="language-text">u</code> is connected to <code class="language-text">w</code> then <code class="language-text">v</code> is connected to <code class="language-text">w</code>.</li>
-</ul>
-<p>Let's say we have the following graph: </p>
-<p><span
-      class="gatsby-resp-image-wrapper"
-      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 350px;"
-    >
-      <span
-    class="gatsby-resp-image-background-image"
-    style="padding-bottom: 87.99999999999999%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAASCAYAAABb0P4QAAAACXBIWXMAAAsSAAALEgHS3X78AAACA0lEQVQ4y6VU30vbUBTOfzsYAx992Z4EwceBr9MxxoQpU6nUgVPYJE4nKNGq27St/WHt2vTGNG3Sm1/fzk1zxTQJdOw8nXvPPd/9vnO/REEcYRgiRDLE3jTrqDfOlZrOcKv35AkYAxub2jlahplqEtG1bLze24XWvIvWQRAkARd2inhV2ITZs8DNAbRyA89W3mL/uhId8Kkhaowb7ow+Xm4VsKNdimJClQBVSs02jq4qsFg/KorNBuXc81MyJagvSpSaPRMOKRqMXHj++GIl4C44bfIRB/vDcmcmwdoPFoQq9TcpIKBavYPZ9XWsnpxKQA8uzSUCcH0UTzQsf1fhekFi4BLwngDnils4uK6CZKDV7OCNeoyDSn0MWGq0sH12+TgrcdNcsQDHTUuWOTd5ND9Df4Dr8OQMlw+P8WJtA+aQx48QwvXD1AtLhpWujnfqPqqNNkLff3w4WVdMexS9XB4bKVkqUMtVzKy9x02XZdsmCyB4wkiuZT0gBWwwyjf2Uzl5LPNqk/UUQ3mAkY3KnbGkIdmqTn6bZDP5BWUCSqYffhxh5uOScAU+X5TwfGWJ5mwl/JgXmQxvewx7F79g923UmIHC6RnZyMtklAuYNae++AQJFE44FbtchqLRi23ytfQTi182wIbO/zEMYsBvN1XMb3+Cbg3/bYaZP05IcEzFTsRfJoRwxoHVUhcAAAAASUVORK5CYII='); background-size: cover; display: block;"
-  ></span>
-  <img
-        class="gatsby-resp-image-image"
-        alt="Connected Components"
-        title="Connected Components"
-        src="/static/f4030a7ef5ee8faba053cdb84bf51bff/d6f3f/connectedcomponents.png"
-        srcset="/static/f4030a7ef5ee8faba053cdb84bf51bff/27f03/connectedcomponents.png 173w,
-/static/f4030a7ef5ee8faba053cdb84bf51bff/376d0/connectedcomponents.png 345w,
-/static/f4030a7ef5ee8faba053cdb84bf51bff/d6f3f/connectedcomponents.png 350w"
-        sizes="(max-width: 350px) 100vw, 350px"
-        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
-        loading="lazy"
-      />
-    </span> <a href="https://graphonline.ru/en/">Image Credit - Connected Components</a></p>
-<p>we can say that this graph has 3 components: </p>
-<ul>
-<li>0,1,2,3</li>
-<li>4,5,6,7</li>
-<li>8,9,10</li>
-</ul>
-<p>We want to be able to build a data structure that would answer 3 fundamental questions:</p>
-<ul>
-<li>Are two vertices connected?</li>
-<li>How many components are there in the graph?</li>
-<li>What is the <code class="language-text">id</code> of a vertex? (id is the component number to which the vertex belongs)</li>
-</ul>
-<p>To do so, we'll have this approach:</p>
-<p><strong>1.</strong> We'll have an array called components where <code class="language-text">components[vertex]</code> (we'll initialize this array to -1 in the beginning) will be the component number for that vertex. For example, in the image above, let's say</p>
-<ul>
-<li><code class="language-text">0 1 2 3</code> are in component <code class="language-text">0</code></li>
-<li><code class="language-text">4 5 6 7</code> are in component <code class="language-text">1</code></li>
-<li><code class="language-text">8 9 10</code> are in component <code class="language-text">2</code> </li>
-</ul>
-<p> The reason we've chosen to initialize the component array to -1 is to keep track of vertex number that still needs to be assigned a component. Once the array is populated, it'll look like this: </p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">1 1 1 1 2 2 2 2 3 3 3
-- - - - - - - - - - - 
-0 1 2 3 4 5 6 7 8 9 10</code></pre></div>
-<p><code class="language-text">components[7] = 2</code> means that vertex 7 belongs to component 2. </p>
-<p><strong>2.</strong> To create the <code class="language-text">components</code> array, we'll do the following:</p>
-<ul>
-<li>Clear out the <code class="language-text">visited</code> array so that all entries are false. We want this so that we have a marker for those indices that are reachable only from the current vertex. We'll clear this <code class="language-text">visited</code> array on each iteration.</li>
-<li>We'll then call the <code class="language-text">DFS(int)</code> function (or the <code class="language-text">BFS(int)</code> function) to populate the <code class="language-text">visited</code> array.</li>
-<li>Once this function returns, our <code class="language-text">visited</code> array will have some entries set as true, let's say we called <code class="language-text">DFS()</code> with vertex <code class="language-text">0</code> and this is what the <code class="language-text">visited</code> array looked like when the function returned:</li>
-</ul>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">visited = [T T T T F F F F F F F]</code></pre></div>
-<p>We'll iterate over visited array and do the following:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cpp"><code class="language-cpp">componentNumber<span class="token operator">++</span><span class="token punctuation">;</span>
-<span class="token function">DFS</span><span class="token punctuation">(</span>curr<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> visited<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>visited<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        components<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> componentNumber<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre></div>
-<p><code class="language-text">componentNumber</code> is the variable that'll allow us to keep track of the component number we're on. Once the above loop ends, our <code class="language-text">components</code> array would look like this:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">1  1  1  1 -1  -1 -1  -1  -1  -1  -1
-0  1  2  3  4   5  6   7   8   9  10</code></pre></div>
-<p><strong>3.</strong> We'll call DFS again but this time with the vertex number that has the value -1 in the components array. That is because the value -1 indicates that we haven't figured out the vertices that are connected to the said vertex. We'll repeat the process until there are no more -1s in the components array.</p>
-<p>Here's the code:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">void</span> AdjList<span class="token operator">::</span><span class="token function">FindConnectedComponents</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token comment">//Initializing the components array:</span>
-    vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> <span class="token function">components</span><span class="token punctuation">(</span>vectorSize<span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token comment">//clear out the visited array and set size</span>
-    <span class="token comment">//to number of vertices</span>
-    visited<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    visited<span class="token punctuation">.</span><span class="token function">resize</span><span class="token punctuation">(</span>vectorSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> curr <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> componentNumber <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        componentNumber<span class="token operator">++</span><span class="token punctuation">;</span>
-        <span class="token function">DFS</span><span class="token punctuation">(</span>curr<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> visited<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>visited<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-                components<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> componentNumber<span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        
-        curr <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> components<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token keyword">if</span><span class="token punctuation">(</span>components<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-                curr <span class="token operator">=</span> i<span class="token punctuation">;</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>curr <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token keyword">break</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        
-        visited<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        visited<span class="token punctuation">.</span><span class="token function">resize</span><span class="token punctuation">(</span>vectorSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    cout <span class="token operator">&lt;&lt;</span> <span class="token string">"Components array: "</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">auto</span> j <span class="token operator">:</span> components<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        cout <span class="token operator">&lt;&lt;</span> j <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    cout <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
-<p>We can now check if <code class="language-text">components[v] == components[w]</code> to see if two components are connected in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> time.</p>
 <h3 id="conclusion"><a href="#conclusion" aria-label="conclusion permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Conclusion</h3>
-<p>Relationship between objects that can be represented using undirected graphs and a lot of questions can be answered about the said objects using the algorithms we've discussed in this section. Happy coding! </p></div><div class="post-module--post-meta--1ci95"><div class="PostTags-module--tag-container--ksSgQ"><a href="/tags/data-structures"><span>Data Structures</span></a><a href="/tags/graphs"><span>Graphs</span></a></div><div class="SocialLinks-module--social-links--1RDpJ"><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--reddit"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--reddit "><g><circle cx="32" cy="32" r="31" fill="#5f99cf"></circle></g><g><path d="m 52.8165,31.942362 c 0,-2.4803 -2.0264,-4.4965 -4.5169,-4.4965 -1.2155,0 -2.3171,0.4862 -3.128,1.2682 -3.077,-2.0247 -7.2403,-3.3133 -11.8507,-3.4782 l 2.5211,-7.9373 6.8272,1.5997 -0.0102,0.0986 c 0,2.0281 1.6575,3.6771 3.6958,3.6771 2.0366,0 3.6924,-1.649 3.6924,-3.6771 0,-2.0281 -1.6575,-3.6788 -3.6924,-3.6788 -1.564,0 -2.8968,0.9758 -3.4357,2.3443 l -7.3593,-1.7255 c -0.3213,-0.0782 -0.6477,0.1071 -0.748,0.4233 L 32,25.212062 c -4.8246,0.0578 -9.1953,1.3566 -12.41,3.4425 -0.8058,-0.7446 -1.8751,-1.2104 -3.0583,-1.2104 -2.4905,0 -4.5152,2.0179 -4.5152,4.4982 0,1.649 0.9061,3.0787 2.2389,3.8607 -0.0884,0.4794 -0.1462,0.9639 -0.1462,1.4569 0,6.6487 8.1736,12.0581 18.2223,12.0581 10.0487,0 18.224,-5.4094 18.224,-12.0581 0,-0.4658 -0.0493,-0.9248 -0.1275,-1.377 1.4144,-0.7599 2.3885,-2.2304 2.3885,-3.9406 z m -29.2808,3.0872 c 0,-1.4756 1.207,-2.6775 2.6894,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 -1.4824,0 -2.6894,-1.2002 -2.6894,-2.6758 z m 15.4037,7.9373 c -1.3549,1.3481 -3.4816,2.0043 -6.5008,2.0043 l -0.0221,-0.0051 -0.0221,0.0051 c -3.0209,0 -5.1476,-0.6562 -6.5008,-2.0043 -0.2465,-0.2448 -0.2465,-0.6443 0,-0.8891 0.2465,-0.2465 0.6477,-0.2465 0.8942,0 1.105,1.0999 2.9393,1.6337 5.6066,1.6337 l 0.0221,0.0051 0.0221,-0.0051 c 2.6673,0 4.5016,-0.5355 5.6066,-1.6354 0.2465,-0.2465 0.6477,-0.2448 0.8942,0 0.2465,0.2465 0.2465,0.6443 0,0.8908 z m -0.3213,-5.2615 c -1.4824,0 -2.6877,-1.2002 -2.6877,-2.6758 0,-1.4756 1.2053,-2.6775 2.6877,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--twitter"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--twitter "><g><circle cx="32" cy="32" r="31" fill="#00aced"></circle></g><g><path d="M48,22.1c-1.2,0.5-2.4,0.9-3.8,1c1.4-0.8,2.4-2.1,2.9-3.6c-1.3,0.8-2.7,1.3-4.2,1.6 C41.7,19.8,40,19,38.2,19c-3.6,0-6.6,2.9-6.6,6.6c0,0.5,0.1,1,0.2,1.5c-5.5-0.3-10.3-2.9-13.5-6.9c-0.6,1-0.9,2.1-0.9,3.3 c0,2.3,1.2,4.3,2.9,5.5c-1.1,0-2.1-0.3-3-0.8c0,0,0,0.1,0,0.1c0,3.2,2.3,5.8,5.3,6.4c-0.6,0.1-1.1,0.2-1.7,0.2c-0.4,0-0.8,0-1.2-0.1 c0.8,2.6,3.3,4.5,6.1,4.6c-2.2,1.8-5.1,2.8-8.2,2.8c-0.5,0-1.1,0-1.6-0.1c2.9,1.9,6.4,2.9,10.1,2.9c12.1,0,18.7-10,18.7-18.7 c0-0.3,0-0.6,0-0.8C46,24.5,47.1,23.4,48,22.1z" fill="white"></path></g></svg></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--facebook"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--facebook "><g><circle cx="32" cy="32" r="31" fill="#3b5998"></circle></g><g><path d="M34.1,47V33.3h4.6l0.7-5.3h-5.3v-3.4c0-1.5,0.4-2.6,2.6-2.6l2.8,0v-4.8c-0.5-0.1-2.2-0.2-4.1-0.2 c-4.1,0-6.9,2.5-6.9,7V28H24v5.3h4.6V47H34.1z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--linkedin"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--linkedin "><g><circle cx="32" cy="32" r="31" fill="#007fb1"></circle></g><g><path d="M20.4,44h5.4V26.6h-5.4V44z M23.1,18c-1.7,0-3.1,1.4-3.1,3.1c0,1.7,1.4,3.1,3.1,3.1 c1.7,0,3.1-1.4,3.1-3.1C26.2,19.4,24.8,18,23.1,18z M39.5,26.2c-2.6,0-4.4,1.4-5.1,2.8h-0.1v-2.4h-5.2V44h5.4v-8.6 c0-2.3,0.4-4.5,3.2-4.5c2.8,0,2.8,2.6,2.8,4.6V44H46v-9.5C46,29.8,45,26.2,39.5,26.2z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div></div></div><hr/></div><nav><ul class="post-module--pagination--1F-V0"><li><a rel="prev" href="/pointers">← <!-- -->Pointers</a></li><li><a rel="next" href="/heap">Heap<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--3Dvn1"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2uglW">Copyright © 2020. All rights reserved.</div></div></footer></div></div><script>
+<p>Relationship between objects that can be represented using undirected graphs and a lot of questions can be answered about the said objects using the algorithms we've discussed in this section. Happy coding! </p></div><div class="post-module--post-meta--1ci95"><div class="PostTags-module--tag-container--ksSgQ"><a href="/tags/data-structures"><span>Data Structures</span></a><a href="/tags/graphs"><span>Graphs</span></a></div><div class="SocialLinks-module--social-links--1RDpJ"><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--reddit"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--reddit "><g><circle cx="32" cy="32" r="31" fill="#5f99cf"></circle></g><g><path d="m 52.8165,31.942362 c 0,-2.4803 -2.0264,-4.4965 -4.5169,-4.4965 -1.2155,0 -2.3171,0.4862 -3.128,1.2682 -3.077,-2.0247 -7.2403,-3.3133 -11.8507,-3.4782 l 2.5211,-7.9373 6.8272,1.5997 -0.0102,0.0986 c 0,2.0281 1.6575,3.6771 3.6958,3.6771 2.0366,0 3.6924,-1.649 3.6924,-3.6771 0,-2.0281 -1.6575,-3.6788 -3.6924,-3.6788 -1.564,0 -2.8968,0.9758 -3.4357,2.3443 l -7.3593,-1.7255 c -0.3213,-0.0782 -0.6477,0.1071 -0.748,0.4233 L 32,25.212062 c -4.8246,0.0578 -9.1953,1.3566 -12.41,3.4425 -0.8058,-0.7446 -1.8751,-1.2104 -3.0583,-1.2104 -2.4905,0 -4.5152,2.0179 -4.5152,4.4982 0,1.649 0.9061,3.0787 2.2389,3.8607 -0.0884,0.4794 -0.1462,0.9639 -0.1462,1.4569 0,6.6487 8.1736,12.0581 18.2223,12.0581 10.0487,0 18.224,-5.4094 18.224,-12.0581 0,-0.4658 -0.0493,-0.9248 -0.1275,-1.377 1.4144,-0.7599 2.3885,-2.2304 2.3885,-3.9406 z m -29.2808,3.0872 c 0,-1.4756 1.207,-2.6775 2.6894,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 -1.4824,0 -2.6894,-1.2002 -2.6894,-2.6758 z m 15.4037,7.9373 c -1.3549,1.3481 -3.4816,2.0043 -6.5008,2.0043 l -0.0221,-0.0051 -0.0221,0.0051 c -3.0209,0 -5.1476,-0.6562 -6.5008,-2.0043 -0.2465,-0.2448 -0.2465,-0.6443 0,-0.8891 0.2465,-0.2465 0.6477,-0.2465 0.8942,0 1.105,1.0999 2.9393,1.6337 5.6066,1.6337 l 0.0221,0.0051 0.0221,-0.0051 c 2.6673,0 4.5016,-0.5355 5.6066,-1.6354 0.2465,-0.2465 0.6477,-0.2448 0.8942,0 0.2465,0.2465 0.2465,0.6443 0,0.8908 z m -0.3213,-5.2615 c -1.4824,0 -2.6877,-1.2002 -2.6877,-2.6758 0,-1.4756 1.2053,-2.6775 2.6877,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--twitter"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--twitter "><g><circle cx="32" cy="32" r="31" fill="#00aced"></circle></g><g><path d="M48,22.1c-1.2,0.5-2.4,0.9-3.8,1c1.4-0.8,2.4-2.1,2.9-3.6c-1.3,0.8-2.7,1.3-4.2,1.6 C41.7,19.8,40,19,38.2,19c-3.6,0-6.6,2.9-6.6,6.6c0,0.5,0.1,1,0.2,1.5c-5.5-0.3-10.3-2.9-13.5-6.9c-0.6,1-0.9,2.1-0.9,3.3 c0,2.3,1.2,4.3,2.9,5.5c-1.1,0-2.1-0.3-3-0.8c0,0,0,0.1,0,0.1c0,3.2,2.3,5.8,5.3,6.4c-0.6,0.1-1.1,0.2-1.7,0.2c-0.4,0-0.8,0-1.2-0.1 c0.8,2.6,3.3,4.5,6.1,4.6c-2.2,1.8-5.1,2.8-8.2,2.8c-0.5,0-1.1,0-1.6-0.1c2.9,1.9,6.4,2.9,10.1,2.9c12.1,0,18.7-10,18.7-18.7 c0-0.3,0-0.6,0-0.8C46,24.5,47.1,23.4,48,22.1z" fill="white"></path></g></svg></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--facebook"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--facebook "><g><circle cx="32" cy="32" r="31" fill="#3b5998"></circle></g><g><path d="M34.1,47V33.3h4.6l0.7-5.3h-5.3v-3.4c0-1.5,0.4-2.6,2.6-2.6l2.8,0v-4.8c-0.5-0.1-2.2-0.2-4.1-0.2 c-4.1,0-6.9,2.5-6.9,7V28H24v5.3h4.6V47H34.1z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--linkedin"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--linkedin "><g><circle cx="32" cy="32" r="31" fill="#007fb1"></circle></g><g><path d="M20.4,44h5.4V26.6h-5.4V44z M23.1,18c-1.7,0-3.1,1.4-3.1,3.1c0,1.7,1.4,3.1,3.1,3.1 c1.7,0,3.1-1.4,3.1-3.1C26.2,19.4,24.8,18,23.1,18z M39.5,26.2c-2.6,0-4.4,1.4-5.1,2.8h-0.1v-2.4h-5.2V44h5.4v-8.6 c0-2.3,0.4-4.5,3.2-4.5c2.8,0,2.8,2.6,2.8,4.6V44H46v-9.5C46,29.8,45,26.2,39.5,26.2z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div></div></div><hr/></div><nav><ul class="post-module--pagination--1F-V0"><li><a rel="prev" href="/undirected-graphs-depth-first-search">← <!-- -->Undirected Graphs Depth First Search</a></li><li><a rel="next" href="/heap">Heap<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--3Dvn1"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2uglW">Copyright © 2020. All rights reserved.</div></div></footer></div></div><script>
   
   
   if(true) {
@@ -1234,4 +867,4 @@ Helps us actually answer the question whether a path exists between the vertices
       
       
       
-      }</script><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/undirected-graphs";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"app":["/app-925f8e7cd5d7002aaa99.js"],"component---node-modules-gatsby-plugin-offline-app-shell-js":["/component---node-modules-gatsby-plugin-offline-app-shell-js-87ef582ba388a83f73c0.js"],"component---src-templates-post-js":["/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js"],"component---src-templates-tag-js":["/component---src-templates-tag-js-1f844a6cae6c3edb6be3.js"],"component---src-templates-category-js":["/component---src-templates-category-js-25552af11a0e1c0342fc.js"],"component---src-pages-404-js":["/component---src-pages-404-js-6f6862aba34aedf6f536.js"],"component---src-pages-about-js":["/component---src-pages-about-js-5f796b0947e25f9214c7.js"],"component---src-pages-contact-js":["/component---src-pages-contact-js-0bba9bff5e05e6cc31df.js"],"component---src-pages-index-js":["/component---src-pages-index-js-7870bbedaf7bf2b74b0b.js"]};/*]]>*/</script><script src="/webpack-runtime-f1d907a7d12743bf9eb1.js" async=""></script><script src="/commons-385294df8f1e93f4d05a.js" async=""></script><script src="/styles-f86521059755ea08c76b.js" async=""></script><script src="/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js" async=""></script><script src="/app-925f8e7cd5d7002aaa99.js" async=""></script></body></html>
+      }</script><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/undirected-graphs";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"app":["/app-925f8e7cd5d7002aaa99.js"],"component---node-modules-gatsby-plugin-offline-app-shell-js":["/component---node-modules-gatsby-plugin-offline-app-shell-js-87ef582ba388a83f73c0.js"],"component---src-templates-post-js":["/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js"],"component---src-templates-tag-js":["/component---src-templates-tag-js-1f844a6cae6c3edb6be3.js"],"component---src-templates-category-js":["/component---src-templates-category-js-5aef66e58578c64d36fe.js"],"component---src-pages-404-js":["/component---src-pages-404-js-6f6862aba34aedf6f536.js"],"component---src-pages-about-js":["/component---src-pages-about-js-5f796b0947e25f9214c7.js"],"component---src-pages-contact-js":["/component---src-pages-contact-js-0bba9bff5e05e6cc31df.js"],"component---src-pages-index-js":["/component---src-pages-index-js-7870bbedaf7bf2b74b0b.js"]};/*]]>*/</script><script src="/webpack-runtime-b1530556a783bf95bb26.js" async=""></script><script src="/commons-ae723fa4c39c9410a771.js" async=""></script><script src="/styles-f86521059755ea08c76b.js" async=""></script><script src="/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js" async=""></script><script src="/app-925f8e7cd5d7002aaa99.js" async=""></script></body></html>

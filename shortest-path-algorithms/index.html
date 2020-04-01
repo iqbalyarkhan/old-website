@@ -40,7 +40,7 @@
         }
       }
     })
-  </script><link rel="preconnect dns-prefetch" href="https://www.google-analytics.com"/><link rel="sitemap" type="application/xml" href="/sitemap.xml"/><link rel="manifest" href="/manifest.webmanifest"/><meta name="theme-color" content="#c62828"/><link rel="apple-touch-icon" sizes="48x48" href="/logos/logo-48.png"/><link rel="apple-touch-icon" sizes="1024x1024" href="/logos/logo-1024.png"/><link rel="alternate" type="application/rss+xml" title="/rss.xml" href="/rss.xml"/><link as="script" rel="preload" href="/app-925f8e7cd5d7002aaa99.js"/><link as="script" rel="preload" href="/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js"/><link as="script" rel="preload" href="/styles-f86521059755ea08c76b.js"/><link as="script" rel="preload" href="/commons-385294df8f1e93f4d05a.js"/><link as="script" rel="preload" href="/webpack-runtime-f1d907a7d12743bf9eb1.js"/><link as="fetch" rel="preload" href="/page-data/shortest-path-algorithms/page-data.json" crossorigin="anonymous"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" role="group" id="gatsby-focus-wrapper"><header><h1><a href="/">Iqbal Khan</a></h1><nav><ul class="Header-module--main-nav--2C0n8"><li><a href="/">All Posts</a></li><li><a href="/algorithms">Algorithms<strong> (<!-- -->5<!-- -->)</strong></a></li><li><a href="/data-structures">Data Structures<strong> (<!-- -->9<!-- -->)</strong></a></li><li><a href="/general">General<strong> (<!-- -->7<!-- -->)</strong></a></li><li><a href="/graphs">Graphs<strong> (<!-- -->10<!-- -->)</strong></a></li></ul></nav></header><main><div><h1>Shortest Path Algorithms</h1><h3>Analysis of shortest path algorithm for Acyclic Digraphs</h3><p class="post-module--post-meta--1ci95">March 28, 2020<!-- --> </p><div><h3 id="table-of-contents"><a href="#table-of-contents" aria-label="table of contents permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table of Contents</h3>
+  </script><link rel="preconnect dns-prefetch" href="https://www.google-analytics.com"/><link rel="sitemap" type="application/xml" href="/sitemap.xml"/><link rel="manifest" href="/manifest.webmanifest"/><meta name="theme-color" content="#c62828"/><link rel="apple-touch-icon" sizes="48x48" href="/logos/logo-48.png"/><link rel="apple-touch-icon" sizes="1024x1024" href="/logos/logo-1024.png"/><link rel="alternate" type="application/rss+xml" title="/rss.xml" href="/rss.xml"/><link as="script" rel="preload" href="/app-925f8e7cd5d7002aaa99.js"/><link as="script" rel="preload" href="/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js"/><link as="script" rel="preload" href="/styles-f86521059755ea08c76b.js"/><link as="script" rel="preload" href="/commons-ae723fa4c39c9410a771.js"/><link as="script" rel="preload" href="/webpack-runtime-b1530556a783bf95bb26.js"/><link as="fetch" rel="preload" href="/page-data/shortest-path-algorithms/page-data.json" crossorigin="anonymous"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" role="group" id="gatsby-focus-wrapper"><header><h1><a href="/">Iqbal Khan</a></h1><nav><ul class="Header-module--main-nav--2C0n8"><li><a href="/">All Posts</a></li><li><a href="/algorithms">Algorithms</a></li><li><a href="/data-structures">Data Structures</a></li><li><a href="/general">General</a></li><li><a href="/graphs">Graphs</a></li></ul></nav></header><main><div><h1>Shortest Path Algorithms</h1><h3>Analysis of shortest path algorithm for Acyclic Digraphs</h3><p class="post-module--post-meta--1ci95">March 28, 2020<!-- --> </p><div><h3 id="table-of-contents"><a href="#table-of-contents" aria-label="table of contents permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table of Contents</h3>
 <ol>
 <li><a href="#motivation">Motivation</a></li>
 <li><a href="#dikjstras-algorithm--single-source">Dijkstra's Algorithm</a></li>
@@ -61,13 +61,13 @@
 <li>Are cycles allowed?</li>
 <li>Are negative cycles allowed?</li>
 </ul>
-<p><strong>Goal</strong>: Once the above questions are answered, we need to be able to come up with a data structure that gives us the shortest paths from a source vertex <code class="language-text">s</code> to every other vertex in the graph. </p>
+<p><strong>Goal</strong>: Once the above questions are answered, we need to be able to come up with a data structure that gives us the shortest paths from a source vertex <code class="language-cpptext">s</code> to every other vertex in the graph. </p>
 <h3 id="dikjstras-algorithm--single-source"><a href="#dikjstras-algorithm--single-source" aria-label="dikjstras algorithm  single source permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Dikjstra's Algorithm : Single Source</h3>
 <p>Let's start with an algorithm that'll help us answer the question: <strong>What is the shortest path from A to every other vertex?</strong> This algorithm was introduced by Dijkstra:  </p>
 <p>The algorithm makes use of two arrays: </p>
 <ul>
-<li>an <code class="language-text">edge</code> array (which we've already seen being used with DFS and BFS) to find the paths from source to a vertex. It keeps track of the last edge that takes us to <code class="language-text">edge[index]</code>. Therefore <code class="language-text">edge[v]</code>is the edge that connects v to its parent in the shortest path tree</li>
-<li>a <code class="language-text">dist</code> array which will hold the weight from one vertex to another. <code class="language-text">dist[v]</code> is the length of the shortest known path from source to v  </li>
+<li>an <code class="language-cpptext">edge</code> array (which we've already seen being used with DFS and BFS) to find the paths from source to a vertex. It keeps track of the last edge that takes us to <code class="language-cpptext">edge[index]</code>. Therefore <code class="language-cpptext">edge[v]</code>is the edge that connects v to its parent in the shortest path tree</li>
+<li>a <code class="language-cpptext">dist</code> array which will hold the weight from one vertex to another. <code class="language-cpptext">dist[v]</code> is the length of the shortest known path from source to v  </li>
 </ul>
 <p>The information above is nothing new. What is new is how we'd change the entries in the two arrays. Let's walk through this graph and and see how we'd go about filling out the two arrays:</p>
 <p><span
@@ -91,7 +91,7 @@
         loading="lazy"
       />
     </span> <a href="https://graphonline.ru/en/">Image Credit - Directed Graph</a></p>
-<p>Let's say we're asked for the shortest path from 0 to every other vertex. Initially our <code class="language-text">edgeTo</code>, <code class="language-text">distanceTo</code> and <code class="language-text">visited</code> arrays look like this:</p>
+<p>Let's say we're asked for the shortest path from 0 to every other vertex. Initially our <code class="language-cpptext">edgeTo</code>, <code class="language-cpptext">distanceTo</code> and <code class="language-cpptext">visited</code> arrays look like this:</p>
 <table>
 <thead>
 <tr>
@@ -154,9 +154,9 @@
 </table>
 <p>Initially, all distances are infinity, edge to is all 0s by default and visited is set to false. Alright, so we start at 0, so we set:</p>
 <ul>
-<li><code class="language-text">distanceTo[0] = 0</code></li>
-<li><code class="language-text">edgeTo[0] = 0</code></li>
-<li><code class="language-text">visited[0] = true</code></li>
+<li><code class="language-cpptext">distanceTo[0] = 0</code></li>
+<li><code class="language-cpptext">edgeTo[0] = 0</code></li>
+<li><code class="language-cpptext">visited[0] = true</code></li>
 </ul>
 <p> and inspect each adjacent edge to 0:</p>
 <p> <span
@@ -180,10 +180,10 @@
         loading="lazy"
       />
     </span> <a href="https://graphonline.ru/en/">Image Credit - Directed Graph</a></p>
-<p>We go to vertex 1, so <code class="language-text">distanceTo[1]</code> is set to 5 since that is the weight of the edge and and it is less than the weight currently shown in <code class="language-text">distanceTo[1]</code>. <code class="language-text">edgeTo[1]</code> is set to 0 since we came from 0.</p>
-<p>We go to vertex 7, so <code class="language-text">distanceTo[7]</code> is set to 8 since that is the weight of the edge and and it is less than the weight currently shown in <code class="language-text">distanceTo[7]</code>. <code class="language-text">edgeTo[7]</code> is set to 0 since we came from 0.</p>
-<p>We go to vertex 4, so <code class="language-text">distanceTo[4]</code> is set to 9 since that is the weight of the edge and and it is less than the weight currently shown in <code class="language-text">distanceTo[4]</code>. <code class="language-text">edgeTo[4]</code> is set to 0 since we came from 0.</p>
-<p>In the above three statements we update the <code class="language-text">distanceTo</code> array because the relevant distance to array shows a value which is higher than the current value we came in with. Since our aim is to find the shortest path, we update the distance and the edge that gave us this shortest distance seen so far:</p>
+<p>We go to vertex 1, so <code class="language-cpptext">distanceTo[1]</code> is set to 5 since that is the weight of the edge and and it is less than the weight currently shown in <code class="language-cpptext">distanceTo[1]</code>. <code class="language-cpptext">edgeTo[1]</code> is set to 0 since we came from 0.</p>
+<p>We go to vertex 7, so <code class="language-cpptext">distanceTo[7]</code> is set to 8 since that is the weight of the edge and and it is less than the weight currently shown in <code class="language-cpptext">distanceTo[7]</code>. <code class="language-cpptext">edgeTo[7]</code> is set to 0 since we came from 0.</p>
+<p>We go to vertex 4, so <code class="language-cpptext">distanceTo[4]</code> is set to 9 since that is the weight of the edge and and it is less than the weight currently shown in <code class="language-cpptext">distanceTo[4]</code>. <code class="language-cpptext">edgeTo[4]</code> is set to 0 since we came from 0.</p>
+<p>In the above three statements we update the <code class="language-cpptext">distanceTo</code> array because the relevant distance to array shows a value which is higher than the current value we came in with. Since our aim is to find the shortest path, we update the distance and the edge that gave us this shortest distance seen so far:</p>
 <table>
 <thead>
 <tr>
@@ -244,8 +244,8 @@
 </tr>
 </tbody>
 </table>
-<p>Notice, <code class="language-text">visited[1]</code>, <code class="language-text">visited[7]</code> and <code class="language-text">visited[4]</code> are still false. That is because we consider a vertex visited once we've processed its neighbors. </p>
-<p>Now, we search for the least weight edge in <code class="language-text">distanceTo</code> which is not yet visited. This is <code class="language-text">distanceTo[1]</code> so we'll next visit vertex 1. We can mark <code class="language-text">visited[1]</code> as true:</p>
+<p>Notice, <code class="language-cpptext">visited[1]</code>, <code class="language-cpptext">visited[7]</code> and <code class="language-cpptext">visited[4]</code> are still false. That is because we consider a vertex visited once we've processed its neighbors. </p>
+<p>Now, we search for the least weight edge in <code class="language-cpptext">distanceTo</code> which is not yet visited. This is <code class="language-cpptext">distanceTo[1]</code> so we'll next visit vertex 1. We can mark <code class="language-cpptext">visited[1]</code> as true:</p>
 <table>
 <thead>
 <tr>
@@ -328,9 +328,9 @@
         loading="lazy"
       />
     </span> <a href="https://graphonline.ru/en/">Image Credit - Directed Graph</a></p>
-<p>We go to vertex 3, so <code class="language-text">distanceTo[3]</code> is set to 20 (5 from 0 to 1 and 15 from 1 to 3) since that is the weight of the edge and and it is less than the weight currently shown in <code class="language-text">distanceTo[3]</code>. <code class="language-text">edgeTo[1]</code> is set to 1 since we came from 1.</p>
-<p>We go to vertex 2, so <code class="language-text">distanceTo[2]</code> is set to 17 (5 from 0 to 1 and 12 from 1 to 2) since that is the weight of the edge and and it is less than the weight currently shown in <code class="language-text">distanceTo[2]</code>. <code class="language-text">edgeTo[7]</code> is set to 1 since we came from 1.</p>
-<p>We go to vertex 7, so <code class="language-text">distanceTo[7]</code> can be set to 9 (5 from 0 to 1 and 4 from 1 to 7) since that is the weight of the edge BUT it is NOT less than the weight currently shown in <code class="language-text">distanceTo[7] = 8</code>. Therefore, we can leave <code class="language-text">distanceTo[7]</code> and <code class="language-text">edgeTo[7]</code> as is:</p>
+<p>We go to vertex 3, so <code class="language-cpptext">distanceTo[3]</code> is set to 20 (5 from 0 to 1 and 15 from 1 to 3) since that is the weight of the edge and and it is less than the weight currently shown in <code class="language-cpptext">distanceTo[3]</code>. <code class="language-cpptext">edgeTo[1]</code> is set to 1 since we came from 1.</p>
+<p>We go to vertex 2, so <code class="language-cpptext">distanceTo[2]</code> is set to 17 (5 from 0 to 1 and 12 from 1 to 2) since that is the weight of the edge and and it is less than the weight currently shown in <code class="language-cpptext">distanceTo[2]</code>. <code class="language-cpptext">edgeTo[7]</code> is set to 1 since we came from 1.</p>
+<p>We go to vertex 7, so <code class="language-cpptext">distanceTo[7]</code> can be set to 9 (5 from 0 to 1 and 4 from 1 to 7) since that is the weight of the edge BUT it is NOT less than the weight currently shown in <code class="language-cpptext">distanceTo[7] = 8</code>. Therefore, we can leave <code class="language-cpptext">distanceTo[7]</code> and <code class="language-cpptext">edgeTo[7]</code> as is:</p>
 <table>
 <thead>
 <tr>
@@ -391,7 +391,7 @@
 </tr>
 </tbody>
 </table>
-<p>Now, we search for the least weight edge in <code class="language-text">distanceTo</code> which is not yet visited. This is <code class="language-text">distanceTo[7]</code> so we'll next visit vertex 7. We can mark <code class="language-text">visited[7]</code> as true:</p>
+<p>Now, we search for the least weight edge in <code class="language-cpptext">distanceTo</code> which is not yet visited. This is <code class="language-cpptext">distanceTo[7]</code> so we'll next visit vertex 7. We can mark <code class="language-cpptext">visited[7]</code> as true:</p>
 <table>
 <thead>
 <tr>
@@ -453,8 +453,8 @@
 </tbody>
 </table>
 <p>Now, we consider 7's neighbors:</p>
-<p>We go to vertex 2, so <code class="language-text">distanceTo[2]</code> is set to 15 (8 from 0 to 7 and 7 from 7 to 2) since that is the weight of the edge and and it is less than the weight currently shown in <code class="language-text">distanceTo[2]</code>. <code class="language-text">edgeTo[2]</code> is set to 7 since we came from 7.</p>
-<p>We go to vertex 5, so <code class="language-text">distanceTo[5]</code> is set to 14 (8 from 0 to 7 and 6 from 7 to 5) since that is the weight of the edge and and it is less than the weight currently shown in <code class="language-text">distanceTo[5]</code>. <code class="language-text">edgeTo[5]</code> is set to 7 since we came from 7.</p>
+<p>We go to vertex 2, so <code class="language-cpptext">distanceTo[2]</code> is set to 15 (8 from 0 to 7 and 7 from 7 to 2) since that is the weight of the edge and and it is less than the weight currently shown in <code class="language-cpptext">distanceTo[2]</code>. <code class="language-cpptext">edgeTo[2]</code> is set to 7 since we came from 7.</p>
+<p>We go to vertex 5, so <code class="language-cpptext">distanceTo[5]</code> is set to 14 (8 from 0 to 7 and 6 from 7 to 5) since that is the weight of the edge and and it is less than the weight currently shown in <code class="language-cpptext">distanceTo[5]</code>. <code class="language-cpptext">edgeTo[5]</code> is set to 7 since we came from 7.</p>
 <table>
 <thead>
 <tr>
@@ -578,20 +578,20 @@
 </table>
 <p>Notice now we can answer questions such as what is the shortest path from 0 to any other vertex? The distanceTo array holds the least weight from 0 to any other vertex. The edgeTo array can be processed and each element put on a stack to determine the shortest path. </p>
 <p>Let's look at how we can get the shortest path from 0 to 6:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cpp"><code class="language-cpp">Start at <span class="token number">6</span> push <span class="token number">6</span> to stack<span class="token operator">:</span> 
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">Start at <span class="token number">6</span> push <span class="token number">6</span> to stack<span class="token operator">:</span> 
 
 <span class="token number">6</span>
 _____
 stack</code></pre></div>
 <p>Look at edgeTo[6] = 2. </p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cpp"><code class="language-cpp">Push <span class="token number">2</span> on the stack<span class="token operator">:</span>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">Push <span class="token number">2</span> on the stack<span class="token operator">:</span>
 
 <span class="token number">2</span>
 <span class="token number">6</span>
 _____
 stack</code></pre></div>
 <p>Look at edgeTo[2] = 7</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cpp"><code class="language-cpp">Push <span class="token number">7</span> on the stack<span class="token operator">:</span>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">Push <span class="token number">7</span> on the stack<span class="token operator">:</span>
 
 <span class="token number">7</span>
 <span class="token number">2</span>
@@ -599,7 +599,7 @@ stack</code></pre></div>
 _____
 stack</code></pre></div>
 <p>Look at edgeTo[7] = 0</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cpp"><code class="language-cpp">Push <span class="token number">0</span> on the stack<span class="token operator">:</span>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">Push <span class="token number">0</span> on the stack<span class="token operator">:</span>
 
 <span class="token number">0</span>
 <span class="token number">7</span>
@@ -611,7 +611,7 @@ stack</code></pre></div>
 <p>0 - 7 - 2 - 6 </p>
 <h3 id="code"><a href="#code" aria-label="code permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Code</h3>
 <p>Let's start with the client code:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token comment">// insert code here...</span>
     Digraph <span class="token function">dg</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     dg<span class="token punctuation">.</span><span class="token function">Insert</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -650,9 +650,9 @@ stack</code></pre></div>
         loading="lazy"
       />
     </span> <a href="https://graphonline.ru/en/">Image Credit - Directed Graph</a></p>
-<p>We'll look to find the shortest path from vertex 0 to every other vertex. We start by inserting each edge into the digraph where each insert operation populates the adjacency list of pairs and then calls the <code class="language-text">SPADijkstra(0)</code> function with our source vertex 0. </p>
-<p>Here's <code class="language-text">SPADijkstra(0)</code> function:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cpp"><code class="language-cpp"><span class="token keyword">void</span> Digraph<span class="token operator">::</span><span class="token function">SPADijkstra</span><span class="token punctuation">(</span><span class="token keyword">int</span> s<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<p>We'll look to find the shortest path from vertex 0 to every other vertex. We start by inserting each edge into the digraph where each insert operation populates the adjacency list of pairs and then calls the <code class="language-cpptext">SPADijkstra(0)</code> function with our source vertex 0. </p>
+<p>Here's <code class="language-cpptext">SPADijkstra(0)</code> function:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> Digraph<span class="token operator">::</span><span class="token function">SPADijkstra</span><span class="token punctuation">(</span><span class="token keyword">int</span> s<span class="token punctuation">)</span><span class="token punctuation">{</span>
     edge<span class="token punctuation">.</span><span class="token function">resize</span><span class="token punctuation">(</span>numberOfVertices<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> numberOfVertices<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
         <span class="token comment">//Setting the distance to infinity for each vertex initially</span>
@@ -670,12 +670,12 @@ stack</code></pre></div>
     <span class="token punctuation">}</span>
     <span class="token function">PrintAllSingleSourceShortestPaths</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre></div>
-<p>This function sets up our arrays <code class="language-text">egde</code> and <code class="language-text">dist</code> and initializes <code class="language-text">dist</code> to infinity which signifies that as of now, we cannot reach any edge from source <code class="language-text">s</code>. Next, we change <code class="language-text">dist[s]</code> to 0 which means that we're currently at <code class="language-text">s</code>. Next, we maintain an array called <code class="language-text">sortedEdges</code> that, as the name suggests keeps all our edges in sorted order based on the weight. For example, once we've visited 0's neighbors, the <code class="language-text">sortedEdges</code> array would look like this:</p>
-<div class="gatsby-highlight" data-language="css"><pre class="language-css"><code class="language-css">[&lt;2<span class="token punctuation">,</span>1> <span class="token punctuation">,</span> &lt;4<span class="token punctuation">,</span>2>]</code></pre></div>
-<p>Notice how the order of the pair is &#x3C;weight,edge> which allows us to sort based on weight instead of edge. The weight is the minimum weight seen so far to get to the corresponding edge. The function <code class="language-text">AddToSortedEdges</code> allows us to add an edge to the array. This function sorts the array for us using <code class="language-text">std::sort</code> call. Next, while we have edges in the array, we get the edge using </p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cpp"><code class="language-cpp"><span class="token keyword">int</span> s <span class="token operator">=</span> sortedEdges<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>second<span class="token punctuation">;</span></code></pre></div>
-<p>and remove it from the array (like popping from a min priority queue). Next, we call the <code class="language-text">Relax()</code> function which updates the <code class="language-text">dist</code> and <code class="language-text">edge</code> arrays based on the logic we discussed earlier:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cpp"><code class="language-cpp"><span class="token keyword">void</span> Digraph<span class="token operator">::</span><span class="token function">Relax</span><span class="token punctuation">(</span><span class="token keyword">int</span> s<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<p>This function sets up our arrays <code class="language-cpptext">egde</code> and <code class="language-cpptext">dist</code> and initializes <code class="language-cpptext">dist</code> to infinity which signifies that as of now, we cannot reach any edge from source <code class="language-cpptext">s</code>. Next, we change <code class="language-cpptext">dist[s]</code> to 0 which means that we're currently at <code class="language-cpptext">s</code>. Next, we maintain an array called <code class="language-cpptext">sortedEdges</code> that, as the name suggests keeps all our edges in sorted order based on the weight. For example, once we've visited 0's neighbors, the <code class="language-cpptext">sortedEdges</code> array would look like this:</p>
+<div class="gatsby-highlight" data-language="css"><pre class="language-cppcss"><code class="language-cppcss">[&lt;2<span class="token punctuation">,</span>1> <span class="token punctuation">,</span> &lt;4<span class="token punctuation">,</span>2>]</code></pre></div>
+<p>Notice how the order of the pair is &#x3C;weight,edge> which allows us to sort based on weight instead of edge. The weight is the minimum weight seen so far to get to the corresponding edge. The function <code class="language-cpptext">AddToSortedEdges</code> allows us to add an edge to the array. This function sorts the array for us using <code class="language-cpptext">std::sort</code> call. Next, while we have edges in the array, we get the edge using </p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">int</span> s <span class="token operator">=</span> sortedEdges<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>second<span class="token punctuation">;</span></code></pre></div>
+<p>and remove it from the array (like popping from a min priority queue). Next, we call the <code class="language-cpptext">Relax()</code> function which updates the <code class="language-cpptext">dist</code> and <code class="language-cpptext">edge</code> arrays based on the logic we discussed earlier:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> Digraph<span class="token operator">::</span><span class="token function">Relax</span><span class="token punctuation">(</span><span class="token keyword">int</span> s<span class="token punctuation">)</span><span class="token punctuation">{</span>
     <span class="token comment">//Get all adjacent vertices to passed in vertex</span>
     <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> adjList<span class="token punctuation">[</span>s<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
         <span class="token comment">//w is the adjacent vertex</span>
@@ -705,7 +705,7 @@ stack</code></pre></div>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre></div>
 <p>Complete code:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cpp line-numbers"><code class="language-cpp"><span class="token keyword">class</span> <span class="token class-name">Digraph</span><span class="token punctuation">{</span>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token keyword">class</span> <span class="token class-name">Digraph</span><span class="token punctuation">{</span>
   
 <span class="token keyword">private</span><span class="token operator">:</span>
     <span class="token keyword">int</span> numberOfVertices<span class="token punctuation">;</span>
@@ -908,4 +908,4 @@ Digraph<span class="token operator">::</span><span class="token function">Digrap
       
       
       
-      }</script><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/shortest-path-algorithms";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"app":["/app-925f8e7cd5d7002aaa99.js"],"component---node-modules-gatsby-plugin-offline-app-shell-js":["/component---node-modules-gatsby-plugin-offline-app-shell-js-87ef582ba388a83f73c0.js"],"component---src-templates-post-js":["/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js"],"component---src-templates-tag-js":["/component---src-templates-tag-js-1f844a6cae6c3edb6be3.js"],"component---src-templates-category-js":["/component---src-templates-category-js-25552af11a0e1c0342fc.js"],"component---src-pages-404-js":["/component---src-pages-404-js-6f6862aba34aedf6f536.js"],"component---src-pages-about-js":["/component---src-pages-about-js-5f796b0947e25f9214c7.js"],"component---src-pages-contact-js":["/component---src-pages-contact-js-0bba9bff5e05e6cc31df.js"],"component---src-pages-index-js":["/component---src-pages-index-js-7870bbedaf7bf2b74b0b.js"]};/*]]>*/</script><script src="/webpack-runtime-f1d907a7d12743bf9eb1.js" async=""></script><script src="/commons-385294df8f1e93f4d05a.js" async=""></script><script src="/styles-f86521059755ea08c76b.js" async=""></script><script src="/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js" async=""></script><script src="/app-925f8e7cd5d7002aaa99.js" async=""></script></body></html>
+      }</script><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/shortest-path-algorithms";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"app":["/app-925f8e7cd5d7002aaa99.js"],"component---node-modules-gatsby-plugin-offline-app-shell-js":["/component---node-modules-gatsby-plugin-offline-app-shell-js-87ef582ba388a83f73c0.js"],"component---src-templates-post-js":["/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js"],"component---src-templates-tag-js":["/component---src-templates-tag-js-1f844a6cae6c3edb6be3.js"],"component---src-templates-category-js":["/component---src-templates-category-js-5aef66e58578c64d36fe.js"],"component---src-pages-404-js":["/component---src-pages-404-js-6f6862aba34aedf6f536.js"],"component---src-pages-about-js":["/component---src-pages-about-js-5f796b0947e25f9214c7.js"],"component---src-pages-contact-js":["/component---src-pages-contact-js-0bba9bff5e05e6cc31df.js"],"component---src-pages-index-js":["/component---src-pages-index-js-7870bbedaf7bf2b74b0b.js"]};/*]]>*/</script><script src="/webpack-runtime-b1530556a783bf95bb26.js" async=""></script><script src="/commons-ae723fa4c39c9410a771.js" async=""></script><script src="/styles-f86521059755ea08c76b.js" async=""></script><script src="/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js" async=""></script><script src="/app-925f8e7cd5d7002aaa99.js" async=""></script></body></html>
