@@ -43,6 +43,8 @@ tags:
 
 10. [Setting an integer to infinity](#setting-an-integer-to-infinity)
 
+[Interesting Problems](#interesting-problems)
+
 ### Reading numbers separated by whitespace
 
 Say input is:
@@ -454,3 +456,20 @@ int a = numeric_limits<int>::max();
 ```
 
 Which would be 2^31 - 1 (or 2 147 483 647) if int is 32 bits wide on your implementation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Interesting problems 
+
+[Single numbers](https://leetcode.com/articles/single-number/) Can you do it with $O(1)$ space and $O(N)$ time?

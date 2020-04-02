@@ -30,20 +30,7 @@ One of the questions most frequently asked about graphs is some variant of the f
 - What is the shortest path from A to B? (Either in terms of number of hops, or distances or costs which may be stored on edges.)
 - What is the distance from A to every other node in the graph (or every node that can be reached from A)?
 
-All of these problems fall under the broad area of graph search or computation of shortest paths (or just paths). These problems have many important applications:
-
-- Finding fast or cheap ways to go from one place to another, by utilizing road networks (optimizing distance or time), or airline or train networks (optimizing time or cost).
-- Finding social distance in a social network.
-
-A lot of real-world problems are extremely naturally modeled as shortest path searches in suitably defined graphs. There are plenty of follow up questions that can be asked when we're talking about graph search:
-
-- Do we just want to know whether a path exists, or do we need to find it?
-- If we need to find a path, do we want the shortest path, or will any path do?
-- If we don’t need to find it, do we need the exact distance between nodes, or just whether a path exists? 
-- Do edges have lengths/costs associated with them, or are we just interested in the number of hops.
-- If edges have costs associated with them, can they be negative?
-
-Let's start with an algorithm that'll help us answer the question **whether a path exists from A to B**:
+All of these problems fall under the broad area of graph search or computation of shortest paths (or just paths). Let's start with an algorithm that'll help us answer the question **whether a path exists from A to B**:
 
 ### Depth First Search
 
@@ -148,7 +135,7 @@ We find that 0 is already visited so move to 2. We find 2 is unvisited so we hal
 
 ### Finding Paths Using DFS
 
-DFS can be modified slightly to answer this question: **is there a path from A to B and if so what is it?**. There is a surprisingly simple way to answer that question using DFS:
+DFS can be modified slightly to answer this question: **is there a path from A to B and if so what is it?**. This is called a single source path where we can determine whether a **single** vertex has a path to another given vertex. There is a surprisingly simple way to answer that question using DFS:
 
 ```cpp{numberLines: true}
 void AdjList::RecursiveDFS(int v){
@@ -163,7 +150,7 @@ void AdjList::RecursiveDFS(int v){
     }
 }
 ```
-Only addition we've made to DFS from earlier is that we've now got a new array called `edgeTo` which is equal to the size of the vertices in our graph (we initialized it in the constructor). Next, whenever we find an unvisited edge in a vertex's adjacency list, we're going to that index in the `edgeTo` array and populating that index with the value `v`. This helps us keep a note of what vertex we used to get to the current vertex, ie, what is the predecessor vertex to the current vertex that was used to get to the current vertex. Let's walk through an example:
+Only addition we've made to DFS from earlier is that now, we've got a new array called `edgeTo` which is equal to the size of the vertices in our graph (we initialized it in the constructor). Next, whenever we find an unvisited edge in a vertex's adjacency list, we're going to that index in the `edgeTo` array and populating that index with the value `v`. This helps us keep a note of what vertex we used to get to the current vertex, ie, what is the predecessor vertex to the current vertex that was used to get to the current vertex. Let's walk through an example:
 
 Initially our `edgeTo` list is empty. Assume we've got 6 vertices labelled 0-5 in our graph:
 
