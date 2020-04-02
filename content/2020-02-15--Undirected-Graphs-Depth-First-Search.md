@@ -119,7 +119,7 @@ visited[5] = F
 1 is unvisited, so we halt the `RecursiveDFS(0)` call and initiate another call to `RecursiveDFS` but this time with the value of `v` as 1. We then mark 1 as visited, print it out and iterate over its neighbors: 
 
 ```css
-printed: 0
+printed: 0 1
 visited[0] = T
 visited[1] = T 
 visited[2] = F
@@ -199,7 +199,71 @@ edgeTo[4] = 3
 edgeTo[5] = 3
 ```
 
-The `edgeTo` array allows us to capture the vertex that was taken to get to `edgeTo[curr]` vertex. How do we actually transform this information to something useful? For example, **what was the path taken to get to vertex 5 from vertex 0?** To do so, we need to follow the path information stored in `edgeTo` array. For example, to get to 5 (let's say 5 is our `w`) from 0 (let's say 0 is our `v`) we can step through the array like so:
+**We can use this array to create a tree of the graph**:
+
+- Notice that `edgeTo[v] = w` tells that we got to `v` from `w` so `w` is the parent of `v`
+- Then all we need to do is make `w` the parent of `v`:
+
+```cpp
+edgeTo[0] = 0 
+Tree: 
+0
+
+**********************
+
+edgeTo[1] = 2 
+Tree: 
+0  2
+   |
+   1 
+
+**********************
+
+edgeTo[2] = 0 
+Tree: 
+    0
+    |  
+    2   
+    |
+    1    
+
+**********************
+
+edgeTo[3] = 2 
+Tree: 
+    0
+    |  
+    2   
+   / \
+  1   3 
+
+**********************
+
+edgeTo[4] = 3 
+Tree: 
+    0
+    |  
+    2   
+   / \
+  1   3 
+     /
+    4
+
+
+**********************
+
+edgeTo[5] = 3 
+Tree: 
+    0
+    |  
+    2   
+   / \
+  1   3 
+     / \
+    4  5 
+``` 
+
+How do we actually transform the `edgeTo` array information to something useful? For example, **what was the path taken to get to vertex 5 from vertex 0?** From the tree, it is clear that we went from 0 to 2 to 3 to 5 but how would we use the array to gather that same information? We can step through the array like so:
 
 ```
 Begin at the w vertex: 5
