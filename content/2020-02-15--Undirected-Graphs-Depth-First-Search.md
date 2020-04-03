@@ -442,4 +442,4 @@ We can now check if `components[v] == components[w]` to see if two components ar
 
 ### Conclusion
 
-Relationship between objects that can be represented using undirected graphs and a lot of questions can be answered about the said objects using the DFS as we've discussed in this section. Happy coding! 
+Relationship between objects that can be represented using undirected graphs and a lot of questions can be answered about the said objects using the DFS as we've discussed in this section. We've seen how a simple addition of 2 arrays, `edgeTo` and `connected`, helps us answer more complicated questions.
