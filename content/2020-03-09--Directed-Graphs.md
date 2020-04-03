@@ -33,11 +33,11 @@ tags:
 
 ### Introduction
 
-In this post I'll talk about a directed graphs. We'll be looking at the algorithms we discussed while talking about [undirected graphs](/undirected-graphs) and I suggest you go over those before proceeding with this post.
+In this post I'll talk about directed graphs. We'll be looking at the algorithms we discussed while talking about [undirected graphs](/undirected-graphs) and I suggest you go over those (DFS,BFS,Cycle detection, connected components, union find and bipartite) before proceeding with this post.
 
 ### Definitions
 
-Just as a recap, a directed graph is one that is represented by arrow heads showing the allowed direction that can be travelled.
+Just as a recap, a directed graph is one that is represented by arrow heads showing the allowed direction that can be travelled. A digraph can be represented by an ordered pair. An ordered pair is useful because the order of each pair determines the direction of the edge. For example, edge (1,2) would mean you can travel from 1 to 2 BUT not the other way round.
 
 Here is what an undirected graph looks like:
 
