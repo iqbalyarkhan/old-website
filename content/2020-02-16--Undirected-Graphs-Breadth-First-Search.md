@@ -20,7 +20,7 @@ tags:
 3. [Conclusion](#conclusion)
 
 ### Introduction
-Breadth first search, as the name suggests, is concerned with looking at vertices that are closest to the current vertex. It gradually moves away from the starting vertex. BFS, therefore, can help find the shortest path to vertices from a given vertex. 
+Breadth first search, as the name suggests, is concerned with looking at vertices that are closest to the current vertex. It gradually moves away from the starting vertex. BFS, therefore, can help find the shortest path to vertices from a given vertex. BFS does so by first exploring all vertices 1 edge away from the source, then exploring all vertices 2 edges away from the source and so on. 
 
 In contrast, depth first search took a long route to find a path. That is because DFS is not designed to find the shortest route. It is used to find **a** route. Therefore, DFS helped us answer whether a path existed, BFS will help us find the shortest path from the starting node. 
 
@@ -170,6 +170,17 @@ edgeTo[5] =             0
 ```
 
 Although the marking is done and our `edgeTo` array is fully created, the algorithm keeps running until all the elements from the queue are popped off. Notice how the `edgeTo` list now notes that we got to 1,2 and 5 from 0 and we got to 3 and 4 from 2. So if you were to call the `FindPath()` function, it'll provide you with the shortest path from any vertex to any other vertex. 
+
+You can create a tree using the `edgeTo` array (look at [DFS](/undirected-graphs-depth-first-search) to see how I did it). The tree in BFS's case would look like this:
+
+```css
+
+        0
+      / | \
+     1  2  5
+       / \
+      3   4
+``` 
 
 **Notice in DFS we mark a vertex not as soon as we visit it while go through another vertex's adjacency list but it is marked when it is its turn to be processed. However, in BFS, we mark the element as soon as we visit it while exploring another vertex's adjacency list.** BFS says: as soon as you get to a vertex, mark it and push it to the queue. 
 
