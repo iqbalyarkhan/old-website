@@ -43,6 +43,8 @@ tags:
 
 10. [Setting an integer to infinity](#setting-an-integer-to-infinity)
 
+11. [Char to int](#char-to-int)
+
 [Interesting Problems](#interesting-problems)
 
 ### Reading numbers separated by whitespace
@@ -457,9 +459,12 @@ int a = numeric_limits<int>::max();
 
 Which would be 2^31 - 1 (or 2 147 483 647) if int is 32 bits wide on your implementation.
 
+### Char to Int
 
-
-
+```cpp
+int ia = int('a') - 97;
+cout << ia << endl; //Prints 0
+```
 
 
 
