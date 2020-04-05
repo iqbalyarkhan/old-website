@@ -45,6 +45,8 @@ tags:
 
 11. [Char to int](#char-to-int)
 
+12. [ASCII to char](#ascii-to-char)
+
 [Interesting Problems](#interesting-problems)
 
 ### Reading numbers separated by whitespace
@@ -466,9 +468,13 @@ int ia = int('a') - 97;
 cout << ia << endl; //Prints 0
 ```
 
+### ASCII to char
 
-
-
+```cpp
+    int a = 97;
+    char b = a;
+    cout << b << endl; //prints 'a' since 97 is a's decimal value
+```
 
 
 
