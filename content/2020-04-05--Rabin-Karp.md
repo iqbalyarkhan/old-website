@@ -110,7 +110,11 @@ In the code above, we've got the `GetIndex` function that takes in our text and 
 
 ### Hash Function
 
-We need to efficiently take the hash of our pattern and each substring of the text. To do so, we'll use Horner's method and a modular hash function:
+We need to efficiently take the hash of our pattern and each substring of the text. To do so, we'll use Horner's method and a modular hash function.
+
+The hash function is calculated using this formula:
+
+hash(text[])
 
 ```cpp{numberLines: true}
 long RK::HashFunction(string key, int m){
@@ -125,4 +129,6 @@ long RK::HashFunction(string key, int m){
 }
 ```
 
-The function uses a large prime, such as 997 and a value of 26 (number of possible characters) to calculate the hash value.
+The function uses a large prime, such as 997 and a value of 26 (number of possible characters) to calculate the hash value. 
+
+This hash function as of now is inefficient. That is because on each iteration, it has to perform the `% 997` calculation. This calculation takes time. There's 
