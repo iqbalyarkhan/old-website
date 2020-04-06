@@ -1,6 +1,6 @@
 ---
 title: Substring Search
-date: 2020-04-05
+date: 2020-04-04
 thumbnail: /post-images/substringsearch.png
 draft: false
 extract: An analysis of substring search algorithms
@@ -60,12 +60,13 @@ Here's this logic converted to code:
     for (int i = 0; i < text.size(); i++){
         if (text[i] == pattern[0]){
             index = i;
-            for (j = 0; j < pattern.size(); j++){
-                if (text[i] != pattern[j]){
+            int j = 0;
+            for (; j < pattern.size(); j++){
+                if (text[index] != pattern[j]){
                     found = false;
                     break;
                 } else {
-                    i++;
+                    index++;
                 }
             }
             if (found){
