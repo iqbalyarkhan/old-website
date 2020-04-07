@@ -2,7 +2,7 @@
 title: Rabin Karp Algorithm
 date: 2020-04-05
 thumbnail: /post-images/kmp.png
-draft: false
+draft: true
 extract: An analysis of Rabin Karp substring search algorithm
 categories: 
     - Strings
@@ -18,9 +18,9 @@ tags:
 
 3. [Finding Substring in text](#finding-substring-in-text)
 
-3. [Rolling hash](#rolling-hash)
+4. [Rolling hash](#rolling-hash)
 
-3. [Code](#code)
+5. [Code](#code)
 
 
 
@@ -213,3 +213,11 @@ long RK::HashFunction(string key, int m){
 ```
 
 Since this method is only called once when we're computing the hash of our pattern, we're only going through this loop once. 
+
+### Code
+
+Here's the code for Rabin Karp:
+
+```cpp{numberLines: true}
+
+```
