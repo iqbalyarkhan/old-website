@@ -323,6 +323,15 @@ vector<int> v(5); //[0,0,0,0,0]
 vector<int> v(5, -1); //[-1,-1,-1,-1,-1]
 ```
 
+You can declare and then initialize a vector as well.
+
+```cpp
+vector<int> v;
+int size;
+cin >> size; // 4
+v.resize(size); //Would fill up with default values till size is reached: [0,0,0,0]
+```
+
 #### Erase From Vectors
 
 Since erasing an element from a vector invalidates the iterator, we can't just iterate and erase. We have to use `std::iterator`:

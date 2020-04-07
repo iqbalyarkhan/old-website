@@ -14,13 +14,13 @@ tags:
 
 1. [Introduction](#introduction)
 
-2. [Logic](#logic)
+2. [Prefix Array](#prefix-array)
 
-3. [Finding Substring in text](#finding-substring-in-text)
+3. [Logic](#logic)
 
-4. [Rolling hash](#rolling-hash)
+4. [Code](#code)
 
-5. [Code](#code)
+5. [Analysis](#analysis)
 
 
 
@@ -28,7 +28,7 @@ tags:
 
 We've looked at why the [brute force algorithm](/substring-search) doesn't work. Let's talk about an algorithm that provides a substantial improvement over the naive approach: the KMP algorithm.
 
-### Logic
+### Prefix Array
 
 The idea behind KMP is simple: every time there's a mismatch, there's no need to go all the way back to the next iteration in for loop. If you've matched a part of the substring, take advantage of that partial match and start at a later index. This way, we don't have to iterate over each and every non-matching character.
 
@@ -158,4 +158,177 @@ pat[i] != pat[pre]
 | a | b | a | b | a | b | c | a |
 
 
-This process continues until we have stepped through the entire array. The time it takes to build this array is $O(M)$ where $M$ is the length of the pattern. 
+This process continues until we have stepped through the entire array. Finally, we'll have this array:
+ 
+ | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+ | -- | -- | -- | -- | -- | -- | -- | -- |
+ | 0 | 0 | 1 | 2 | 3 | 4 | 0 | 1 |
+ | a | b | a | b | a | b | c | a |
+ 
+ The time it takes to build this array is $O(M)$ where $M$ is the length of the pattern. 
+
+### Logic
+
+Ok, so we've built our prefix array, now how do we use this? Let's say, this is what we have for our text and pattern:
+
+```css
+Text:       dddababcabababcaab
+Pattern:            abababca
+```
+
+and we've already built this prefix array for ourselves:
+
+| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| -- | -- | -- | -- | -- | -- | -- | -- |
+| 0 | 0 | 1 | 2 | 3 | 4 | 0 | 1 |
+| a | b | a | b | a | b | c | a |
+
+### Logic
+
+What use is the prefix array for matching? **We use the prefix array to determine how far forward we can move the pattern string while comparing against the text when we get a mismatch.** Let's look at our text and pattern and see how this works:
+
+We start with comparing `text[0]` with `pattern[0]` and continue doing so until we reach text[4]. The first 3 indices don't match: no character in `ddd` matches `a`. So, when we get to `text[4]`, things get interesting:
+
+```css
+      | 
+d d d a b a b c a b a b a b c a a b
+      a b a b a b c a
+
+```
+
+at `text[4]` we have a match, moving on, we see that there's a match up till `text[6]` and `text[7]` is a mismatch.
+
+
+```css
+      | | | | x --> a partial match 
+d d d a b a b c a b a b a b c a a b
+      a b a b a b c a
+
+```
+
+We notice that from our pattern string, we were able to match 4 (let's call this `numMatches`) characters: `a b a b` and the mismatch was on the 5th character. Here's our prefix array again:
+
+| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| -- | -- | -- | -- | -- | -- | -- | -- |
+| 0 | 0 | 1 | 2 | 3 | 4 | 0 | 1 |
+| a | b | a | b | a | b | c | a |
+
+
+So, we go to `prefixArr[numMatches]` and see the value = `3`. We then perform this calculation: 
+
+```cpp
+shiftAmount = numMatches - value + 1 //shiftAmount = 2
+```
+The plus 1 is required so that we move to the correct new position. It is because of this `+ 1` that some implementations begin the `prefixArr` at 1 and have `prefixArr[0] = -1`. Ok, so now we've got our shift amount as 2. So we move the pattern 2 positions down based on where we started getting the matches. Notice how the characters now align. The `ab` match which is why we couldn't move down more:
+
+```css
+          | | --> Prevented us from moving down more 
+d d d a b a b c a b a b a b c a a b
+          a b a b a b c a
+```
+
+Anyway, we're now at index 5, and we begin matching again:
+
+```css
+          | | x --> Mismatch, we only matched 2 
+d d d a b a b c a b a b a b c a a b
+          a b a b a b c a
+```
+
+Now, we only matched 2 characters: `a b`. So, we go to `prefixArr[2]` and get 1. 2 - 1 + 1 = 2. So we can set our pattern at the position: 5 + 2 = 7:
+
+```css
+              | -> new position
+d d d a b a b c a b a b a b c a a b
+              a b a b a b c a
+```
+
+We immediately have a mismatch so we move to the next position:
+
+```css
+                | -> new position
+d d d a b a b c a b a b a b c a a b
+                a b a b a b c a
+```
+
+Now, we have a match, let's keep matching:
+
+```css
+                | | | | | | | |-> all matched
+d d d a b a b c a b a b a b c a a b
+                a b a b a b c a
+```
+
+Now, we matched 8 so we go to `prefixArr[8]` which doesn't exist! Which means we matched our pattern. In this case, you can keep going to find all possible matches by moving down the length of the pattern. So, we're at position 8 and the pattern is of length 8 so 8 + 8 = 16 which would be our new start position:
+
+
+```css
+                                | -> new start position
+d d d a b a b c a b a b a b c a a b
+                a b a b a b c a
+```
+
+And that is how KMP works!
+
+
+### Code
+
+```cpp{numberLines: true}
+class KMP{
+private:
+    vector<int> prefixArr;
+    void buildPrefixArr(string);
+    int patternLength;
+    
+public:
+    vector<int> GetIndex(string,string);
+};
+
+vector<int> KMP::GetIndex(string text, string pat){
+    patternLength = int(pat.size());
+    buildPrefixArr(pat);
+    vector<int> ans;
+    for (int i = 0; i < int(text.size()); i++){
+        //pattern iterator
+        int patItr = 0;
+        int txtItr = i;
+        if (text[i] == pat[patItr]){
+            int numMatched = 0;
+            while (text[txtItr] == pat[patItr]){
+                txtItr++;
+                patItr++;
+                numMatched++;
+            }
+            
+            if (numMatched == patternLength){
+                //We've got a full match!
+                ans.push_back(i);
+                i += patternLength;
+            } else{
+                //Partial match, figure out how much to move
+                i = numMatched - prefixArr[numMatched] + 1;
+            }
+        }
+    }
+    
+    return ans;
+}
+
+void KMP::buildPrefixArr(string pat){
+    prefixArr.resize(patternLength);
+    int pre = 0;
+    for (int i = 1; i < patternLength; i++){
+        if (pat[i] == pat[pre])
+            pre++;
+        else
+            pre = 0;
+        prefixArr[i] = pre;
+    }
+}
+```
+
+The code above is exactly the same as the logic we discussed. We create a new `prefixArr` for each new request that we get from the client. And our `GetIndex()` function returns a vector with all the starting indices in the text for each match.
+
+### Analysis
+
+So, we precompute the `prefixArr` for each search. This is simply of length $O(M)$ where $M$ is the length of the pattern. Next, we begin our search that would, in the worst case scenario, would run for $O(N)$ where $N$ is the length of the text. Therefore, the total work that we do is $O(M)$ and then we do $O(N)$ amount of work for a total of $O(M + N)$. 
