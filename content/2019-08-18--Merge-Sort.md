@@ -23,7 +23,7 @@ tags:
 
 5. [Output](#output)
 
-6. [Analysis](#analysis)
+6. [Conclusion](#conclusion)
 
 ### Introduction
 
@@ -270,8 +270,8 @@ Program ended with exit code: 0
 
 ``` 
 
-### Analysis
+### Conclusion
 
-The running time of merge sort can be broken down like so:
+Merge sort runs in $O(N log N)$ time and its space complexity is $O(N)$.
 
-1. 
+
