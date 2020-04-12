@@ -526,3 +526,15 @@ So if number bitwise and with the formula above is a 0, then the number is a pow
 - Use right shifting to iterate through right shifted amount of bits at a time.
 
 - Use left shift to target a specific bit position by shifting left by the concerned bit's position. 
+
+- `A` is decimal 65 and `Z` is 90
+
+- `a`  is decimal 97 and `z` 122 
+
+- Sum of consecutive integers: 
+
+$$$
+
+(n * (n+1))/2
+
+$$$

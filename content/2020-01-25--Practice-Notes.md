@@ -47,10 +47,13 @@ tags:
 
 12. [ASCII to char](#ascii-to-char)
 
+14. [Character to upper case](#character-to-upper-case)
+
 13. [Interesting Problems](#interesting-problems)
     * [Single Numbers](#single-numbers)
     * [Reverse an integer](#reverse-an-integer)
     * [Check if a decimal integer is a palindrome](#check-if-a-decimal-integer-is-a-palindrome)
+    * [Find difference in string](#find-difference-in-string)
 
 ### Reading numbers separated by whitespace
 
@@ -259,6 +262,9 @@ int main(){
     for (auto i : m){
         cout <<i.first << " -> " << i.second << endl;
     }
+
+    //to increment value at m["four"]
+    m["four"]++; //now m["four"] = 5
 }
 ```
 
@@ -499,7 +505,16 @@ int main(){
 }
 ```
 
+### Character to upper case
 
+```cpp
+#include <cctype>
+
+char a='a';  
+a=toupper(a);
+cout<<a; //Prints A
+
+```
 
 ## Interesting problems 
 
@@ -599,3 +614,21 @@ bool isPalindromeReversed(int num){
 ```
 
 This approach however takes extra $O(1)$ space because we need to copy the original number somewhere to a variable so that we can compare at the end.
+
+### Find difference in string
+
+```cpp
+char findTheDifference(string s, string t) {
+    int ans = 0;
+    int i = 0;
+    for (; i < t.size(); i++){
+        ans ^= s[i];
+        ans ^= t[i];
+        if (ans != 0)
+            break;
+    }
+    return t[i];
+}
+```
+
+Keep XORing the characters. Since equivalent characters cancel out, as soon as a mismatch is found, you can return the mismatched character. Same can be done for integers
