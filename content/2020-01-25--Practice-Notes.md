@@ -47,7 +47,9 @@ tags:
 
 12. [ASCII to char](#ascii-to-char)
 
-[Interesting Problems](#interesting-problems)
+13. [Interesting Problems](#interesting-problems)
+    * [Single Numbers](#single-numbers)
+    * [Reverse an integer](#reverse-an-integer)
 
 ### Reading numbers separated by whitespace
 
@@ -490,6 +492,49 @@ cout << ia << endl; //Prints 0
 
 
 
-### Interesting problems 
+## Interesting problems 
 
+### Single Numbers
 [Single numbers](https://leetcode.com/articles/single-number/) Can you do it with $O(1)$ space and $O(N)$ time?
+
+### Reverse an integer
+Given an integer, return its digits in reversed order: 12345 -> 54321. Make sure to handle negative numbers.
+
+```cpp
+int Reversed(int num){
+    int ans = 0;
+    bool wasNeg = false;
+    if (num < 0){
+        wasNeg = true;
+        num = num * (-1);
+    }
+    while (num != 0){
+        ans = (ans * 10) + num % 10; //------------------> MEAT OF THE ALGO
+        num = num/10;               //-------------------> MEAT OF THE ALGO
+    }
+    if (wasNeg)
+        ans = ans * -1;
+    return ans;
+}
+```
+
+Ok, so the meat of the algo does this:
+It is obvious that the modulo operator helps with extracting the last digit from the number. 
+It first multiplies answer by 10. How does this help? Let's walk through an example: 65432
+Initially, ans = 0. Then:
+
+```cpp
+ans = (ans * 10) + num % 10
+0   =     0      + 2
+num = num/10
+```
+
+So `ans = 2`. Now, we need to make space AFTER the 2 for the next integer. To make that space after the 2, we multiply the answer so far by 10. Why 10 only? becase we don't know in advance how many integers are left. Ok, so we multiply 2 by 10 so we're now at 20:
+
+```cpp
+ans = (2 * 10) + num % 10
+ans = 20 + 3
+num = num/10
+```
+
+now answer is 23. Notice how we're now building from the least significant digit end and keep multiplying the value by 10 to add the next digit.
