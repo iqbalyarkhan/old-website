@@ -50,6 +50,7 @@ tags:
 13. [Interesting Problems](#interesting-problems)
     * [Single Numbers](#single-numbers)
     * [Reverse an integer](#reverse-an-integer)
+    * [Check if a decimal integer is a palindrome](#check-if-a-decimal-integer-is-a-palindrome)
 
 ### Reading numbers separated by whitespace
 
@@ -488,7 +489,15 @@ cout << ia << endl; //Prints 0
 ```
 
 
+### Get number of digits in an integer
 
+```cpp
+#include <math.h>
+int main(){
+    int ans = log10(5432);
+    cout << ans << endl; //prints 3
+}
+```
 
 
 
@@ -538,3 +547,55 @@ num = num/10
 ```
 
 now answer is 23. Notice how we're now building from the least significant digit end and keep multiplying the value by 10 to add the next digit.
+
+### Check if a decimal integer is a palindrome
+
+Given a decimal integer, check to see if it is a palindrome. For example, the function should return true for 123454321 and false for 123456554.
+
+The strategy is to:
+
+```css
+  check        check 
+    |           |
+    5   4   4   5
+
+If two are the same, remove those two
+
+        4   4
+Continue until not same or num goes to 0
+```
+
+```cpp{numberLines: true}
+bool isPalindrome(int num){
+    while (num != 0){
+        int numberOfDigits = log10(num);
+        int divideBy = pow(10,numberOfDigits);
+        int msb = num/divideBy;
+        int lsb = num % 10;
+        if (! (msb == lsb))
+            return false;
+        num = num - (msb * divideBy);
+        num = num/10;
+    }
+    return true;
+}
+```
+
+The function first calculates the number of digits. To do so, we use the `log10()` function call in the `#include <math.h>` header. So now we have the number of digits. Say our `num` was 5445, then  `numberOfDigits` would equal 3. Next, we raise 10 to the power of `numberOfDigits` to help us isolate the MSB. Next, we use modulo operator to check the LSB. If they're not the same, we immediately return. Otherwise we drop the MSB and the LSB and retry.
+
+OR we can create the number using the `isPalindrome` function and see if it matches with the original:
+
+```cpp{numberLines: true}
+bool isPalindromeReversed(int num){
+    int ans = 0;
+    int origNum = num;
+    while (num != 0){
+        ans = (ans * 10) + num % 10;
+        num = num/10;
+    }
+    
+    return (ans == origNum);
+}
+```
+
+This approach however takes extra $O(1)$ space because we need to copy the original number somewhere to a variable so that we can compare at the end.
