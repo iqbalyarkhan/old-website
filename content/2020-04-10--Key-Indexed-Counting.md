@@ -2,7 +2,7 @@
 title: Key Indexed Counting
 date: 2020-04-10
 thumbnail: /post-images/keyindexcounting.png
-draft: false
+draft: true
 extract: An analysis of key index counting of strings
 categories: 
     - Strings
