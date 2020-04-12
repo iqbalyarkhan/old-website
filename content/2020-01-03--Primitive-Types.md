@@ -33,6 +33,8 @@ tags:
 
 10. [Check if number i power of 2 in constant time](#check-if-number-is-power-of-2-in-constant-time)
 
+11. [Conclusion](#conclusion)
+
 ### Introduction
 In this post, I'll talk about a few methods to manipulate binary numbers to perform various operations. In the process
 we'll solve a few interesting problems as well.
@@ -405,6 +407,8 @@ void BKAlgo(int num){
 }
 ```
 
+#### Look up table
+
 This is still not great! We are computing parity for very large numbers are we're performing the `&` operation and subtracting 1 from very large numbers. This would still take some time. To improve performance on very large binary numbers, we need to:
 
 - Process multiple bits at a time
@@ -458,7 +462,11 @@ AND                                 1111
 1111 in lookup table = 4
 Right shift.
 ```
-Keep doing so until the original number becomes 0.
+Keep doing so until the original number becomes 0. As a side note, instead of using `int x = 15` (the 1111) for `AND`, you can also use hex F. In C++, you'd do:
+
+```cpp
+cout << (3 & 0XF) << endl; //F is same as 1111 binary = 15 decimal
+```
 
 This algorithm runs in $O((\textrm{ number of bits in input})/ \textrm{number of bits in look up table group} )$. For the example above, we had 16 bits in the input and the number of bits in lookup table were 4 so the time is:
 
@@ -499,3 +507,22 @@ AND 0   1   1   1
 
 So if number bitwise and with the formula above is a 0, then the number is a power of 2, otherwise it is not.
 
+### Conclusion
+
+- Remember these formulae:
+
+  $$$
+  x \text{\&} (x - 1) = x \textrm{ with its lowest set bit erased} 
+  $$$ 
+    
+  $$$
+  x \text{\&} \neg(x - 1) = \textrm{ isolates } x's \textrm{ lowest set bit} 
+  $$$
+  
+  Usually a combination of the two with the bitwise operators on an input would take you closer to a solution. 
+  
+- Remember, for any kind of bit manipulation, the key to good performance is to [process multiple bits at a time and caching results in an array based lookup table](/primitive-types#look-up-table)    
+
+- Use right shifting to iterate through right shifted amount of bits at a time.
+
+- Use left shift to target a specific bit position by shifting left by the concerned bit's position. 
