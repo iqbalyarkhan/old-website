@@ -511,6 +511,7 @@ So if number bitwise and with the formula above is a 0, then the number is a pow
 
 - Remember these formulae:
 
+This formula can be used to check if there are more than one 1s in a binary representation:
   $$$
   x \text{\&} (x - 1) = x \textrm{ with its lowest set bit erased} 
   $$$ 
