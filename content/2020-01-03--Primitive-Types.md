@@ -17,6 +17,8 @@ tags:
 
 2. [Converting binary to decimal](#converting-binary-to-decimal)
 
+3. [NOT](#not)
+
 3. [AND](#and)
 
 4. [OR](#or)
@@ -111,6 +113,15 @@ So, if we're to convert our example binary number: $10110$, we'd start with init
 | 0 | (11 * 2) + 0 | 22 |
 
 Therefore, our binary `10110` is `22` in base 10.
+
+### NOT
+
+Not is the negation operator. It converts 0 to 1 and 1 to 0. To do so in C++ you can:
+
+```cpp
+cout << !1 << endl; //prints 0
+cout << !0 << endl; //print 1
+```
 
 ### AND
 
