@@ -556,3 +556,5 @@ $$$
 (n * (n+1))/2
 
 $$$
+
+- You can also take advantage of the array subscripts. For example, look at [this](https://www.youtube.com/watch?v=CTBEcmzLAuA). The idea is that when all elements are present between 1 and N, each element will be crossed out by jumping to `index`. Those not crossed out are missing. 
