@@ -85,8 +85,14 @@ Due to this, a **byte** is considered a unit of information storage. As you incr
 
 $$$
 1KB = 1 * 10^3 bytes
+$$$
+$$$
 1MB = 1 * 10^6 bytes
+$$$
+$$$
 1GB = 1 * 10^9 bytes
+$$$
+$$$
 1TB = 1 * 10^12 bytes
 $$$
 
@@ -97,7 +103,7 @@ Have 2 bytes together and you have a `word`: therefore, a word has 16 bits.
 Binary numbers can be converted to decimal using two simple techniques. Say for example we've got this binary number:
 `10110`. The first method involves conversion starting with the LSB. Since this is a binary number, each bit represents a value that is multiplied by a power of 2: starting at $2^0$ and going up till $2^{N-1}$ where $N$ is the number of bits. 
 
-A more interesting problem arises when you're asked to convert from binary to decimal where your problem is structures in such a way that you'd have to start reading from the most significant bit (MSB) as described by [this](https://github.com/iqbalyarkhan/Practice-Problems/blob/master/1290.h) problem. Here we're reading in our binary number from a linked list. To do so, we have to start from the MSB. There is a simple formula that allows you to do so:
+A more interesting problem arises when you're asked to convert from binary to decimal where your problem is structures in such a way that you'd have to start reading from the most significant bit (MSB) as described by [this](https://leetcode.com/problems/convert-binary-number-in-a-linked-list-to-integer/) problem. Here we're reading in our binary number from a linked list. To do so, we have to start from the MSB. There is a simple formula that allows you to do so:
 
 $ (Total * Base) + BitRead = Total$  
 
