@@ -47,6 +47,8 @@ tags:
 
 12. [ASCII to char](#ascii-to-char)
 
+13. [Int to Char](#int-to-char)
+
 14. [Character to upper case](#character-to-upper-case)
 
 13. [Interesting Problems](#interesting-problems)
@@ -494,6 +496,22 @@ cout << ia << endl; //Prints 0
     cout << b << endl; //prints 'a' since 97 is a's decimal value
 ```
 
+### Int to char
+
+```cpp
+
+char ch = 8 + '0';
+//Converts 8 to its ASCII representation and adds to 0s ASCII then returns the value. 
+//This value is converted to a character and saved to ch
+
+```
+
+**To conclude the above information**:
+
+```cpp
+int nineInt = '9' - '0'; //char to int
+char nineString = 9 + '0'; //int to char
+```
 
 ### Get number of digits in an integer
 
