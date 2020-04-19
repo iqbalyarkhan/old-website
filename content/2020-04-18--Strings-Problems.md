@@ -17,6 +17,8 @@ tags:
     * [String to int without libraries](#string-to-int-without-libraries)
     * [Int to string without libraries](#int-to-string-without-libraries)
     * [Change base of string](#change-base-of-string)
+    * [Compute spread sheet column encoding](#spread-sheet-column-encoding)
+    * [Check Palindromicity](#check-palindromicity)
 
 ### Is Palindrome
 
@@ -172,4 +174,92 @@ string conversion(string s, int b1, int b2){
     }
     return finalAns;
 }
+```
+
+### Spread Sheet column encoding
+
+**Implement a function that converts a spreadsheet column id to the corresponding integer, with "A" corresponding to 1. For example, you should return 4 for "D", 27 for "AA", 702 for "ZZ", etc. How would you test your code?** 
+
+The idea is to take an example: AA = 27. How do I get a 27 from AA? Well, there are total of 26 alphabets so cell with value A is 1, B is 2, C is 3 and so on until Z = 26. Now when you reach Z and get to AA, you realize that this can be represented like so:
+
+```cpp
+    1*26^0
+A   A
+1*26^1
+```
+
+and BD can be represented by:
+
+```cpp
+    4*26^0
+B   D
+2*26^1
+```
+
+and so on. How do we convert a `B` to the value of integer `2`?
+
+```cpp
+int charAsInt = 'B' - 'A' + 1
+```
+
+which takes the ASCII value of B, subtracts the ascii value of A from it and adds 1. The add 1 is because we've decided A is 1. Then the conversion becomes simple:
+
+```cpp
+long encoding(string s){
+    long power = pow(26,0);
+    long ans = 0;
+    for (int i = int(s.size()) - 1; i >= 0; i--){
+        long curr = s[i] - 'A' + 1;
+        ans += (curr * power);
+        power *= 26;
+    }
+    
+    return ans;
+}
+```
+
+
+### Check Palindromicity
+
+**For the purpose of this problem, define a palindromic string to be a string which when all the nonalphanumeric are removed it reads the same front to back ignoring case. For example, "A man, a plan, a canal, Panama." and "Able was I, ere I saw Elba!" are palindromic, but "Ray a Ray" is not.
+  Implement a function which takes as input a string s and returns true if s is a palindromic string.**
+
+```cpp
+bool isPalindrome(string s) {
+    int i = 0;
+    int j = int(s.size()) - 1;
+    while (i < j){
+        char iChar = s[i];
+        char jChar = s[j];
+        if (!isalpha(iChar)){
+            while (!isalpha(iChar)){
+                i++;
+                iChar = s[i];
+            }
+        }
+        if (!isalpha(jChar)){
+            while (!isalpha(jChar)){
+                j--;
+                jChar = s[j];
+            }
+        }
+        iChar = tolower(iChar);
+        jChar = tolower(jChar);
+        if(iChar != jChar)
+            return false;
+        i++;
+        j--;
+    }
+    
+    return true;
+}
+```
+
+New stuff in this solution: 
+
+```cpp
+char c = '.';
+isalpha(c); //Checks if character is an alphabet
+char a = 'A';
+a = tolower(a); //Converts char to lower case and this results needs to be saved to a variable
 ```
