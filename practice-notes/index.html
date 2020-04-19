@@ -69,6 +69,7 @@
 <li><a href="#setting-an-integer-to-infinity">Setting an integer to infinity</a></li>
 <li><a href="#char-to-int">Char to int</a></li>
 <li><a href="#ascii-to-char">ASCII to char</a></li>
+<li><a href="#int-to-char">Int to Char</a></li>
 <li><a href="#character-to-upper-case">Character to upper case</a></li>
 <li>
 <p><a href="#interesting-problems">Interesting Problems</a></p>
@@ -339,6 +340,13 @@ cout <span class="token operator">&lt;&lt;</span> ia <span class="token operator
 <div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">    <span class="token keyword">int</span> a <span class="token operator">=</span> <span class="token number">97</span><span class="token punctuation">;</span>
     <span class="token keyword">char</span> b <span class="token operator">=</span> a<span class="token punctuation">;</span>
     cout <span class="token operator">&lt;&lt;</span> b <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span> <span class="token comment">//prints 'a' since 97 is a's decimal value</span></code></pre></div>
+<h3 id="int-to-char"><a href="#int-to-char" aria-label="int to char permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Int to char</h3>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">char</span> ch <span class="token operator">=</span> <span class="token number">8</span> <span class="token operator">+</span> <span class="token string">'0'</span><span class="token punctuation">;</span>
+<span class="token comment">//Converts 8 to its ASCII representation and adds to 0s ASCII then returns the value. </span>
+<span class="token comment">//This value is converted to a character and saved to ch</span></code></pre></div>
+<p><strong>To conclude the above information</strong>:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">int</span> nineInt <span class="token operator">=</span> <span class="token string">'9'</span> <span class="token operator">-</span> <span class="token string">'0'</span><span class="token punctuation">;</span> <span class="token comment">//char to int</span>
+<span class="token keyword">char</span> nineString <span class="token operator">=</span> <span class="token number">9</span> <span class="token operator">+</span> <span class="token string">'0'</span><span class="token punctuation">;</span> <span class="token comment">//int to char</span></code></pre></div>
 <h3 id="get-number-of-digits-in-an-integer"><a href="#get-number-of-digits-in-an-integer" aria-label="get number of digits in an integer permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Get number of digits in an integer</h3>
 <div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;math.h></span></span>
 <span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
