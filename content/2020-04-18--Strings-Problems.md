@@ -19,6 +19,7 @@ tags:
     * [Change base of string](#change-base-of-string)
     * [Compute spread sheet column encoding](#spread-sheet-column-encoding)
     * [Check Palindromicity](#check-palindromicity)
+    * [Reverse words in a string](#reverse-words-in-a-string)
 
 ### Is Palindrome
 
@@ -263,3 +264,32 @@ isalpha(c); //Checks if character is an alphabet
 char a = 'A';
 a = tolower(a); //Converts char to lower case and this results needs to be saved to a variable
 ```
+
+### Reverse words in a string
+
+**Given a string containing a set of words separated by whitespace, we would like to transform it to a string in which the words appear in the reverse order. For example, "Alice likes Bob" transforms to "Bob likes Alice". We do not need to keep the original string.
+  Implement a function for reversing the words in a string s.**
+  
+ ```cpp
+string reverseAllWords(string s){
+    reverse(s.begin(), s.end());
+    string ans = "";
+    for (int i = 0; i < int(s.size()) - 1 ; i++){
+        string curr = "";
+        while (s[i] != ' ' && i < int(s.size())){
+            curr += s[i];
+            i++;
+        }
+        
+        for (int j = int(curr.size()) - 1; j >= 0; j--){
+            ans += curr[j];
+        }
+        if (i < int(s.size()))
+            ans += ' ';
+    }
+    
+    return ans;
+}
+```
+
+Notice the use of the `reverse` call (present in the algorithm header) that allows us to reverse the string in place. We can do it manually as well but why not use the library!! 

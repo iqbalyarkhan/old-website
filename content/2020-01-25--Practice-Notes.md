@@ -54,6 +54,7 @@ tags:
 13. [Interesting Problems](#interesting-problems)
     * [Single Numbers](#single-numbers)
     * [Reverse an integer](#reverse-an-integer)
+    * [Reverse a string](#reverse-a-string)
     * [Check if a decimal integer is a palindrome](#check-if-a-decimal-integer-is-a-palindrome)
     * [Find difference in string](#find-difference-in-string)
 
@@ -580,6 +581,18 @@ num = num/10
 ```
 
 now answer is 23. Notice how we're now building from the least significant digit end and keep multiplying the value by 10 to add the next digit.
+
+### Reverse a string
+
+```cpp
+string s ="Bob likes Alice too";
+reverse(s.begin(), s.end());
+cout << s << endl; //oot ecilA sekil boB
+```
+
+The [reverse](http://www.cplusplus.com/reference/algorithm/reverse/) call takes $O(N/2)$ time where $N$ is the length of the string which translates to $O(N)$ time.
+
+An example would be [this](/strings-problems/#reverse-words-in-a-string) problem.
 
 ### Check if a decimal integer is a palindrome
 
