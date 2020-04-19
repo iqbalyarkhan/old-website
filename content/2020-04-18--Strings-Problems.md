@@ -1,5 +1,5 @@
 ---
-title: String Problems
+title: Strings Problems
 date: 2020-04-18
 thumbnail: /post-images/string.png
 draft: false
@@ -7,7 +7,7 @@ extract: String sample problems
 categories: 
     - Problems
 tags:
-  - String
+    - String Problems
 ---
 
 ### Table of Contents
@@ -94,3 +94,31 @@ string ConvertIntToString(int i){
 ```
 
 In this method, we first determine whether the element is negative or not. If so, we convert it to positive and then start converting it to a string. The string we create starts at the LSB so our string would be reversed. So, we start again at the end of the generated string and reverse the reversed string to get our answer.  
+
+Notice, this part:
+
+```cpp
+ans += `0` + (i % 10) 
+```
+
+This helps convert the integer, i % 10, to string by converting it to its ascii value and adding it to the string.
+Going either way (from string to int or int to string) you'd need to do this:
+- From int to string: 
+
+```cpp
+string ans = "";
+int a = 7;
+ans += '0' + a //ans = "7" 
+```
+
+- From string to int:
+
+```cpp
+int ans = 0;
+string a = "7";
+ans += a - '0';
+```
+
+That is because in the ascii tabe, `0` = 48, `1` = 49 and so on. So if you do character 9 minus character 0, you get an integer 9 (string to int). We are subtracting 48 from 57 and saving it to an integer which obviously would be an integer.
+
+Also, if you do character 0 plus int 7, you get string 7 (int to string). We are adding 8 to the ascii value of `0` which takes us 55 and save it to a string, we get the string 7. 
