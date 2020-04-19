@@ -16,6 +16,7 @@ tags:
     * [Is Palindrome](#is-palindrome)
     * [String to int without libraries](#string-to-int-without-libraries)
     * [Int to string without libraries](#int-to-string-without-libraries)
+    * [Change base of string](#change-base-of-string)
 
 ### Is Palindrome
 
@@ -122,3 +123,53 @@ ans += a - '0';
 That is because in the ascii tabe, `0` = 48, `1` = 49 and so on. So if you do character 9 minus character 0, you get an integer 9 (string to int). We are subtracting 48 from 57 and saving it to an integer which obviously would be an integer.
 
 Also, if you do character 0 plus int 7, you get string 7 (int to string). We are adding 8 to the ascii value of `0` which takes us 55 and save it to a string, we get the string 7. 
+
+### Change base of string
+
+**Given a string s and the base that string is in (called b1), convert the string to its string representation in base b2.**
+
+First, convert from base b1 to base 10. Say, you have s as `615` and `b1` as 7. Then, to convert this to base 10 you'd do this:
+
+```cpp
+
+(5 * 7^0) + (1 * 7^1) + (6 * 7^2) = 306 base 10 
+
+```
+
+Next, you then convert 306 to base b2 by dividing and appending the remainder to a string. Then, return the reversed string as your final answer.
+
+```cpp
+string conversion(string s, int b1, int b2){
+    //Convert from b1 to base 10:
+    int size = int(s.size()) - 1;
+    int power = pow(b1,0);
+    int tot = 0;
+    for (int i = size; i >= 0; i--){
+        int curr = s[i] - '0';
+        curr *= power;
+        tot += curr;
+        power *= b1;
+    }
+    
+    //So tot now contains s in base 10
+    //Now need to convert from base 10 to base b2.
+    string revAns = "";
+    do{
+        int rem = tot % b2;
+        if (rem >= 10){
+            //converting those greater than 9 to A through F
+            //say rem is 11, then it should be B. A = 65
+            revAns += 65 + 10 - rem;
+        } else {
+            revAns += '0' + rem;
+        }
+        tot /= b2;
+    }while (tot);
+    
+    string finalAns = "";
+    for (int i = int(revAns.size()) - 1; i >= 0; i--){
+        finalAns += revAns[i];
+    }
+    return finalAns;
+}
+```
