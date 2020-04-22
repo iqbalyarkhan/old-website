@@ -239,6 +239,16 @@ Key: three Value: 3
 Key: two Value: 2
 ```
 
+### STL Multi map
+
+Map above does not allow duplicates, it will overwrite existing values if you add a duplicate. To allow for duplicates, use multi-map. multimap doesn't allow fo subscript insertion, you'd have to use the `insert` method:
+```cpp
+multimap<int,int> m;
+m.insert({2,3});
+```
+
+Multimap will automatically store elements in sorted order by key.
+
 
 ### STL Unordered Map
 
