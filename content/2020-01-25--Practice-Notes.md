@@ -14,6 +14,7 @@ tags:
 1. [Reading whitespace separated numbers](#reading-numbers-separated-by-whitespace)
 2. [String Streams](#string-streams)
     * [String to int and back](#int-to-string-and-back)
+    * [Char to string](#char-to-string)
 
 3. [Declaring a generic object](#declaring-a-generic-object)
 
@@ -156,6 +157,17 @@ Example:
         cout << "num + 1 = " << num + 1 << endl;
         return num;
     }
+```
+
+#### Char to string
+
+```cpp
+    char c = 'A';
+	// using stringstream
+	std::string s;
+	std::stringstream ss;
+	ss << c;
+	ss >> s;	
 ```
 
 ### Declaring a generic object
