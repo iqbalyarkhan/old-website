@@ -136,10 +136,10 @@ void search(string txt, string pat)
     int i = 0;
     int pHash = 0; // hash value for pattern
     int tHash = 0; // hash value for txt
-    int Q = 1;
-    int prime = 997;
+    int Q = 1; //Q = Radix^{M-1}
+    int prime = 997; //Choose a large prime
 
-    // The value of h would be "pow(d, M-1)%q"
+    // The value of Q would be "pow(d, M-1)%q"
     for (i = 0; i < M - 1; i++)
         Q = (Q * Radix) % prime;
 
@@ -156,11 +156,11 @@ void search(string txt, string pat)
     {
 
         // Check the hash values of current window of text
-        // and pattern. If the hash values match then only
-        // check for characters on by one
+        // and pattern. If the hash values match then
+        //print index
         if ( pHash == tHash )
         {
-            cout<<"Pattern found at index "<< i<<endl;
+            cout<<"Pattern found at index "<< i <<endl;
         }
 
         // Calculate hash value for next window of text: Remove
