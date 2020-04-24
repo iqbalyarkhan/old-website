@@ -117,10 +117,10 @@ f r o m t h e h e l l o o t h e r s i d e
     <span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
     <span class="token keyword">int</span> pHash <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token comment">// hash value for pattern</span>
     <span class="token keyword">int</span> tHash <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token comment">// hash value for txt</span>
-    <span class="token keyword">int</span> Q <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> prime <span class="token operator">=</span> <span class="token number">997</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> Q <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token comment">//Q = Radix^{M-1}</span>
+    <span class="token keyword">int</span> prime <span class="token operator">=</span> <span class="token number">997</span><span class="token punctuation">;</span> <span class="token comment">//Choose a large prime</span>
 
-    <span class="token comment">// The value of h would be "pow(d, M-1)%q"</span>
+    <span class="token comment">// The value of Q would be "pow(d, M-1)%q"</span>
     <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> M <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
         Q <span class="token operator">=</span> <span class="token punctuation">(</span>Q <span class="token operator">*</span> Radix<span class="token punctuation">)</span> <span class="token operator">%</span> prime<span class="token punctuation">;</span>
 
@@ -137,11 +137,11 @@ f r o m t h e h e l l o o t h e r s i d e
     <span class="token punctuation">{</span>
 
         <span class="token comment">// Check the hash values of current window of text</span>
-        <span class="token comment">// and pattern. If the hash values match then only</span>
-        <span class="token comment">// check for characters on by one</span>
+        <span class="token comment">// and pattern. If the hash values match then</span>
+        <span class="token comment">//print index</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span> pHash <span class="token operator">==</span> tHash <span class="token punctuation">)</span>
         <span class="token punctuation">{</span>
-            cout<span class="token operator">&lt;&lt;</span><span class="token string">"Pattern found at index "</span><span class="token operator">&lt;&lt;</span> i<span class="token operator">&lt;&lt;</span>endl<span class="token punctuation">;</span>
+            cout<span class="token operator">&lt;&lt;</span><span class="token string">"Pattern found at index "</span><span class="token operator">&lt;&lt;</span> i <span class="token operator">&lt;&lt;</span>endl<span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
 
         <span class="token comment">// Calculate hash value for next window of text: Remove</span>
