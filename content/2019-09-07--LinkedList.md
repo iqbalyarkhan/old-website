@@ -17,7 +17,7 @@ In this post I'll talk about a very common data structure called linked list. Th
 
 ![Linked-Lists-Image](./images/linkedlists/linked-lists.png)
 
-In a linked list, a node is nothing but an "object" that holds some informtion for us. That information could be an integer, string etc along with a pointer to the next node or item in the list. Usually the last node in the list points to nothing (denoted by arrow going into the ground!). There are two types of linked lists: singly linked and doubly linked. The image above shows a singly linked list since there is a single link between two nodes. In a doubly linked list, there'd be another pointer, `prev`, that would point to the previous element. As in, there'd be an arrow going from $1$ to $4$. 
+In a linked list, a node is nothing but an "object" that holds some information for us. That information could be an integer, string etc along with a pointer to the next node or item in the list. Usually the last node in the list points to nothing (denoted by arrow going into the ground!). There are two types of linked lists: singly linked and doubly linked. The image above shows a singly linked list since there is a single link between two nodes. In a doubly linked list, there'd be another pointer, `prev`, that would point to the previous element. As in, there'd be an arrow going from $1$ to $4$. 
 
 Why study linked lists? Linked lists can be useful in scenarios where our data is frequently updated by inserting new nodes in arbitrary positions. Since our list is dynamic and we haven't limited ourselves with contiguous memory, we can easily break links between nodes, add new nodes and extend our chain. Thus a linked list can be used to implement other useful data structures such as **queues** and **stacks**. 
 
@@ -166,7 +166,19 @@ LinkedList<T>::LinkedList(){
 }
 ```
 
-Before we look at the major opertaions of our linked list class, it is worth talking about our constructor. One lines 34 and 35 we initialize our head and tail pointers to null and set the size to $0$ on line 36. 
+Let's start with the actual `Node` that holds our data and the link to the next node:
+
+```cpp
+template<typename T>
+struct Node{
+    T element;
+    Node* next;
+};
+```
+
+Our node is a template struct that holds an element of type `T` and a pointer to the next node in the field `next`. The linked list class makes use of this node struct to store data and to create the actual list.
+
+Before we look at the major operations of our linked list class, it is worth talking about our constructor. On lines 34 and 35 we initialize our head and tail pointers to null and set the size to $0$ on line 36. 
 
 The head pointer will always point to the first element in the list and, as the name suggests, the tail pointer will always point to the last element in the list.
 
@@ -216,7 +228,7 @@ Thus, as the image shows, we've added a new node to the head of the linked list.
 
 ### Reverse Singly Linked List
 
-A fun exercise to try is to reverse a singly linked list using $O(1) (constant)$ space and $O(n)$ time. There are plenty of ways to do this and I encourage you to try a different approach. Here's how I thought about the reversing process: we start with the current head and break the link between head and the following node. Then we make the next node point to the previous node thus reversing the order. We repeat this process until no more nodes are left. Ofcourse, in the process, we need to assign the new tail and head.
+A fun exercise to try is to reverse a singly linked list using $O(1) (constant)$ space and $O(n)$ time. There are plenty of ways to do this and I encourage you to try a different approach. Here's how I thought about the reversing process: we start with the current head and break the link between head and the following node. Then we make the next node point to the previous node thus reversing the order. We repeat this process until no more nodes are left. Of course, in the process, we need to assign the new tail and head.
 
 Before I explain with pictures, let me show you what the code looks like:
 
@@ -293,7 +305,7 @@ We then continue to repeat the process in the `while` loop until our `curr` poin
 
 ### Move to Front Algorithm
 
-As you noticed, iterating over a list to find an element takes $O(N)$ time. This can get quite slow for long lists. There are  [algorithms](https://en.wikipedia.org/wiki/Self-organizing_list) that allow us to transform our linked list so as to improve access time for elements. One such algorithm is called **Move to Front**. As the name suggests, MTF searches the list for an element the user is interested in and once the element is found, it is moved to the front of the list so that subsequent searches for the same element are faster. The idea is useful where we make the assumption that recently accessed elemetns are more likely to be reaccessed. Ofcourse, as you can imagine, this is not a perfect approach to reduce the $O(N)$ search time and there are many scenarios where our time won't be that much different from a sequential search. Assuming our searches are such that once we access an element, we're very likely to search for it again, MTF works perfectly fine. 
+As you noticed, iterating over a list to find an element takes $O(N)$ time. This can get quite slow for long lists. There are  [algorithms](https://en.wikipedia.org/wiki/Self-organizing_list) that allow us to transform our linked list so as to improve access time for elements. One such algorithm is called **Move to Front**. As the name suggests, MTF searches the list for an element the user is interested in and once the element is found, it is moved to the front of the list so that subsequent searches for the same element are faster. The idea is useful where we make the assumption that recently accessed elements are more likely to be reaccessed. Of course, as you can imagine, this is not a perfect approach to reduce the $O(N)$ search time and there are many scenarios where our time won't be that much different from a sequential search. Assuming our searches are such that once we access an element, we're very likely to search for it again, MTF works perfectly fine. 
 
 Sample code for moving an element to the front of the list is quite simple and here I share my implementation:
 
