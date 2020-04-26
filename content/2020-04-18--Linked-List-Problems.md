@@ -14,6 +14,10 @@ tags:
 1. [Intro](#intro)
     * [Search](#search)
     * [Merge Two Sorted Lists](#merge-two-sorted-lists)
+    * [Reverse a sublist](#reverse-a-sublist)
+    * [Reverse a singly linked list](#reverse-a-singly-linked-list)
+
+2. [Conclusion](#conclusion)
 
 ### Intro
 
@@ -132,3 +136,160 @@ Remember that `-1` value we added, when we return we'll simply return `dummyHead
 
 **Variant: What if the list is doubly linked?** The approach would remain the same except that now you'd also have to handle the `prev` link.
 
+### Reverse A sublist
+
+**Given a pointer to the head of a list and two indices, reverse all elements within the sublist including the indices**. Example given list:
+ ```text
+    2              7 
+11->4->5->6->7->8->9->2 and indices 2 and 7 reversed list would be:
+    
+    2              7     
+11->9->8->7->6->5->4->2
+```
+ 
+ There are a few different approaches that we can take: we can create a new list, keep track of the indices and insert nodes into the new list in reverse order. This would be inefficient since it takes $O(N)$ extra space where $N$ is the number of vertices. 
+ 
+ The best approach would be to realize that reversal is nothing but picking element at index 2, and placing it right after index 7:
+ 
+ ```text
+     2              7 
+ 11->4->5->6->7->8->9->2 
+     
+     2           7        
+ 11->5->6->7->8->9->4->2
+
+then:
+     2           7       
+ 11->5->6->7->8->9->4->2
+
+     2        7           
+ 11->6->7->8->9->5->4->2
+
+```
+
+and continue until pointers 2 and 7 point to the same node. We cannot go in reverse direction because this is not a doubly linked list. So the easier method would be to move from left to right. We'd also have to keep track of `prev so that we can update its link to the next node that needs to be moved to the other end. 
+
+Here's the function that performs the reversal:
+
+```cpp{numberLines:true}
+void ReverseGivenSublist(Node<int>* L, int start, int finish){
+    start = start - 1;
+    finish = finish-1;
+    Node<int>* prev = L;
+    Node<int>* a = L;
+    Node<int>* b = L;
+    for (int i = 0; i <= finish; i++){
+        if (i == start - 1)
+            prev = L;
+        else if (i == start)
+            a = L;
+        else if (i == finish)
+            b = L;
+        
+        L = L->next;
+    }
+    
+    cout << "prev points to: " << prev->element << endl;
+    cout << "a points to: " << a->element << endl;
+    cout << "b points to: " << b->element << endl;
+    
+    while (a != b){
+        prev->next = a->next;
+        a->next = b->next;
+        b->next = a;
+        a = prev->next;
+        cout << endl;
+        cout << "prev points to: " << prev->element << endl;
+        cout << "a points to: " << a->element << endl;
+        cout << "b points to: " << b->element << endl;
+    }
+}
+``` 
+
+The loop on line 7 helps us position our pointers in the correct position. Here's the position of the pointers once the loop ends:
+
+
+ ```text
+prev a              b
+ 11->4->5->6->7->8->9->2 
+```
+
+- Now, the logic is to first make `prev` point to `a->next` (11 connects to 5)
+- Next, make `a` point to `b->next` (4 connects to 2)
+- Then, make `b->next` point to `a` (9 connects to 4)
+- Update `a` to point to `prev->next` (new a is 5)
+
+`b` stays with 9:
+
+ ```text
+prev a           b
+ 11->5->6->7->8->9->4->2 
+```
+
+Notice how `a` and `b` are getting closer. We continue this move and update until, on line 22, `a` and `b` point to the same node. At that point we'd be done with our reversal. 
+
+The running time:
+
+- We go from $0$ to $B$ to setup the pointers in the correct position which takes $O(B)$ time.
+- We then iterate from $A$ till $B$ until $A == B$ which takes $O(A-B)$ time.
+
+Adding up those we take overall $O(B)$ time where $B$ is the finish index.
+
+### Reverse a singly linked list
+
+**Given a singly linked list, reverse it**. Example: 1234 -> 4321
+
+The idea here is similar to what we did while reversing sublist: Pick an element from the left end, place after right end. Continue until left and right pointers point to the same node:
+
+```text
+a              b
+1 -> 2 -> 3 -> 4
+
+Pick a, put after b:
+
+a         b
+2 -> 3 -> 4 -> 1
+
+Pick a, put after b:
+
+a    b
+3 -> 4 -> 2 -> 1
+
+Pick a, put after b:
+
+ab
+4 -> 3 -> 2 -> 1
+
+Return!
+```
+
+
+Here's the code for this:
+
+```cpp
+Node<int>* ReverseASinglyLinkedList(Node<int>* L){
+    Node<int>* a = L;
+    Node<int>* b = L;
+    while (L){
+        b = L;
+        L = L->next;
+    }
+    
+    while (a != b){
+        auto temp = a->next;
+        a->next = b->next;
+        b->next = a;
+        a = temp;
+    }
+    return a;
+}
+```
+
+The first while loop places our pointers with `a` at the beginning and `b` at the end of the list. Then, while `a != b`, pick `a` and put after `b`. Make old `a->next` the new `a`. 
+
+
+### Conclusion
+
+- If it is a singly linked list, go from left to right since it's the only method possible. For example, if you're moving nodes around, pick ones that are on the left and place after the ones on the right
+
+- Remember to move to next node when iterating over the list!
