@@ -285,8 +285,11 @@ Node<int>* ReverseASinglyLinkedList(Node<int>* L){
 }
 ```
 
-The first while loop places our pointers with `a` at the beginning and `b` at the end of the list. Then, while `a != b`, pick `a` and put after `b`. Make old `a->next` the new `a`. 
-
+The first while loop places our pointers with `a` at the beginning and `b` at the end of the list. Then, while `a != b`, pick `a` and put after `b`. Make old `a->next` the new `a`. Running time of this algorithm is:
+ - $O(N)$ for placing a pointer at the end of the list (assuming there's no tail pointer present) where $N$ is the number of nodes. 
+ - Then, choose and swap until `a == b` which is another $O(N)$.
+ 
+ Total  = $O(2N)$ = $O(N)$   
 
 ### Conclusion
 
