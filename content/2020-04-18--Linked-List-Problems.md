@@ -16,6 +16,7 @@ tags:
     * [Merge Two Sorted Lists](#merge-two-sorted-lists)
     * [Reverse a sublist](#reverse-a-sublist)
     * [Reverse a singly linked list](#reverse-a-singly-linked-list)
+    * [Check if list is circular](#check-if-list-is-circular)
 
 2. [Conclusion](#conclusion)
 
@@ -290,6 +291,42 @@ The first while loop places our pointers with `a` at the beginning and `b` at th
  - Then, choose and swap until `a == b` which is another $O(N)$.
  
  Total  = $O(2N)$ = $O(N)$   
+
+### Check if list is circular
+
+**Write a program that takes the head of a singly linked list and returns null if there does not exist a cycle, and the node at the start of the cycle, if a cycle is present. (You do not know the length of the list in advance.)**
+
+There're again multiple solutions to this problem. The first thing that comes to mind is to create a set and keep inserting node addresses to the set. If you encounter an address that already exists in the set, then you have a cycle. This approach requires $O(N)$ space where $N$ is the number of nodes in the linked list. 
+
+Another approach would be two have two iterators. The first iterator chooses a current node and then has a second iterator to go over all other nodes. If at any point the second iterator == first iterator, we have a cycle. This uses no extra space but running time $O(N^2)$.
+
+However, there's another approach that uses $O(1)$ space and $O(N)$ time: Have two pointers: one fast pointer that goes ahead two nodes and a slow pointer that moves one node at a time. If slow pointer at any point becomes equal to the faster pointer (other than when it is null), we have a cycle. If not, we don't have a cycle. Let's see how this works. Say this is our circular list with no null pointers:
+
+```text
+ fast slow
+    |
+    1 -> 2 -> 3 -> 4 -> 5 -> 6
+                        |    |
+                       10    7
+                        |    |
+                        9 <- 8
+                       
+``` 
+
+Our fast and slow pointers both start at 1. Fast and slow go through these nodes:
+
+```text
+                         FAST == SLOW
+                             |
+FAST 1   3   5   7   9   5   7   9
+SLOW 1   2   3   4   5   6   7
+```
+
+Since fast == slow, we have a cycle.
+
+Now, the question also asks us to find the node where the loop begins. To do so, we'll have to use a trick. As soon as slow and fast collide, we know we have a cycle. Keep the fast pointer at the collision point but move the slow pointer to the beginning of the list. Now, keep incrementing slow and fast by 1 until they meet again. This meeting point is the beginning of our loop.
+
+That seems like magic! Why did this random approach work and how do we know that this was the starting of our loop? This is a common algorithm called **Floyd's Cycle detection algorithm**.
 
 ### Conclusion
 
