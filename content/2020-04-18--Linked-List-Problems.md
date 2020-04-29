@@ -17,6 +17,7 @@ tags:
     * [Reverse a sublist](#reverse-a-sublist)
     * [Reverse a singly linked list](#reverse-a-singly-linked-list)
     * [Check if list is circular](#check-if-list-is-circular)
+    * [Check if lists overlap](#check-if-lists-overlap)
 
 2. [Conclusion](#conclusion)
 
@@ -326,7 +327,72 @@ Since fast == slow, we have a cycle.
 
 Now, the question also asks us to find the node where the loop begins. To do so, we'll have to use a trick. As soon as slow and fast collide, we know we have a cycle. Keep the fast pointer at the collision point but move the slow pointer to the beginning of the list. Now, keep incrementing slow and fast by 1 until they meet again. This meeting point is the beginning of our loop.
 
-That seems like magic! Why did this random approach work and how do we know that this was the starting of our loop? This is a common algorithm called **Floyd's Cycle detection algorithm**.
+That seems like magic! Why did this random approach work and how do we know that this was the starting of our loop? This is a common algorithm called **Floyd's Cycle detection algorithm** and there are plenty of explanations available which I won't repeat here.
+Here's the code for this approach:
+
+```cpp
+bool isCircular(Node<int>* L){
+    Node<int>* slow = L;
+    Node<int>* fast = L->next->next;
+    
+    while (slow != fast && fast != nullptr){
+        slow = slow->next;
+        if (fast->next == nullptr){
+            fast = nullptr;
+            break;
+        }
+        else if (fast->next->next == nullptr){
+            fast = nullptr;
+            break;
+        } else {
+            fast = fast->next->next;
+        }
+    }
+    if (fast == nullptr)
+        return false;
+    return true;
+}
+```
+
+### Check if lists overlap
+
+**Given two singly linked lists there may be list nodes that are common to both. (This may not be a bug—it may be desirable from the perspective of reducing memory footprint, as in the flyweight pattern, or maintaining a canonical form.)**
+
+```text
+list 1: 1->2->3->4
+                 |
+list 2: 5->6->7->8->9->10->NULL
+```
+
+Here's an approach: store addresses of each node in list 1 in a hash table and then iterate over list 2. While going over list 2, check the hash table if the address has been encountered: if so, they overlap, otherwise, they don't.This approach takes $O(M+N)$ time and space $O(M+N)$.
+
+An observation above leads to a better space time complexity: if, they overlap, they'll both end up at the same last node (the node before null). For example, since 1 and 2 overlap, they end up at the same node address for node with value 10. If not, their last node would have a different address.
+
+```cpp
+bool doOverlap(Node<int>* L1, Node<int>* L2){
+    while (L1->next != nullptr && L2->next != nullptr){
+        L1 = L1->next;
+        L2 = L2->next;
+    }
+    
+    if (L1->next != nullptr){
+        while (L1->next != nullptr){
+            L1 = L1->next;
+        }
+    } else {
+        while (L2->next != nullptr){
+            L2 = L2->next;
+        }
+    }
+        
+    
+    if (L1 == L2){
+        return true;
+    }
+   
+    return false;
+}
+``` 
 
 ### Conclusion
 
