@@ -18,6 +18,8 @@ tags:
     * [Reverse a singly linked list](#reverse-a-singly-linked-list)
     * [Check if list is circular](#check-if-list-is-circular)
     * [Check if lists overlap](#check-if-lists-overlap)
+    * [Remove Kth last node from list](#remove-kth-last-node-from-list)
+    * [Remove duplicates from sorted list](#remove-duplicates-from-sorted-list)
 
 2. [Conclusion](#conclusion)
 
@@ -394,8 +396,95 @@ bool doOverlap(Node<int>* L1, Node<int>* L2){
 }
 ``` 
 
+### Remove Kth last node from list
+
+**Given a singly linked list and an integer k, write a program to remove the /cth last element from the list. Your algorithm cannot use more than a few words of storage, regardless of the length of the list. In particular, you cannot assume that it is possible to record the length of the list.**
+
+Naive approach would be to first iterate over the length of the list to get its length. Then, once you have the length, subtract the value of K from this length and then iterate again up till this value you calculated and then delete the node. This is not possible since the question states you cannot assume that it is possible to record the length of the list. 
+
+Better approach would be to have 3 pointers: `prev`,`i`, and `j`. Start with `i` at 0 and `j` at `i + K` so that when `j` hits end of list, `i` would be at the element to be deleted and `prev` would be one node behind the element to be deleted:
+
+Say, K = 3. So delete 7:
+
+```css
+prev,i  j
+|       |            
+1   2   3   4   5   6   7   8   9
+``` 
+
+Keep moving `j` until it gets to the last node:
+```css
+                  prev  i       j
+                    |   |       |            
+1   2   3   4   5   6   7   8   9
+``` 
+
+Now, make prev->next point to i->next and then delete `i`.
+
+Running time: $O(N)$ where $N$ is the size of the list.
+
+```cpp
+Node<int>* RemoveKFromLast(Node<int>* L, int k){
+    Node<int>* i = L;
+    Node<int>* j = L;
+    Node<int>* prev = i;
+    
+    for (int i = 0; i < k; i++){
+        j = j->next;
+    }
+    
+    while (j->next != nullptr){
+        prev = i;
+        i = i->next;
+        j = j->next;
+    }
+    
+    prev->next = i->next;
+    delete i;
+
+    return L;
+}
+```
+
+### Remove duplicates from sorted list
+
+**Write a program that takes as input a singly linked list of integers in sorted order, and removes duplicates from it. The list should be sorted.**
+
+Approach 1: Create a new list and copy over each element only once by maintaining a set as you iterate over the list. Then, for each item in the set, create a new node and add it to the new list you created. Time complexity $O(2N) ~ O(N)$. Space complexity $O(N)$.
+
+Better approach: iterate over the list and keep pointers to delete nodes that have value equal to the value in the current node. Use another pointer to free up the memory and actually delete the node that is a duplicate. Simply updating the next pointer won't suffice since we'd have memory leak because the nodes were created using `new` keyword. Once duplicates are deleted, make the current node point to the next available node that has a different value. Repeat until faster pointer, `j`, reaches null. 
+
+```cpp
+Node<int>* RemoveDup(Node<int>*L){
+    Node<int>* j = L;
+    Node<int>* i = L;
+    Node<int>* prev = L;
+    while (j != nullptr){
+        if (i->element == j->element){
+            j = j->next;
+            prev = j;
+            if (j == nullptr)
+                break;
+            while (i->element == j->element){
+                j = j->next;
+                delete prev;
+                prev = nullptr;
+                prev = j;
+            }
+            
+            i->next = j;
+            i = i->next;
+        }
+    }
+    
+    return L;
+}
+```
+
 ### Conclusion
 
 - If it is a singly linked list, go from left to right since it's the only method possible. For example, if you're moving nodes around, pick ones that are on the left and place after the ones on the right
+
+- See if you can solve a problem by using multiple pointers (2 or 3 pointers) to move along the list and get the job done in a single pass
 
 - Remember to move to next node when iterating over the list!
