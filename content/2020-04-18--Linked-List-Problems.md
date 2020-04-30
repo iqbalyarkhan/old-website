@@ -450,7 +450,7 @@ Node<int>* RemoveKFromLast(Node<int>* L, int k){
 
 **Write a program that takes as input a singly linked list of integers in sorted order, and removes duplicates from it. The list should be sorted.**
 
-Approach 1: Create a new list and copy over each element only once by maintaining a set as you iterate over the list. Then, for each item in the set, create a new node and add it to the new list you created. Time complexity $O(2N) ~ O(N)$. Space complexity $O(N)$.
+Approach 1: Create a new list and copy over each element only once by maintaining a set as you iterate over the list. Then, for each item in the set, create a new node and add it to the new list you created. Time complexity $O(2N) \approx O(N)$. Space complexity $O(N)$.
 
 Better approach: iterate over the list and keep pointers to delete nodes that have value equal to the value in the current node. Use another pointer to free up the memory and actually delete the node that is a duplicate. Simply updating the next pointer won't suffice since we'd have memory leak because the nodes were created using `new` keyword. Once duplicates are deleted, make the current node point to the next available node that has a different value. Repeat until faster pointer, `j`, reaches null. 
 
