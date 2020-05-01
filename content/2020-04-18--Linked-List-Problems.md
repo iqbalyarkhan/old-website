@@ -21,6 +21,7 @@ tags:
     * [Remove Kth last node from list](#remove-kth-last-node-from-list)
     * [Remove duplicates from sorted list](#remove-duplicates-from-sorted-list)
     * [Right shift elements in a linked list](#right-shift-elements-in-a-linked-list)
+    * [Even odd list](#even-odd-list)
 
 2. [Conclusion](#conclusion)
 
@@ -502,7 +503,65 @@ Now, the best solution to this problem is to figure out how we can manipulate th
 newTail = oldTail + shiftAmount.
 ``` 
 
-If old tail was 4 and K = 2, then new tail is 2 elements after 4 (if we consider the linked list as circular) which is the element 2. Obviously, since we've made our list circular and figured out what the new tail should be, we can say that the element right after the new tail is the new head.  
+If old tail was 4 and K = 2, then new tail is 2 elements after 4 (if we consider the linked list as circular) which is the element 2. Obviously, since we've made our list circular and figured out what the new tail should be, we can say that the element right after the new tail is the new head.
+
+### Even odd List  
+
+**Given a list with even and odd elements, rearrange the list so that all even elements appear in the list before odd elements.**
+
+Example:
+
+```cpp
+Given:  4->11->2->9->12->6->8->13->21
+Return: 4->2->12->6->8->11->9->13->21
+```
+
+The naive approach would be to create a new list and keep appending to the new list nodes from the old list by checking the value. This approach requires extra space.
+
+Better approach would be to have 5 pointers: 
+- evenHead (to keep track of start of final list)
+- oddHead (to keep track of start of odd part)
+- even (to attach nodes to the even list)
+- odd (to attach nodes to the odd list)
+- temp (to move across the list)
+
+Then move the pointers based on the value encountered in the temp pointer. Once temp reaches the end of the original list, make even pointer point to oddHead and make odd point to null. Running time is $O(N)$ where $N$ is the number of nodes in the list and space is $O(1)$.
+
+```cpp
+Node<int>* EvenOddList(Node<int>* L){
+    Node<int>* eH = nullptr;
+    Node<int>* oH = nullptr;
+    Node<int>* ev = L;
+    Node<int>* od = L;
+    Node<int>* temp = L;
+    
+    while (temp){
+        int curr = temp->element;
+        if (curr % 2 == 0){
+            //even element
+            if (eH == nullptr)
+                eH = temp;
+            else{
+                ev->next = temp;
+                ev = ev->next;
+            }
+        } else{
+            if (oH == nullptr)
+                oH = temp;
+            else {
+                od->next = temp;
+                od = od->next;
+            }
+        }
+        
+        temp = temp->next;
+    }
+    
+    ev->next = oH;
+    od->next = nullptr;
+    return eH;
+}
+``` 
 
 ### Conclusion
 
