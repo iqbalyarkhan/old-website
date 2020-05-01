@@ -20,6 +20,7 @@ tags:
     * [Check if lists overlap](#check-if-lists-overlap)
     * [Remove Kth last node from list](#remove-kth-last-node-from-list)
     * [Remove duplicates from sorted list](#remove-duplicates-from-sorted-list)
+    * [Right shift elements in a linked list](#right-shift-elements-in-a-linked-list)
 
 2. [Conclusion](#conclusion)
 
@@ -481,6 +482,28 @@ Node<int>* RemoveDup(Node<int>*L){
 }
 ```
 
+### Right shift elements in a linked list
+
+**Given a list, return elements shifted to the right by k (where k < size of list)**.
+
+Example:
+
+```text
+1->2->3->4 and k = 1
+4->1->2->3
+or
+1->2->3->4 and k = 2
+3->4->1->2
+```
+
+Now, the best solution to this problem is to figure out how we can manipulate the links. Notice, that:
+
+```cpp
+newTail = oldTail + shiftAmount.
+``` 
+
+If old tail was 4 and K = 2, then new tail is 2 elements after 4 (if we consider the linked list as circular) which is the element 2. Obviously, since we've made our list circular and figured out what the new tail should be, we can say that the element right after the new tail is the new head.  
+
 ### Conclusion
 
 - If it is a singly linked list, go from left to right since it's the only method possible. For example, if you're moving nodes around, pick ones that are on the left and place after the ones on the right
@@ -488,3 +511,5 @@ Node<int>* RemoveDup(Node<int>*L){
 - See if you can solve a problem by using multiple pointers (2 or 3 pointers) to move along the list and get the job done in a single pass
 
 - Remember to move to next node when iterating over the list!
+
+- When rotating a list, make it circular (connect tail to head) and figure out what the new tail should be. Then from there, the node after newTail is the newHead.
