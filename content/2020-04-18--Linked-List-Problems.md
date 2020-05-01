@@ -22,6 +22,7 @@ tags:
     * [Remove duplicates from sorted list](#remove-duplicates-from-sorted-list)
     * [Right shift elements in a linked list](#right-shift-elements-in-a-linked-list)
     * [Even odd list](#even-odd-list)
+    * [Check if list is a palindrome](#check-if-list-is-a-palindrome)
 
 2. [Conclusion](#conclusion)
 
@@ -561,7 +562,22 @@ Node<int>* EvenOddList(Node<int>* L){
     od->next = nullptr;
     return eH;
 }
-``` 
+```
+
+### Check if list is a palindrome 
+
+**Given a singly linked list, return true if it is a palindrome and false otherwise**
+
+example:
+
+```cpp
+1->2->3->4->3->2->1 true
+1->2->3 false
+```
+
+Naive approach would be to choose the first node and then take a pointer to the last node and compare. Then, move to the second node and take a pointer to the second to last node and compare. This would take $O(N^2)$ time. 
+
+A better approach would be to first figure out the size of our list ($O(N)$), then place a pointer at the mid point and then compare with start of list. This approach would take $O(N)$ time.
 
 ### Conclusion
 
