@@ -24,6 +24,7 @@ tags:
     * [Even odd list](#even-odd-list)
     * [Check if list is a palindrome](#check-if-list-is-a-palindrome)
     * [Pivot list](#pivot-list)
+    * [Add numbers in a list](#)
 
 2. [Conclusion](#conclusion)
 
@@ -650,6 +651,90 @@ Node<int>* PivotAround(Node<int>* L,int p){
     g->next = nullptr;
     
     return lH;
+}
+```
+
+### Add numbers in a list
+
+**Write a program which takes two singly linked lists of digits, and returns the list corresponding to the sum of the integers they represent. The least significant digit comes first.**
+
+Example:
+
+```cpp
+
+(403 + 119) = 522
+
+3 -> 0 -> 4
+9 -> 1 -> 1 +
+-------------
+2 -> 2 -> 5
+```
+
+This is a simple problem with the only requirement being that you write clean correct code. The logic goes like so: start with the least significant digits of the two lists and add them. Save the answer of addition mod 10 to the new list you're creating and carry answer/10. Stop as soon as one of the pointers becomes null. Once stopped check to see if other list has any remaining elements, if so add them to the answer. If not, check if there's a carry. If so, add to the answer. 
+
+Run time: $O(max(A,B))$ ie the maximum of the two lists.
+Space: $O(max(A,B))$ ie max of the two lists. 
+
+```cpp
+Node<int>* AddNumbersInAList(Node<int>* l1, Node<int>* l2){
+    Node<int>* p1 = l1;
+    Node<int>* p2 = l2;
+    Node<int>* ansHead = nullptr;
+    Node<int>* ansNext = nullptr;
+    int carry = 0;
+    
+    while (p1 && p2){
+        int num1 = p1->element;
+        int num2 = p2->element;
+        int ans = num1 + num2 + carry;
+        int save = ans%10;
+        carry = ans/10;
+        if (ansHead == nullptr){
+            ansHead = new Node<int>;
+            ansHead->element = save;
+            ansNext = ansHead;
+        } else {
+            ansNext->next = new Node<int>;
+            ansNext = ansNext->next;
+            ansNext->element = ans % 10;
+            ansNext->next = nullptr;
+        }
+        p1 = p1->next;
+        p2 = p2->next;
+    }
+    
+    if (p1 != nullptr){
+        while (p1){
+            int curr = p1->element;
+            int ans = curr + carry;
+            ansNext->next = new Node<int>;
+            ansNext = ansNext->next;
+            ansNext->element = ans % 10;
+            ansNext->next = nullptr;
+            carry = ans / 10;
+            p1 = p1->next;
+        }
+    } else if (p2 != nullptr){
+        while (p2){
+            int curr = p2->element;
+            int ans = curr + carry;
+            ansNext->next = new Node<int>;
+            ansNext = ansNext->next;
+            ansNext->element = ans % 10;
+            ansNext->next = nullptr;
+            carry = ans / 10;
+            p2 = p2->next;
+        }
+    }
+    
+    if (carry > 0){
+        ansNext->next = new Node<int>;
+        ansNext = ansNext->next;
+        ansNext->element = carry;
+        ansNext->next = nullptr;
+    }
+    
+    return ansHead;
 }
 ```
 
