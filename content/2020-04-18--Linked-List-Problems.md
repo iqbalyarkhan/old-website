@@ -23,6 +23,7 @@ tags:
     * [Right shift elements in a linked list](#right-shift-elements-in-a-linked-list)
     * [Even odd list](#even-odd-list)
     * [Check if list is a palindrome](#check-if-list-is-a-palindrome)
+    * [Pivot list](#pivot-list)
 
 2. [Conclusion](#conclusion)
 
@@ -579,7 +580,82 @@ Naive approach would be to choose the first node and then take a pointer to the 
 
 A better approach would be to first figure out the size of our list ($O(N)$), then place a pointer at the mid point and then compare with start of list. This approach would take $O(N)$ time.
 
+### Pivot list
+
+**For any integer k, the pivot of a list of integers with respect to k is that list with its nodes reordered so that all nodes containing keys less than k appear before nodes containing k, and all nodes containing keys greater than k appear after the nodes containing k.Implement a function which takes as input a singly linked list and an integer k and performs a pivot of the list with respect to k.**
+
+Example:
+
+```cpp
+Pivot around 7:
+
+    13->2->5->7->11->12->3->4->7->NULL
+
+Pivoted:
+    2->5->3->4->7->7->13->11->12
+```
+
+Notice how the order stays the same.
+
+Naive approach would create new nodes for each type of value found: lesser, equal or greater and then append to each list and then finally merge the lists. However, that is not necessary. Run time is $O(N)$ but space is also $O(N)$.
+
+
+One approach is to find the pivot node then start at head and if you find any nodes greater than pivot, put that node after pivot. Once you get to the pivot, find any that are larger than the pivot and put before the pivot and then return the list. Run time is $O(N)$ 
+
+A better approach is where you have 3 head pointers for each type: `lH`, `eH` and `gH` (lessHead, equalHead and greaterHead). You can then also have 3 more pointers: `l`, `e` and `g` that move depending on the type of value found. To actually iterate over the list, you can use a `temp` pointer. I'll use this approach since it is easier to follow. Run time is $O(N)$
+
+```cpp
+Node<int>* PivotAround(Node<int>* L,int p){
+    Node<int>* lH = nullptr;
+    Node<int>* eH = nullptr;
+    Node<int>* gH = nullptr;
+    Node<int>* temp = L;
+    Node<int>* l = lH;
+    Node<int>* e = eH;
+    Node<int>* g = gH;
+    
+    while (temp != nullptr){
+        int curr = temp->element;
+        if (curr < p){
+            if (lH == nullptr){
+                lH = temp;
+                l = temp;
+            } else {
+                l->next = temp;
+                l = l->next;
+            }
+        } else if (curr == p){
+            if (eH == nullptr){
+                eH = temp;
+                e = eH;
+            } else {
+                e->next = temp;
+                e = e->next;
+            }
+        } else {
+            if (gH == nullptr){
+                gH = temp;
+                g = gH;
+            } else {
+                g->next = temp;
+                g = g->next;
+            }
+        }
+        
+        temp = temp->next;
+    }
+    
+    l->next = eH;
+    e->next = gH;
+    g->next = nullptr;
+    
+    return lH;
+}
+```
+
 ### Conclusion
+
+- More often than not, you'd be required to manipulate the array somehow such as the [even odd problem](/linked-list-problems#even-odd-list), make use of new head pointers and temp pointers to make your way through the list and solve the problem in $O(N)$ time. Another problem that makes use of this is the [pivot list problem](/linked-list-problems#pivot-list) 
 
 - If it is a singly linked list, go from left to right since it's the only method possible. For example, if you're moving nodes around, pick ones that are on the left and place after the ones on the right
 
