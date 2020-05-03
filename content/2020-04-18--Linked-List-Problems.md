@@ -24,7 +24,8 @@ tags:
     * [Even odd list](#even-odd-list)
     * [Check if list is a palindrome](#check-if-list-is-a-palindrome)
     * [Pivot list](#pivot-list)
-    * [Add numbers in a list](#)
+    * [Add numbers in a list](#add-numbers-in-a-list)
+    * [Swap pairs in a list](#swap-pairs-in-a-list)
 
 2. [Conclusion](#conclusion)
 
@@ -738,9 +739,53 @@ Node<int>* AddNumbersInAList(Node<int>* l1, Node<int>* l2){
 }
 ```
 
+### Swap pairs in a list
+
+**Given a linked list, swap every two adjacent nodes and return its head. You may not modify the values in the list's nodes, only nodes itself may be changed. You can assume the number of nodes in the list will always be even.**
+
+```cpp
+Example:
+10-2-3-4-1-9-NULL
+2-10-4-3-9-1-NULL
+```
+
+Naive approach would be to create a new list and then move 2 pointers along the original list in an alternating fashion and append to the new list. This requires $O(N)$ extra space. 
+
+A better approach would edit the list in place. We first create a dummy head and make it point to the first element. Then we start swapping elements making use of `prev`, `i` and `j` pointers:   
+
+```cpp
+    ListNode* swapPairs(ListNode* head) {
+        if (head == nullptr)
+            return head;
+        if (head->next == nullptr)
+            return head;
+
+        ListNode* dummyHead = new ListNode(-1);
+        ListNode* prev = dummyHead;
+        ListNode* i = head;
+        ListNode* j = head->next;
+
+        while (i && j){
+            i->next = j->next;
+            j->next = i;
+            prev->next = j;
+            prev = i;
+            i = prev->next;
+            if (i == nullptr)
+                break;
+            j = i->next;
+        }
+        return dummyHead->next;
+    }
+```
+
+This approach takes $O(N)$ time and $O(1)$ space.
+
 ### Conclusion
 
-- More often than not, you'd be required to manipulate the array somehow such as the [even odd problem](/linked-list-problems#even-odd-list), make use of new head pointers and temp pointers to make your way through the list and solve the problem in $O(N)$ time. Another problem that makes use of this is the [pivot list problem](/linked-list-problems#pivot-list) 
+- More often than not, you'd be required to manipulate the array somehow such as the [even odd problem](/linked-list-problems#even-odd-list), make use of new head pointers and temp pointers to make your way through the list and solve the problem in $O(N)$ time. Another problem that makes use of this is the [pivot list problem](/linked-list-problems#pivot-list)
+
+- Some times it is easier to use a dummy head and then return `dummyHead->next` as your answer to make life easier. Look at [swap pairs problem](/linked-list#swap-pairs-in-a-list). If you're worried about the start of the list and how to handle that first case, use a dummy head.
 
 - If it is a singly linked list, go from left to right since it's the only method possible. For example, if you're moving nodes around, pick ones that are on the left and place after the ones on the right
 
