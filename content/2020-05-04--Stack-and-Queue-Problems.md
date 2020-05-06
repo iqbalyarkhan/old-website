@@ -2,7 +2,7 @@
 title: Stack and Queue Problems
 date: 2020-05-04
 thumbnail: /post-images/stack.png
-draft: true
+draft: false
 extract: Stack and queue sample problems
 categories: 
     - Problems
@@ -15,12 +15,6 @@ tags:
 
 2. [Stack Problems]
     * [Evaluate Postfix Expression](#evaluate-postfix-expression)
-    * [String to int without libraries](#string-to-int-without-libraries)
-    * [Int to string without libraries](#int-to-string-without-libraries)
-    * [Change base of string](#change-base-of-string)
-    * [Compute spread sheet column encoding](#spread-sheet-column-encoding)
-    * [Check Palindromicity](#check-palindromicity)
-    * [Reverse words in a string](#reverse-words-in-a-string)
 
 ### Intro
 
@@ -38,7 +32,7 @@ tags:
 
 Example: 34+2*1+ = 15
 
-The logic is quite simple: if you encounter a digit, push to stack, if you encounter an operator, pop top 2 from stack, perform the relevant operation and push the result back on stack.
+The logic is quite simple: if you encounter a digit, push to stack, if you encounter an operator, pop top 2 from stack, perform the relevant operation and push the result back on stack. 
 
 Running time is $O(N)$ where $N$ is the length of the string.
 
@@ -57,13 +51,13 @@ int convert(string in){
             s.pop();
             
             if (ch == '+')
-                ans = A + B;
+                ans = B + A;
             else if (ch == '-')
-                ans = A - B;
+                ans = B - A;
             else if (ch == '*')
-                ans = (A*B);
+                ans = (B*A);
             else
-                ans = (A/B);
+                ans = (B/A);
             
             s.push(ans);
             
@@ -73,4 +67,6 @@ int convert(string in){
     return ans;
 }
 ```
+
+Be careful with the order of operations. For example,if you get this: 62/ you'd be doing 6/2 = 3. So make sure your order is correct when you pop and perform the calculation. In the code above, when you pop, you pop 2 (which becomes `A`) first and then 6 (which becomes `B`). So you can't do `A/B`, since that would be 2/6 = 0. You want 6/2 so we do B/A.
 
