@@ -58,6 +58,7 @@ tags:
     * [Reverse a string](#reverse-a-string)
     * [Check if a decimal integer is a palindrome](#check-if-a-decimal-integer-is-a-palindrome)
     * [Find difference in string](#find-difference-in-string)
+    * [Destination city](https://leetcode.com/problems/destination-city/)
 
 ### Reading numbers separated by whitespace
 
