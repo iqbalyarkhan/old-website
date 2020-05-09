@@ -304,5 +304,39 @@ Next, we get a 2. 2 is not greater than 10, so 2 can also see the sunset, add it
 
 We're done: we've got 3 buildings that can see the sunset: 2,10 and 12. Notice the order: we're eliminating buildings based off the height of the building we just received: ie LIFO. The list can be stored in a stack! 
 
+```cpp
+void ProcessInput(stack<int>& s, int h){
+    if (s.empty()){
+        s.push(h);
+        return;
+    }
 
+    while (!s.empty() && h > s.top()){
+        s.pop();
+    }
+    s.push(h);
+    return;
+}
+
+int main(int argc, const char * argv[]) {
+    stack<int> buildings;
+    int height = 0;
+    while (height != -1){
+        cout << "Enter building height: ";
+        cin >> height;
+        if (height == -1)
+            break;
+        ProcessInput(buildings, height);
+    }
+    
+    while (!buildings.empty()){
+        cout << buildings.top() << " ";
+        buildings.pop();
+    }
+    
+    return 0;
+}
+```
+
+Running time is same as brute force $O(N)$ but space complexity is $O(1)$ in the best case where we get heights in increasing order.
 
