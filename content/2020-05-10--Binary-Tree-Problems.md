@@ -17,6 +17,7 @@ tags:
 
     * [Traversal](#traversal)
     * [Check if balanced](#check-if-balanced)
+    * [Check if tree is symmetric](#check-if-tree-is-symmetric)
 
 ### Intro
 
@@ -223,5 +224,98 @@ statusAndHeight getH(Node<int>* root){
 
 Notice, we also immediately return if left is unbalanced or right is unbalanced in our checks by returning -1 and false for our return struct. That way we don't have to unnecessarily continue processing remaining nodes. Running time of this algorithm is $O(N)$ where $N$ is the number of nodes and since we recurse through the tree, space complexity is the call stack that we use: $O(h)$ where $h$ is the height of our tree. 
 
+### Check if tree is symmetric
+
+**Write a program that checks whether a binary tree is symmetric. Symmetric tree is where a vertical line can be drawn from the root dividing the tree into mirror images (values of the nodes and positions match in each half)**
+
+Example:
+
+```cpp
+Is symmetric:
+            314
+           /   \
+          6     6
+         /       \   
+        2         2
+         \       /
+         4      4
+        /        \
+       1          1   
+
+Not symmetric:
+            314
+           /   \
+          6     6
+         /       \   
+        2         5
+         \       /
+         4      4
+        /        \
+       1          1   
 
 
+Not symmetric:
+            314
+           /   \
+          6     6
+         /       \   
+        2         2
+         \         \
+         4          4
+        /          / 
+       1          1        
+```
+
+Brute force approach is to start with root's left subtree and copy the values to an external data structure, say an array. Then iterate over the right subtree and match the values as you iterate. If there's a mismatch, it is not symmetric, otherwise the tree is symmetric. Running time is $O(N)$ where $N$ is the number of nodes. Space is approx $O(N)$ for the array. 
+
+Can we do this without saving half the tree in an array? We can try to go down each half of the tree simultaneously. One pointer goes down root's left subtree and the other goes down root's right subtree. However, the order of traversal shouldn't be the same. That is because for the tree to be symmetric, the left pointer's left child is right pointers right child. So, the order of traversal should be mirrored as well: left pointer's left child must equal right pointer's right child. Therefore left pointer can traverse in `node left right` while right pointer can traverse in `node right left` fashion. Let's have a look at the symmetric tree again and see the output for the left and right pointers:
+
+```cpp
+Is symmetric:
+            314
+           /   \
+          6     6
+         /       \   
+        2         2
+         \       /
+         4      4
+        /        \
+       1          1   
+
+left:   6 2 null 4 1 null null
+right:  6 2 null 4 1 null null
+```
+
+Now, if during traversal, at any point the two pointers do not point to the same data, we can return false. If the two pointers traverse their way back up to the root, then we have a symmetric tree.
+
+```cpp
+template <typename T>
+struct Node{
+    T data;
+    Node<T>* left = nullptr;
+    Node<T>* right = nullptr;
+};
+
+bool isSymmetric(Node<int>* left, Node<int>* right){
+    if (!left && !right)
+        return true;
+    if (left && !right)
+        return false;
+    if (!left && right)
+        return false;
+    
+    if (left->data != right->data)
+        return false;
+    
+    bool move1 = isSymmetric(left->left, right->right);
+    bool move2 = isSymmetric(left->right, right->left);
+    
+    if (move1 && move2)
+        return true;
+    
+    else
+        return false;
+}
+```
+
+The running time of the code is $O(N)$ where $N$ is the number of nodes in our tree. Space complexity if $O(h)$ where $h$ is the height of our tree. This space complexity comes from our call stack. At most, we'd have to save $h$ recursive calls.
