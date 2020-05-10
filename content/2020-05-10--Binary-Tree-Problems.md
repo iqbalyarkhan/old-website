@@ -191,12 +191,11 @@ struct statusAndHeight{
     bool status;
 };
 
+
 statusAndHeight getH(Node<int>* root){
     if (root == nullptr){
         return {0,true};
     }
-    
-    cout << "root: " << root->data << endl;
     
     if (root->left == nullptr && root->right == nullptr){
         return {1,true};
@@ -205,18 +204,19 @@ statusAndHeight getH(Node<int>* root){
     
     auto left = getH(root->left);
     if (!left.status){
-        cout << root->data << "'s left child is unbalanced: " << root->left->data << endl;
         return {-1,false};
     }
     
     auto right = getH(root->right);
     if (!right.status){
-        cout << root->data << "'s right child is unbalanced: " << root->right->data << endl;
         return {-1,false};
     }
     
     int currH = max(left.height, right.height);
-    bool isBal = (currH <= 1);
+    bool isBal = abs(left.height - right.height) <= 1;
+    if (!isBal){
+        cout << "Balance not right for node: " << root->data << endl;
+    }
     return {currH+1, isBal};
 }
 ```
