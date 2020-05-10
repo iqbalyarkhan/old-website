@@ -13,7 +13,9 @@ tags:
 ### Table of Contents
 1. [Intro](#intro)
 
-2. [Problems]
+2. Problems
+
+    * [Traversal](#traversal)
 
 ### Intro
 
@@ -29,3 +31,50 @@ A complete binary tree is a binary tree in which every level, except possibly th
 
 3 main types of traversals are: preorder, inorder and postorder.
 
+Basic data structure to represent a node in our tree would be:
+
+```cpp
+template <typename T>
+struct Node{
+    T data;
+    Node<T>* left = nullptr;
+    Node<T>* right = nullptr;
+};
+```
+
+### Traversal
+
+**Given a binary tree, traverse the tree in pre-, in- and post-orders.**
+
+Recursively this is quite simple:
+
+```cpp
+void PreOrder(Node<int>* root){
+    if (root == nullptr)
+        return;
+    
+    cout << root->data << " ";
+    PreOrder(root->left);
+    PreOrder(root->right);
+}
+
+void InOrder(Node<int>* root){
+    if (root == nullptr)
+        return;
+    
+    InOrder(root->left);
+    cout << root->data << " ";
+    InOrder(root->right);
+}
+
+void Postorder(Node<int>* root){
+    if (root == nullptr)
+        return;
+    
+    Postorder(root->left);
+    Postorder(root->right);
+    cout << root->data << " ";
+}
+```
+
+Running time is $O(N)$ and space complexity is the call stack used to traverse the tree which at most uses $O(h)$ space where $h$ is the height of our tree. 
