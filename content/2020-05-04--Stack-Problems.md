@@ -1,13 +1,13 @@
 ---
-title: Stack and Queue Problems
+title: Stack Problems
 date: 2020-05-04
 thumbnail: /post-images/stack.png
 draft: false
-extract: Stack and queue sample problems
+extract: Stack sample problems
 categories: 
     - Problems
 tags:
-    - Stack and queue Problems
+    - Stack Problems
 ---
 
 ### Table of Contents
