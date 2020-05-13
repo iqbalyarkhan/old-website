@@ -318,4 +318,4 @@ bool isSymmetric(Node<int>* left, Node<int>* right){
 }
 ```
 
-The running time of the code is $O(N)$ where $N$ is the number of nodes in our tree. Space complexity if $O(h)$ where $h$ is the height of our tree. This space complexity comes from our call stack. At most, we'd have to save $h$ recursive calls.
+The running time of the code is $O(N)$ where $N$ is the number of nodes in our tree. Space complexity is $O(h)$ where $h$ is the height of our tree. This space complexity comes from our call stack. At most, we'd have to save $h$ recursive calls.
