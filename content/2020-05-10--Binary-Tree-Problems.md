@@ -2,7 +2,7 @@
 title: Binary Tree Problems
 date: 2020-05-10
 thumbnail: /post-images/tree.png
-draft: false
+draft: true
 extract: Binary tree problems
 categories: 
     - Problems
@@ -18,6 +18,10 @@ tags:
     * [Traversal](#traversal)
     * [Check if balanced](#check-if-balanced)
     * [Check if tree is symmetric](#check-if-tree-is-symmetric)
+
+### TODO
+LCA
+Previous chapter (stack and queue) problems related to binary tree
 
 ### Intro
 
