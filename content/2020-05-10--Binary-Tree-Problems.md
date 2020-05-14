@@ -425,7 +425,10 @@ Node<int>* mergeTrees(Node<int>* t1, Node<int>* t2){
 }
 ```
 
+This approach uses no extra space (except for the recursive call stack). Running time: $O(N)$ where $N$ is the max of the number of nodes in tree 1 and tree 2. And space complexity is $O(h)$ of the tree with the larger height.
+
 ### Conclusion
 
 - Best solutions have running time $O(N)$ and space complexity as $O(h)$ (when using recursion).
 - Always start at the base case when working with trees. For example, what do we do when the node is null? Next, handle the case where the node has no more children. Next choose a middle node and decide what to return based on the problem you're trying to solve, then finally add the missing steps. 
+- Whenever you recurse and go down a subtree, make sure you capture the result and return if there's a return condition that needs to hold. That way you prevent yourself from going through the entire tree when the first subtree already breaks the condition you're trying to check for.
