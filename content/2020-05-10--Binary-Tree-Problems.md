@@ -19,6 +19,7 @@ tags:
     * [Find height](#find-height)
     * [Check if balanced](#check-if-balanced)
     * [Check if tree is symmetric](#check-if-tree-is-symmetric)
+    * [Merge two trees](#merge-two-trees)
     
 3. [Conclusion](#conclusion)
 
@@ -372,6 +373,57 @@ bool isSymmetric(Node<int>* left, Node<int>* right){
 
 The running time of the code is $O(N)$ where $N$ is the number of nodes in our tree. Space complexity is $O(h)$ where $h$ is the height of our tree. This space complexity comes from our call stack. At most, we'd have to save $h$ recursive calls.
 
+### Merge two trees
+
+**Merge two trees, if both nodes present add sum. If one of them is null, only add the non-null node**
+
+Example:
+
+```cpp
+
+tree1   tree2
+    1   2
+   /     \
+  9       4  
+
+merged:
+
+    3
+  /   \
+ 9     4 
+
+```
+
+Approach 1: We can store nodes and their values (including null nodes) for each tree in their respective arrays. We can then iterate over the arrays and pick the non-null values and add ones that need to be added. Finally, we can construct a tree from our answer array and return. Not a good approach since it takes extra space.
+
+Better approach: Can we do it in place? How about we save the final result in `t1` pointer that was passed to us. Let's step through the logic and see if we can:
+
+- If both tree pointers are null, return null
+- If t1 is null and t2 is not null, return t2
+- If t1 is not null and t2 is null, return t1.
+- If both are not null, we need to do more work:
+    -  Problem statement says add the values if both present
+    - Next, we need to repeat the steps above for current nodes' left and right subtrees.
+- Finally, return t1:
+
+```cpp
+Node<int>* mergeTrees(Node<int>* t1, Node<int>* t2){
+    if (!t1 && !t2)
+        return nullptr;
+    if (!t1 && t2)
+        return t2;
+    if (t1 && !t2)
+        return t1;
+    
+    //both present, sum the two:
+    t1->data += t2->data;
+    
+    t1->left = mergeTrees(t1->left, t2->left);
+    t1->right = mergeTrees(t1->right, t2->right);
+    
+    return t1;
+}
+```
 
 ### Conclusion
 
