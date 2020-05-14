@@ -16,8 +16,11 @@ tags:
 2. Problems
 
     * [Traversal](#traversal)
+    * [Find height](#find-height)
     * [Check if balanced](#check-if-balanced)
     * [Check if tree is symmetric](#check-if-tree-is-symmetric)
+    
+3. [Conclusion](#conclusion)
 
 ### TODO
 LCA
@@ -84,6 +87,51 @@ void Postorder(Node<int>* root){
 ```
 
 Running time is $O(N)$ and space complexity is the call stack used to traverse the tree which at most uses $O(h)$ space where $h$ is the height of our tree. 
+
+### Find Height
+
+**Given a binary tree, find the height of the tree**
+
+Example:
+
+```cpp
+    
+            12
+           /  \
+         11   10
+        /  \   
+       9    8 
+      /  
+     7
+    /
+   6
+Height is the longest path from root to leaf: 12-11-9-7-6 = 4 (I'm counting root as level 0)   
+``` 
+
+Let's think through it logically: 
+- If the node is null, its height is 0
+- If the node is not null BUT has both left and right pointers as null, then the height is 1.
+- Otherwise, the height is equal to the max height of left subtree and right subtree plus 1 (for the current node).
+
+Translated to code:
+
+```cpp
+int FindHeight(Node<int>* root){
+    if (root == nullptr)
+        return -1;
+    if (root->left == nullptr && root->right == nullptr)
+        return 0;
+    
+    int lH = FindHeight(root->left);
+    int rH = FindHeight(root->right);
+    int currH = max(lH,rH);
+    currH++;
+    
+    return currH;
+}
+``` 
+
+Running time is $O(N)$ where $N$ is the number of nodes in the tree. Space complexity is $O(h)$ because the max number of recursive calls at a given time on the call stack are equal to the max height of the tree. $h$ is the height of the tree
 
 ### Check if balanced
 
@@ -323,3 +371,9 @@ bool isSymmetric(Node<int>* left, Node<int>* right){
 ```
 
 The running time of the code is $O(N)$ where $N$ is the number of nodes in our tree. Space complexity is $O(h)$ where $h$ is the height of our tree. This space complexity comes from our call stack. At most, we'd have to save $h$ recursive calls.
+
+
+### Conclusion
+
+- Best solutions have running time $O(N)$ and space complexity as $O(h)$ (when using recursion).
+- Always start at the base case when working with trees. For example, what do we do when the node is null? Next, handle the case where the node has no more children. Next choose a middle node and decide what to return based on the problem you're trying to solve, then finally add the missing steps. 
