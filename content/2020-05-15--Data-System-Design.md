@@ -10,7 +10,7 @@ tags:
     - Data system design
 ---
 
-**These are my notes as I go through the book [designing data intensive applications](https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/)
+**These are my notes as I go through the book [designing data intensive applications](https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/)**
 
 1. [Intro](#intro)
 2. [Reliability](#reliability)
