@@ -26,6 +26,8 @@ tags:
 
 5. [STL stack](#stl-stack)
 
+6. [STL Queue](#stl-queue)
+
 6. [Vectors](#vectors)
 
     * [Initialize a vector](#initialize-a-vector)
