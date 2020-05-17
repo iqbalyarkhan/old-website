@@ -2,7 +2,7 @@
 title: Binary Tree Problems
 date: 2020-05-10
 thumbnail: /post-images/tree.png
-draft: true
+draft: false
 extract: Binary tree problems
 categories: 
     - Problems
@@ -21,6 +21,7 @@ tags:
     * [Check if tree is symmetric](#check-if-tree-is-symmetric)
     * [Merge two trees](#merge-two-trees)
     * [Invert a binary tree](#invert-a-binary-tree)
+    * [Are they cousins](#are-they-cousins)
     
 3. [Conclusion](#conclusion)
 
@@ -467,6 +468,62 @@ Node<int>* invert(Node<int>* root){
 ```
 
 Running time is $O(N)$ and space is $O(h)$
+
+### Are they cousins?
+
+**In a binary tree, the root node is at depth 0, and children of each depth k node are at depth k+1.Two nodes of a binary tree are cousins if they have the same depth, but have different parents.We are given the root of a binary tree with unique values, and the values x and y of two different nodes in the tree.Return true if and only if the nodes corresponding to the values x and y are cousins.**
+
+Method signature:
+
+We need to satisfy two conditions: the depth of each node and the parent. Naive approach would be to first iterate through the tree, get the depths for each node and store in an external data structure such as a hash map. Then find the two nodes you're looking for and see if they satisfy the conditions for them to be considered cousins. This approach takes $O(N)$ time and $O(N)$ space.
+
+Better approach is to calculate the depth and the parent as we iterate over the nodes in our tree. We're only interested in the parent and depth of the node if its value matches that of the two nodes (x and y) we're looking for. So, we can use 4 global variables: 
+- x depth
+- x parent
+- y depth
+- y parent
+
+
+
+```cpp
+
+Node<int>* xp;
+Node<int>* yp;
+int xd;
+int yd;
+
+void process(Node<int>* root, Node<int>* parent, int depth,int x, int y){
+    if (!root)
+        return;
+
+    if (root->data == x){
+        xp = parent;
+        xd = depth;
+        return;
+    }
+    if (root->data == y){
+        yp = parent;
+        yd = depth;
+        return;
+    }
+    depth += 1;
+    process(root->left, root, depth, x, y);
+    process(root->right, root, depth, x, y);
+}
+```
+
+The code above shows that we start traversing the tree at the root. Our base condition would be when the root is null at which point we simply return. If the value we found is that of either x or y, we assign the parent and depth for our respective node and return. In other cases, we increment the depth and parent pointer and move to the left subtree and then the right subtree. 
+
+Finally, we check if the conditions hold and return result accordingly.
+```
+bool isCousins(Node<int>* root, int x, int y) {
+    if (root->data == x || root->data == y)
+        return false;
+    process(root, nullptr, 0, x, y);
+    return ((xp != yp) && (xd == yd));
+    
+}
+```
 
 ### Conclusion
 
