@@ -20,6 +20,7 @@ tags:
     * [Check if balanced](#check-if-balanced)
     * [Check if tree is symmetric](#check-if-tree-is-symmetric)
     * [Merge two trees](#merge-two-trees)
+    * [Invert a binary tree](#invert-a-binary-tree)
     
 3. [Conclusion](#conclusion)
 
@@ -426,6 +427,46 @@ Node<int>* mergeTrees(Node<int>* t1, Node<int>* t2){
 ```
 
 This approach uses no extra space (except for the recursive call stack). Running time: $O(N)$ where $N$ is the max of the number of nodes in tree 1 and tree 2. And space complexity is $O(h)$ of the tree with the larger height.
+
+### Invert a binary tree
+
+Example:
+
+```cpp
+
+        1           1
+       / \         / \
+      2   3       3   2
+     / \ / \     / \ / \
+    4  5 6  7   7  6 5  4 
+     
+```
+
+The idea here is to make a mirror image of the tree. Now as you go about swapping elements, you don't want to swap the parents until the children are done. You want to start at the bottom. To do so, what type of traversal would you use? The one that comes to mind that does the node AFTER the children is post-order (Left,right, node). So, here's what we'll do:
+
+- Swap children of 4 (there aren't any so the null pointers stay where they are)
+- Swap children of 5 (there aren't any so the null pointers stay where they are)
+- Swap children of 2 : Swap 4 and 5.
+- We're up to `1` now BUT we're only done with its left subtree, we move to the right subtree
+- Swap children of 6 and 7 (aren't any)
+- Swap children of 3 : Swap 6 and 7
+- Now swap children of 1 : swap 2 and 3
+
+```cpp
+Node<int>* invert(Node<int>* root){
+    if (!root)
+        return nullptr;
+    invert(root->left);
+    invert(root->right);
+    Node<int>* temp = root->left;
+    root->left = root->right;
+    root->right = temp;
+    
+    return root;
+}
+```
+
+Running time is $O(N)$ and space is $O(h)$
 
 ### Conclusion
 
