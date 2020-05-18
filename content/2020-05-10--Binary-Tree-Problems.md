@@ -23,6 +23,8 @@ tags:
     * [Invert a binary tree](#invert-a-binary-tree)
     * [Are they cousins](#are-they-cousins)
     * [LCA](#lca)
+    * [Binary sum from root to leaf](#binary-sum-from-root-to-leaf)
+    * [Path to leaf with sum](#path-to-leaf-with-sum)
     
 3. [Conclusion](#conclusion)
 
@@ -574,6 +576,74 @@ Notice how we return L if L is not null and R if R is not null, otherwise we ret
 
 Running time $O(N)$, space $O(h)$.
 
+### Binary sum from root to leaf
+
+**Given a binary tree, each node has value 0 or 1.  Each root-to-leaf path represents a binary number starting with the most significant bit.  For example, if the path is 0 -> 1 -> 1 -> 0 -> 1, then this could represent 01101 in binary, which is 13.For all leaves in the tree, consider the numbers represented by the path from the root to that leaf.Return the sum of these numbers.**
+
+Brute force approach would be to take each path and store it as a string. Then once you have all the paths, convert each string to its integer representation and sum those values. This requires extra space and the string to int conversion might lead to overflow. 
+
+A better approach would be to calculate the sum as we traverse the tree. We'll choose to traverse the tree in pre-order fashion since we need to capture the value of the current node first and then move to its left and right children. Also, as we've traversing, we need to keep track of the sum. To do so, we'll use this formula:
+
+- OldValue * Base + ReadValue = NewValue
+
+Explanation can be found [here](/primitive-types#converting-binary-to-decimal). Then, as soon as we reach a node that has no children, we can update a global sum variable with the current path's sum.
+
+
+```cpp
+int sum = 0;
+
+void getSum(Node<int>* root, int curr){
+    if (!root)
+        return;
+    if (!root->left && !root->right){
+        curr = (curr * 2) + root->data;
+        sum += curr;
+        return;
+    }
+    curr = (curr * 2) + root->data;
+    getSum(root->left, curr);
+    getSum(root->right, curr);
+}
+
+int sumRootToLeaf(Node<int>* root) {
+    getSum(root, 0);
+    return sum;
+}
+```
+
+Running time is $O(N)$ and space is $O(h)$.
+
+### Path to leaf with sum
+
+**Given a root to a tree, find the path that has sum equal to the given sum**
+
+This is a simple problem. All we need to do is traverse the tree and keep track of the path taken and the sum. When we reach a leaf node, we need to check the path's sum and see if it equals the passed value. If so, print the path, if not, continue.
+
+```cpp
+void helper(Node<int>* root, int w, int currw, string currPath){
+    if (!root){
+        return;
+    }
+    cout << "curr weight: " << currw << " and path so far: " << currPath << endl;
+    currw += root->data;
+    stringstream ss;
+    ss << root->data;
+    string temp;
+    ss >> temp;
+    currPath += temp;
+    if (currw == w){
+        cout << "Found path: " << currPath;
+        path = currPath;
+        return;
+    }
+    helper(root->left, w,currw,currPath);
+    helper(root->right, w, currw, currPath);
+}
+
+void sumPath(Node<int>* root, int w){
+    helper(root, w, 0, "");
+}
+```
 ### Conclusion
 
 - Best solutions have running time $O(N)$ and space complexity as $O(h)$ (when using recursion).
