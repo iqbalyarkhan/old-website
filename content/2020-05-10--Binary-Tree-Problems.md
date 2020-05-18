@@ -22,6 +22,7 @@ tags:
     * [Merge two trees](#merge-two-trees)
     * [Invert a binary tree](#invert-a-binary-tree)
     * [Are they cousins](#are-they-cousins)
+    * [LCA](#lca)
     
 3. [Conclusion](#conclusion)
 
@@ -525,8 +526,57 @@ bool isCousins(Node<int>* root, int x, int y) {
 }
 ```
 
+### LCA
+
+**Find the least common ancestor for two given nodes.**
+
+Example:
+
+```cpp
+LCA of 6 and 8 is 11
+            12
+           /  \
+         11   10
+        /  \   
+       9    8 
+      / \    \
+     7  3     1
+    / \ 
+   6   4
+```
+
+Naive approach would be to go through the tree and determine the path for each node that we're interested in and save the path in an external data structure. Once done, we can then compare the path to find the first node that is common in both paths. This requires extra space.
+
+Better approach would be to traverse the tree and if the current node is one of those that we're interested in, we can return that node. As soon as we get to a node that has both the left and right returned values as not null, we've found our ancestor. The trick here is to push up the tree what we found. So, in the example above, when 6 is found, it returns to 7 telling 6 was found which returns to 9 telling 6 was found with returns to 11 telling 6 was found. Next, 11 looks in its right subtree and returns 8. 11 is the first node that has a return value from both its left and right subtrees. 
+
+```cpp
+Node<int>* helper(Node<int>* root, int x, int y){
+    if (!root)
+        return nullptr;
+    cout <<"Root right now is: " << root->data << endl;
+    if (root->data == x || root->data == y)
+        return root;
+    auto L = helper(root->left, x, y);
+    auto R = helper(root->right, x, y);
+    if (L&&R){
+        cout << "Found LCA! " << root->data << endl;
+    }
+    cout << "Returning from: " << root->data << endl;
+    cout << "L is: " << L <<" and R is: " << R << endl;
+    if (L)
+        return L;
+    if (R)
+        return R;
+    return nullptr;
+}
+```
+Notice how we return L if L is not null and R if R is not null, otherwise we return nullptr.
+
+Running time $O(N)$, space $O(h)$.
+
 ### Conclusion
 
 - Best solutions have running time $O(N)$ and space complexity as $O(h)$ (when using recursion).
 - Always start at the base case when working with trees. For example, what do we do when the node is null? Next, handle the case where the node has no more children. Next choose a middle node and decide what to return based on the problem you're trying to solve, then finally add the missing steps. 
 - Whenever you recurse and go down a subtree, make sure you capture the result and return if there's a return condition that needs to hold. That way you prevent yourself from going through the entire tree when the first subtree already breaks the condition you're trying to check for.
+- If you need to transmit some information to parent from child, return a value AFTER you've processed everything in the recursive call. Look at [lca](#lca) for an example. Notice how we return L if L is not null and R if R is not null, otherwise we return nullptr.
