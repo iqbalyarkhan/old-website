@@ -25,6 +25,7 @@ tags:
     * [LCA](#lca)
     * [Binary sum from root to leaf](#binary-sum-from-root-to-leaf)
     * [Path to leaf with sum](#path-to-leaf-with-sum)
+    * [In-order without recursion](#in-order-without-recursion)
     
 3. [Conclusion](#conclusion)
 
@@ -644,6 +645,40 @@ void sumPath(Node<int>* root, int w){
     helper(root, w, 0, "");
 }
 ```
+
+### In-order without recursion
+
+**Given root to a binary tree, save in-order traversal to a vector and return the vector. Do so, without using recursion.**
+
+The first thing that comes to mind is that we need to somehow replicate the call stack. To do so, we'll use the stack! In-order traversal is left, node and then right. So, we'll store the left subtree on a stack, then pop off the stack, push the element to answer vector and then process the right half. We exit once we realize that the stack is empty AND there is no right subtree to process:
+
+```cpp
+vector<int> ans;
+stack<Node<int>*> s;
+
+void Inorder(Node<int>* root){
+    s.push(root);
+    root = root->left;
+    while (true){
+        while (root){
+            s.push(root);
+            root = root->left;
+        }
+        
+        if (s.empty() && !root)
+            break;
+        
+        root = s.top();
+        s.pop();
+        cout << "pushing to ans: " << root->data << endl;
+        ans.push_back(root->data);
+        root = root->right;
+    }
+}
+```
+
+Running time: $O(N)$ and space is also $O(N)$ where $N$ is the number of nodes in the tree.
+
 ### Conclusion
 
 - Best solutions have running time $O(N)$ and space complexity as $O(h)$ (when using recursion).
