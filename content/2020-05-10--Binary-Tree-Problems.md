@@ -26,6 +26,7 @@ tags:
     * [Binary sum from root to leaf](#binary-sum-from-root-to-leaf)
     * [Path to leaf with sum](#path-to-leaf-with-sum)
     * [In-order without recursion](#in-order-without-recursion)
+    * [Find in-order successor](#find-in-order-successor)
     
 3. [Conclusion](#conclusion)
 
@@ -550,7 +551,7 @@ LCA of 6 and 8 is 11
 
 Naive approach would be to go through the tree and determine the path for each node that we're interested in and save the path in an external data structure. Once done, we can then compare the path to find the first node that is common in both paths. This requires extra space.
 
-Better approach would be to traverse the tree and if the current node is one of those that we're interested in, we can return that node. As soon as we get to a node that has both the left and right returned values as not null, we've found our ancestor. The trick here is to push up the tree what we found. So, in the example above, when 6 is found, it returns to 7 telling 6 was found which returns to 9 telling 6 was found with returns to 11 telling 6 was found. Next, 11 looks in its right subtree and returns 8. 11 is the first node that has a return value from both its left and right subtrees. 
+Better approach would be to traverse the tree and if the current node is one of those that we're interested in, we can return that node. As soon as we get to a node that has both the left and right returned values as not null, we've found our ancestor. The trick here is to push up the tree what we found. So, in the example above, when 6 is found, it returns to 7 telling 6 was found which returns to 9 telling 6 was found with returns to 11 telling 6 was found. Next, 11 looks in its right subtree and returns 8. We're done when at some point in the recursion, we get to a node that had non-null values returned for its left and right subtrees. 11 is the first node that has a return value from both its left and right subtrees. 
 
 ```cpp
 Node<int>* helper(Node<int>* root, int x, int y){
@@ -678,6 +679,87 @@ void Inorder(Node<int>* root){
 ```
 
 Running time: $O(N)$ and space is also $O(N)$ where $N$ is the number of nodes in the tree.
+
+### Find in-order successor
+
+**The successor of a node in a binary tree is the node that appears immediately after the given node in an inorder traversal. Design an algorithm that computes the successor of a node in a binary tree. Assume that each node stores its parent.**
+
+Example:
+
+```cpp
+Inorder (LNR) for tree below:
+
+6 7 4 9 3 11 8 2 1 12 10
+
+            12
+           /  \
+         11   10
+        /  \   
+       9    8 
+      / \    \
+     7  3     1
+    / \      /
+   6   4    2
+```
+
+The naive approach would be to ignore that there's a parent pointer and keep traversing in in-order fashion and when you get to the node you were interested in, you'd record the next node and return. However, this requires $O(N)$ time. 
+
+A better approach is to break this down into possible combinations and see then figure out the successor. Here are the possible scenarios:
+
+1. The node is a leaf, it has no left or right children. This too can have 2 cases:
+    a. The leaf is a left-child: in this case the successor is the parent. Example: node 6
+    b. The leaf is a right-child: in this case the successor is the parent after we move up from a left child. Example: node 3. Move to node 3's parent 9. Does 9 have a parent? Yes: 11. Is 9 the left child of 11? Yes. Then the successor to 3 is 11.
+2. The node is not a leaf and has right child: Move to the right-subtree and find the node that has no left children, that node is the successor. Example: 11. 
+3. The node is not a leaf and has no right child: Similar to 1b. Example: node 1, parent is 12. 
+
+From the logic above, the code is pretty self explanatory. I've pulled out case 1b into its separate function for reuse in case 3:
+
+```cpp
+Node<int>* leftUpToParent(Node<int>* node){
+    Node<int>* parent = node->parent;
+    Node<int>* successor = nullptr;
+    node = parent;
+    parent = parent->parent;
+    if (!parent)
+        return nullptr;
+    while(true){
+        if (!parent){
+            successor = nullptr;
+        } else if (parent->left == node){
+            successor = parent;
+            break;
+        } else {
+            node = parent;
+            parent = parent->parent;
+        }
+    }
+    return successor;
+}
+
+Node<int>* getInOrderSuccessor(Node<int>* node){
+    Node<int>* parent = node->parent;
+    Node<int>* successor = nullptr;
+    if (!parent)
+        successor = node;
+    else if (!node->left && !node->right && parent->left == node){
+        //Is leaf and left child of parent
+        successor = parent;
+    } else if (!node->left && !node->right && parent->right == node){
+        //Is leaf and right child of parent
+        successor = leftUpToParent(node);
+    } else if (node->right){
+        //Node is not leaf and has a right subtree
+        node = node->right;
+        while (node->left)
+            node = node->left;
+        successor = node;
+    } else if (node->left){
+        //Node not leaf and has no righ child
+        successor = leftUpToParent(node);
+    }
+    return successor;
+}
+```
 
 ### Conclusion
 

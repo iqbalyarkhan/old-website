@@ -17,3 +17,4 @@ tags:
 - LCA with parent pointers
 - Previous chapter (stack and queue) problems related to binary tree
 - Interval problems
+- [Preorder, inorder, postorder without recursion (clean solution)](https://stackoverflow.com/a/31643444/11556612)
