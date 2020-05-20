@@ -761,6 +761,8 @@ Node<int>* getInOrderSuccessor(Node<int>* node){
 }
 ```
 
+Running time is $O(h)$ because at worst, we'd get a case where we're one level above leaf and the successor is the root. Space complexity is $O(1)$
+
 ### Conclusion
 
 - Best solutions have running time $O(N)$ and space complexity as $O(h)$ (when using recursion).
