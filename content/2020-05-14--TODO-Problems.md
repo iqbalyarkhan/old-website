@@ -1,8 +1,8 @@
 ---
 title: TODO Problems
 date: 2020-05-14
-thumbnail: /post-images/tree.png
-draft: true
+thumbnail: /post-images/todo.png
+draft: false
 extract: TODO problems
 categories: 
     - Problems
