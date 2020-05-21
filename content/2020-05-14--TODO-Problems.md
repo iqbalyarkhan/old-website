@@ -27,6 +27,7 @@ tags:
 - 3Sum - https://leetcode.com/problems/3sum/
 - Container With Most Water - https://leetcode.com/problems/container-with-most-water/
 
+---
 
 #### Bit Manipulation
 
@@ -36,6 +37,7 @@ tags:
 - Missing Number - https://leetcode.com/problems/missing-number/
 - Reverse Bits - https://leetcode.com/problems/reverse-bits/
 
+---
 
 #### Dynamic Programming
 
@@ -51,6 +53,7 @@ tags:
 - Unique Paths - https://leetcode.com/problems/unique-paths/
 - Jump Game - https://leetcode.com/problems/jump-game/
 
+---
 
 #### Graph
 
@@ -63,6 +66,7 @@ tags:
 - Graph Valid Tree (Leetcode Premium) - https://leetcode.com/problems/graph-valid-tree/
 - Number of Connected Components in an Undirected Graph (Leetcode Premium) - https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/
 
+---
 
 #### Interval
 
@@ -83,6 +87,7 @@ tags:
 - Remove Nth Node From End Of List - https://leetcode.com/problems/remove-nth-node-from-end-of-list/
 - Reorder List - https://leetcode.com/problems/reorder-list/
 
+---
 
 #### Matrix
 
@@ -91,6 +96,7 @@ tags:
 - Rotate Image - https://leetcode.com/problems/rotate-image/
 - Word Search - https://leetcode.com/problems/word-search/
 
+---
 
 #### String
 
@@ -105,6 +111,7 @@ tags:
 - Palindromic Substrings - https://leetcode.com/problems/palindromic-substrings/
 - Encode and Decode Strings (Leetcode Premium) - https://leetcode.com/problems/encode-and-decode-strings/
 
+---
 
 #### Tree
 
@@ -123,6 +130,7 @@ tags:
 - Add and Search Word - https://leetcode.com/problems/add-and-search-word-data-structure-design/
 - Word Search II - https://leetcode.com/problems/word-search-ii/
 
+----
 
 #### Heap
 
@@ -130,6 +138,7 @@ tags:
 - Top K Frequent Elements - https://leetcode.com/problems/top-k-frequent-elements/
 - Find Median from Data Stream - https://leetcode.com/problems/find-median-from-data-stream/
 
+---
 
 - LCA
 - LCA with parent pointers
