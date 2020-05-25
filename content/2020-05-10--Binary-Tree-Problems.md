@@ -585,11 +585,13 @@ Better approach: Find the height for each node. If they're the same keep moving 
 
 Brute force approach would be to take each path and store it as a string. Then once you have all the paths, convert each string to its integer representation and sum those values. This requires extra space and the string to int conversion might lead to overflow. 
 
-A better approach would be to calculate the sum as we traverse the tree. We'll choose to traverse the tree in pre-order fashion since we need to capture the value of the current node first and then move to its left and right children. Also, as we've traversing, we need to keep track of the sum. To do so, we'll use this formula:
+A better approach would be to calculate the sum as we traverse the tree. This approach will make use of the fact that the paths to leaves share nodes. For example, for paths 1-1-0 and 1-1-1, the first two bits are shared so we don't need to get the values for that path again.
+ 
+ We'll choose to traverse the tree in pre-order fashion since we need to capture the value of the current node first and then move to its left and right children. Also, as we've traversing, we need to keep track of the sum. To do so, we'll use this formula:
 
 - OldValue * Base + ReadValue = NewValue
 
-Explanation can be found [here](/primitive-types#converting-binary-to-decimal). Then, as soon as we reach a node that has no children, we can update a global sum variable with the current path's sum.
+Explanation can be found [here](/primitive-types#converting-binary-to-decimal). Then, as soon as we reach a node that has no children, we can update a global sum variable with the current path's sum and return.
 
 
 ```cpp
