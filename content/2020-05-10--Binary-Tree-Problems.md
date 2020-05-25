@@ -23,16 +23,13 @@ tags:
     * [Invert a binary tree](#invert-a-binary-tree)
     * [Are they cousins](#are-they-cousins)
     * [LCA](#lca)
+    * [LCA with parent](#lca-with-parent)
     * [Binary sum from root to leaf](#binary-sum-from-root-to-leaf)
     * [Path to leaf with sum](#path-to-leaf-with-sum)
     * [In-order without recursion](#in-order-without-recursion)
     * [Find in-order successor](#find-in-order-successor)
     
 3. [Conclusion](#conclusion)
-
-### TODO
-LCA
-Previous chapter (stack and queue) problems related to binary tree
 
 ### Intro
 
@@ -551,32 +548,36 @@ LCA of 6 and 8 is 11
 
 Naive approach would be to go through the tree and determine the path for each node that we're interested in and save the path in an external data structure. Once done, we can then compare the path to find the first node that is common in both paths. This requires extra space.
 
-Better approach would be to traverse the tree and if the current node is one of those that we're interested in, we can return that node. As soon as we get to a node that has both the left and right returned values as not null, we've found our ancestor. The trick here is to push up the tree what we found. So, in the example above, when 6 is found, it returns to 7 telling 6 was found which returns to 9 telling 6 was found with returns to 11 telling 6 was found. Next, 11 looks in its right subtree and returns 8. We're done when at some point in the recursion, we get to a node that had non-null values returned for its left and right subtrees. 11 is the first node that has a return value from both its left and right subtrees. 
+Better approach would be to traverse the tree and if the current node is one of those that we're interested in, we can return true. As soon as we get to a node that has both the left and right returned values as true, we've found our ancestor. The trick here is to push up the tree what we found.
+ 
+ So, in the example above, when 6 is found, it returns to 7 with the value `true`. Therefore, `7->left = true`. 7 checks its right and finds a false so 7 returns back to 9 as a true. Now, 9's left is true and its right is checked and a false is  returned. BUT, when 9 returns to 11, it returns a true. This means that 11's left is true. 11 then checks its right subtree to find that 8 is present. Then 11 sees that its left was also true so in this case, we've found our LCA. 11 is the first node that has a true return value from both its left and right subtrees. 
 
 ```cpp
-Node<int>* helper(Node<int>* root, int x, int y){
+bool helper(Node<int>* root, int x, int y){
     if (!root)
-        return nullptr;
-    cout <<"Root right now is: " << root->data << endl;
+        return false;
     if (root->data == x || root->data == y)
-        return root;
+        return true;
     auto L = helper(root->left, x, y);
     auto R = helper(root->right, x, y);
     if (L&&R){
         cout << "Found LCA! " << root->data << endl;
     }
-    cout << "Returning from: " << root->data << endl;
-    cout << "L is: " << L <<" and R is: " << R << endl;
-    if (L)
-        return L;
-    if (R)
-        return R;
-    return nullptr;
+    return (L || R);
 }
 ```
-Notice how we return L if L is not null and R if R is not null, otherwise we return nullptr.
 
 Running time $O(N)$, space $O(h)$.
+
+### LCA with parent
+
+**Given a tree with parent pointers for each node, find the LCA for two given nodes**.
+
+Naive approach: Chart the path all the way up to the root for the first node and save in an external data structure (such as a hash table). Then start at the second node and at each node in its path, check if the hash-table has this value. If so, return this node as the LCA. Otherwise, move node2 pointer up one level. This approach requires extra space.
+
+Better approach: Find the height for each node. If they're the same keep moving both in tandem up the tree until either nullpointer is encountered or both point to the same node. If the height for each node is not the same, move the one that is at a greater depth to the other node's depth and then move both pointers in tandem.
+
+
 
 ### Binary sum from root to leaf
 
@@ -766,6 +767,7 @@ Running time is $O(h)$ because at worst, we'd get a case where we're one level a
 ### Conclusion
 
 - Best solutions have running time $O(N)$ and space complexity as $O(h)$ (when using recursion).
+- If you're required to keep track of more than one condition (such the height at that node and if it is balanced), consider returning a struct instead of just height or just a boolean (for isBalanced) to encapsulate both pieces of information as shown [here](/binary-tree-problems#check-if-balanced)
 - Always start at the base case when working with trees. For example, what do we do when the node is null? Next, handle the case where the node has no more children. Next choose a middle node and decide what to return based on the problem you're trying to solve, then finally add the missing steps. 
 - Whenever you recurse and go down a subtree, make sure you capture the result and return if there's a return condition that needs to hold. That way you prevent yourself from going through the entire tree when the first subtree already breaks the condition you're trying to check for.
 - If you need to transmit some information to parent from child, return a value AFTER you've processed everything in the recursive call. Look at [lca](#lca) for an example. Notice how we return L if L is not null and R if R is not null, otherwise we return nullptr.
