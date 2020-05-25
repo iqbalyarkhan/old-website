@@ -596,14 +596,11 @@ Explanation can be found [here](/primitive-types#converting-binary-to-decimal). 
 int sum = 0;
 
 void getSum(Node<int>* root, int curr){
-    if (!root)
-        return;
+    curr = (curr * 2) + root->data;
     if (!root->left && !root->right){
-        curr = (curr * 2) + root->data;
         sum += curr;
         return;
     }
-    curr = (curr * 2) + root->data;
     getSum(root->left, curr);
     getSum(root->right, curr);
 }
