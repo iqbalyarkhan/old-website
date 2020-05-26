@@ -115,6 +115,7 @@ tags:
 
 #### Tree
 
+- Construct a BT from in-order and pre-order traversals
 - Maximum Depth of Binary Tree - https://leetcode.com/problems/maximum-depth-of-binary-tree/
 - Same Tree - https://leetcode.com/problems/same-tree/
 - Invert/Flip Binary Tree - https://leetcode.com/problems/invert-binary-tree/

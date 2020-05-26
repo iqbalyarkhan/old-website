@@ -29,6 +29,7 @@ tags:
     * [In-order without recursion](#in-order-without-recursion)
     * [Pre-order without recursion](#pre-order-without-recursion)
     * [Find in-order successor](#find-in-order-successor)
+    * [Form list from leaves](#form-list-from-leaves)
     
 3. [Conclusion](#conclusion)
 
@@ -754,9 +755,9 @@ Inorder (LNR) for tree below:
 
 The naive approach would be to ignore that there's a parent pointer and keep traversing in in-order fashion and when you get to the node you were interested in, you'd record the next node and return. However, this requires $O(N)$ time. 
 
-A better approach is to break this down into possible combinations and see then figure out the successor. Here are the possible scenarios:
+A better approach is to break this down into possible combinations and then figure out the successor. Here are the possible scenarios:
 
-1. The node is a leaf, it has no left or right children. This too can have 2 cases:
+1. The node is a leaf, it has no left or right children. This can have 2 cases:
     a. The leaf is a left-child: in this case the successor is the parent. Example: node 6
     b. The leaf is a right-child: in this case the successor is the parent after we move up from a left child. Example: node 3. Move to node 3's parent 9. Does 9 have a parent? Yes: 11. Is 9 the left child of 11? Yes. Then the successor to 3 is 11.
 2. The node is not a leaf and has right child: Move to the right-subtree and find the node that has no left children, that node is the successor. Example: 11. 
@@ -812,6 +813,43 @@ Node<int>* getInOrderSuccessor(Node<int>* node){
 ```
 
 Running time is $O(h)$ because at worst, we'd get a case where we're one level above leaf and the successor is the root. Space complexity is $O(1)$
+
+### Form list from leaves
+
+**Form a list from the leaves of a tree in left to right fashion**
+
+Example:
+
+```cpp
+            12
+           /  \
+         11   10
+        /  \   
+       9    8 
+      / \    \
+     7  3     1
+    / \      /
+   6   4    2
+
+Should return: 6 4 3 2 10
+
+```
+
+```cpp
+vector<Node<int>*> allLeaves;
+
+void generateList(Node<int>* root){
+    if (!root->left && !root->right){
+        cout << "Adding: " << root->data << endl;
+        allLeaves.push_back(root);
+        return;
+    }
+    generateList(root->left);
+    generateList(root->right);
+}
+```
+
+Running time $O(N)$, space, $O(h)$ + $O(l)$ where $l$ is the number of leaves. 
 
 ### Conclusion
 
