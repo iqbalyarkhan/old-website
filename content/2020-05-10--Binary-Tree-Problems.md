@@ -27,6 +27,7 @@ tags:
     * [Binary sum from root to leaf](#binary-sum-from-root-to-leaf)
     * [Path to leaf with sum](#path-to-leaf-with-sum)
     * [In-order without recursion](#in-order-without-recursion)
+    * [Pre-order without recursion](#pre-order-without-recursion)
     * [Find in-order successor](#find-in-order-successor)
     
 3. [Conclusion](#conclusion)
@@ -651,34 +652,83 @@ void sumPath(Node<int>* root, int w){
 
 **Given root to a binary tree, save in-order traversal to a vector and return the vector. Do so, without using recursion.**
 
-The first thing that comes to mind is that we need to somehow replicate the call stack. To do so, we'll use the stack! In-order traversal is left, node and then right. So, we'll store the left subtree on a stack, then pop off the stack, push the element to answer vector and then process the right half. We exit once we realize that the stack is empty AND there is no right subtree to process:
+The first thing that comes to mind is that we need to somehow replicate the call stack. To do so, we'll use the stack! In-order traversal is left, node and then right. So, we'll store the left subtree on a stack, then pop off the stack, push the element to answer vector and then process the right half.
+ 
+ Start inside out: worry first about how you're going to process each node (that is the inside while call) and then take care of when to end (outside while call). We exit once we realize that the stack is empty:
 
 ```cpp
 vector<int> ans;
 stack<Node<int>*> s;
 
 void Inorder(Node<int>* root){
-    s.push(root);
-    root = root->left;
+    //Stack to keep track of elements
+    stack<Node<int>*> s;
+    //Keep running until explicitly broken
     while (true){
         while (root){
+            //Keep adding left children to the stack
             s.push(root);
             root = root->left;
         }
         
-        if (s.empty() && !root)
-            break;
-        
+        if (s.empty()){
+            return;
+        }
+        //Remove from top of stack,
         root = s.top();
         s.pop();
-        cout << "pushing to ans: " << root->data << endl;
         ans.push_back(root->data);
+        //move to right subtree and continue processing
         root = root->right;
     }
 }
 ```
 
 Running time: $O(N)$ and space is also $O(N)$ where $N$ is the number of nodes in the tree.
+
+### Pre-order without recursion
+
+**Return a vector with a tree's nodes ordered in pre-order fashion without using recursion**
+
+Pre-order is node, left right. Again, move inside out. Concern yourself first with how you'd move in the tree. Ok, so you're at the root of say this tree:
+
+```cpp
+            12
+           /  \
+         11   10
+        /  \   
+       9    8 
+      / \    \
+     7  3     1
+    / \ 
+   6   4
+```
+
+So if you're at 12, you can again keep moving left until there are no more nodes to process. This time, what are you going to save on the stack? You must save the right child of the current node. That is because by moving down left node by node, you're already processing the node and the left subtree. All that is left to process are the right subtrees as we encounter them. We do so by saving those right subtree nodes on the stack.
+
+We continue processing until the stack is empty:
+
+```cpp
+void PreOrder(Node<int>* root){
+    stack<Node<int>*> s;
+    
+    while (true){
+        while (root){
+            ans.push_back(root->data);
+            if (root->right)
+                s.push(root->right);
+            root = root->left;
+        }
+        
+        if (s.empty())
+            return;
+        
+        root = s.top();
+        s.pop();
+    }
+}
+```
+
 
 ### Find in-order successor
 
