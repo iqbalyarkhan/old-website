@@ -1,13 +1,14 @@
 ---
-title: Binary Tree Problems
+title: Binary Trees
 date: 2020-05-10
 thumbnail: /post-images/tree.png
 draft: false
-extract: Binary tree problems
+extract: Binary tree data structure
 categories: 
-    - Problems
+    - Data Structures
 tags:
-    - Binary Tree Problems
+    - Binary Tree
+    - Data Structures
 ---
 
 ### Table of Contents
