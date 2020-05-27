@@ -11,23 +11,35 @@ tags:
   - Binary Search
 ---
 
+1. [Introduction](#introduction)
+2. [Illustration: Value exists in array](#illustration--value-exists-in-array)
+3. [Illustration: Value not in array](#illustration--value-not-in-array)
+4. [Code](#code)
+6. [Explanation](#explanation)
+7. [Analysis](#analysis)
+8. [Conclusion](#conclusion)
+9. [Problems](#problems)
+    * [Search sorted array for first occurrence of k](#search-sorted-array-for-first-occurrence-of-k)
+
 ### Introduction
 
-In this post I'll talk about a searching algorithm called Binary Search. Like I've said in my previous post, there are plenty of implementations available on the internet but I, instead of looking at someone else's code, decided to understand the logic and implement it on my own. I like to do things this way so that I remember how it's done. Let's begin!
+In this post I'll talk about a searching algorithm called Binary Search. The idea behind binary search is to search whether a value, say `k`, exists in a sorted array. To do so, binary search performs the following tests:
 
-The idea behind binary search is to search whether a value, say `x`, exists in a sorted array. To do so, binary search performs the following tests:
+(1) Maintain 3 pointers in an array: `lo`, `mid` and `hi`.
 
-(1) Maintain 3 pointers in an array: **low**, **mid** and **high**.
+(2) Initially, assign `lo` to 0, `hi` to `A.size() - 1` and calculate mid via this formula:
 
-(2) Since the array is sorted, see what the value is of the low, mid and high pointers. If either of these contain the value we're searching for, return the **index** of the correct position and we're done. If none of these 3 have `x`, move to step (3).
+$$$
 
-(3) Check to see if 
+mid = lo + ((hi - lo)/2)
 
-`array[mid] > x` or
+$$$
 
-`array[mid] < x`.  
-
-This is where we break our array in half and decide which half to search. If `array[mid] > x` it means that in our sorted array, we can discard all elements greater than `array[mid]`. Otherwise, we discard all elements less than `array[mid]`. In doing so we have halved the number of elements we need to search.
+(3) Check what the value of `mid` is:
+ 
+ - If `A[mid] < k` then our value lies somewhere between `mid + 1` and `hi`. We know this for a fact because the array is sorted.
+ - If `A[mid] == k` then we've found our value, we can return the index.
+ - If `A[mid] > k` then our value lies somewhere between `lo` and `mid - 1`. We know this for a fact because the array is sorted.
 
 (4) We then recalculate the value for `mid` after each search operation and perform the checks in (3) again. We continue this process until we either find the element or until we realize that the array doesn't have the element we're looking for.
 
@@ -53,7 +65,7 @@ and we're searching for the element `25` (x = 25) in this array. Initially, our 
  l           m                    h
 ```
 
-We realize that `array[mid] < x` so we can discard all elements to the left of `m` and make `m + 1` our new `l`. Our `h` remains unchanged. So, this is what our array looks like now:
+We realize that `A[mid] < x` so we can discard all elements to the left of `m` and make `m + 1` our new `l`. Our `h` remains unchanged. So, this is what our array looks like now:
 
 ```cpp
 [2, 5, 6, 9, 11, 13, 21, 25, 31, 49]
@@ -67,7 +79,7 @@ To calculate `m`, we do: `5 + [(9 - 5)/2]` which equals 7. Therefore, now we hav
                   l      m        h
 ```
 
-We then compare `array[mid]` with `x` and we find that `m` has the value `x` and we return the value `m` (which is the index 7).
+We then compare `A[mid]` with `k` and we find that `m` has the value `k` and we return the value `m` (which is the index 7).
 
 ### Illustration : Value not in array
 
@@ -78,14 +90,14 @@ Let's continue our operations and say that we're searching for `x = 39`. Steps u
                   l      m        h
 ```
 
-We find that `array[mid] < x` so we make `m + 1` our new `l` and recalculate `m` to get this:
+We find that `A[mid] < k` so we make `m + 1` our new `l` and recalculate `m` to get this:
 
 ```cpp
 [2, 5, 6, 9, 11, 13, 21, 25, 31, 49]
                              lm   h
 ```
 
-We again compare `array[mid]` with `x` and find `array[mid] < x` so we make `m + 1` our new `l` and keep `h` as is. We now have our pointers in the following positions:
+We again compare `A[mid]` with `k` and find `A[mid] < k` so we make `m + 1` our new `l` and keep `h` as is. We now have our pointers in the following positions:
 
 ```cpp
 [2, 5, 6, 9, 11, 13, 21, 25, 31, 49]
@@ -96,7 +108,7 @@ Now, to calculate `m` we do the following:
 
 `low + [(high - low)/2]`
 
-`9 + [(9 - 9)/2]` which makes `m = 9`. We see that `array[mid] > x` so we make `m - 1` our new `h` and keep `l` as is. This is the first time we've noticed that `h` has become less than `l` because this is what our array looks like now:
+`9 + [(9 - 9)/2]` which makes `m = 9`. We see that `A[mid] > k` so we make `m - 1` our new `h` and keep `l` as is. This is the first time we've noticed that `h` has become less than `l` because this is what our array looks like now:
 
 ```cpp
 [2, 5, 6, 9, 11, 13, 21, 25, 31, 49]
@@ -112,137 +124,43 @@ We've realized that we do not have the element in the array so we can break out.
 You can copy and paste this implementation in your IDE and this should work without any issues but I'd rather you understand what is going on. Here is my version of binary search:
 
 ```cpp {numberLines: true}
-#include <stdio.h>
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <iostream>
-
-using namespace std;
-
-bool ReadFile(ifstream&, string);
-void PopulateVector(vector<int>&, ifstream&);
-int BinarySearch(vector<int>&, int, int, int);
-
-
-int main(){
+int BinarySearch(vector<int>& A, int k){
+    int lo = 0, hi = int(A.size()) - 1, ans = -1;
     
-    cout << "Enter name of file: " << endl;
-    string fileName;
-    cin >> fileName;
-    
-    ifstream fileStream;
-    if(ReadFile(fileStream, fileName)){
-        vector<int> v;
-        PopulateVector(v, fileStream);
-        int find = 0;
-        cout << "Enter number you want to search for or -1 to quit: " << endl;
-        cin >> find;
-        while (find != -1){
-            auto start = high_resolution_clock::now();
-            int index = BinarySearch(v, find, 0, (v.size() - 1));
-            cout << "Index is: " << index << endl;
-            cout << "Enter number you want to search for or -1 to quit: " << endl;
-            cin >> find;
-        }
-    }
-}
-
-bool ReadFile(ifstream& fileStream, string fileName){
-    fileStream.open(fileName);
-    if (!fileStream.is_open()){
-        cout << "Couldn't open file: " << fileName << endl;
-        return false;
-    }
-    
-    cout << "File opened successfully!" << endl;
-    return true;
-}
-
-void PopulateVector(vector<int>& v, ifstream& fileStream){
-    string line;
-    while (true){
-        int num = 0;
-        fileStream >> num;
-        if (fileStream.fail()){
+    while (lo <= hi){
+        int mid = lo + ((hi - lo)/2);
+        if (A[mid] < k){
+            //A[mid] < k so ans lies between mid+1 and hi so move lo up
+            lo = mid + 1;
+        } else if (A[mid] == k){
+            ans = mid;
             break;
-        }
-        v.push_back(num);
-    }
-}
-
-int BinarySearch(vector<int>&v, int find, int low, int high){
-    int mid = 0;
-    while(low <= high){
-        if (v[low] == find){
-            return low;
-        } else if (v[high] == find){
-            return high;
         } else {
-            mid = low + ((high - low)/2);
-            if (v[mid] == find){
-                return mid;
-            } else if (v[mid] < find){
-                low = mid + 1;
-            } else {
-                high = mid - 1;
-            }
+            //ans lies between lo and mid so move hi down
+            hi = mid - 1;
         }
     }
     
-    return -1;
+    return ans;
 }
 
-```
-
-### Output
-
-```
-Enter name of file: 
-small_input.txt
-File opened successfully!
-Enter number you want to search for or -1 to quit: 
-25
-Index is: 7
-Enter number you want to search for or -1 to quit:
-39
-Index is: -1
 ```
 
 ### Explanation
 
-Functions `ReadFile() and PopulateVector()` are standard functions that do the obvious (array in our case is the vector). Once we've read from a file and populated our array, we call the `BinarySearch()` function. 
+Inside the function we start with initializing the values for `lo`, `hi` and `ans` where `ans` would ultimately hold the value for the index where we found the element or -1 if element not found. 
 
-On line 30, we have the following call:
+Next, while `lo <= hi`, we process what's inside the loop:
 
-```cpp{numberLines:30}
-    int index = BinarySearch(v, find, 0, (v.size() - 1));
-```
-We call the `BinarySearch` function with 4 arguments:
-
-(1) Reference to our vector (to avoid making copies of our vector). This helps to improve our performance by preventing unnecessary work. Imagine copying a vector with a million sorted elements.
-
-(2) The element we want to find.
-
-(3) The value for `low` which will be `0` the first time we call the function.
-
-(4) Finally, the value for `high` which will be one less than size of our array.
-
-Insdide the `BinarySearch()` function on line 63 we check
-```cpp{numberLines:63}
-    while(low <= high)
-```
-
-to see if we've got a case where the value doesn't exist in our array. This would correspond to [value not in array](#illustration--value-not-in-array) section. If so, we skip the while loop and return `-1`. 
-
-If the value is actually in the array and `low <= high`, we execute the statements inside the while loop. We check to see whether `low`, `high` or `mid` point to the value we're looking for. If not, we compare the value at `mid` with `find` and discard the appropriate half of our array and continue execution.
+- calculate mid for each iteration based on where lo and hi are
+- compare value in mid and determine what to move: lo up or hi down.
+- if mid has the value, break and return the index.
 
 ### Analysis
 
-In almost every introductory CS class in the US, we're taught that binary search takes O(lg n) time to search. Instead of memorizing this run time, it is easy to see why that is the case:
+Binary search takes $O(logN)$ time to search. Instead of memorizing this run time, it is easy to see why that is the case:
 
-On each iteration, we're approximately halving the number of elements we need to search. In the [value not in array](#illustration--value-not-in-array) section, we start out with 10 elements. Once we realize that `array[mid] < x`, we discard the left half and search the right half. In doing so, we've reduced our elements from 10 to 5. We could keep going until we only have one element left to inspect or when `low` becomes greater than `high`. 
+On each iteration, we're approximately halving the number of elements we need to search. In the [value not in array](#illustration--value-not-in-array) section, we start out with 10 elements. Once we realize that `array[mid] < k`, we discard the left half and search the right half. In doing so, we've reduced our elements from 10 to 5. We could keep going until we only have one element left to inspect or when `low` becomes greater than `high`. 
 
 For better illustration, here is how we reduce our array's size:
 
@@ -337,10 +255,72 @@ $lg$<sub>$2$</sub>$N$ times depending on the number of elements in our array.
 
 ### Conclusion
 
-Binary Search searches in $O(lgN)$ time where $N$ is the number elements in **sorted** array. This means that the search has to perform **1** more step when the input size increases by a power of 2. Which is why, it would take at most 20 operations for binary search to find an element in an array with $1,000,000$ (million) elements since $2$<sup>20</sup> is $1,048,576$.
+Binary Search searches in $O(lgN)$ time where $N$ is the number elements in **sorted** array. This means that the search has to perform **1** more step when the input size increases by a power of 2. Which is why, it would take at most 20 operations for binary search to find an element in an array with $1,000,000$ (million) elements since $2^{20}$ is $1,048,576$.
 
 However, this search method is only feasible if your data structure supports constant access time. For example, if your sorted data is, for some reason, in a linked-list, Binary Search won't be efficient since we lose the advantage of random-access.
 
 In addition, if your data is not static (meaning you're constantly adding new data to your array), you'd have to make sure that it is inserted in sorted order to leverage binary search for searching.
 
-In conclusion, Binary Search is an excellent choice to search a static, sorted array. Be sure to checkout my post on [binary search trees](/post/binary-search-trees).
+In conclusion, Binary Search is an excellent choice to search a static, sorted array. Be sure to checkout my post on [binary search trees](/post/binary-search-trees) that uses the ideas behind binary search for storing and searching data efficiently.
+
+### Problems
+
+Before we begin, let's understand the C++ STL implementation and usage for binary search. If allowed, use these functions to perform binary search instead of using your own. (You need to import `algorithm` header)
+
+- Find if element is present: 
+```cpp
+binary_search(A.begin(), A.end(), target) 
+```
+returns true if target present, false otherwise
+
+- Find first element >= target:
+
+```cpp
+lower_bound(A.begin(), A.end(), target) 
+``` 
+
+- Find first element > target:
+
+```cpp
+upper_bound(A.begin(), A.end(), target)
+```
+
+### Search sorted array for first occurrence of k
+
+**Write a method that takes a sorted array and a key and returns the index of the first occurrence of that key in the array. For example, when applied to the array in figure below your algorithm should return 3 if the given key is 108; if it is 285, your algorithm should return 6.**
+
+```cpp
+
+-14     -10     2       108     108     243     285     285     285     401
+A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+```
+
+Naive approach: start at index 0 and iterate over the array until you find the element. This takes $O(N)$ time and doesn't make use of the fact that the array is sorted. 
+
+Better but still not perfect: Use binary search until you find an element with the value you're searching for. Once you've found that element, keep moving back until you've found the first occurrence. This again takes $O(N)$ time if the entire array is made up of the same element.
+
+Best approach: Keep halving the set even after you've found the element until the possible range size equals 1 or when lo and hi cross over. At this point, you would've found the first element equalling the target.
+
+```cpp
+int FindFirstOfK(vector<int>& A, int k){
+    int lo = 0, hi = int(A.size()) - 1, ans = -1;
+    
+    while (lo <= hi){
+        int mid = lo + ((hi - lo)/2);
+        if (A[mid] > k){
+            //ans lies between lo and mid
+            hi = mid - 1;
+        } else if (A[mid] == k){
+            ans = mid;
+            hi = mid - 1;
+        } else {
+            //A[mid] < k so ans lies between mid+1 and hi
+            lo = mid + 1;
+        }
+    }
+    
+    return ans;
+}
+```
+
+Running time: $O(logN)$
