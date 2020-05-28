@@ -153,8 +153,9 @@ Inside the function we start with initializing the values for `lo`, `hi` and `an
 Next, while `lo <= hi`, we process what's inside the loop:
 
 - calculate mid for each iteration based on where lo and hi are
-- compare value in mid and determine what to move: lo up or hi down.
-- if mid has the value, break and return the index.
+- compare value in mid and determine what to move: lo up or hi down
+- if mid has the value, break and return the index
+- continue until the while loop condition holds or value is found
 
 ### Analysis
 
@@ -297,9 +298,83 @@ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
 
 Naive approach: start at index 0 and iterate over the array until you find the element. This takes $O(N)$ time and doesn't make use of the fact that the array is sorted. 
 
-Better but still not perfect: Use binary search until you find an element with the value you're searching for. Once you've found that element, keep moving back until you've found the first occurrence. This again takes $O(N)$ time if the entire array is made up of the same element.
+Better but still not perfect: Use binary search until you find an element with the value you're searching for. Once you've found that element, keep moving back until you've found the first occurrence. This again takes $O(N)$ time if the entire array is made up of the same element. In both approaches, naive and this approach, we're not making use of the fact that we can go all the way to just a single element by repeatedly making use of binary search's break array in half property.
 
-Best approach: Keep halving the set even after you've found the element until the possible range size equals 1 or when lo and hi cross over. At this point, you would've found the first element equalling the target.
+Best approach: Let's say you're searching for 285 in the array above. Here are the pointers before we begin processing the array:
+
+
+```cpp
+ans = -1
+lo                              mid                                     hi
+-14     -10     2       108     108     243     285     285     285     401
+A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+```
+
+we notice that `A[mid] < k` so make `lo = mid + 1` and recalculate mid:
+
+```cpp
+ans = 7
+                                        lo              mid              hi
+-14     -10     2       108     108     243     285     285     285     401
+A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+```
+
+in the diagram above, it is clear that we've found the element, BUT, we're searching for the first occurrence. As far as we know, this might be the first occurrence. At this point, we're ONLY concerned with looking for 285 to the LEFT of `mid` because that is where 285's first occurrence would be if there were any. 
+
+So, for now, we record where we found k in the variable ans (`ans = mid`). This is where this better approach differs from approach 2 above. The approach above said, as soon as you find the element, break and keep moving left one element at a time. This better approach says, no, instead of moving one element at a time, keep going down as if you're still searching for `k`.
+ 
+ Therefore, we move `hi` down so that we can search elements preceding `mid` for the first occurrence of `k`. So now, our new pointers would be:
+ 
+ ```cpp
+ ans = 7
+                                         lo       hi
+ -14     -10     2       108     108     243     285     285     285     401
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+ ```
+ 
+Again we recalculate mid which now equals 5:
+
+ ```cpp
+ ans = 7
+                                         mid
+                                         lo       hi
+ -14     -10     2       108     108     243     285     285     285     401
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+ ```
+
+Now, `A[mid] < k` so we make `lo = mid + 1`:
+ ```cpp
+ ans = 7
+                                                  lo  
+                                         mid      hi
+ -14     -10     2       108     108     243     285     285     285     401
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+ ```
+
+We recalculate mid which now equals: 6. At this point our pointers look like so:
+
+ ```cpp
+ ans = 7                                          mid
+                                                  lo  
+                                                  hi
+ -14     -10     2       108     108     243     285     285     285     401
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+ ```
+
+Our logic sees that `A[mid] == k` so we update `ans = mid`. Now, again, our logic is that when a match is found and we're looking for the first occurrence, make `hi = mid - 1`. So, we update `hi` while `mid` and `lo` stay as is:
+
+ ```cpp
+ ans = 6                                          mid
+                                          hi      lo  
+ -14     -10     2       108     108     243     285     285     285     401
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+ ```
+
+This is the first time `hi` becomes less than `lo` which invalidates the while loop condition. So we exit the loop and return the updated `ans` value. 
+
+Notice that the number of times we had to operate in the loop equals 4 which is on the order of $O(logN)$ where $N$ is the number of elements. This means, if there were a 1000 sorted elements and we were looking to find the first of a random number in that sorted sequence, at MOST it would take us 10 iterations because $2^{10}$ = $1024$
+
+Here's the implementation:  
 
 ```cpp
 int FindFirstOfK(vector<int>& A, int k){
