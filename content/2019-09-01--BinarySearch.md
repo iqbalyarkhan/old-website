@@ -19,7 +19,8 @@ tags:
 7. [Analysis](#analysis)
 8. [Conclusion](#conclusion)
 9. [Problems](#problems)
-    * [Search sorted array for first occurrence of k](#search-sorted-array-for-first-occurrence-of-k)
+    * [Search sorted array for first occurrence of key](#search-sorted-array-for-first-occurrence-of-key)
+    * [Find first occurrence of element greater than key](#find-first-occurrence-of-element-greater-than-key)
 
 ### Introduction
 
@@ -286,7 +287,7 @@ lower_bound(A.begin(), A.end(), target)
 upper_bound(A.begin(), A.end(), target)
 ```
 
-### Search sorted array for first occurrence of k
+### Search sorted array for first occurrence of key
 
 **Write a method that takes a sorted array and a key and returns the index of the first occurrence of that key in the array. For example, when applied to the array in figure below your algorithm should return 3 if the given key is 108; if it is 285, your algorithm should return 6.**
 
@@ -399,3 +400,76 @@ int FindFirstOfK(vector<int>& A, int k){
 ```
 
 Running time: $O(logN)$
+
+### Find first occurrence of element greater than key
+
+**Design an efficient algorithm that takes a sorted array and a key, and finds the index of the first occurrence of an element greater than that key.For example, when applied to the array shown below, your algorithm should return 9 if the key is 285; if it is -13, your algorithm should return 1.**
+
+```cpp
+
+-14     -10     2       108     108     243     285     285     285     401
+A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+```
+
+This problem seems similar to the previous problem but start solving on paper and you'd realize how wrong you are! First notice that this problem states that if the key is -13 (not present in the array), you should return 1. That is because the first element > -13 is 10 which is at `A[1]`. This means that returning a -1 is not an option. Also, the problem says that if key is 285, it should return 9 since 401 is the next largest in the array.
+
+- Naive approach: same as what we had for previous problem. Inefficient
+- Better approach: same as what we had for prev problem. We can do better
+- Keep halving and searching until lo and hi cross over. Let's look at this in more detail
+
+Let's say we're searching for next largest after 285. The solution is very similar to what we had for the previous problem:
+
+```cpp
+int FindFirstOfGreaterThanK(vector<int>& A, int k){
+    int lo = 0, hi = int(A.size()) - 1, ans = -1;
+    
+    while (lo <= hi){
+        int mid = lo + ((hi - lo)/2);
+        if (A[mid] > k){
+            //ans lies between lo and mid
+            hi = mid - 1;
+        } else if (A[mid] == k){
+            ans = mid + 1; //---->CHANGE
+            lo = mid + 1; //---->CHANGE
+        } else {
+            //A[mid] < k so ans lies between mid+1 and hi
+            lo = mid + 1;
+        }
+    }
+    
+    return ans;
+}
+```
+
+Notice the change in logic if we find a match. Let's see why that is. Say we're going about looking for `k = 285`. We find that `A[mid] == k` at say index 6. Now, at this point, we're not sure if this is the only 285 present in the array. So, we mark our answer as `mid + 1`. 
+
+Now, we want to search in the half to the RIGHT of mid to see if we can find any more 285s. We're not concerned with the left half because we're looking for the first element GREATER than `k` not less than. If we were looking for less than `k`, we would've looked in the left half. Once we move up our `lo` to `mid + 1` we continue processing. 
+
+Another scenario we haven't considered is the one where the key is not present in the array. For example, k = -13. In that case, the algorithm that we have right now would return -1 which is incorrect. To correct for that, we make a simple observation: when `hi` and `lo` cross over, `lo` would point to the next largest element if the element is not present in the array. You can play around with it on a piece of paper to make sure that is the case! 
+
+Having said that, this is what our final algorithm would look like:
+
+```cpp
+int FindFirstOfGreaterThanK(vector<int>& A, int k){
+    int lo = 0, hi = int(A.size()) - 1, ans = -1;
+    
+    while (lo <= hi){
+        int mid = lo + ((hi - lo)/2);
+        if (A[mid] < k){
+            lo = mid + 1;
+        } else if (A[mid] == k){
+            ans = mid + 1;
+            lo = mid + 1;
+        } else {
+            hi = mid - 1;
+        }
+    }
+    if (ans == -1)
+        return lo;
+    
+    return ans;
+}
+```
+
+Running time is the same as that of binary search: $O(logN)$
+ 
