@@ -17,11 +17,14 @@ tags:
 4. [Code](#code)
 6. [Explanation](#explanation)
 7. [Analysis](#analysis)
-8. [Conclusion](#conclusion)
 9. [Problems](#problems)
     * [Search sorted array for first occurrence of key](#search-sorted-array-for-first-occurrence-of-key)
     * [Find first occurrence of element greater than key](#find-first-occurrence-of-element-greater-than-key)
+    * [Find local minimum in an unsorted array](#find-local-minimum-in-an-unsorted-array)
+    * [Find interval enclosing k](#find-interval-enclosing-k)
 
+8. [Conclusion](#conclusion)
+    
 ### Introduction
 
 In this post I'll talk about a searching algorithm called Binary Search. The idea behind binary search is to search whether a value, say `k`, exists in a sorted array. To do so, binary search performs the following tests:
@@ -255,15 +258,6 @@ We can finally conclude that at most, our binary search algorithm would have to 
 
 $lg$<sub>$2$</sub>$N$ times depending on the number of elements in our array.
 
-### Conclusion
-
-Binary Search searches in $O(lgN)$ time where $N$ is the number elements in **sorted** array. This means that the search has to perform **1** more step when the input size increases by a power of 2. Which is why, it would take at most 20 operations for binary search to find an element in an array with $1,000,000$ (million) elements since $2^{20}$ is $1,048,576$.
-
-However, this search method is only feasible if your data structure supports constant access time. For example, if your sorted data is, for some reason, in a linked-list, Binary Search won't be efficient since we lose the advantage of random-access.
-
-In addition, if your data is not static (meaning you're constantly adding new data to your array), you'd have to make sure that it is inserted in sorted order to leverage binary search for searching.
-
-In conclusion, Binary Search is an excellent choice to search a static, sorted array. Be sure to checkout my post on [binary search trees](/post/binary-search-trees) that uses the ideas behind binary search for storing and searching data efficiently.
 
 ### Problems
 
@@ -472,4 +466,210 @@ int FindFirstOfGreaterThanK(vector<int>& A, int k){
 ```
 
 Running time is the same as that of binary search: $O(logN)$
+
+### Find local minimum in an unsorted array
  
+ **Let A be an unsorted array of n integers, with A[0] > A[l] and A[n - 2] < A[n - 1]. Call an index i a local minimum if A[i\ is less than or equal to its neighbors. How would you efficiently find a local minimum, if one exists?**
+ 
+ Example:
+ 
+```cpp
+
+ 23      -10     12      118     108     23      15      17      19      1
+A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+```
+
+Local minimum in the array above are at A[1], A[6] and A[9]. That is because:
+- -10 < 23 and 12
+-  15 < 23 and 17
+- 1 < 19 and it is at the edge of the array 
+
+Approach 1: First approach that comes to mind is to use 3 pointers, `lo`, `mid`, `hi` that point to A[0], A[1] and A[2] initially. At each step we check to see if `lo` < `mid` and `hi`. If so, we've found our minimum and return `lo`. Otherwise we increment each pointer by 1 position to the right and then perform the check again. Running time: $O(N)$
+
+Approach 2: How can we improve on $O(N)$? Let's see if binary search can help here even though the array is unsorted. Let's have `lo` at A[0] initially, `m` at A[4] and `hi` at A[9]:
+
+```cpp
+ lo                               m                                      hi
+ 23      -10     12      118     108     23      15      17      19      1
+A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+```
+
+- If A[m] > A[m-1] then we MIGHT have our minimum in the left half of the array. That is because we know that A[m-1] < A[m] and A[m-2] might be > A[m-1] making A[m-1] our minimum. So we make `m - 1` our new `hi`.
+
+- If A[m] > A[m+1] then we MIGHT have our minimum in the right half of the array. That is because A[m+2] might be > A[m+1] as well making A[m+1] our minimum. So we make `m + 1` our new `lo`.
+
+In both scenarios above we've discarded half the array. 
+
+Let's step through the example array and see how it pans out:
+
+ ```cpp
+  lo                               m                                      hi
+  23      -10     12      118     108     23      15      17      19      1
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+
+A[m] > A[m+1], make lo = m - 1 and recalculate m:
+
+
+                           lo                      m                      hi
+  23      -10     12      118     108     23      15      17      19      1
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9] 
+
+
+Is A[m] > A[m-1] ? No, is A[m] > A[m+1]? No, we've found our minimum! Return m 
+
+ ```
+
+Now, we need to figure out when our algorithm should stop, consider this scenario:
+
+```cpp
+  lo                               m                                      hi
+  1        2       3       4       5      6        7       8      9       10
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+
+A[m] > A[m-1], make m - 1 our new hi and recalcuate m:
+
+  lo       m               hi                                              
+  1        2       3       4       5      6        7       8      9       10
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+
+A[m] > A[m-1], make m - 1 our new hi and recalcuate m:
+
+  m
+  hi
+  lo                                                           
+  1        2       3       4       5      6        7       8      9       10
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+
+Now what? There's no A[m-1], so we can break and return m since A[m] < A[m+1] making A[m] the local minimum.
+
+```
+
+This scenario above also applies to the array when it is sorted in decreasing order where our minimum would be A[N]. So, we exit when we've either found a minimum or m-1 < 0 or m+1 > size of our array.
+
+```cpp
+int FindLocalMinimum(vector<int>& A){
+    int lo = 0;
+    int size = int(A.size()) - 1;
+    int hi = size;
+    int m = lo + ((hi - lo) / 2);
+    while ((m - 1) >= 0 && (m + 1) <= size){
+        if (A[m] > A[m-1]){
+            hi = m - 1;
+        } else if (A[m] > A[m+1]){
+            lo = m + 1;
+        } else {
+            break;
+        }
+        m = lo + ((hi - lo) / 2);
+    }
+    
+    return m;
+}
+``` 
+
+Running time is the same as binary search $O(lgN)$.
+
+### Find interval enclosing k
+
+**Write a program which takes a sorted array A of integers, and an integer k, and returns the interval enclosing k, i.e., the pair of integers L and U such that L is the first occurrence of k in A and U is the last occurrence of k in A. If k does not appear in A, return [-1,-1], For example if A = (1,2,2,4,4,4,7,11,11,13) and k = 11, you should return [7,8].**
+
+Approach 1: Use binary search to find k, then move left and right until you've found the upper and lower bounds. Running time: $O(N)$
+
+Approach 2: Use binary search to find k, then once k is found, continue using binary search to find upper and lower bounds using binary search. Running time: $O(lgN)$.
+
+Say our array is as shown below and key is `4`:
+
+```cpp
+  lo                               m                                      hi   
+  1        2       3       4       4      4        4       8      9       10
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+```
+
+A[m] == key, search for lower bound in left half and upper bound in right half. Let's break the array like so. Left half is from: `lo` till `m-1` and right half is `m+1` till `hi`.
+
+```cpp
+  lo                       hi   |            lo                                hi   
+  1        2       3       4    |     4      4        4       8      9       10
+ A[0]    A[1]    A[2]    A[3]   |   A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+```
+
+Let's look at the lower half first to find the lower bound. As usual, calculate `m` and see if it is < key. If so, make lo equal `m + 1`. We don't need to check for `m` > key since we know any value to the left has to be equal to or less than the key in the lower half. Keep doing it until lo and hi cross over. Then return the lowest index where you found an occurrence of the key. This will be done via a function called `findLo`:
+
+```cpp
+int findLo(int lo, int hi, int k, vector<int>& A){
+    //Get the lower bound:
+    int ans = -1;
+    while (lo <= hi){
+        int m = lo + ((hi - lo)/2);
+        if (A[m] < k){
+            lo = m + 1;
+        } else {
+            ans = m;
+            hi = m - 1;
+        }
+    }
+    
+    return ans;
+}
+```
+
+Do the same in the upper half to find the upper bound. As usual, calculate `m`. If A[m] > key, make hi equal `m - 1` and continue. Once done, return the highest index where you found an occurrence of the key. This will be done via a function called `findHi`:
+
+```cpp
+int findHi(int lo, int hi, int k, vector<int>& A){
+    //Get the upper bound:
+    int ans = -1;
+    while (lo <= hi){
+        int m = lo + ((hi - lo)/2);
+        if (A[m] > k){
+            hi = m - 1;
+        } else {
+            ans = m;
+            lo = m + 1;
+        }
+    }
+    
+    return ans;
+}
+```
+
+Finally, putting it all together:
+
+```cpp
+vector<int> Interval(vector<int>& A,int k){
+    vector<int> ans = {-1,-1};
+    int lo = 0;
+    int hi = int(A.size()) - 1;
+    
+    while (lo <= hi){
+        int m = lo + ((hi - lo)/2);
+        if (A[m] < k){
+            lo = m+1;
+        } else if (A[m] > k){
+            hi = m-1;
+        } else {
+            //found it, get interval
+            ans[0] = m;
+            ans[1] = m;
+            int lb = findLo(lo, m-1, k, A);
+            int ub = findHi(m+1, hi, k, A);
+            if (lb != -1){
+                ans[0] = lb;
+            }
+            if (ub != -1){
+                ans[1] = ub;
+            }
+            break;
+        }
+    }
+    return ans;
+}
+```
+
+Running time is $O(logN)$.
+
+### Conclusion
+
+- If the array is sorted, you can use binary search to find your element in $O(logN)$ time.
+- If the array is NOT sorted, you can still use binary search for various operations that would again reduce your running time from $O(N)$ to $O(logN)$ like in [this](/binary-search#find-local-minimum-in-an-unsorted-array) problem. Whenever there's an array search problem, start out with binary search!
+- Binary Search searches in $O(lgN)$ time where $N$ is the number elements in **sorted** array. This means that the search has to perform **1** more step when the input size increases by a power of 2. Which is why, it would take at most 20 operations for binary search to find an element in an array with $1,000,000$ (million) elements since $2^{20}$ is $1,048,576$.
