@@ -22,6 +22,8 @@ tags:
     * [Find first occurrence of element greater than key](#find-first-occurrence-of-element-greater-than-key)
     * [Find local minimum in an unsorted array](#find-local-minimum-in-an-unsorted-array)
     * [Find interval enclosing k](#find-interval-enclosing-k)
+    * [Search sorted array for entry equal to its index](#search-sorted-array-for-entry-equal-to-its-index)
+    * [Search a cyclically sorted array for minimum element](#search-a-cyclically-sorted-array-for-minimum-element)
 
 8. [Conclusion](#conclusion)
     
@@ -667,6 +669,154 @@ vector<int> Interval(vector<int>& A,int k){
 ```
 
 Running time is $O(logN)$.
+
+### Search sorted array for entry equal to its index
+
+**Design an efficient algorithm that takes a sorted array of distinct integers, and returns an index i such that the element at index i equals i. For example, when the input is (-2,0,2,3,6,7,9)your algorithm should return 2 or 3.**
+
+Approach 1: Ignoring that the array is already sorted, iterate over the array and keep checking value at each index. As soon as A[i] = i, return. Running time is $O(N)$. 
+
+Approach 2: Array is sorted, we can use binary search: The only thing that changes is the fact that there's no "key" to search for. Instead of a key, we check if A[m] < m or if A[m] > m.
+
+Example:
+
+```cpp
+  lo                               m                                      hi   
+  -1       0       2       4       5      6        8      18      19      20
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+```
+
+Here's the logic: Compare value at A[m] and m itself. In the example above, A[m] = 5 and m = 4. So, our answer cannot lie to the right of m since m is already smaller than A[m] and since the array is sorted, A[m] is only going to increase to the right of m. The opposite also holds if A[m] < m.
+
+Translating that to code:
+
+```cpp
+int GetIndex(vector<int>& A){
+    int ans = -1;
+    int lo = 0;
+    int hi = int(A.size()) - 1;
+    while (lo <= hi){
+        int m = lo + ((hi - lo)/ 2);
+        if (A[m] < m){
+            lo = m + 1;
+        } else if (A[m] > m){
+            hi = m - 1;
+        } else {
+            ans = m;
+            break;
+        }
+    }
+    return ans;
+}
+```
+
+Running time: $O(logN)$
+
+### Search a cyclically sorted array for minimum element
+
+**An array is said to be cyclically sorted if it is possible to cyclically shift its entries so that it becomes sorted. Design an $O(logN)$ algorithm for finding the position of the smallest element in a cyclically sorted array. Assume all elements are distinct.**
+
+Example: 
+
+```cpp
+  12      22      33      44      54       5       6       9      11      13
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+```
+
+should return 5 because A[5] has the smallest value. 
+
+Approach 1: Iterate over array and return the smallest element: $O(N)$
+
+Approach 2: The array is cyclically sorted so there is some order in the array and we can take advantage of that. For example, here're our pointers:
+
+```cpp
+  lo                              m                                       hi  
+  12      22      33      44      54       5       6       9      11      13
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+```
+
+We can confirm these:
+
+- If A[m] > A[hi] then the lowest element must be somewhere between A[m+1] and A[hi] (A[hi] inclusive). In this case, make `lo = m + 1`
+- If A[m] < A[lo] then lowest element must be somewhere between A[lo] and A[m] (A[m] inclusive). In this case make `hi = m`
+
+Repeat until we find the element. Let's walk through the example above:
+
+```cpp
+  lo                              m                                       hi  
+  12      22      33      44      54       5       6       9      11      13
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+
+A[m] > A[hi] look to right of m:
+
+                                           lo                             hi  
+  12      22      33      44      54       5       6       9      11      13
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+
+recalculate m:
+
+                                           lo              m               hi  
+  12      22      33      44      54       5       6       9      11      13
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]    A[9]
+
+A[m] > A[hi] ? No,
+A[m] < A[lo] ? No,
+Then we've found our answer, it is lo!
+Return lo
+```
+
+Another example:
+
+```cpp
+  lo                              m                                hi 
+  10      11      12      13      14      22      33       4       5       
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]
+
+A[m] > A[hi], yes, lowest must be somewhere between A[m+1] and A[hi], make lo = m + 1 and recalculate m:
+
+                                          lo      m                hi 
+  10      11      12      13      14      22      33       4       5       
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]
+
+A[m] > A[hi], yes, lowest must be somewhere between A[m+1] and A[hi], make lo = m + 1 and recalculate m:
+
+                                                           m
+                                                           lo      hi 
+  10      11      12      13      14      22      33       4       5       
+ A[0]    A[1]    A[2]    A[3]    A[4]    A[5]    A[6]    A[7]    A[8]
+
+
+A[m] > A[hi]? No
+A[m] < A[lo]? No
+We've found our answer, return lo!
+```
+
+Code:
+
+```cpp
+int Search(vector<int> A){
+    int lo = 0;
+    int hi = int(A.size()) - 1;
+    int ans = -1;
+    while (lo <= hi){
+        int m = lo + ((hi - lo)/2);
+        cout << "lo: " << A[lo] << " m: " << A[m] << " hi: " << A[hi] << endl;
+        if (A[m] > A[hi]){
+            lo = m + 1;
+        } else if (A[m] < A[lo]){
+            hi = m;
+        } else {
+            ans = lo;
+            break;
+        }
+    }
+    return ans;
+}
+```
+
+Running time same as binary search: $O(logN)$.
+
+
 
 ### Conclusion
 
