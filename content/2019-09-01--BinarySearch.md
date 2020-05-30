@@ -1,6 +1,6 @@
 ---
 title: Binary Search 
-date: 2019-09-01T15:42:34.101Z
+date: 2019-09-01
 thumbnail: /post-images/binary-search.png
 draft: false
 extract: Overview of how binary search works and its analysis
