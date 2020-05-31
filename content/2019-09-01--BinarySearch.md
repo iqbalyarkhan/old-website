@@ -24,6 +24,7 @@ tags:
     * [Find interval enclosing k](#find-interval-enclosing-k)
     * [Search sorted array for entry equal to its index](#search-sorted-array-for-entry-equal-to-its-index)
     * [Search a cyclically sorted array for minimum element](#search-a-cyclically-sorted-array-for-minimum-element)
+    * [Compute integer square root](#compute-integer-square-root)
 
 8. [Conclusion](#conclusion)
     
@@ -816,7 +817,47 @@ int Search(vector<int> A){
 
 Running time same as binary search: $O(logN)$.
 
+### Compute integer square root
 
+**Write a program which takes a non-negative integer and returns the largest integer whose square is less than or equal to the given integer. For example, if the input is 16, return 4; if the input is 300, return 17, since 172 = 289 < 300 and 182 = 324 > 300.**
+
+Approach 1: Start at 1 and keep checking if the number squared < key. If so, increment by 1 and perform the check until number squared > key. Then answer is curr - 1. Running time: $O(N^{1/2})$
+
+Approach 2: Start by picking a range from 0 till K and calculate `m`, `lo` and `hi`. 
+
+If $m^{2}$ is less than k, make `lo = m + 1`
+
+If $m^{2}$ is greater than k, make `hi = m - 1`
+
+If $m^{2}$ is equal to k, it means that we were given a perfect square (16,25,49 etc), so return `m`
+
+Finally, if `m` never equals k and `lo` and `hi` cross over, return `hi` as the answer.
+
+```cpp
+int getSquareRoot(int k){
+    int lo = 0;
+    int hi = k;
+    int ans = -1;
+    while (lo <= hi){
+        int m = lo + ((hi - lo)/2);
+        long long sq = m * m;
+        cout << "lo: " << lo << " m: " << m << " hi: " << hi << " sq: " << sq << endl;
+        if (sq > k){
+            hi = m - 1;
+        } else if (sq < k){
+            lo = m + 1;
+        } else {
+            ans = m;
+            break;
+        }
+    }
+    if (ans == - 1)
+        ans = hi;
+    return ans;
+}
+```
+
+Running time: $O(logK)$ where `k` is the key passed in.
 
 ### Conclusion
 
