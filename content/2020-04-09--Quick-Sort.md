@@ -27,7 +27,7 @@ In this post I'll talk about a sorting algorithm called Quick Sort. Idea behind 
 
 ### Logic
 
-Here're the three basic steps of merge sort:
+Here're the three basic steps of quick sort:
 
 - Shuffle the array so that the elements are in random order
 - Choose a `pivot`: an item that has all the elements less than it to its left and elements greater than it to its right
