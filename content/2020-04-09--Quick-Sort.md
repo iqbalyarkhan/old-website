@@ -79,7 +79,7 @@ At this point, swap `j` with `k`:
 k               j   i
  ```
 
-Notice now that ALL elements to the left of `j` (4,3,1,2) are less that `arr[j]` and all elements to the right of `j` (7,8,6) are greater than `arr[j]`. We also want to capture what position we partitioned based off so that we can determine what the left and right halves should be. 
+Notice now that ALL elements to the left of `j` (4,3,1,2) are less than `arr[j]` and all elements to the right of `j` (7,8,6) are greater than `arr[j]`. We also want to capture what position we partitioned based off so that we can determine what the left and right halves should be. 
 
 Now, in the example above we always chose `arr[0]` as our pivot that can degenerate running time of quick sort to $O(N^2)$ if our array is in sorted order. That is because each time we pick the smallest element in the array and on each call to partition, we iterate over the entire array from left to right. This is why, a better approach is to use a median of 3: look at the first, middle and last element in the array and find the median of three. For example, if we have a sorted array like so:
 
