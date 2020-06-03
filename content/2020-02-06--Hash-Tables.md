@@ -36,9 +36,9 @@ tags:
 5. [Conclusion](#conclusion)
 ### Introduction
 
-In this post I'll talk about a type data structure called hash table. Each data structure we've seen has offered some pros and cons and depending on your use case, you'd weigh those pros and cons and choose the relevant data structure. Similarly, hash tables have their pros and cons that make them suitable for certain scenarios and disadvantageous for others. Let's have a look at the properties of a hash table.
+In this post I'll talk about hash tables. Each data structure we've seen has offered some pros and cons and depending on your use case, you'd weigh those pros and cons and choose the relevant data structure. Similarly, hash tables have their pros and cons that make them suitable for certain scenarios and disadvantageous for others. Let's have a look at the properties of a hash table.
 
-Hash tables offer very fast insertion and deletion. No matter how many items there are$^*$, hash tables offer $O(1)$ insert, search and deletion. That sounds too good to be true! It is because in some cases this might not hold however hash tables do offer faster lookup, insert and delete than tree data structures. 
+Hash tables offer very fast insertion and deletion. No matter how many items there are$^*$, hash tables offer $O(1)$ insert, search and deletion. That sounds too good to be true! It is because in some cases this might not hold. However hash tables do offer faster lookup, insert and delete than tree data structures. 
 
 On the other hand, hash tables are built on top of arrays and as we know, expanding the capacity of an array is expensive once it has been initialized. Additionally, hash tables are not ideal when you need to access/visit items in an order.
 
@@ -72,7 +72,7 @@ Meaning that 36, should be placed in our array at index 4. Do so for each input 
 
 ### Collisions
 
-$^*$ Herein lies the catch with hash tables: if you have another value, say 20, and you pass it to your hash function. The hash function again returns the value 4 and you go to place 20 at index 4, you'll find that there already exists a value at that index. This is called a **collision**. Collisions are bound to happen when you're using a hash table. It is a good idea to have a set **load factor**: A value that determines when the hash table capacity needs to be increased. For example, if there are 1000 slots in the table and 750 are filled, you may want to double the size. In this case, load factor = 750/1000 = 0.75. In addition to doubling the size of your table, you can also use various techniques to address collisions:
+$^*$ Herein lies the catch with hash tables: if you have another value, say 20, and you pass it to your hash function, the hash function again returns the value 4 and you go to place 20 at index 4, you'll find that there already exists a value at that index. This is called a **collision**. Collisions are bound to happen when you're using a hash table. It is a good idea to have a set **load factor**: A value that determines when the hash table capacity needs to be increased. For example, if there are 1000 slots in the table and 750 are filled, you may want to double the size. In this case, load factor = 750/1000 = 0.75. In addition to doubling the size of your table, you can also use various techniques to address collisions:
 
 #### Separate Chaining 
 
