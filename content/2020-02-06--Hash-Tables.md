@@ -34,7 +34,17 @@ tags:
     * [Unordered Set](#unordered-set)
 
 5. [Conclusion](#conclusion)
+
+6. [Overview](#overview)
+    * [Unordered Set](#stl-unordered-set)
+    * [Unordered Map](#stl-unordered-map)
+    * [Multi-Map](#stl-multi-map)
+
+
+
+
 ### Introduction
+
 
 In this post I'll talk about hash tables. Each data structure we've seen has offered some pros and cons and depending on your use case, you'd weigh those pros and cons and choose the relevant data structure. Similarly, hash tables have their pros and cons that make them suitable for certain scenarios and disadvantageous for others. Let's have a look at the properties of a hash table.
 
@@ -255,4 +265,77 @@ if (itr != names.end()){
 
 Hash tables are an efficient data structure if you quickly want to store and retrieve items. However, there is some work that needs to be done on the developer's part to make sure that the function places values evenly across all available slots.
 
+### Overview
 
+Before we begin, let's review hash tables:
+- Have the best insert, delete and lookup performance if hash function is implemented correctly.
+- Consider using a precomputed lookup table (hash table) for mappings (character to value, character to character etc) instead of using multiple if-else statements
+- Consider using multi-map when you need multiple values for a single key or a bidirectional map
+- C++ STL has `unordered_set` and `unordered_map` that make use of hash tables. The difference is `unordered_set` stores keys only while `map` can store key value pairs. Both have the property that they do not allow for duplicate keys. 
+
+### STL Unordered set
+To use the unordered set, you'd include this header: 
+```cpp 
+#include <unordered_set>
+```
+
+Then declare an unordered set and  insert:
+
+```cpp
+unordered_set<string> s;
+s.insert("string one");
+```
+
+To check if the set contains an element:
+
+
+```cpp
+auto search = s.find("string one");
+if (search != s.end()){
+   cout << "Found item in set" << endl;
+} else {
+    cout << "Couldn't find item in set" << endl;
+}
+```
+
+### STL Unordered Map
+
+Defined in the 
+```cpp
+#include <unordered_map>
+```
+header, `unordered_map` uses hash table behind the scenes for $O(1)$ insert, find and delete operations. Similar to `map`, here is the syntax for insert, find and print:
+
+```cpp
+int main(){
+    unordered_map<string, int> m;
+    m["one"] = 1;
+    m["two"] = 2;
+    m["three"] = 3;
+    m["four"] = 4;
+    
+    if (m.find("four") != m.end()){
+        cout << m["four"] << endl;
+    } else{
+        cout << "not found" << endl;
+    }
+    
+    for (auto i : m){
+        cout <<i.first << " -> " << i.second << endl;
+    }
+
+    //to increment value at m["four"]
+    m["four"]++; //now m["four"] = 5
+}
+```
+
+
+### STL Multi map
+
+Map above does not allow duplicates, it will overwrite existing values if you add a duplicate. To allow for duplicates, use multi-map. multimap doesn't allow fo subscript insertion, you'd have to use the `insert` method:
+```cpp
+multimap<int,int> m;
+m.insert({2,3});
+```
+
+Multimap will automatically store elements in sorted order by key.

@@ -22,6 +22,8 @@ tags:
 
 5. [STL Map](#stl-map)
 
+6. [STL Multi Map](#stl-multi-map)
+
 6. [STL Unordered Map](#stl-unordered-map)
 
 5. [STL stack](#stl-stack)
