@@ -539,7 +539,7 @@ Space:
 
 Approach 1: Choose a word from the array and then iterate over the array to find an occurrence and keep updating the closest distance on each find. This takes $O(N)^2$ time. 
 
-Approach 2: Maintain a variable that keeps track of minimum distance seen (initially equal to array size). Also, have a hash table that adds a word to the list if not found with a value equal to the latest index of the array. Then, when the word is found again, check in hash table the last index the word was seen. Subtract the last index value and the current index and see if this answer < minimum distance variable. If so, update the minimum distance variable. If not, update the hash table with the last index for the current word and continue. You can also save the distance and the word in a struct like I've done in the solution below:
+Approach 2: Maintain a variable that keeps track of minimum distance seen (initially equal to array size). Also, have a hash table that adds a word to the list if not found with a value equal to the current index of the array. Then, when the word is found again, check in hash table the last index the word was seen. Subtract the last index value and the current index and see if this answer < minimum distance variable. If so, update the minimum distance variable. If not, update the hash table with the last index for the current word and continue. You can also save the distance and the word in a struct like I've done in the solution below:
 
 ```cpp
 struct wordAndDistance{
@@ -578,10 +578,7 @@ Running time: $O(N)$ where $N$ is the size of the vector passed.
 Space: $O(M)$ where $M$ is the number of unique words in the vector
 
 
- 
 
 ### Conclusion
 
 - Sometimes it is easy to see that two hash tables can work but try and reduce space complexity by using only one as show in the [anonymous letter](/hash-tables#anonymous-letter) problem. This not only reduces running time (extra time required to populate the second hash table) but also obviously reduces the space required by not creating a second hash table.
-
-
