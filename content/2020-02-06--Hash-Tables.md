@@ -424,3 +424,7 @@ bool canBePermuted(string s){
     return isPal;
 }
 ```
+(Notice the solution above doesn't handle strings with spaces but is easy to modify to handle them.)
+
+Say $N$ is the size of our input string.
+Running time: $O(N)$ for us to populate our hash table. Then we iterate over the elements in hash table which at worst would be of size $N$. Therefore, our total running time is $O(N)$.
