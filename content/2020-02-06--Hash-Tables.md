@@ -33,8 +33,6 @@ tags:
     
     * [Unordered Set](#unordered-set)
 
-5. [Conclusion](#conclusion)
-
 6. [Overview](#overview)
     * [Unordered Set](#stl-unordered-set)
     * [Unordered Map](#stl-unordered-map)
@@ -42,6 +40,9 @@ tags:
 
 7. Problems
     * [Palindromic Permutations](#palindromic-permutations)
+    * [Anonymous Letter](#anonymous-letter)
+    
+5. [Conclusion](#conclusion)
 
 
 ### Introduction
@@ -260,11 +261,6 @@ if (itr != names.end()){
     cout << "Found it! " << *itr << endl; // Prints James
 }
 ```
- 
- 
-### Conclusion
-
-Hash tables are an efficient data structure if you quickly want to store and retrieve items. However, there is some work that needs to be done on the developer's part to make sure that the function places values evenly across all available slots.
 
 ### Overview
 
@@ -329,6 +325,8 @@ int main(){
     m["four"]++; //now m["four"] = 5
 }
 ```
+
+You can also use `m.erase(itr)` to erase the entry from hash table that is being pointed to by the iterator `itr`.
 
 
 ### STL Multi map
@@ -428,3 +426,110 @@ bool canBePermuted(string s){
 
 Say $N$ is the size of our input string.
 Running time: $O(N)$ for us to populate our hash table. Then we iterate over the elements in hash table which at worst would be of size $N$. Therefore, our total running time is $O(N)$.
+
+### Anonymous Letter
+
+**Write a program which takes text for an anonymous letter and text for a magazine and determines if it is possible to write the anonymous letter using the magazine. The anonymous letter can be written using the magazine if for each character in the anonymous letter, the number of times it appears in the anonymous letter is no more than the number of times it appears in the magazine.**
+
+It is hard not to see the best approach straight away! You need two hash tables, one for letter and one for magazine and then compare th characters. If at any point letter character count > magazine character count, return false.
+
+```cpp
+
+bool canCreateLetter(string letter, string magazine){
+    unordered_map<char,int> l;
+    unordered_map<char,int> m;
+    
+    for (int i = 0; i < letter.size(); i++){
+        char curr = letter[i];
+        if (l.find(curr) == l.end()){
+            l[curr] = 1;
+        } else {
+            l[curr]++;
+        }
+    }
+    
+    for (int i = 0; i < magazine.size(); i++){
+        char curr = magazine[i];
+        if (m.find(curr) == m.end()){
+            m[curr] = 1;
+        } else {
+            m[curr]++;
+        }
+    }
+    bool ans = true;
+    auto itr = l.begin();
+    while (itr != l.end()){
+        char currL = itr->first;
+        auto magItr = m.find(currL);
+        if (magItr == m.end()){
+            ans = false;
+            break;
+        } else{
+            if (magItr->second < itr->second){
+                ans = false;
+                break;
+            }
+        }
+        ++itr;
+    }
+    
+    return ans;
+}
+```
+
+Running time: 
+- $O(l)$ to create `l`'s hash table
+- $O(m)$ to create `m`'s hash table
+- $O(l) to iterate over l
+
+Therefore: $O(l + m)$
+
+Space: $O(l + m)$
+
+We can improve the space complexity by removing the magazine hash table. We can create a letter hash table and then iterate over the magazine and for each character in magazine, we can reduce the character count in the letter hash table. If at the end of the magazine iteration, the letter hash table has size > 0, then it is not possible to create letter (since letter has characters appearing more times than in magazine). Otherwise we return true saying letter can be formed:
+
+```cpp
+bool canCreateLetterImproved(string letter, string magazine){
+    unordered_map<char,int> l;
+    
+    for (int i = 0; i < letter.size(); i++){
+        char curr = letter[i];
+        if (l.find(curr) == l.end()){
+            l[curr] = 1;
+        } else {
+            l[curr]++;
+        }
+    }
+    for (int i = 0; i < magazine.size(); i++){
+        char curr = magazine[i];
+        auto itr = l.find(curr);
+        if (itr != l.end() && itr->second != 0){
+            //character found, reduce count
+            itr->second -= 1;
+            
+            if (itr->second == 0)
+                l.erase(itr);
+        }
+    }
+    if (l.size() > 0){
+        return false;
+    }
+    return true;
+}
+```
+
+Running time: 
+- $O(l)$ for populating letter hash table
+- $O(m)$ for iterating over magazine
+- Total: $O(l + m)$
+
+Space:
+- $O(l)$ for letter hash table
+
+
+
+### Conclusion
+
+- Sometimes it is easy to see that two hash tables can work but try and reduce space complexity by using only one as show in the [anonymous letter](/hash-tables#anonymous-letter) problem. This not only reduces running time (extra time required to populate the second hash table) but also obviously reduces the space required by not creating a second hash table.
+
+
