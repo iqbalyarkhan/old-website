@@ -40,7 +40,8 @@ tags:
     * [Unordered Map](#stl-unordered-map)
     * [Multi-Map](#stl-multi-map)
 
-
+7. Problems
+    * [Palindromic Permutations](#palindromic-permutations)
 
 
 ### Introduction
@@ -339,3 +340,87 @@ m.insert({2,3});
 ```
 
 Multimap will automatically store elements in sorted order by key.
+
+
+### Palindromic Permutations
+
+**A palindrome is a string that reads the same forwards and backwards, e.g., "level", "rotator", and "foobaraboof".
+  Write a program to test whether the letters forming a string can be permuted to form a palindrome. For example, "edified" can be permuted to form "deified".**
+  
+Ok, so this question seems similar to a string problem of checkin whether a string is a palindrome. However, the question is actually asking if the characters can be rearranged to form a plindromic string. Let's see how we can solve this:
+ 
+Approach 1: Get every possible permutation that can be formed from the characters and check if each string is a palindrome. Horrible approach!
+
+Approach 2: It is easy to see that a palindrome string can be:
+ 
+ - of odd length:
+
+```text
+edified = deified
+```
+Here, notice that only one character is allowed to have an odd number of occurrences, `f`, and all others need to have even occurrences. 
+
+- of even length:
+
+```text
+nerrne = renner
+```
+
+Here, notice that every character must have even number of occurrences. 
+
+Therefore, here's how we'll check if the permutations are palindromic:
+- If the string size is odd, there can be only one odd character
+- If the string size is even, all characters must have even occurrences
+
+Now, how are we going to save the character and occurrence count? We'll use a hash table that would allow us to access and modify character counts in $O(1)$ time.
+
+code:
+
+```cpp
+bool canBePermuted(string s){
+    unordered_map<char,int> ht;
+    bool isPal = false;
+    int size = int(s.size());
+    for (int i = 0; i < s.size(); i++){
+        char curr = s[i];
+        if (ht.find(curr) == ht.end()){
+            ht[curr] = 1;
+        } else {
+            ht[curr]++;
+        }
+    }
+    auto itr = ht.begin();
+    if (size % 2 == 0){
+        //Even size, all occurrences need to be even
+        bool allEven = true;
+        while (itr != ht.end()){
+            if (itr->second % 2 != 0){
+                allEven = false;
+                break;
+            }
+            ++itr;
+        }
+        isPal = allEven;
+    } else {
+        //Odd size, one is allowed to be odd
+        bool oneOdd = false;
+        bool allEven = true;
+        while (itr != ht.end()){
+            if (itr->second % 2 != 0 && !oneOdd){
+                oneOdd = true;
+            } else if (itr->second % 2 != 0 && oneOdd){
+                oneOdd = false;
+                allEven = false;
+                break;
+            }
+            ++itr;
+        }
+        if (oneOdd && allEven)
+            isPal = true;
+        else
+            isPal = false;
+    }
+    
+    return isPal;
+}
+```
