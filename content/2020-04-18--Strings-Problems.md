@@ -5,9 +5,9 @@ thumbnail: /post-images/string.png
 draft: false
 extract: String sample problems
 categories: 
-    - Problems
+    - Strings
 tags:
-    - String Problems
+    - Strings
 ---
 
 ### Table of Contents

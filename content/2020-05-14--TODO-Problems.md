@@ -5,7 +5,7 @@ thumbnail: /post-images/todo.png
 draft: false
 extract: TODO problems
 categories: 
-    - Problems
+    - General
 tags:
     - TODO Problems
 ---
