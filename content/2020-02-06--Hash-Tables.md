@@ -41,6 +41,7 @@ tags:
 7. Problems
     * [Palindromic Permutations](#palindromic-permutations)
     * [Anonymous Letter](#anonymous-letter)
+    * [Nearest Repeated Entries](#find-nearest-repeated-entries)
     
 5. [Conclusion](#conclusion)
 
@@ -526,7 +527,58 @@ Running time:
 Space:
 - $O(l)$ for letter hash table
 
+### Find nearest repeated entries
 
+**Write a program which takes as input an array and finds the distance between a closest pair of entries. For example, if array is:**
+```cpp
+["All","work","and","no", "play","is", "a", "big", "no", "and", "no", "do", "here", "that"]
+    0   1       2     3     4      5    6     7     8      9     10     11    12       13      
+```
+
+**then the second and third occurrences of "no" is the closest pair. Your program needs to return the closest distance such as 2 in the example above.**
+
+Approach 1: Choose a word from the array and then iterate over the array to find an occurrence and keep updating the closest distance on each find. This takes $O(N)^2$ time. 
+
+Approach 2: Maintain a variable that keeps track of minimum distance seen (initially equal to array size). Also, have a hash table that adds a word to the list if not found with a value equal to the latest index of the array. Then, when the word is found again, check in hash table the last index the word was seen. Subtract the last index value and the current index and see if this answer < minimum distance variable. If so, update the minimum distance variable. If not, update the hash table with the last index for the current word and continue. You can also save the distance and the word in a struct like I've done in the solution below:
+
+```cpp
+struct wordAndDistance{
+    string word;
+    int distance;
+};
+
+
+wordAndDistance getMinDistance(vector<string> sentence){
+    int size = int(sentence.size());
+    int minD = size;
+    unordered_map<string, int> ht;
+    wordAndDistance ans = {"",-1};
+    
+    for (int i = 0; i < size; i++){
+        auto itr = ht.find(sentence[i]);
+        if (itr == ht.end()){
+            //Add to ht
+            ht[sentence[i]] = i;
+        } else {
+            int dist = itr->second;
+            int diff = i - dist;
+            itr->second = i;
+            if (diff < minD){
+                minD = diff;
+                ans.word = sentence[i];
+                ans.distance = minD;
+            }
+        }
+    }
+    return ans;
+}
+```
+
+Running time: $O(N)$ where $N$ is the size of the vector passed.
+Space: $O(M)$ where $M$ is the number of unique words in the vector
+
+
+ 
 
 ### Conclusion
 
