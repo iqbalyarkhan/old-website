@@ -702,6 +702,118 @@ Curr word: j
 Curr word: k
 Curr word: l
 ```
+
+Time Complexity: 
+- We copy over keywords to another `unordered_set`. According to specifications [here](https://en.cppreference.com/w/cpp/container/unordered_set/operator%3D) the complexity is $O(K)$ where $K$ is the number of elements in the set. 
+- We then iterate over the paragraph once which takes $O(P)$ where $P$ is the length of the paragraph. 
+
+Space Complexity:
+- We use one hash table of size $O(K)$.
+
+### Longest subarray with distinct entries
+
+**Write a program that takes an array and returns the length of a longest subarray with the property that all its elements are distinct. For example, if the array is (f,s,f,e,t,w,e,n,w,e) then a longest subarray all of whose elements are distinct is (s,f,e,t,w).**
+
+Approach 1: Make possible sets out of different combinations of consecutive elements in the array. Reject any set that has a duplicate. Out of the remaining, find the set that has the longest length. Too slow and complicated!
+
+Approach 2: Start at index 0 with pointer `i` and add to hash table. Next, put pointer `j` to `i+1`. Continue incrementing `j` and on each increment add `A[j]` to hash table. If `A[j]` exists in hash table, break from the loop and check the difference between `i` and `j`. If it is > the largest distance seen so far, save values of `i` and `j` as the longest subarray. Move `i` to point to element one after the duplicate entry, delete the duplicate entry and continue. 
+
+Example: Let's say we have this: 
+
+```text
+c   d   c   b   a   b   a   
+0   1   2   3   4   5   6
+
+It's clear that he longest subarray is from index 1 till 4. 
+```
+
+Let's see how we'll proceed:
+
+```text
+max = 0
+
+i   j
+c   d   c   b   a   b   a   
+0   1   2   3   4   5   6
+
+hash table:
+c,0
+d,1
+```
+
+```text
+max = 0
+
+i       j
+c   d   c   b   a   b   a   
+0   1   2   3   4   5   6
+
+hash table:
+c,0
+d,1
+
+Now, c is already seen so we break out and see what the difference between i and j is = 2. It is greater than max so we save indices for i and j and update max to 2. Also move i to one past the collision point, delete the duplicate and continue
+```
+
+```text
+max = 2
+
+    i               j
+c   d   c   b   a   b   a   
+0   1   2   3   4   5   6
+
+hash table:
+d,1
+c,2
+b,3
+a,4
+
+Now, b is already seen so we break out and see what the difference between i and j is = 4. It is greater than max so we save indices for i and j and update max to 4. Also move i to one past the collision point, delete the duplicate and continue
+```
+
+Here's the code for this logic:
+
+```cpp
+struct Indices{
+    int start;
+    int end;
+};
+
+Indices findSubarray(vector<string> A){
+    int i = 0, j = 1, maxD = 0, size = int(A.size());
+    unordered_map<string, int> ht;
+    ht[A[i]] = i;
+    Indices ans = {-1,-1};
+    auto itr = ht.begin();
+    for (;j < size; j++){
+        while (true) {
+            itr = ht.find(A[j]);
+            if (itr == ht.end()){
+                ht[A[j]] = j;
+                j++;
+            } else {
+                break;
+            }
+        }
+        
+        int diff = j - i;
+        if (diff > maxD){
+            ans.start = i;
+            ans.end = j - 1;
+            maxD = diff;
+        }
+        
+        i = itr->second + 1;
+        ht.erase(itr);
+    }
+    
+    return ans;
+}
+```
+
+Running time: $O(N)$ where $N$ is the size of the array passed in
+Space: $O(N)$ where L size of the array
+
 ### Conclusion
 
 - Sometimes it is easy to see that two hash tables can work but try and reduce space complexity by using only one as show in the [anonymous letter](/hash-tables#anonymous-letter) problem. This not only reduces running time (extra time required to populate the second hash table) but also obviously reduces the space required by not creating a second hash table.
