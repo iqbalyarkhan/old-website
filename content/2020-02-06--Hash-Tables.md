@@ -42,6 +42,7 @@ tags:
     * [Palindromic Permutations](#palindromic-permutations)
     * [Anonymous Letter](#anonymous-letter)
     * [Nearest Repeated Entries](#find-nearest-repeated-entries)
+    * [Smallest Subarray Covering All Values](#smallest-subarray-covering-all-values)
     
 5. [Conclusion](#conclusion)
 
@@ -577,8 +578,130 @@ wordAndDistance getMinDistance(vector<string> sentence){
 Running time: $O(N)$ where $N$ is the size of the vector passed.
 Space: $O(M)$ where $M$ is the number of unique words in the vector
 
+### Smallest Subarray Covering All Values
 
+**Write a program which takes an array of strings and a set of strings, and return the indices of the starting and ending index of a shortest subarray of the given array that "covers" the set, i.e., contains all strings in the set.**
 
+Example:
+
+```cpp
+
+A = {"a","b","c","g","i","d","e", "f", "a", "g","c", "i", "l", "m", "n","a","c","i", "j","k","l"};
+keywords = {"a","c","i"};
+
+Then:
+
+Size 4                             size 3                           Size 2
+___________________                _________________                ___________     
+{"a","b","c","g","i","d","e", "f", "a", "g","c", "i", "l", "m", "n","a","c","i", "j","k","l"};
+
+Smallest subarray should return indices 15 and 17
+```
+
+Assumption: keywords won't overlap and order (aci,cia,aic,cai,iac,ica) are all valid coverings 
+
+Approach 1: Iterate over the array and find indices for each occurrence. This could get too complicated too fast!
+
+Approach 2: Iterate over each element and check if it is one of the elements. If so, start looking for others and note the index where you've found all. Record this index. Repeat for each element in the array. Too slow with running time: $O(N^2)$.
+
+Approach 3: 
+How do we keep track of the fact that we've found an element? Populate a hash table with the keywords (deep copy) of `unordered_set` into another `unordered_set` and remove the found element from this set. If our start flag is not set, set it to true and record the index: this would be our start index. 
+
+Keep removing elements from the hash set on each successful find. Next, check to see if after the removal this copied hash set is empty, if so, it means that we've found all elements. At this point, record the end index and determine the distance between start and end. Check if this is < the running minimum distance: if so, update the minimum distance and record the new start and end indices. 
+
+Now you've got the smallest subarray with all the keywords seen so far. Reset the hash table by clearing it and copying over from keywords again and clear the start flag to begin search again.
+
+Here's this approach in code:
+
+```cpp
+struct Indices{
+    int start;
+    int end;
+};
+
+void RemoveFromHt(unordered_set<string>& ht, string curr){
+    auto itr = ht.find(curr);
+    if (itr != ht.end()){
+        ht.erase(itr);
+    }
+}
+
+Indices getCovering(vector<string> paragraph, unordered_set<string> keywords){
+    unordered_set<string> ht = keywords;
+    bool startSet = false;
+    int start = 0, end = 0, size = int(paragraph.size()), finalDiff = size;
+    Indices ans = {-1,-1};
+    
+    for (int i = 0; i < size; i++){
+        string curr = paragraph[i];
+        cout << "Curr word: " << curr << endl;
+        auto kwItr = keywords.find(curr);
+        if (kwItr != keywords.end()){
+            if (!startSet){
+                start = i;
+                startSet = true;
+                cout << "   Just set start to: " << i << endl;
+            }
+            RemoveFromHt(ht, curr);
+            
+            if (ht.size() == 0){
+                end = i;
+                cout << "   Just set end to: " << i << endl;
+                if (end - start < finalDiff){
+                    ans = {start,end};
+                    finalDiff = end - start;
+                }
+                ht.clear();
+                ht = keywords;
+                startSet = false;
+                
+                cout << "   Current range: " << ans.start << " --> " << ans.end << endl;
+                cout << "   Current min: " << finalDiff << endl;
+            }
+        }
+    }
+    
+    return ans;
+}
+```
+
+Sample output:
+
+```text
+Curr word: a
+   Just set start to: 0
+Curr word: b
+Curr word: c
+Curr word: g
+Curr word: i
+   Just set end to: 4
+   Current range: 0 --> 4
+   Current min: 4
+Curr word: d
+Curr word: e
+Curr word: f
+Curr word: a
+   Just set start to: 8
+Curr word: g
+Curr word: c
+Curr word: i
+   Just set end to: 11
+   Current range: 8 --> 11
+   Current min: 3
+Curr word: l
+Curr word: m
+Curr word: n
+Curr word: a
+   Just set start to: 15
+Curr word: c
+Curr word: i
+   Just set end to: 17
+   Current range: 15 --> 17
+   Current min: 2
+Curr word: j
+Curr word: k
+Curr word: l
+```
 ### Conclusion
 
 - Sometimes it is easy to see that two hash tables can work but try and reduce space complexity by using only one as show in the [anonymous letter](/hash-tables#anonymous-letter) problem. This not only reduces running time (extra time required to populate the second hash table) but also obviously reduces the space required by not creating a second hash table.
