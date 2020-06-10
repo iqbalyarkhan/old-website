@@ -127,7 +127,7 @@ index   0   1   2   3   4   5   6   7   8
 ```
 
 Next, we copy over the elements to an temp array and then populate the original array in sorted order. To do so, we have the following pointers:
- - Start at index 0 of the original array using a pointer `k`
+ - Start at index `lo` of the original array using a pointer `k`. This is the index at which we'll start over-writing values
  - A pointer at position `lo` in the temp array and call it `i` 
  - A pointer at position `mid+1` and call it `j`:
 
@@ -195,8 +195,9 @@ We continue until either `i` crosses over to `mid+1` or if `j` gets to `hi + 1`.
 Here's the code for merging:
 
 ```cpp{numberLines: true}
-void merge(vector<int>& originalArr,int lo, int mid, int hi){
+void Merge(vector<int>& originalArr,int lo, int hi){
     vector<int> temp(originalArr);
+    int mid = lo + ((hi - lo)/2);
     int i = lo;
     int j = mid + 1;
     int k = lo;
@@ -216,12 +217,6 @@ void merge(vector<int>& originalArr,int lo, int mid, int hi){
             j++;
         }
     }
-    
-    cout << "Returning from merge: " << endl;
-    for (auto i : originalArr)
-        cout << i << " ";
-    cout << endl;
-    cout << endl;
 }
 ```
 
@@ -232,13 +227,13 @@ One caveat above: we need to assign `k` to `lo` and not 0 because since we're pa
 The sort procedure's job is to recursively break down the array into smaller chunks which means the `sort` procedure is responsible for calculating the `lo`,`mid` and `hi`, and sending to merge when appropriate:
 
 ```cpp{numberLines: true}
-void recMergeSort(vector<int>& arr,int lo, int hi){
-    if (hi == lo)
+void MergeSort(vector<int>& A, int lo, int hi){
+    if (lo == hi)
         return;
-    int mid = (lo + (hi - lo)/2);
-    recMergeSort(arr, lo, mid);
-    recMergeSort(arr, mid+1, hi);
-    merge(arr,lo,mid,hi);
+    int mid = lo + ((hi - lo)/2);
+    MergeSort(A, lo, mid);
+    MergeSort(A, mid+1, hi);
+    Merge(A,lo,hi);
 }
 ```
 
@@ -267,11 +262,7 @@ Returning from merge:
 Finally: 
 5 6 7 8 9 
 Program ended with exit code: 0
-
 ``` 
 
 ### Conclusion
-
 Merge sort runs in $O(N log N)$ time and its space complexity is $O(N)$.
-
-
