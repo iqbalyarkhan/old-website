@@ -159,7 +159,7 @@ Here's the code that calls itself recursively and in turn calls the partitioning
 
 ```cpp
 void quickSort(vector<int>& A, int lo, int hi){
-    if (hi <= lo)
+    if (lo == hi)
         return;
     int p = partition(A, lo,hi);
     quickSort(A, lo, p-1);
@@ -167,7 +167,7 @@ void quickSort(vector<int>& A, int lo, int hi){
 }
 ```
 
-If `hi<=lo`, it means that we don't have anything to sort because the indices we passed in signify that we're looking at just 1 element. This would be our base case. If we have multiple elements to partition, we call the partition function and swap all elements less than the calculated partition (using the median of 3 approach) and return the position we just partitioned around. Next, we call quicksort again but this time with left and right parts of the array. 
+If `lo == hi`, it means that we don't have anything to sort because the indices we passed in signify that we're looking at just 1 element. This would be our base case. If we have multiple elements to partition, we call the partition function and swap all elements less than the calculated partition (using the median of 3 approach) and return the position we just partitioned around. Next, we call quicksort again but this time with left and right parts of the array. 
 
 
 ### Conclusion
