@@ -156,6 +156,25 @@ Example:
 ```
 `h` = 4 since there are at least 4 entries >= 4 (these are 6,7,8,9). 3 also has atleast 3 entries >= 3 but we want the largest `h` which is 4.
 
+Best approach is easy to see: sort the list and start from the highest index. Move your way back to the other end using a pointer (let's call this pointer `curr`). At each entry check if `size - curr` >= `A[curr]`. Whenever that condition holds true, return the value at the index. Otherwise, decrement `curr`. 
+
+```cpp
+int GetH(vector<int>& A){
+    sort(A.begin(), A.end());
+    int size = int(A.size()) - 1;
+    int ans = -1;
+    for (int curr = size; curr >= 0; curr--){
+        if ((size - curr) >= A[curr]){
+            ans = A[curr];
+            break;
+        }
+    }
+    return ans;
+}
+```
+
+Running time: $O(NLogN)$ to sort and then $O(N)$ for the loop.
+
 ### Conclusion
 
 - To sort an array, use `sort` in the `<algorithm>` header. This runs in $ONlogN)$ time
