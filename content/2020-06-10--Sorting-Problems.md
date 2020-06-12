@@ -79,7 +79,73 @@ where _ denotes an empty entry
 
 Approach 1: We can copy elements for array A into a temporary array and then write the result back to array A. This takes extra space.
 
-Approach 2: We already have extra space at the end of array A which we can utilize.  
+Approach 2: We already have extra space at the end of array A which we can utilize. Assuming we're given the actual number of valid entries in A, we can figure out the position where we can start populating A. Using the example above, let's say we have these two for A and B:
+
+```cpp
+
+A:  5   13  17  _   _   _   _   _
+    0   1   2   3   4   5   6   7   
+ 
+B:  3   7   11  19
+    0   1   2   3
+``` 
+
+And we know that:
+
+```cpp
+m = 3 (size of A)
+n = 4 (size of B)
+k = m + n - 1 : position we can start filling A = 3 + 4 - 1 = 6
+i = m-1
+j = n-1
+```
+
+
+```cpp
+             i              k
+A:  5   13  17  _   _   _   _   _
+    0   1   2   3   4   5   6   7   
+ 
+                j
+B:  3   7   11  19
+    0   1   2   3
+``` 
+
+We can then start comparing if `A[i]` and `B[j]` to see which is larger. The larger value will go at `A[k]` and we'll decrement the correct pointer based on the answer
+
+Code:
+
+```cpp
+vector<int> MergeArrays(vector<int>& A, vector<int>& B, int m, int n){
+    //K is index in A where we'll start adding our answers
+    //i points to largest entry in A
+    //j points to largest entry in B
+    int k = m + n - 1, i = m - 1, j = n - 1;
+    while (true){
+        if (j >= 0 && i < 0){
+            //We've got remaining entries in B
+            while (j >= 0){
+                A[k] = B[j];
+                j--;k--;
+            }
+            break;
+        } else if (j >= 0 && B[j] > A[i]){
+            A[k] = B[j];
+            j--;k--;
+        } else if (i >= 0 && A[i] > B[j]){
+            A[k] = A[i];
+            k--;i--;
+        } else if (i >= 0 && j < 0){
+            break;
+        }
+    }
+    return A;
+}
+```
+
+Running time: $O(m + n)$ where `m` is the size of actual entries in `A` and `n` is the size of actual entries in `B` 
+
+
 
 ### Conclusion
 
