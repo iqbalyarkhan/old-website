@@ -18,6 +18,7 @@ Header credit: <a href="https://iconscout.com/icons/text-rotation-down" target="
 2. Problems
     * [Compute intersection of two sorted arrays](#compute-intersection-of-two-sorted-arrays)
     * [Merge two sorted arrays](#merge-two-sorted-arrays)
+    * [Find h index](#find-h-index)
 2. [Conclusion](#conclusion)
 
 ### Introduction
@@ -145,7 +146,15 @@ vector<int> MergeArrays(vector<int>& A, vector<int>& B, int m, int n){
 
 Running time: $O(m + n)$ where `m` is the size of actual entries in `A` and `n` is the size of actual entries in `B` 
 
+### Find h index
 
+**Given an array of positive integers, find the largest `h` such that there are at least `h` entries in the array that are greater than or equal to `h`.**
+
+Example:
+```cpp
+4,2,8,7,9,3,1,6
+```
+`h` = 4 since there are at least 4 entries >= 4 (these are 6,7,8,9). 3 also has atleast 3 entries >= 3 but we want the largest `h` which is 4.
 
 ### Conclusion
 
