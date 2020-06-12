@@ -17,6 +17,7 @@ Header credit: <a href="https://iconscout.com/icons/text-rotation-down" target="
 1. [Introduction](#introduction)
 2. Problems
     * [Compute intersection of two sorted arrays](#compute-intersection-of-two-sorted-arrays)
+    * [Merge two sorted arrays](#merge-two-sorted-arrays)
 2. [Conclusion](#conclusion)
 
 ### Introduction
@@ -57,6 +58,28 @@ Approach 1: Insert each array in a set, then repeatedly remove from each and com
 Approach 2: Best approach is to have 2 pointers, `i` and `j`, that are at the start of each array. Similar to how we increment `l` and decrement `hi` in quicksort for finding pivot, here, we'd increment `i` until `A[i]`  is less than `A[j]`. Since both arrays are sorted, we'd either get to a point where `A[i]` becomes greater than `A[j]` or equal to it. If it is equal, we add to our answer array. 
 
 We also need to check for duplicates since duplicates are allowed: we need to keep incrementing `i` and `j` until the value is equal to what we just pushed to the answer array. 
+
+### Merge two sorted arrays
+
+**Suppose you are given two sorted arrays of integers. If one array has enough empty entries at its end, it can be used to store the combined entries of the two arrays in sorted order. For example, consider:**
+ 
+ ```cpp
+(5,13,17,_,_,_,_,_) and 
+(3,7,11,19)
+
+where _ denotes an empty entry
+``` 
+**Then the combined sorted entries can be stored in the first array as:**
+
+```cpp
+(3,5,7,11,13,17,19,_)
+```
+
+ **Write a program which takes as input two sorted arrays of integers, and updates the first to the combined entries of the two arrays in sorted order. Assume the first array has enough empty entries at its end to hold the result.**
+
+Approach 1: We can copy elements for array A into a temporary array and then write the result back to array A. This takes extra space.
+
+Approach 2: We already have extra space at the end of array A which we can utilize.  
 
 ### Conclusion
 
