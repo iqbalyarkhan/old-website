@@ -15,6 +15,7 @@ Header credit: <a href="https://iconscout.com/icons/text-rotation-down" target="
 ### Table of Contents
 
 1. [Introduction](#introduction)
+    * [Writing your own sort function](#writing-your-own-sort-function)
 2. Problems
     * [Compute intersection of two sorted arrays](#compute-intersection-of-two-sorted-arrays)
     * [Merge two sorted arrays](#merge-two-sorted-arrays)
@@ -49,6 +50,83 @@ Quick recap for each sorting algorithm:
 - **Heap sort** creates a heap out of the unordered array and then repeatedly calls delete on heap until the heap is empty. [Here's](/heap/#sample-heap-sort) a sample heap sort implementation.
 - **Merge Sort** breaks down the array, and then builds it back up. Real work is done by the `merge` call.
 - **Quick sort** partitions the array around a pivot, and then recursively determines new partitions on smaller arrays and partitions the array.
+
+### Writing your own sort function
+
+It's important to know how to effectively use the sort functionality provided by C++. Let's say you're given a Student struct and that implements a compare method that compares students by name. By default, the array sort library will sort by name. To sort by GPA, you need to explicitly specify the compare function to the sort routine.
+
+Here's our student struct:
+
+```cpp
+struct Student{
+    bool operator<(const Student& that) const {
+        return name < that.name;
+    }
+    
+    string name;
+    double gpa;
+};
+```
+Notice that the overloaded `<` operator for the struct accepts an instance of the struct `student` and then compares the two names. This operator is provided by the struct itself. So if you run this code:
+
+```cpp
+    Student s1 = {"Stacy", 2.9};
+    Student s2 = {"Bill", 3.4};
+    if (s1 < s2){
+        cout << s1.name << " < " << s2.name << endl;
+    } else{
+        cout << s1.name << " > " << s2.name << endl;
+    }
+    
+``` 
+
+The overloaded `<` operator will be used to make the comparison and the output will be:
+
+```cpp
+Stacy > Bill
+```
+We know it is comparing by name and not by GPA because Stacy's GPA is < Bill's GPA. So now, if you do this:
+
+```cpp
+vector<Student> S = {{"Bob",3.2}, {"James",2.4}, {"Bill",3.4}, {"Harry",3.9}, {"Sara",4.0}};
+sort(S.begin(), s.end());
+```
+
+The students list will be sorted using the `<` defined in the class. 
+
+
+Now, let's say our vector of students needs to be sorted based on GPA. To do so, we'll use C++ lambdas. A lambda expression is actually a syntactic shortcut for a function object, i.e. an object that can be called as if it was a function (to that end, it defines the operator() ). A lambda expression bypasses the explicit creation of a function. The basic syntax of a lambda expression goes as follows:
+
+```cpp
+[captures] (argument list) -> return-type 
+{ 
+       lambda body; 
+}
+```
+
+So, if you want to sort by GPA, you'd call the sort function. This function accepts a vector of Student that we'll be sorting by GPA. It then calls the sort function that can be overloaded with: `first, last, comparator`. Inside this function we'll call the `sort` function and we'll be providing `begin` and `end` and a custom compare function. In our case, the custom compare function is a lambda function that takes in two students and compares whether the gpa of one is greater than the other.
+
+```cpp
+void SortByGPA(vector<Student>* students){
+    sort(
+        begin(*students),end(*students),
+        [](const Student& a, const Student& b){
+        return a.gpa >= b.gpa;
+        }
+    );
+}
+```
+
+
+
+A lambda expression is actually a syntactic shortcut for a function object, i.e. an object that can be called as if it was a function (to that end, it defines the operator() ). A lambda expression bypasses the explicit creation of a function object. The basic syntax of a lambda expression goes as follows:
+
+```cpp
+[captures] (argument list) -> return-type 
+{ 
+       lambda body; 
+}
+```
 
 ### Compute intersection of two sorted arrays
 
