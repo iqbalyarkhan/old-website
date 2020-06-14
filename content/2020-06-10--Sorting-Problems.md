@@ -20,6 +20,7 @@ Header credit: <a href="https://iconscout.com/icons/text-rotation-down" target="
     * [Compute intersection of two sorted arrays](#compute-intersection-of-two-sorted-arrays)
     * [Merge two sorted arrays](#merge-two-sorted-arrays)
     * [Find h index](#find-h-index)
+    * [Remove first name duplicates](#remove-first-name-duplicates)
 2. [Conclusion](#conclusion)
 
 ### Introduction
@@ -252,6 +253,38 @@ int GetH(vector<int>& A){
 ```
 
 Running time: $O(NLogN)$ to sort and then $O(N)$ for the loop.
+
+### Remove first name duplicates
+
+**Design an efficient algorithm for removing all first-name duplicates from an array. For example, if the input is ((Ian,Botham),(David,Gower),(Ian,Bell),(Ian,Chappell)), one result could be ((Ian,Bell),(David,Gower)); ((David,Gower),(Ian,Botham)) would also be acceptable.**
+
+Approach 1: add each element to a set, and then remove to populate the array. This requires extra space for the set.
+
+Approach 2: Sort the array and call unique. This is a good technique to remove duplicates. **Unique** expects data to be already sorted:
+
+To do so, we also overload the `<` operator to compare on first name only and same for the equality operator:
+
+```cpp
+struct Names{
+    string first;
+    string last;
+    
+    bool operator<(const Names& that) const {
+        return first < that.first;
+    }
+    
+    bool operator==(const Names& that) const {
+        return first == that.first;
+    }
+};
+
+void RemoveFirstNameDuplicates(vector<Names>* n){
+    sort(begin(*n), end(*n));
+    //Removing duplicates by calling unique
+    n->erase(unique(begin(*n), end(*n)), end(*n));
+}
+```
+Running time: `sort` takes $O(NLogN)$ time while `unique` takes $O(N)$.
 
 ### Conclusion
 
