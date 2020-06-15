@@ -21,6 +21,7 @@ Header credit: <a href="https://iconscout.com/icons/text-rotation-down" target="
     * [Merge two sorted arrays](#merge-two-sorted-arrays)
     * [Find h index](#find-h-index)
     * [Remove first name duplicates](#remove-first-name-duplicates)
+    * [Merge Intervals]
 2. [Conclusion](#conclusion)
 
 ### Introduction
@@ -285,6 +286,53 @@ void RemoveFirstNameDuplicates(vector<Names>* n){
 }
 ```
 Running time: `sort` takes $O(NLogN)$ time while `unique` takes $O(N)$.
+
+### Merge Intervals
+
+**In the abstract, we want a way to add an interval to a set of disjoint intervals and represent the new set as a set of disjoint intervals. For example, if the initial set of intervals is [-4,-1],[0,2],[3,6],[7,9],[11,12],[14,17], and the added interval is [1,8], the result is [-4,-1],[0,9],[11,12],[14,17].**
+
+**Write a program which takes as input an array of disjoint closed intervals with integer endpoints, sorted by increasing order of left endpoint, and an interval to be added, and returns the union of the intervals in the array and the added interval. Your result should be expressed as a union of disjoint intervals sorted by left endpoint.**
+
+Clarifying questions you should be asking:
+- Explain what is being asked in your own words, write down an example
+- The set of intervals, would this be an array of intervals or a set? For our example, we'll use a vector
+- Each interval, is that a separate struct that can be used or are we to treat each start and end as an integer?  We'll use a struct 
+- The interval to be added, is it guaranteed that the new interval would always fall between the currently provided vector? As in if the current disjoint set is the one above, are we guaranteed to have a new interval that would be between -4 and 17 or could it go past -4 (-5,-6,-7) and 17 (18,19,20)? It'll stay in that range.
+
+Approach 1: Start at each interval, look to see if it has the start point. If so, look for the end point in each of the remaining intervals. Do so for each interval in the vector. This has a poor run time.
+
+Approach 2 : The vector is sorted:
+
+```cpp
+vector<Interval> A = {{-4,-1}, {0,2}, {3,6}, {7,9}, {11,12}, {14,17}};
+auto B = MergeIntervals(A, {1,8});
+``` 
+
+We can check to see if newStart (ie 1) is in this range:
+```cpp
+    currStart <= newStart <= currEnd
+```
+
+So, we'll check this:
+
+```cpp
+-4 <= 1 <= -1 ? No, add -4,-1 to answer move to next
+0 <= 1 <= 2 ? YES! Ok, we've found our union's start which is current interval's start ie 0
+```
+
+If the check holds true, we've found our union's start which is current interval's start. We hold off on adding more intervals. We continue to check for the end now:
+
+```cpp
+0 <= 8 <= 2 ? No! check next interval
+3 <= 8 <= 6 ? No! check next interval
+7 <= 8 <= 9 ? YES! we've found our end, set end interval to curent interval's end ie 9
+```
+
+Now, add this new union interval to the result: $0,9$.
+
+Continue adding remaining intervals to the answer.
+
+Time complexity: $O(N)$
 
 ### Conclusion
 
