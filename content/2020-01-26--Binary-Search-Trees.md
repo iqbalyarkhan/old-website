@@ -48,6 +48,8 @@ tags:
 
 In this post I'll talk about a data structure called Binary Search Tree. This post is related to my [binary search](/binary-search) post where we discussed the binary search algorithm. BSTs use a similar idea but allow us to store our data efficiently so that we don't have to iterate over an entire array to perform various operations on the data that we stored. We'll look at this in more detail as we go over the code.
 
+Formally, a BST is a **rooted [binary tree](/binary-trees) whose internal nodes each store a key greater than all the keys in the node's left subtree and less than those in its right subtree**
+
 ### Setup
 
 I've got 2 generic classes: A `BinaryTree` class that includes another private class called `Node`. The initial setup looks like so:
@@ -1091,3 +1093,85 @@ C++ STL offers two BST based containers: `set` and `map`:
 
 
 ### Test if a BT satisfies the BST property
+
+**Write a program that takes as input a binary tree and checks if the tree satisfies the BST property.**
+
+The only logical way to solve this problem is to test for the BST property and check to see if it holds for each node. The BST property is that a root's value must be greater than ALL its children in the left subtree and less than ALL its children in the right subtree.
+
+Therefore, for each rooted tree, find the max in left tree, let's call it `leftMax` and find the max in right tree and let's call it `rightMax`. Now make sure that this equality holds: 
+$$$
+    leftMax < node->data < rightMax
+$$$
+
+If it does, return `rightMax` along with `true` meaning that the property holds so far, up the recursive calls. If it doesn't, return `false`. 
+
+Also, keep in mind what you need to do if the node has only a left child or only a right child. 
+
+```cpp
+template<typename T>
+struct Node{
+    T data;
+    Node<T>* left = nullptr;
+    Node<T>* right = nullptr;
+};
+
+struct Info{
+    bool isOk;
+    int max;
+    bool isNull;
+};
+
+template <typename T>
+bool isBST(Node<T>* root){
+    Info ans = checkBool(root);
+    return ans.isOk;
+}
+
+template <typename T>
+Info checkBool(Node<T>* root){
+    if (!root){
+        return {true,0, true};
+    }
+    
+    if (!root->left && !root->right){
+        return {true,root->data,false};
+    }
+    
+    Info LInfo = checkBool(root->left);
+    if (!LInfo.isOk)
+        return {false,-1,false};
+    Info RInfo = checkBool(root->right);
+    if (!RInfo.isOk)
+        return {false,-1,false};
+    
+    if (LInfo.isNull){
+        //Root's left child was null, compare only with right child
+        if (root->data > RInfo.max){
+            cout << "Failed at root: " << root->data << endl;
+            cout << "Left: " << LInfo.max << " and right: " << RInfo.max << endl;
+            return {false,-1,false};
+        }
+        return {true,RInfo.max, false};
+    }
+    
+    if (RInfo.isNull){
+        //Root's right child was null, compare only with left child
+        if (root->data < LInfo.max){
+            cout << "Failed at root: " << root->data << endl;
+            cout << "Left: " << LInfo.max << " and right: " << RInfo.max << endl;
+            return {false,-1,false};
+        }
+        return {true,root->data,false};
+    }
+    
+    if (root->data < LInfo.max || root->data > RInfo.max){
+        cout << "Failed at root: " << root->data << endl;
+        cout << "Left: " << LInfo.max << " and right: " << RInfo.max << endl;
+        return {false,-1,false};
+    }
+    
+    return {true, max(LInfo.max, RInfo.max)};
+}
+```
+
+Running time: $O(N)$ where $N$ is the number of nodes and space is $O(h)$ for the recursive call stack.
