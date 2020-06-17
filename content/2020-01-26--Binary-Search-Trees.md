@@ -39,11 +39,11 @@ tags:
 
 13. [Trees as arrays](#trees-as-arrays)
 
-14. [Conclusion](#conclusion)
-
 15. [Problems](#problems)
     * [Test if a Binary Tree satisfies the Binary Search Tree Property](#test-if-a-bt-satisfies-the-bst-property)
-    
+
+14. [Conclusion](#conclusion)
+
 ### Introduction
 
 In this post I'll talk about a data structure called Binary Search Tree. This post is related to my [binary search](/binary-search) post where we discussed the binary search algorithm. BSTs use a similar idea but allow us to store our data efficiently so that we don't have to iterate over an entire array to perform various operations on the data that we stored. We'll look at this in more detail as we go over the code.
@@ -1096,7 +1096,7 @@ C++ STL offers two BST based containers: `set` and `map`:
 
 **Write a program that takes as input a binary tree and checks if the tree satisfies the BST property.**
 
-The only logical way to solve this problem is to test for the BST property and check to see if it holds for each node. The BST property is that a root's value must be greater than ALL its children in the left subtree and less than ALL its children in the right subtree.
+Approach 1: An obvious way to solve this problem is to test for the BST property and check to see if it holds for each node. The BST property is that a root's value must be greater than ALL its children in the left subtree and less than ALL its children in the right subtree.
 
 Therefore, for each rooted tree, find the max in left tree, let's call it `leftMax` and find the max in right tree and let's call it `rightMax`. Now make sure that this equality holds: 
 $$$
@@ -1175,3 +1175,115 @@ Info checkBool(Node<T>* root){
 ```
 
 Running time: $O(N)$ where $N$ is the number of nodes and space is $O(h)$ for the recursive call stack.
+
+Approach 2 : Remember pre-order,in-order and post-order [traversal](/binary-search-trees#traversal)? In-order traversal visits nodes in this order: left,node,right. If a tree is a BST, the in-order traversal would yield a sorted array. We don't need to store the entire array. All we need is the information of the last visited node and compare it with the current node: 
+
+- Start with in-order traversal
+- If current node > last visited node, make last visited node = current node and continue
+- If current node < last visited node, break, BT is not a BST.
+
+This approach is cleaner but there are some nuances as you update `lastNode`. Let's step through a tree:
+
+```cpp
+            12
+           /  \
+         11   10
+        /  \   
+       9    8 
+      /  
+     6
+    / \
+   5   7 
+``` 
+
+```cpp
+currentNode: 12, lastNode: -1
+currentNode: 11, lastNode: -1
+currentNode: 9, lastNode: -1
+currentNode: 6, lastNode: -1
+currentNode: 5, lastNode: -1
+
+We're now at 5. 5->left is null and 5->right is null, so make lastNode 5 and return
+
+currentNode: 12, lastNode: -1
+currentNode: 11, lastNode: -1
+currentNode: 9, lastNode: -1
+currentNode: 6, lastNode: 5
+Check to see if currentNode < lastNode, it is not, so make currentNode as lastNode and continue
+
+currentNode: 12, lastNode: -1
+currentNode: 11, lastNode: -1
+currentNode: 9, lastNode: -1
+currentNode: 6, lastNode: 6
+currentNode: 7, lastNode: 6
+Check to see if currentNode < lastNode, it is not, so make currentNode as lastNode and continue
+
+currentNode: 12, lastNode: -1
+currentNode: 11, lastNode: -1
+currentNode: 9, lastNode: -1
+currentNode: 6, lastNode: 6
+currentNode: 7, lastNode: 7
+We're done with 7, return back to caller.
+
+currentNode: 12, lastNode: -1
+currentNode: 11, lastNode: -1
+currentNode: 9, lastNode: -1
+currentNode: 6, lastNode: 7
+We're done with 6, return back to caller
+
+currentNode: 12, lastNode: -1
+currentNode: 11, lastNode: -1
+currentNode: 9, lastNode: 7
+Check to see if currentNode < lastNode, it is not, so make currentNode as lastNode and continue
+
+currentNode: 12, lastNode: -1
+currentNode: 11, lastNode: -1
+currentNode: 9, lastNode: 9
+We're done with 9, return back to caller
+
+currentNode: 12, lastNode: -1
+currentNode: 11, lastNode: 9
+Check to see if currentNode < lastNode, it is not, so make currentNode as lastNode and continue
+
+currentNode: 12, lastNode: -1
+currentNode: 11, lastNode: 11
+currentNode: 8, lastNode: 11
+Check to see if currentNode < lastNode, IT IS!! The tree is NOT A BST!!
+
+We can break and return now
+```
+
+The idea in the implementation above was to check whether the currentNode we're processing via in-order traversal is greater than the previous node we processed. On each process, we update the lastNode.
+
+
+```cpp
+int lastNode = -1;
+void simpleBST(Node<int>* root){
+    if (!root)
+        return;
+    if (!root->left && !root->right){
+        if (root->data < lastNode){
+            cout << "not a bst since " << root->data << " < " << lastNode << endl;
+        }
+        lastNode = root->data;
+        return;
+    }
+
+    simpleBST(root->left);
+    if (root->data < lastNode){
+        cout << "not a bst since " << root->data << " < " << lastNode << endl;
+    } else {
+        lastNode = root->data;
+    }
+    simpleBST(root->right);
+
+}
+```
+
+Running time: $O(N)$, space: $O(h)$ for recursive call stack.
+
+### Conclusion
+
+- When approaching to solve a problem, see if one of the traversal methods, pre,in,post would do.
+- Make sure you check for edge cases where the node has only a left child or only a right child or no children at all.
+- Binary search trees work well with randomized data where a node can have both left and right children. However, if our data is partially sorted, our tree may degenerate to a linked list. Think about what would happen if we insert numbers from 0 till 7 in a tree. Each node added would be the right child of its parent node. This would defeat the purpose of a binary search tree. In cases like these, we need to re-balance our tree so that we can take advantage of the $lgN$ properties of a tree.
