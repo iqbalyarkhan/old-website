@@ -41,6 +41,7 @@ tags:
 
 15. [Problems](#problems)
     * [Test if a Binary Tree satisfies the Binary Search Tree Property](#test-if-a-bt-satisfies-the-bst-property)
+    * [Find next in inorder traversal](#find-next-in-inorder-traversal)
 
 14. [Conclusion](#conclusion)
 
@@ -1281,6 +1282,88 @@ void simpleBST(Node<int>* root){
 ```
 
 Running time: $O(N)$, space: $O(h)$ for recursive call stack.
+
+### Find next in inorder traversal
+
+**Write a program that takes as input a BST and a value, and returns the first key that would appear in an inorder traversal which is greater than the input value.**
+
+For example, if the given key is 12 in the tree below, you should return 14
+
+```cpp
+              24
+            /    \
+          16      32
+         /  \    /   \  
+       10  18  28     40
+      / \       \    /  \ 
+     6  8       30  35  45
+    / \
+   5   7 
+``` 
+
+**Clarification questions:**
+- **Will the target always be in the tree?** Yes
+- **Is the tree stored as an array in memory or pointers?** Pointers
+
+Approach 1: We can simply iterate over the tree once, saving all the nodes in an array and then iterate over the array looking for the target. This takes $O(N)$ time and $O(N)$ space. We're ignoring the fact that there is order to the nodes in the tree.
+
+Approach 2: We can use binary search to make our way down the tree. As soon as we find the `target` value, we need to figure out what the `next` value should be. In in-order traversal, the next node would lie in the right subtree for a node that has a right subtree. Otherwise, it'd be somewhere earlier in the chain. So, there are two cases: 
+
+- the target is has a right subtree (as in find what comes after 32 in in-order traversal?)
+- the target has no right subtree (as in what comes after 30 in in-order traversal?)
+
+For the first case where there is a right sub-tree, the next element in in-order traversal would be the smallest element in the right subtree. And since this is a binary search tree, all we need to do is move to the right subtree and keep going left until there's no left child.
+
+For the second case where there's no right subtree, we need to keep track of earlier visited nodes. Now, we don't want to perform a full blown in-order traversal (since that takes $O(N)$ time) so we need to keep track of earlier visited nodes BUT not all of them. We need to be strategic with what we store. Say we're searching for `next` for our `target` where `target` = 30. So what comes after 30 in in-order traversal? To get to 30 we go through this:
+
+```cpp
+24 < 30 go right
+32 > 30 go left
+28 < 30 go right
+we found 30!
+```
+When we're at 30 we realize that 30 has no right subtree. HOWEVER, our answer is already in the path we followed. If you notice, **the `next` value is the last value seen that was larger than `target`** which here is 32. So, we change our logic like so:
+
+```cpp
+24 < 30 go right
+32 > 30 go left (save this to answer, maybe this is the answer!)
+28 < 30 go right
+we found 30!
+30 has no right subtree, so return answer!
+```
+
+Another edge case: `target` is equal to the largest element in the tree, 45. In that case we return a -1 meaning it has no successor. 
+
+Code:
+
+```cpp
+int FindSmallestInRightSubtree(Node<int>* root){
+    while (root->left)
+        root = root->left;
+    return root->data;
+}
+
+int FindNext(Node<int>* root, int target){
+    int next = -1;
+    while (root){
+        if (root->data > target){
+            next = root->data;//we might have found the answer!!
+            root = root->left;
+        } else if (root->data == target){
+            if (root->right){
+                root = root->right;
+                next = FindSmallestInRightSubtree(root);
+            }
+            break;
+        } else {
+            root = root->right;
+        }
+    }
+    return next;
+}
+```
+
+Running time: $O(h)$, space: $O(1)$
 
 ### Conclusion
 
