@@ -1287,7 +1287,7 @@ Running time: $O(N)$, space: $O(h)$ for recursive call stack.
 
 **Write a program that takes as input a BST and a value, and returns the first key that would appear in an inorder traversal which is greater than the input value.**
 
-For example, if the given key is 12 in the tree below, you should return 14
+For example, if the given key is 30 in the tree below, you should return 32
 
 ```cpp
               24
