@@ -41,7 +41,9 @@ tags:
 
 15. [Problems](#problems)
     * [Test if a Binary Tree satisfies the Binary Search Tree Property](#test-if-a-bt-satisfies-the-bst-property)
-    * [Find next in inorder traversal](#find-next-in-inorder-traversal)
+    * [Find next in in-order traversal](#find-next-in-in-order-traversal)
+    * [Find k largest elements](#find-k-largest-elements)
+    * [Find LCA](#find-lca)
 
 14. [Conclusion](#conclusion)
 
@@ -215,7 +217,7 @@ void BinaryTree<T>::InOrderTraversal(Node* curr){
 }
 ```
 
-To traverse the tree, we've got 2 functions: the one on line 2 is exposed to the client. This function, in turn calls another private function that'll have access to the `root` and will be able to recursively call itself to print the tree. Inorder traversal is done in the following sequence:
+To traverse the tree, we've got 2 functions: the one on line 2 is exposed to the client. This function, in turn calls another private function that'll have access to the `root` and will be able to recursively call itself to print the tree. In-order traversal is done in the following sequence:
 - Print the left-subtree
 - Print the current node
 - Print the right sub-tree
@@ -763,7 +765,7 @@ Next, we delete `temp` and make `temp` point to `nullptr`:
      root--> 20
  ```
 
-and we finally return `root`. Now remember, the recursive call stack uptill this point is still this:
+and we finally return `root`. Now remember, the recursive call stack up till this point is still this:
 
 ```cpp
  //Recursive call stack:
@@ -955,7 +957,7 @@ That's it!
 
 ### Destructor
 
-If you ran this code as is through a memory checker such as [valgrind](https://valgrind.org/), you'd find that your program is leaking memory. That is because when the destrcutor is called we do not properly free up all the nodes in our tree. Let's have a look at how you'd go about properly freeing up memory in your destructor.
+If you ran this code as is through a memory checker such as [valgrind](https://valgrind.org/), you'd find that your program is leaking memory. That is because when the destructor is called we do not properly free up all the nodes in our tree. Let's have a look at how you'd go about properly freeing up memory in your destructor.
 
 To properly delete each node, you can't start at the root. If you delete root, you'd have no way to access all the other nodes. So, the best strategy is to start with a node that has no children and work your way up. What this means is before deleting a node, delete its children first. This sounds like something we've already seen: [post order traversal](/traversal). Although not described in that section, we can see that post order traversal means:
 
@@ -1023,7 +1025,7 @@ Running time is $O(N)$ where $N$ is the number of nodes in the tree.
 
 ### Running Time Analysis:
 
-In order to analyze the running time of any binary search tree related operation, you need to consider how many nodes we'd have to vists. If $N$ is the number of nodes in the tree and $L$ is the number of levels, then:
+In order to analyze the running time of any binary search tree related operation, you need to consider how many nodes we'd have to visits. If $N$ is the number of nodes in the tree and $L$ is the number of levels, then:
 
 $$$
 N = 2^{L} - 1
@@ -1078,7 +1080,7 @@ $$$
 
 ### Conclusion
 
-Binary search trees work well with randomized data where a node can have both left and right children. However, if our data is partially sorted, our tree may degenerate to a linked list. Think about what would happen if we insert numbers from 0 till 7 in a tree. Each node added would be the right child of its parent node. This would defeat the purpose of a binary search tree. In cases like these, we need to rebalance our tree so that we can take advantage of the $lgN$ properties of a tree. I'll talk more about balanced trees in my AVL tree post and red-black tree post. 
+Binary search trees work well with randomized data where a node can have both left and right children. However, if our data is partially sorted, our tree may degenerate to a linked list. Think about what would happen if we insert numbers from 0 till 7 in a tree. Each node added would be the right child of its parent node. This would defeat the purpose of a binary search tree. In cases like these, we need to re-balance our tree so that we can take advantage of the $lgN$ properties of a tree. I'll talk more about balanced trees in my AVL tree post and red-black tree post. 
 
 ### Problems
 
@@ -1283,9 +1285,9 @@ void simpleBST(Node<int>* root){
 
 Running time: $O(N)$, space: $O(h)$ for recursive call stack.
 
-### Find next in inorder traversal
+### Find next in in-order traversal
 
-**Write a program that takes as input a BST and a value, and returns the first key that would appear in an inorder traversal which is greater than the input value.**
+**Write a program that takes as input a BST and a value, and returns the first key that would appear in an in-order traversal which is greater than the input value.**
 
 For example, if the given key is 30 in the tree below, you should return 32
 
@@ -1365,8 +1367,122 @@ int FindNext(Node<int>* root, int target){
 
 Running time: $O(h)$, space: $O(1)$
 
+### Find K largest elements
+
+**A BST is a sorted data structure, which suggests that it should be possible to find the k largest keys easily. Write a program that takes as input a BST and an integer k, and returns the k largest elements in the BST in decreasing order.**
+
+Example, if we have this tree:
+
+```cpp
+              24
+            /    \
+          16      32
+         /  \    /   \  
+       10  18  28     40
+      / \       \    /  \ 
+     6  8       30  35  45
+    / \
+   5   7 
+``` 
+
+And k = 3,  our final array must return <45,40,35> 
+
+Clarifying questions: 
+- **Tree is in an array or pointers?** pointers
+- **The tree is guaranteed to be not null?** yes
+
+Approach 1: Iterate over the tree in in-order fashion and keep populating an array. Once done, start at the end of this newly populated array and copy over `k` elements from the end to a new array. Running time: $O(N)$ + $O(K)$ and space: $O(N)$
+
+Approach 2: The tree is already sorted right? It is a BST so the largest element must be in the right subtree. So, we need to keep going as far right from the root as possible. Say this is our tree:
+
+
+```cpp
+              24
+            /    \
+          16      32
+         /  \    /   \  
+       10  18  28     40
+      / \       \    /  \ 
+     6  12       30  35  45
+    / \
+   5   7 
+``` 
+
+Ok, so once that is taken care of, we've reached the largest element, 45. What is the next largest element? It is the one that called the right sub-tree: 40. And what about the next largest? It is the left of the one that called its right subtree. So, the pattern we see here:
+
+- Keep going right then process the right most
+- Then process the node that called the right subtree
+- Then process its left subtree
+
+ie **RNL Right, node, left or reverse in-order (where in-order is LNR). Reverse in order visits nodes in decreasing order (from largest to smallest in a bst)** 
+
+```cpp
+vector<int> ans;
+
+void ReverseInOrder(Node<int>* root, int k){
+    if (!root || ans.size() == k)
+        return;
+    ReverseInOrder(root->right, k);
+    if (ans.size() != k){
+        ans.push_back(root->data);
+    } else {
+        return;
+    }
+    ReverseInOrder(root->left, k);
+}
+```
+
+Running time: $O(h + k)$ this is because we first need to make our way down to the largest element and then move back k places again. Space: $O(h)$ for the recursive call stack
+
+### Find LCA
+
+**Design an algorithm that takes as input a BST and two nodes, and returns the LCA of the two nodes. Assume all keys are distinct. Nodes do not have references to their parents.**
+
+Example, if we have this tree:
+
+
+```cpp
+              24
+            /    \
+          16      32
+         /  \    /   \  
+       10  18  28     40
+      / \       \    /  \ 
+     6  12       30  35  45
+    / \
+   5   7 
+``` 
+
+and nodes given are 12 and 18, then the LCA returned should be 16
+
+Approach 1: Record path from root to node 1. Record path from root to node 2. Find the smallest element that is common in both paths. Too inefficient! 
+
+Approach 2: Let's say we're searching for LCA for nodes 12 and 18. This LCA would have to have 12 in left subtree and 18 in right subtree (in a happy path! not looking at edge cases where one node is the root of the other). So, we can make use of this fact that if the root we're currently on has this property as true:
+ 
+ - one node < root AND other node > root
+ 
+ At this point we've found the LCA. For this to work, we also need to figure out which of the two nodes passed to us is smaller than the other. That is because the value larger than node will NEVER be in its left subtree. 
+ 
+ We'll compare the smaller against the root and check to see if it is < root and the larger one needs to be > root. We'll call the smaller value `left` and the larger value `right`. So, based off this, our properties would change like so:
+ 
+ - left < root AND right > root
+ 
+ So as soon as the condition above holds, we'll return value of the root. 
+ 
+ Now the edge cases: What if we're asked to find LCA for 12 and 10. In this case, 10 is the answer. We can add another check to see if the root we're currently on is either one of the values, `left` or `right`. In this case, we'll return the root. We can then change our logic to this:
+ 
+- (left < root AND right > root)  OR (either left OR right equals root)
+
+Here's this logic converted to code:
+
+```cpp
+
+``` 
+    
+
 ### Conclusion
 
 - When approaching to solve a problem, see if one of the traversal methods, pre,in,post would do.
+- You can use reverse in-order (RNL) to visit nodes in decreasing order (largest to smallest). Look at [this](#find-k-largest-elements) problem.
 - Make sure you check for edge cases where the node has only a left child or only a right child or no children at all.
 - Binary search trees work well with randomized data where a node can have both left and right children. However, if our data is partially sorted, our tree may degenerate to a linked list. Think about what would happen if we insert numbers from 0 till 7 in a tree. Each node added would be the right child of its parent node. This would defeat the purpose of a binary search tree. In cases like these, we need to re-balance our tree so that we can take advantage of the $lgN$ properties of a tree.
