@@ -44,6 +44,8 @@ tags:
     * [Find next in in-order traversal](#find-next-in-in-order-traversal)
     * [Find k largest elements](#find-k-largest-elements)
     * [Find LCA](#find-lca)
+    * [Construct tree from pre-order](#construct-tree-from-pre-order)
+    * [Construct tree from post-order]
 
 14. [Conclusion](#conclusion)
 
@@ -1476,9 +1478,126 @@ Approach 2: Let's say we're searching for LCA for nodes 12 and 18. This LCA woul
 Here's this logic converted to code:
 
 ```cpp
-
-``` 
+int FindLCA(Node<int>* root, int val1, int val2){
+    int left = min(val1,val2), right = max(val1,val2), r = -1, ans = -1;
+    while (root){
+        r = root->data;
+        if ((left < r && right > r) || ((left == r) || (right == r))){
+            ans = r;
+            break;
+        } else if (left < r && right < r){
+            root = root->left;
+        } else if (left > r && right > r){
+            root = root->right;
+        } else {
+            break;
+        }
+    }
     
+    return ans;
+}
+``` 
+
+### Construct tree from pre-order
+    
+**Given pre-order traversal data, construct BST**
+
+Approach 1: Create root from `arr[0]`. Then for each remaining element, pick element from array, start at root and find the correct spot for this new element. Running time: $O(N^2)$.
+
+Approach 2: Let's say we have this tree and pre-order array:
+
+```cpp
+
+preorder: vector<int>A = {24,16,10,6,5,7,12,18,32,28,30,40,35,45};
+
+              24
+            /    \
+          16      32
+         /  \    /   \  
+       10  18  28     40
+      / \       \    /  \ 
+     6  12       30  35  45
+    / \
+   5   7 
+``` 
+
+Then we can create our root using `A[0]`. Now, what would go at root->left? First we'll create the node that we're going to insert. Then, We need to check a few things:
+
+- The value of `i`, our pointer in the array, is not past the end of the array 
+- The element is in the range `[low,high]` for the subtree we're processing
+
+If both hold, we'll set the left and right recursively, recalculating the relevant range on each step.
+
+```cpp
+Node<int>* construct(vector<int>& A, int min, int max){
+    if (i == int(A.size()))
+        return nullptr;
+    
+    if (A[i] < min || A[i] > max)
+        return nullptr;
+    
+    Node<int>* root = new Node<int>();
+    root->data = A[i];
+    i++;
+    root->left = construct(A, min, root->data - 1);
+    root->right = construct(A,root->data + 1, max);
+    return root;
+}
+```
+
+
+Running time: $O(N)$.
+
+### Construct tree from post-order
+
+**Given post-order traversal data, construct BST**
+
+Example:
+
+```cpp
+
+postorder: vector<int>A = {5,7,6,12,10,18,16,30,28,35,45,40,32,24}
+
+              24
+            /    \
+          16      32
+         /  \    /   \  
+       10  18  28     40
+      / \       \    /  \ 
+     6  12       30  35  45
+    / \
+   5   7 
+``` 
+
+Approach 1: Create root from `arr[arr.size()-1]`. Then for each remaining element, pick element from array, start at root and find the correct spot for this new element. Running time: $O(N^2)$.
+
+Approach 2: Notice that the root is at the last element. So, instead of starting at the first index in the array, we'll start from the last and will work our way backwards. We'll process the tree from right subtree to left subtree. Similar to how we constructed a tree from pre-order, we'll check for 2 things:
+
+- The value of `i`, our pointer in the array, is not past the end of the array, ie > 0 
+- The element is in the range `[low,high]` for the subtree we're processing
+
+We'll start at 24 and then determine the min and the max based on 24's value. Since we're starting with the right subtree, the minimum value that can fall in the right subtree is 24 + 1 = 25 and the max is infinity. For left subtree of 24, the max is 24 - 1 = 23 and min is `arr[0]` because notice that the smallest value in the tree is at `arr[0]`. 
+
+Here's the code for this logic:
+
+```cpp
+Node<int>* construct(vector<int>&A, int min, int max){
+    if (i < 0)
+        return nullptr;
+    if (A[i] < min || A[i] > max)
+        return nullptr;
+
+    Node<int>* root = new Node<int>();
+    root->data = A[i]; i--;
+    root->right = construct(A,root->data + 1, max);
+    root->left = construct(A,min, root->data-1);
+    return root;
+}
+```
+
+Running time: $O(N)$ 
+
+
 
 ### Conclusion
 

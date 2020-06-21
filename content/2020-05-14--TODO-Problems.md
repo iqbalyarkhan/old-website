@@ -116,6 +116,7 @@ tags:
 
 #### Tree
 
+- Construct BST from pre-order data
 - Construct a BT from in-order and pre-order traversals
 - Maximum Depth of Binary Tree - https://leetcode.com/problems/maximum-depth-of-binary-tree/
 - Same Tree - https://leetcode.com/problems/same-tree/
