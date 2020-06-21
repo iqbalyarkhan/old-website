@@ -45,7 +45,9 @@ tags:
     * [Find k largest elements](#find-k-largest-elements)
     * [Find LCA](#find-lca)
     * [Construct tree from pre-order](#construct-tree-from-pre-order)
-    * [Construct tree from post-order]
+    * [Construct tree from post-order](#construct-tree-from-post-order)
+    * [Create minimum height tree from sorted array](#create-minimum-height-tree-from-sorted-array)
+    * [Range BST](#range-bst)
 
 14. [Conclusion](#conclusion)
 
@@ -1597,11 +1599,133 @@ Node<int>* construct(vector<int>&A, int min, int max){
 
 Running time: $O(N)$ 
 
+### Create minimum height tree from sorted array
 
+**Given a sorted array, the number of BSTs that can be built on the entries in the array grows enormously with its size. Some of these trees are skewed, and are closer to lists; others are more balanced.How would you build a BST of minimum possible height from a sorted array?**
+
+Approach 1: Create every combination of tree from the given array and check to see if it is the smallest height seen so far!! Too expensive!!
+
+Approach 2: Intuitively, the smallest height would be when we equally assign elements to the left and right subtrees. Say we're given this array:
+
+```cpp
+vector<int>A = {2,3,5,7,11,13,17,19,23};
+```
+
+If we choose 2 as the root, the tree would have the largest height possible since every element would go in the right subtree! Same if we choose 23 as the root (where every element would go in the left subtree). Since the array is sorted, we need to choose the middle element to be our root: ie 11.
+
+Now, we've got this:
+
+```cpp
+                 r
+2   3   5   7   11  13  17  19  23
+
+```
+
+How do we now decide the left and right subtrees' root? Similar to how we chose 11 in the first place. We'll choose the left subtree root from the middle element in `2 3 5 7` and for right subtree root we'll look for middle element in `13 17 19 23`. To find the middle element, we'll get the value of mid for our array pointers low and high:
+
+```cpp
+l                r              h
+2   3   5   7   11  13  17  19  23
+
+For left:
+
+l   m       h
+2   3   5   7
+
+For right:
+
+l   m       h   
+13  17  19  23
+```
+
+We continue until `h < l`.
+
+Here's the code:
+
+```cpp
+Node<int>* Create(vector<int>& A, int l, int h){
+    if (h < l)
+        return nullptr;
+    int m = l + ((h-l)/2);
+    Node<int>* root = new Node<int>();
+    root->data = A[m];
+    root->left = Create(A,l,m-1);
+    root->right = Create(A,m+1,h);
+    return root;
+}
+```
+
+Running time: $O(N)$, space $O(h)$
+
+### Range BST
+
+**Given a BST and a min,high range, return all nodes in the tree, in sorted order, that fall in that range.**
+
+Approach 1: Iterate over the entire tree in in-order. If the current node is in the range, add to answer array, otherwise, move one. Running time $O(N)$.
+
+Approach 2: Approach 1 is inefficient since we needlessly iterate over ALL elements. For example, if the tree is this:
+
+```cpp
+
+              24
+            /    \
+          16      32
+         /  \    /   \  
+       10  18  28     40
+      / \       \    /  \ 
+     6  12       30  35  45
+    / \
+   5   7 
+``` 
+
+and the range given is 29 till 43, then approach 1 would needlessly look in the entire left half as well when it is clear that the correct solution clearly lies in the right half. We need something better.
+
+Thinking about this recursively, we'll do this:
+- If root is null, we return
+- If current root's data is the lower limit, we add it to the vector and call function again BUT with the right of current root. That is because since we've found the lowest, we're guaranteed that the answer will NOT be in the left half. Possible remaining nodes will be in the right half.
+- Similarly, we add another check to see if the root's data == r, in which case we recurse on the left subtree since we're guaranteed to find no more correct nodes in the right subtree.
+- If the current node falls in the range, we can call its left subtree, then add current node to answer, then call right subtree. This is similar to how in-order traversal works
+- Finally, we add two more checks, if the current element < l, we recurse in right sub-half, and if current element > r, we recurse in left sub-half
+
+Converting this logic to code:
+
+```cpp
+vector<int> ans;
+void Populate(Node<int>* root, int l, int r){
+    if (!root)
+        return;
+    cout << "visited: " << root->data << endl;
+    if (root->data == l){
+        ans.push_back(root->data);
+        Populate(root->right, l, r);
+    }
+    
+    if (root->data == r){
+        Populate(root->left, l, r);
+    }
+    
+    if (root->data >= l && root->data <= r){
+        Populate(root->left, l, r);
+        ans.push_back(root->data);
+        Populate(root->right, l, r);
+    }
+    
+    if (root->data < l){
+        Populate(root->right, l, r);
+    }
+    
+    if (root->data > r){
+        Populate(root->left, l, r);
+    }
+}
+```
+
+Running time is at most $O(N)$ when the range is the entire tree (in the worst case). Space is $O(h)$ for the recursive call stack.  
 
 ### Conclusion
 
 - When approaching to solve a problem, see if one of the traversal methods, pre,in,post would do.
+- For certain types of problems, it is beneficial to use ranges to see whether an element must reside in the left or the right subtree. Look at construct tree problems.
 - You can use reverse in-order (RNL) to visit nodes in decreasing order (largest to smallest). Look at [this](#find-k-largest-elements) problem.
 - Make sure you check for edge cases where the node has only a left child or only a right child or no children at all.
 - Binary search trees work well with randomized data where a node can have both left and right children. However, if our data is partially sorted, our tree may degenerate to a linked list. Think about what would happen if we insert numbers from 0 till 7 in a tree. Each node added would be the right child of its parent node. This would defeat the purpose of a binary search tree. In cases like these, we need to re-balance our tree so that we can take advantage of the $lgN$ properties of a tree.
