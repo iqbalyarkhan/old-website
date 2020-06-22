@@ -2,7 +2,7 @@
 title: Dynamic Programming
 date: 2020-06-21
 thumbnail: /post-images/dynamic-programming.png
-draft: false
+draft: true
 extract: Dynamic programming
 categories: 
     - General
