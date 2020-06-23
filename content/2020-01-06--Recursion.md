@@ -14,7 +14,6 @@ tags:
 1. [Triangular Numbers](#triangular-numbers)
 2. [Factorials](#factorials)
 3. [Fibonacci](#fibonacci)
-4. [Time Complexity](#time-complexity)
 
 ### Introduction
 Recursion is a common technique to define a problem or a relation where subsequent "terms" build on calculations for previous terms. For example, I could say, every number in a sequence is the sum of its preceding number and 2. I've defined a function in terms of itself ie I'm using the solution that the function found for a previous term and then determining  the subsequent term using that solution. If I had to mathematically represent this sequence (every number in a sequence is the sum of its preceding number and 2), it would look like this:
