@@ -257,8 +257,19 @@ Since there can be only one max, we choose the larger value of the two bullet po
 Code:
 
 ```cpp
-
+int MaxSum(vector<int>& A){
+    int curr = A[0], sum = curr, ans = curr;
+    for (int i = 1; i < int(A.size()) - 1; i++){
+        curr = A[i];
+        sum = max(curr,sum + curr);
+        ans = max(ans, sum);
+    }
+    
+    return ans;
+}
 ```
+
+Running time is $O(N)$
 
 ### Conclusion
 
