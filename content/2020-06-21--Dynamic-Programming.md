@@ -2,7 +2,7 @@
 title: Dynamic Programming
 date: 2020-06-21
 thumbnail: /post-images/dynamic-programming.png
-draft: false
+draft: true
 extract: Dynamic programming
 categories: 
     - General
@@ -16,6 +16,7 @@ tags:
 4. [Factorials](#factorials)
 5. [Fibonacci](#fibonacci)
 6. [Max subarray](#max-subarray)
+7. [Unique ways to make change]()
 12. [Conclusion](#conclusion) 
 
 
@@ -27,9 +28,9 @@ Like divide-and-conquer, DP solves the problem by combining the solutions of mul
 The key to solving a DP problem efficiently is finding a way to break the problem into sub-problems such that
 
 - the original problem can be solved relatively easily once solutions to the sub¬ problems are available, and
-- these sub-problem solutions are cached.
+- these sub-problem solutions are cached. (Usually, but not always, the sub-problems are easy to identify) 
 
-Usually, but not always, the sub-problems are easy to identify.
+DP can be used to find the total number of ways to do something (for example making a change) and if you optimize how you determine each "way", you'd get the optimal solution. Thus, DP can be used to find all combinations AND the optimal solution.
 
 Before we jump into dynamic programming, let's talk about recursion as well.
 
@@ -254,6 +255,7 @@ Now, notice how the max sum, 16, occurs at the end of the sequence! This works b
 
 Since there can be only one max, we choose the larger value of the two bullet points above to determine our max.
 
+To summarize, this algorithm is called **Kadane's Algorithm** where running sum is equal to the max of curr and running sum plus curr.
 Code:
 
 ```cpp
@@ -271,6 +273,24 @@ int MaxSum(vector<int>& A){
 
 Running time is $O(N)$
 
+### Unique ways to make change
+
+**Given an amount and the denominations for the currency, find the total number of unique ways that the amount can be created. For example:**
+
+```cpp
+Amount = 5
+Coins = 1,2,5
+
+You can make 5 using 4 unique combinations:
+ 1 + 1 + 1 + 1 + 1 = 5
+ 1 + 1 + 1 + 2 = 5
+ 1 + 2 + 2 = 5
+ 5 = 5
+``` 
+
+How do we go about tackling this? Notice the quest
+
 ### Conclusion
 
 - DP is applied usually when you need to iterate or find something from ALL combinations of a sequence
+- DP can be used when you're looking for a combination out of possible scenarios. These are questions where you need to make decisions based on where you are in the algorithm
