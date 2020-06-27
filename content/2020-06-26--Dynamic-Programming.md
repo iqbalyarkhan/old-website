@@ -1,8 +1,8 @@
 ---
 title: Dynamic Programming
-date: 2020-06-21
+date: 2020-06-26
 thumbnail: /post-images/dynamic-programming.png
-draft: true
+draft: false
 extract: Dynamic programming
 categories: 
     - General
@@ -11,10 +11,8 @@ tags:
 ---
 
 1. [Introduction](#introduction)
-2. [Recursion](#recursion)
-3. [Triangular Numbers](#triangular-numbers)
-4. [Factorials](#factorials)
-5. [Fibonacci](#fibonacci)
+2. [DP and Recursion](#dp-and-recursion)
+3. [0-1 Knapsack](#0-1-knapsack-problem)
 6. [Max subarray](#max-subarray)
 7. [Unique ways to make change]()
 12. [Conclusion](#conclusion) 
@@ -23,6 +21,7 @@ tags:
 ### Introduction
 
 DP is a general technique for solving optimization, search, and counting problems that can be decomposed into sub-problems. You should consider using DP whenever you have to make choices to arrive at the solution, specifically, when the solution relates to sub-problems.
+
 Like divide-and-conquer, DP solves the problem by combining the solutions of multiple smaller problems, but what makes DP different is that the same sub-problem may reoccur. Therefore, a key to making DP efficient is caching the results of inter- mediate computations. 
 
 The key to solving a DP problem efficiently is finding a way to break the problem into sub-problems such that
@@ -32,179 +31,33 @@ The key to solving a DP problem efficiently is finding a way to break the proble
 
 DP can be used to find the total number of ways to do something (for example making a change) and if you optimize how you determine each "way", you'd get the optimal solution. Thus, DP can be used to find all combinations AND the optimal solution.
 
-Before we jump into dynamic programming, let's talk about recursion as well.
+From the discussion above, it is clear to see that DP is nothing but optimized recursion. Therefore, before jumping into dynamic programming, be sure to go over my [recursion](/recursion) post. 
 
-### Recursion
-Recursion is a common technique to define a problem or a relation where subsequent "terms" build on calculations for previous terms. For example, I could say, every number in a sequence is the sum of its preceding number and 2. I've defined a function in terms of itself ie I'm using the solution that the function found for a previous term and then determining  the subsequent term using that solution. If I had to mathematically represent this sequence (every number in a sequence is the sum of its preceding number and 2), it would look like this:
+### DP and recursion
 
-$$$
-S_{N} = S_{N-1} + 2
-$$$  
+I said earlier that DP is optimized recursion. What does that mean? It means that while we're recursing to solve a problem, we might run into instances where we're redoing work that was previously done in another recursive call. As a result we're performing work that has already been done which is obviously inefficient. To get rid of this redundancy, we can trade space for time where we use extra space to store results we've already calculated. This technique of storing results is known as dynamic programming. 
 
-Which simply means:
+While trying to understand the DP, I found various sources on the internet that used the table creation technique. Our aim should not be to create the said table but to understand WHY that table is created. DP doesn't require the creation of a table for every problem! 
 
-$$$
-S_{4} = S_{3} + 2
-$$$
-
-So, to get the solution for $S_{4}$, I need to know what $S_3$ is. To know what $S_3$ is, I need to know what $S_2$. See the problem here? This sequence appears to continue for eternity! No matter what value I ask you to calculate, you'd never be able to get to a solution with just the information I provided above.
-
-We need at-least one value which is not required to be calculated. This means, that there exists a single term that is already known and we don't need to recursively call $S$ to get its value. This term is called the **base case**. Now, if I tell you this:
-
- $$$
- S_{N} = S_{N-1} + 2
- $$$
- $$$
- S_0 = 0
- $$$
- $$$
- S_1 = 1
- $$$  
-
-you can easily calculate what $S_2$ is! 
-
-This is what recursion means: repeatedly calling the function until you get to the base case and then building your solution back up from the base case. OR, you can start at the base case and move up toward the solution.
-
-Therefore recursive functions:
-- Call themselves 
-- The call made to itself is to solve a smaller version of the original problem
-- There's some version of the problem that doesn't need to be solved and can be returned without making another call (the base case)
-
-### Triangular Numbers
-
-Numbers that follow this pattern:
+So how do we know that DP is required to solve a given problem:
  
-$$$
-1,3,6,10,15,21,....
-$$$
-
-Therefore, `triangularNumber(2)` should return 3. To put it recursively, you'd look at it and notice that
-
-$$$
-3 = 2 + 1
-$$$ 
-
-ie, the value passed in, 2, plus the value for previous term which is 1. 
-
-`triangularNumber(3)` should return 6, which is 3 added to the 3rd term:
-
-$$$
-6 = 3 + 3
-$$$ 
-
-In general, the first term is 1 and $n^{th}$ term is obtained by adding $n$ to the $n-1^{st}$ term. Converting that to a mathematical formula we get:
-
-$$$
-a_{1} = 1
-$$$
-$$$
-a_{n} = a_{n-1} + n
-$$$
-
-Translating that to a function in c++, we get:
-
-```cpp{numberLines: true}
-int triangularNumbers(int num){
-    if (num == 1)
-        return 1;
-    return (num + triangularNumbers(num - 1));
-}
-```
-
-### Factorials
-
-Another overused example is that of factorials:
-
-$$$
-0! = 1
-$$$
-$$$
-1! = 1
-$$$
-$$$
-2! = 2 * 1
-$$$
-$$$
-3! = 3 * 2 * 1 
-$$$
-
-Mathematically, this is:
-
-$$$
-a_{0} = 1
-$$$
-$$$
-a_{1} = 1
-$$$
-$$$
-a_{n} = n * (n-1)!
-$$$
-
-Converting this to code we get:
-
-```cpp
-int Fact(int n){
-    if (n == 1)
-        return 1;
-    return (n * Fact(n-1));
-}
-```
-
-### Fibonacci
-
-Let's start with fibonacci as an example for dp. Fibonacci series is this sequence:
-
-$$$
-F_{N} = F_{N-1} + F_{N-2}
-$$$
-$$$
-F(0) = 0;
-$$$
-$$$
-F(1) = 1;
-$$$
-
-Now, a simple C++ program to calculate $N^{th}$ fibonacci number:
-
-```cpp
-int Fib(int n){
-    if (n == 0)
-        return 0;
-    if (n == 1)
-        return 1;
-    int ans = Fib(n-1) + Fib(n-2);
-    return ans;
-}
-```
-
-This approach works and is quite easy to derive. Let's run through the calls to see how we'd get the 5th fib number (5):
-
-![Fib-5-Image](./images/fib/fib.png)
-
-In the image above, notice how we're calculating fib(3) twice, and fib(2) 4 times!  This is in efficient. We can reduce the time complexity by caching results that we've already calculated. This would allow us to reduce our time from polynomial to linear at the expense of additional space:
-
-```cpp
-int DPFib(int n){
-    if (n == 0)
-        return 0;
-    if (n == 1)
-        return 1;
+- If DP is optimized recursion, any recursive problem is also a DP problem!
+    - There'll be a **choice** (include or exclude something etc) to make and the subproblems overlap. If there are more than one calls being made in each recursive call, ie the recursive functions is calling itself more than once, there is a good chance that it can be optimized using DP.
     
-    int minusTwo = 0;
-    int minusOne = 1;
-    int currFib = -1;
-    for (int i = 2; i <= n; i++){
-        currFib = minusOne + minusTwo;
-        minusTwo = minusOne;
-        minusOne = currFib;
-    }
-    return currFib;
-}
+- DP also deals with optimization as in find the least number of steps, or the most profitable method etc
+    - There might be keywords such as minimum, maximum, etc. Where you're looking to either find the max or the min or the least or the most!
+    
+Therefore, to summarize if there's recursion and there are more than 1 calls being made to the recursive function in each recursive call:
+
+```cpp
+    return Fib(n-1) + Fib(n-2)
 ```
 
-We only need to keep track of the previous two terms, so every time we calculate a new term, we update minus one and minus two.
- **This technique where we remembered the previous two terms instead of blindly using recursion is dynamic programming where we cached the results of already calculated values.**
- 
+then we can use DP to cache the results. Secondly, if it is an optimization problem, then using DP is required. Without a recursive solution, creating a table would result in errors. 
+
+### 0-1 Knapsack Problem
+**The knapsack problem is a problem in combinatorial optimization: Given a set of items, each with a weight and a value, determine the number of each item to include in a collection so that the total weight is less than or equal to a given limit and the total value is as large as possible. It derives its name from the problem faced by someone who is constrained by a fixed-size knapsack and must fill it with the most valuable items. The problem often arises in resource allocation where the decision makers have to choose from a set of non-divisible projects or tasks under a fixed budget or time constraint, respectively.**
+
 
 ### Max Subarray
 
