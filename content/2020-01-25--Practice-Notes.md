@@ -433,6 +433,12 @@ sortedEdges.erase(sortedEdges.begin() + 2); // deletes at index 2 ie 14
 vector<vector<int>> adjList;
 ```
 
+Initialize a 2D vector with m rows and n columns where each entry is -1:
+
+```cpp
+vector<vector<int>> vec(m, vector<int> (n, -1));
+``` 
+
 #### Assign and vectors
 
 The assign() function either gives the current vector the values from start to end, or gives it num copies of val.

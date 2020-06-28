@@ -5,7 +5,7 @@ thumbnail: /post-images/recursion.png
 draft: false
 extract: Principles of recursion
 categories: 
-    - General
+    - Dynamic Programming
 tags:
     - Recursion
 ---
