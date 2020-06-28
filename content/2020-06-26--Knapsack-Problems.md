@@ -395,7 +395,6 @@ Also, remember we had already initialized the first row and first column with ou
 vector<vector<int>> dp(5, vector<int>(8,0));
 
 int knapSack(vector<int> wt, vector<int> val, int c, int n){
-    //i = n, j = c
     //Weight can either be <= c or > c
     for (int i = 1; i <= n; i++){
         for (int j = 1; j <= c; j++){
@@ -436,6 +435,7 @@ int main(int argc, const char * argv[]) {
 
 Running time: $O(cn)$
 
+So, in this problem, we were given a list of items (with weights and values associated) and we had a bag that had a capacity. We were asked to fill our bag while maximizing profits. To do so, we had choices that could be made based on each item. There are plenty of problems where this type of pattern can be re-applied.  
 ### Summary
 In the tabular approach: 
 - We first created a 2D matrix of size dp[n+1][c+1]
