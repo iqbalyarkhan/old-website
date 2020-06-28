@@ -399,11 +399,11 @@ int knapSack(vector<int> wt, vector<int> val, int c, int n){
     //Weight can either be <= c or > c
     for (int i = 1; i <= n; i++){
         for (int j = 1; j <= c; j++){
-            if (wt[i] <= j){
+            if (wt[i-1] <= j){
                 //Choice 1: choose this item
                 //Since we're choosing this item, we add the current item's value to whatever we get from next recursive call
         //        int profitWithChoosing = val[n] + knapSack(wt, val, c - wt[n], n-1);
-                int profitWithChoosing = val[i] + dp[i-1][j-wt[i]];
+                int profitWithChoosing = val[i-1] + dp[i-1][j-wt[i-1]];
                 
                 //Choice 2: Don't choose this item
                 //Since we don't choose this item, we simply ignore its value and move to the next item
