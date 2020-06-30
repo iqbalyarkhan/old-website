@@ -232,6 +232,7 @@ int knapSack(vector<int> wt, vector<int> val, int c, int n){
     }
 }
 ```
+Running time for the memoized version is $O(CN)$ where $C$ is the capacity of the sack and $N$ is the number of items we're asked to process. 
 
 Ok, so we've seen how we can use recursion and memoization to reduce our running time. We're always asking ourselves, can we do better? What is the one glaring thing in the solution above that we can improve? We can try and get rid of the recursive calls that we have in this solution since a recursive call stack can get pretty large for larger inputs. 
 
@@ -391,7 +392,7 @@ One thing we've done above is used `n` and `c` to populate our 2D matrix. Howeve
 
 Also, remember we had already initialized the first row and first column with our base condition, so we'll start at index (1,1). This is where `i` and `j` will start. So, replace `n` and `c` with `i` and `j` and start `i` and `j` at (1,1) and then fill out your table to get the final solution at the end:
 
-```cpp
+```cpp {numberLines: true}
 vector<vector<int>> dp(5, vector<int>(8,0));
 
 int knapSack(vector<int> wt, vector<int> val, int c, int n){
@@ -432,6 +433,8 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 ```
+
+On line 7, we're checking `wt[i-1]` because say `i` is 1 (our smallest possible start value), we're actually interested in the weight of 0th element since that is our starting point. Also, `j` is actually the capacity starting from 0, all the way up till actual capacity so there's no capacity array we're indexing into. 
 
 Running time: $O(cn)$
 
