@@ -434,8 +434,7 @@ int main(int argc, const char * argv[]) {
 }
 ```
 
-On line 7, we're checking `wt[i-1]` because say `i` is 1 (our smallest possible start value), we're actually interested in the weight of 0th element since that is our starting point. Also, `j` is actually the capacity starting from 0, all the way up till actual capacity so there's no capacity array we're indexing into. 
-
+On line 7, we're checking `wt[i-1]` because say `i` is 1 (our smallest possible start value), we're actually interested in the weight of 0th element since that is our starting point. Also, `j` is actually the capacity starting from 0, all the way up till actual capacity so there's no capacity array we're indexing into. Therefore, we're looking at one previous index for `i` (which is `n`) and using current `j` value.
 Running time: $O(cn)$
 
 So, in this problem, we were given a list of items (with weights and values associated) and we had a bag that had a capacity. We were asked to fill our bag while maximizing profits. To do so, we had choices that could be made based on each item. There are plenty of problems where this type of pattern can be re-applied.  
