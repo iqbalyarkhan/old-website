@@ -40,7 +40,7 @@ As the title suggests, in this post, we'll be talking about a famous problem cal
 (2) **0 - 1 Knapsack**: Items need to be included as whole or not included. No fractional items allowed
 (3) **Unbounded Knapsack**: Unlimited supply of items.
 
-In this post, we'll concern ourselves with 0-1 Knapsack.
+In this post, we'll concern ourselves with **0-1 Knapsack**.
 
 ### DP and recursion
 
