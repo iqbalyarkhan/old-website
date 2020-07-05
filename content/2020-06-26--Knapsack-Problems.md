@@ -20,6 +20,7 @@ tags:
     * [Subset Sum Recursive](#subset-sum-recursive)
     * [Subset Sum Tabular](#subset-sum-tabular-approach)
 5. [Equal Sum Partition](#equal-sum-partition)    
+6. [Count Subsets Adding to Given Sum](#count-subsets-adding-to-given-sum)
 12. [Conclusion](#conclusion) 
 
 
@@ -458,7 +459,9 @@ input array: [10,5,12,7,9]
 target: 17
 ```
 
-Why is this 0-1's derivation? Similar to the knapsack problem, this problem has given us an array of values and we've got the option of either choosing that value or rejecting it. The goal is to reach a specific value. Let's start with the recursive approach:
+Why is this 0-1's derivation? Similar to the knapsack problem, this problem has given us an array of values and we've got the option of either choosing that value or rejecting it. The choices that we have are limited by the array given to us and the goal is to reach a specific value. Therefore, it can be considered a problem similar to 0-1 knapsack.
+
+Let's start with the recursive approach:
 
 ### Subset Sum Recursive
 
@@ -689,7 +692,7 @@ bool isPresent(vector<int> vals, int target, vector<vector<bool>> dp){
 Running time: $O(N*Target)$
 
 ### Equal Sum Partition
-This is another interesting problem: **Given an array, determine if the values in the array can be partitioned in two sets that have equal sums.**
+This is another interesting problem: **Given an array, determine if the values in the array can be partitioned into two sets that have equal sums.**
 
 Example: {2,3,7,8,10}
 Answer: True: {2,3,10} and {8,7}
@@ -753,6 +756,99 @@ int main(int argc, const char * argv[]) {
 ```
 
 Running time: $O(N*Target)$
+
+### Count Subsets Adding to Given Sum
+**Given an array, count the number of subsets that add up to a given target. Your function should return the number of subsets found.**
+
+Example: {2,3,5,8,10} Target: 10
+{2,3,5}
+{2,8}
+{10}
+So return 3
+
+Why does this qualify as a 0-1 knapsack? Again because we've got limited items to choose from and for each item we need to make a decision: whether we choose that item or ignore it.
+
+Ok, this sounds similar to the subset sum problem. Let's revisit it: in that problem, we were asked to see if there existed a given subset that would add up to a target. All we had to return was true or false:
+
+```cpp
+bool subsetSum(vector<int> vals, int target, int n){
+    vector<vector<bool>> dp (n+1, vector<bool>(target+1, false));
+    for (int i = 0; i < dp.size(); i++){
+        dp[i][0] = true;
+    }
+    
+    //n = i and target = j
+    for (int i = 1; i <= n; i++){
+        for (int j = 1; j <= target; j++){
+            if (dp[i-1][j] > target)
+                dp[i][j] = dp[i-1][j];
+            else {
+                bool choose = dp[i-1][j - vals[i-1]];
+                bool ignored = dp[i-1][j];
+                dp[i][j] = choose || ignore;
+            }
+        }
+    }
+    return dp[n][target];
+}
+```
+
+In the code above, all we did was initialize our 2d matrix, and check to see if the sum was by choosing OR ignoring the value. As soon as we got either one to be true, we just added true for the current sub-problem and moved on.
+
+In our current problem, we can't just check if the sum can be formed or not. We also need to keep a count for the number of subsets found. The logic remains the same but a few things need to change:
+- Return type from our function
+- What to do when we actually find a subset?
+
+Let's answer these one by one:
+
+**Return type from our function**
+Obviously, we can't return true when we're being asked to get the count of subsets, so we'll return an int.
+
+**What to do when we actually find a subset?**
+Ok, so what do we change this logic to? Here's what subset sum had:
+
+```cpp
+                bool choose = dp[i-1][j - vals[i-1]];
+                bool ignored = dp[i-1][j];
+                dp[i][j] = choose || ignore;
+```
+
+Ok, let's think through this. If we've already found a subset earlier, all we need to do is add it to the current sum:
+
+```cpp
+                int choose = dp[i-1][j - vals[i-1]];
+                int ignored = dp[i-1][j];
+                dp[i][j] = choose + ignore;
+```
+
+That's it! Here's the complete code:
+
+```cpp
+int totalCount(vector<int> vals, int target, int n){
+    vector<vector<int>> dp(n+1, vector<int>(target+1, 0));
+    
+    for (int i = 0; i < dp.size(); i++){
+        dp[i][0] = 1;
+    }
+    
+    for (int i = 1; i <= n; i++){
+        for (int j = 1; j <= target; j++){
+            if (vals[i-1] > j){
+                dp[i][j] = dp[i-1][j];
+            } else {
+                //choose
+                int chosen = dp[i-1][j - vals[i-1]];
+                int ignored = dp[i-1][j];
+                dp[i][j] = chosen + ignored;
+            }
+        }
+    }
+    return dp[n][target];
+}
+```
+
+Running time: $O(N*Target)$
+
 
 ### Conclusion
 
