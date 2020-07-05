@@ -16,6 +16,9 @@ tags:
     * [Memoization](#memoization)
     * [Tabulation](#tabulation)
     * [Summary](#summary)
+4. [Subset Sum](#subset-sum)
+    * [Subset Sum Recursive](#subset-sum-recursive)
+    * [Subset Sum Tabular](#subset-sum-tabular-approach)
 12. [Conclusion](#conclusion) 
 
 
@@ -173,12 +176,12 @@ int knapSack(vector<int> wt, vector<int> val, int c, int n){
 }
 ```
 
-If you trace the recursive call stack above, you'll notice that there are multiple values being re-calculated. How do I know this? Well, as I said earlier, if a recursive function is making multiple calls to itself, it is guaranteed to have overlapping computations. As a result, the running time of this algorithm is $2^N$. We can do much better! 
+If you trace the recursive call stack above, you'll notice that there are multiple values being re-calculated. How do I know this? Well, as I said earlier, if a recursive function is making multiple calls to itself, it is guaranteed to have overlapping computations. In addition, for this solution, we also have the case where we look at each element and for each element we have 2 choices: either we choose the element or we don't. Performing these 2 choice calculations for each element ad we get running time of this algorithm as $2^N$. We can do much better! 
 
 
 ### Memoization 
 
-We can actually save values once calculated by either recursive call. As mentioned earlier, this process of saving already calculated values is called **memoization**. To save these results, we need to create a 2D vector. This vector will then hold our intermediate results for us. **This intermediate result is nothing but the max profit up till that point**.
+We can actually save values once calculated by either recursive call. As mentioned earlier, this process of saving already calculated values is called **memoization**. To save these results, we need to create a 2D vector. This vector will then hold our intermediate results. **This intermediate result is nothing but the max profit up till that point**. We'll elaborate more on this below.
 
 How do we determine the size of our 2D vector? What would be n and what would be m? To determine that, we need to find out the elements we need to keep track of. For example, in the recursive solution above, there's no point in keeping track of the arrays themselves, they're constant. The only two things changing in the algorithm above are:
 - `c` capacity that decreases with every addition of element
@@ -437,13 +440,251 @@ int main(int argc, const char * argv[]) {
 On line 7, we're checking `wt[i-1]` because say `i` is 1 (our smallest possible start value), we're actually interested in the weight of 0th element since that is our starting point. Also, `j` is actually the capacity starting from 0, all the way up till actual capacity so there's no capacity array we're indexing into. Therefore, we're looking at one previous index for `i` (which is `n`) and using current `j` value.
 Running time: $O(cn)$
 
-So, in this problem, we were given a list of items (with weights and values associated) and we had a bag that had a capacity. We were asked to fill our bag while maximizing profits. To do so, we had choices that could be made based on each item. There are plenty of problems where this type of pattern can be re-applied.  
+So, in this problem, we were given a list of items (with weights and values associated) and we had a bag that had a capacity. We were asked to fill our bag while maximizing profits. To do so, we had choices that could be made based on each item. There are plenty of problems where this type of pattern can be re-applied.
+  
 ### Summary
 In the tabular approach: 
 - We first created a 2D matrix of size dp[n+1][c+1]
 - We then initialized the 2D matrix to whatever the base case was in the recursive solution
 - We then replaced each recursive call with a call to the 2D matrix and retrieved already calculated values
 - We then iterated over the entire 2D matrix until we go to the last cell, dp[n][c] which then held the final profit for us!
+
+### Subset Sum
+Let's look at a derivative of the 0-1 knapsack called the subset sum: **Given an array of values, find if a subset in the array adds up to a given sum. Your function should return true if there exists such a subset, false otherwise.**
+
+```cpp
+input array: [10,5,12,7,9]
+target: 17
+```
+
+Why is this 0-1's derivation? Similar to the knapsack problem, this problem has given us an array of values and we've got the option of either choosing that value or rejecting it. The goal is to reach a specific value. Let's start with the recursive approach:
+
+### Subset Sum Recursive
+
+Function signature: So the problem asks us to return true or false so boolean would be our return type. We'll accept the values array, the target and the size of the values array:
+
+```cpp{numberLines: true}
+bool isPossible(vector<int> vals, int target, int n){}
+```
+
+Base case: We can think about the smallest valid input where:
+- target is 0: we can choose no elements from the array and get to 0
+- array is 0: no matter what target we're given, we won't be able to get to the target with no elements.
+
+Here's the code for the base case:
+
+```cpp{numberLines: true}
+bool isPossible(vector<int> vals, int target, int n){
+    if (target == 0)
+        return true;
+    if (n == 0)
+        return false;
+}
+```
+
+Next, what if the value is greater than the target? Simply ignore it and move on to the next value in the array:
+
+```cpp{numberLines: true}
+bool isPossible(vector<int> vals, int target, int n){
+    if (target == 0)
+        return true;
+    if (n == 0)
+        return false;
+    if (vals[n-1] > target)
+        return isPossible(vals, target, n-1);
+}
+```  
+
+Next, what if the value is less than target? Ok, in that case we have 2 choices: pick the element, or ignore the element:
+
+```cpp{numberLines: true}
+bool isPossible(vector<int> vals, int target, int n){
+    if (target == 0)
+        return true;
+    if (n == 0)
+        return false;
+    if (vals[n-1] > target)
+        return isPossible(vals, target, n-1);
+    
+    bool picked = isPossible(vals, target - vals[n-1], n-1); // choose element
+    if (picked){
+        //Found that it adds to target
+        return true;
+    }
+    bool ignore = isPossible(vals, target,n-1);
+    if (ignore){
+        //Found it adds to target
+        return true;
+    }
+    //none of the above hold
+    return false; 
+}
+```  
+
+Running time for this approach is $O(2^N)$. How can we improve this? 
+
+### Subset Sum Tabular Approach
+
+Here, similar to how we approached knapsack tabular solution, we initialize a 2D matrix, but with booleans. We'll keep track of the 2 elements that are changing in our recursive solution: `n` and `target`. Size of 2d matrix will be one greater than `n` and `target`. The rows in our matrix will represent the possible values of `n` and columns would be the `target`:
+
+```cpp{numberLines: true}
+int main(){
+    vector<int> vals = {2,3,7,8,10};
+    int target = 7;
+    vector<vector<bool>> dp (vals.size() + 1, vector<bool>(target+1, false));
+    bool ans = isPresent(vals, target, dp);
+}
+```
+We'll then call the `isPresent()` function with target, vals array and the 2D matrix. Let's look at the isPresent function:
+
+We'll first initialize the 2D matrix with our base case. This is where we assign `target[0]` to be true (since getting a 0 target is always true) and row of `n[0]` as false (except for first element) since with no elements given, we cannot get to any sum (other than 0):
+
+
+|  | **0** | **1** | **2** | **3** | **4** | **5** | **6** | **7** |
+| -- | -- | -- | -- | -- | -- | -- | -- | -- |
+| **0** | T | F | F | F | F | F | F | F | 
+| **1** | T | F | F | F | F | F | F | F |
+| **2** | T | F | F | F | F | F | F | F | 
+| **3** | T | F | F | F | F | F | F | F | 
+| **4** | T | F | F | F | F | F | F | F | 
+
+```cpp
+bool isPresent(vector<int> vals, int target, vector<vector<bool>> dp){
+    for (int i = 0; i < dp.size(); i++){
+        //Initialization
+        dp[i][0] = true;
+    }
+    int n = vals.size();
+``` 
+
+Next, we'll use `i` to track our `n` and `j` to track the `target`. We'll start at (1,1) since we've already initialized 0th row and 0th column:
+
+```cpp{numberLines: true}
+bool isPresent(vector<int> vals, int target, vector<vector<bool>> dp){
+    for (int i = 0; i < dp.size(); i++){
+        //Initialization
+        dp[i][0] = true;
+    }
+    int n = vals.size();
+    for (int i = 1; i <= n.size(); i++){
+        for (int j = 1; j <= target; j++){
+        }
+    }
+``` 
+
+Now comes the meat of the solution. Let's revisit the recursive solution we had. We need to convert this to our iterative solution using the table we created:
+
+```cpp{numberLines: true}
+bool isPossible(vector<int> vals, int target, int n){
+    if (target == 0)
+        return true;
+    if (n == 0)
+        return false;
+    if (vals[n-1] > target)
+        return isPossible(vals, target, n-1);
+    
+    bool picked = isPossible(vals, target - vals[n-1], n-1); // choose element
+    if (picked){
+        //Found that it adds to target
+        return true;
+    }
+    bool ignore = isPossible(vals, target,n-1);
+    if (ignore){
+        //Found it adds to target
+        return true;
+    }
+    //none of the above hold
+    return false; 
+}
+```
+
+Since we've already taken care of base condition, let's convert the condition where value > target:
+
+```cpp{numberLines: 6}
+    if (vals[n-1] > target)
+        return isPossible(vals, target, n-1);
+```
+
+Ok, so the condition stays the same BUT the recursive call needs to be changed to grab previously calculated value from the table. Since `target` is `j` for us and `i` is `n`, we get the value and save in the table like so:
+
+```cpp{numberLines: 6}
+    if (vals[n-1] > target)
+        dp[i][j] = dp[i-1][j];
+```
+We've swapped the order because our rows are `i` and columns are `j`.
+
+Moving on:
+
+```cpp{numberLines: 9}
+    bool picked = isPossible(vals, target - vals[n-1], n-1); // choose element
+    if (picked){
+        //Found that it adds to target
+        return true;
+    }
+    bool ignore = isPossible(vals, target,n-1);
+    if (ignore){
+        //Found it adds to target
+        return true;
+    }
+    //none of the above hold
+    return false; 
+}
+```
+
+In this piece of logic, we're checking to see if `picked` is true OR `ignore` is true. If either one is true, we return true, else we return false. Since we're converting to table, there's nothing to return on each call so we need to decide what to save in the current position. Ok, we just said it out loud right?! We said check to see if `picked` is true OR `ignore` is true. What this means is that say our subset currently contains this:
+
+```text
+2,3,5,7,8
+{2}
+``` 
+And say our target is `5` and we're looking at element 3:
+
+```text
+  |  
+2,3,5,7,8
+{2}
+``` 
+
+We have two choices: we either pick 3, or we ignore 3:
+```text
+  |  
+2,3,5,7,8
+pick 3: {2,3} sum = 5
+ignore 3: {2} sum = 2
+``` 
+
+Therefore the logic below says, if either choice adds up to the target, save true, otherwise save false in current position.  So, we'll perform the logical or `||` operation and save to current position:
+
+```cpp
+bool picked = dp[i-1][j - vals[i-1]];
+bool ignore = dp[i-1][j];
+dp[i][j] = picked || ignore;
+```
+
+Finally, we can ignore the last line since we've handled all cases here! Finally, we return `dp[n][target]`.  Complete tabular code:
+
+```cpp
+bool isPresent(vector<int> vals, int target, vector<vector<bool>> dp){
+    for (int i = 0; i < dp.size(); i++){
+        //Initialization
+        dp[i][0] = true;
+    }
+    int n = vals.size();
+    for (int i = 1; i <= vals.size(); i++){
+        for (int j = 1; j <= target; j++){
+            if (vals[i - 1] <= j){
+                bool picked = dp[i-1][j - vals[i-1]];
+                bool ignore = dp[i-1][j];
+                dp[i][j] = picked || ignore;
+            } else {
+                dp[i][j] = dp[i-1][j];
+            }
+        }
+    }
+    return dp[n][target];
+}
+```
+
 
 ### Conclusion
 
