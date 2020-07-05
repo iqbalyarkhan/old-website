@@ -19,6 +19,7 @@ tags:
 4. [Subset Sum](#subset-sum)
     * [Subset Sum Recursive](#subset-sum-recursive)
     * [Subset Sum Tabular](#subset-sum-tabular-approach)
+5. [Equal Sum Partition](#equal-sum-partition)    
 12. [Conclusion](#conclusion) 
 
 
@@ -633,20 +634,20 @@ Moving on:
 
 In this piece of logic, we're checking to see if `picked` is true OR `ignore` is true. If either one is true, we return true, else we return false. Since we're converting to table, there's nothing to return on each call so we need to decide what to save in the current position. Ok, we just said it out loud right?! We said check to see if `picked` is true OR `ignore` is true. What this means is that say our subset currently contains this:
 
-```text
+```cpp
 2,3,5,7,8
 {2}
 ``` 
 And say our target is `5` and we're looking at element 3:
 
-```text
+```cpp
   |  
 2,3,5,7,8
 {2}
 ``` 
 
 We have two choices: we either pick 3, or we ignore 3:
-```text
+```cpp
   |  
 2,3,5,7,8
 pick 3: {2,3} sum = 5
@@ -685,6 +686,73 @@ bool isPresent(vector<int> vals, int target, vector<vector<bool>> dp){
 }
 ```
 
+Running time: $O(N*Target)$
+
+### Equal Sum Partition
+This is another interesting problem: **Given an array, determine if the values in the array can be partitioned in two sets that have equal sums.**
+
+Example: {2,3,7,8,10}
+Answer: True: {2,3,10} and {8,7}
+
+This problem is similar to subset sum where were trying to find if a subset adds up to a given sum. Here however, we need to make an observation:
+- If the sum in the array is even, then and only then will we be able to partition it into two equal subsets
+
+If the sum in the array is even, we know we can divide the sum by 2 and then check to see if there's a subset in the array that adds to that sum. If so, then obviously remaining elements would add up to the remaining half of the sum. Let's look at the example we used above:
+
+```cpp
+Example: {2,3,7,8,10}
+Answer: True: {2,3,10} and {8,7}
+```
+
+If I had the array as: {2,3,7,8,12} then even though the sum turns out to be even, it cannot be broken into two partitions based on the elements provided. Therefore, all we need to do is check if the sum is even and then call the logic for subset sum with the target as sum/2. 
+
+Here's the code:
+
+```cpp
+
+bool canBePartitioned(vector<int> vals, int target, int n){
+    vector<vector<bool>> dp (n+1, vector<bool>(target+1, false));
+    for (int i = 0; i < dp.size(); i++){
+        dp[i][0] = true;
+    }
+    
+    for (int i = 1; i <= n; i++){
+        for (int j = 1; j <= target; j++){
+            if (vals[i-1] > j){
+                dp[i][j] = dp[i-1][j];
+            } else {
+                bool chosen = dp[i-1][j - vals[i-1]];
+                bool ignored = dp[i-1][j];
+                dp[i][j] = chosen || ignored;
+            }
+        }
+    }
+    return dp[n][target];
+}
+
+int main(int argc, const char * argv[]) {
+    // insert code here...
+    vector<int> vals = {2,3,7,8,12};
+    int sum = 0;
+    for (int i = 0; i < vals.size(); i++){
+        sum += vals[i];
+    }
+    
+    if (sum % 2 == 0){
+        bool ans = canBePartitioned(vals, sum/2, int(vals.size()));
+        if (ans){
+            cout << "Yes!" << endl;
+        } else {
+            cout << "No!" << endl;
+        }
+    } else {
+        cout << "No!" << endl;
+    }
+    return 0;
+}
+```
+
+Running time: $O(N*Target)$
 
 ### Conclusion
 
