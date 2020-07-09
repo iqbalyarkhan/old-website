@@ -13,11 +13,8 @@ tags:
 1. [Introduction](#introduction)
 2. [Recursion Tree](#recursion-tree)
 3. [Recursion: Base, Hypothesis and Induction](#recursion-base-hypothesis-and-induction)
-4. [Triangular Numbers](#triangular-numbers)
-5. [DP Intro](#dp-intro)
-6. [Max subarray](#max-subarray)
-7. [Unique ways to make change]()
-12. [Conclusion](#conclusion) 
+4. [Print from 1 to N](#print-from-1-to-n-using-recursion)
+5. [Print from N to 1](#print-from-n-to-1-using-recursion)
 
 
 ### Introduction
