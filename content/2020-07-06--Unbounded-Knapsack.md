@@ -14,7 +14,8 @@ tags:
 2. [Processed vs Unprocessed](#processed-vs-unprocessed)
 3. [Code Difference](#code-difference)
 4. [Problems](#problems)
-
+5. [Rod cutting](#rod-cutting-problem)
+6. [Coin change max number of ways](#coin-change-max-number-of-ways)
 
 ### Introduction
 
@@ -291,3 +292,5 @@ int main(int argc, const char * argv[]) {
 }
 ```
 
+### Coin Change: Max number of ways
+**Given a value N, if we want to make change for N cents, and we have infinite supply of each of S = { S1, S2, .. , Sm} valued coins, how many ways can we make the change?**
