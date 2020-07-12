@@ -191,7 +191,7 @@ Let's first discuss why this is a general knapsack problem:
 - We've got a price that's being paid to us and we're to make decisions whether to choose a piece or not to choose a piece. We can then repeat this for each possible piece. It is clear that if we do this naively, our running time would be $O(2^N)$ where $N$ is the length of the rod. Therefore, it is clear that we need to use DP to get a better running time solution.
 
 Now, why is this unbounded knapsack? 
-- It is unbounded knapsack because we can cut the 8m rod into eight 1m pieces: I've got more than one instance of the same length! If I choose, I can have four 2m pieces and so on. The main observation is that once I've chosen a piece of a particular length, I can come back and choose it again.  Therefore this is unbounded knapsack.
+- It is unbounded knapsack because we can cut the 8m rod into eight 1m pieces: I've got more than one instance of the same length! If I choose, I can have four 2m pieces and so on. The main observation is that once I've chosen a piece of a particular length, I can come back and choose it again. Therefore this is unbounded knapsack.
 
 Now let's solve this problem! We've already seen that recursive solution is not the most efficient solution, so let's start directly with our bottom-up tabular solution:
 
@@ -222,8 +222,23 @@ Let's start with 1,1. This means that the piece I cut is  1 meter in length and 
 
 - **Choose this 1m piece**
 
-If I choose this 1m piece, then the max profit is value of this 1m piece plus 
+If I choose this 1m piece, then the max profit is value of this 1m piece plus whatever the max profit was from remaining cuts:
+```cpp
+int choose = prices[i-1] + dp[i][j - lengthArr[i-1]]; 
+```
 
 - **Ignore this 1m piece** 
- 
+If I ignore this 1m piece, I've processed it, so I simply ignore the price value of this piece and move on:
+
+```cpp
+int ignore = dp[i-1][j];
+``` 
+
+Now that I have the two pieces of information, what do I put in for dp[i][j]? Simple: it'll be the max of the two choices that I made:
+
+```cpp
+int choose = prices[i-1] + dp[i][j - lengthArr[i-1]]; 
+int ignore = dp[i-1][j];
+dp[i][j] = max(choose,ignore);
+```
 
