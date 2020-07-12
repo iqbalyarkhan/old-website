@@ -86,20 +86,16 @@ int zeroOneKnapSack(vector<int> wt, vector<int> val, int c, int n){
             if (wt[i-1] <= j){
                 //Choice 1: choose this item
                 //Since we're choosing this item, we add the current item's value to whatever we get from next recursive call
-        //        int profitWithChoosing = val[n] + knapSack(wt, val, c - wt[n], n-1);
                 int profitWithChoosing = val[i-1] + dp[i-1][j-wt[i-1]];
                 
                 //Choice 2: Don't choose this item
                 //Since we don't choose this item, we simply ignore its value and move to the next item
-        //        int profitWithNotChoosing = knapSack(wt, val, c, n-1);
                 int profitWithNotChoosing = dp[i-1][j];
                 //Need to return max profit
                 //Finally, based on the two decisions above, we choose the max of the two and return that value
-        //        return = max (profitWithChoosing, profitWithNotChoosing);
                 dp[i][j] = max (profitWithChoosing, profitWithNotChoosing);
             } else {
                 //weight is > capacity, just continue recursing...
-        //        return knapSack(wt, val, c, n-1);
                 dp[i][j] = dp[i-1][j];
             }
         }
@@ -127,14 +123,50 @@ In the code above, when we choose the item, we make the recursive call again wit
 int choose = val[n-1] + zeroOneKnapSack(val, wt, c - wt[n-1], n); // We're NOT reducing n since we can choose nth item again! 
 ```
 
+Therefore, bottom up for unbounded would look like this:
+
+```cpp
+int unBoundedKnapsack(vector<int> wt, vector<int> val, int c, int n){
+    //i = n, j = c
+    //Weight can either be <= c or > c
+    for (int i = 1; i <= n; i++){
+        for (int j = 1; j <= c; j++){
+            if (wt[i-1] <= j){
+                //Choice 1: choose this item
+                //                                     | not reducing this i since it can be chosen again
+                int profitWithChoosing = val[i-1] + dp[i][j-wt[i-1]]; //Not reducing i here since we can choose ith item again!
+                
+                //Choice 2: Don't choose this item
+                //Since we don't choose this item, we simply ignore its value and move to the next item
+                int profitWithNotChoosing = dp[i-1][j];
+                //Need to return max profit
+                dp[i][j] = max (profitWithChoosing, profitWithNotChoosing);
+            } else {
+                //weight is > capacity, just continue recursing...
+                dp[i][j] = dp[i-1][j];
+            }
+        }
+    }
+    return dp[n][c];
+}
+```
+
+Therefore, here's the line we changed:
+```cpp
+//0-1knapsack
+int profitWithChoosing = val[i-1] + dp[i-1][j-wt[i-1]];
+//unbounded                            |
+int profitWithChoosing = val[i-1] + dp[i][j-wt[i-1]]; //Not reducing i here since we can choose ith item again!
+```
+
 That is the only difference between 0-1 and unbounded where a chosen item can be chosen again. This has far-reaching implications. It implies that:
-- Unbounded is to be used where the number of items available are infinite
+- Unbounded is to be used where the number of items available are infinite. ie the number of options you have can be used again and again
 - Same item can be included in our knapsack multiple times
 
 ### Problems
 Now let's have a look at a few problems that use unbounded knapsack. Before we do that, we also need to figure out whether the problem uses unbounded or 0-1 variation. How would we go about determining that?
 
-Like I said earlier, if the problem allows you to choose multiple instances of the same value, weight, size or significance then it is a unbounded knapsack. You can have 1 box of fries and then have another box of fries if you're allowed, otherwise, you'll have to choose a bowl of lettuce.  
+Like I said earlier, if the problem allows you to choose multiple instances of the same value, weight, size or significance then it is an unbounded knapsack variation. You can have 1 box of fries and then have another box of fries if you're allowed, otherwise, you'll have to choose a bowl of lettuce.  
 
 ### Rod cutting Problem
 
@@ -154,12 +186,12 @@ Therefore, our input is:
 - length array
 - price array 
 
-Let's first discuss why this is a general knapsack problem (and then we'll discuss how to determine whether it is a 0-1 or unbounded knapsack problem):
+Let's first discuss why this is a general knapsack problem:
 
 - We've got a price that's being paid to us and we're to make decisions whether to choose a piece or not to choose a piece. We can then repeat this for each possible piece. It is clear that if we do this naively, our running time would be $O(2^N)$ where $N$ is the length of the rod. Therefore, it is clear that we need to use DP to get a better running time solution.
 
 Now, why is this unbounded knapsack? 
-- It is a unbounded knapsack because we can cut the 8m rod into eight 1m pieces: I've got more than one instance of the same length! If I choose, I can have four 2m pieces and so on. The main observation is that once I've chosen a piece of a particular length, I can come back and choose it again.  Therefore this is unbounded knapsack.
+- It is unbounded knapsack because we can cut the 8m rod into eight 1m pieces: I've got more than one instance of the same length! If I choose, I can have four 2m pieces and so on. The main observation is that once I've chosen a piece of a particular length, I can come back and choose it again.  Therefore this is unbounded knapsack.
 
 Now let's solve this problem! We've already seen that recursive solution is not the most efficient solution, so let's start directly with our bottom-up tabular solution:
 
@@ -184,7 +216,14 @@ int rodMaxProfit(vector<int> lengthArr, vector<int> prices, int N){}
  | **8** | 0 | F | F | F | F | F | F | F |   
  
  
- Now, if I have no pieces to sell, my profit would be 0. Also, if I have no length of rod, I can't sell anything so my profit is 0. That is why the 0th row and the 0th columns are all 0s. Now, we just use the logic that was explained for 0-1 knapsack with the only difference being that we'll not decrement `i` if we choose the current element:
+ Now, if I have no pieces to sell, my profit would be 0. Also, if I have no length of rod, I can't sell anything so my profit is 0. That is why the 0th row and the 0th columns are all 0s. Now, we just use the logic that was explained for 0-1 knapsack with the only difference being that we'll not decrement `i` if we choose the current element.
  
+Let's start with 1,1. This means that the piece I cut is  1 meter in length and the rod is also of size 1. So the max profit here would be based on the 2 choices that I have:
+
+- **Choose this 1m piece**
+
+If I choose this 1m piece, then the max profit is value of this 1m piece plus 
+
+- **Ignore this 1m piece** 
  
 
