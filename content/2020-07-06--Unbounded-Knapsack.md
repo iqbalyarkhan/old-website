@@ -104,26 +104,39 @@ int zeroOneKnapSack(vector<int> wt, vector<int> val, int c, int n){
 }
 ```
 
-Let's look at unbounded knapsack: remember the only difference is that if we've chosen an item, we can choose it again. I'm only showing here what's different from 0-1 knapsack code:
+Let's look at a concrete example to drive home the point:
 
-```cpp{numberLines: true}
-int unBoundedKnapsack(vector<int> val, vector<int> wt, int c, int n){
-    //.....
-    //Choose so reduce capacity and add value    
-    int choose = val[n-1] + zeroOneKnapSack(val, wt, c - wt[n-1], n); // We're NOT reducing n since we can choose nth item again!
-    //Ignore so just move one 
-    int ignore = zeroOneKnapSack(val, wt, c, n-1); // We'll reduce n here since we've rejected nth item
-    return max(choose, ignore);
-}
+```cpp
+ wt = {1,3,4,5}; // weight of each item in pounds
+ val = {2,4,6,8}; //value of each item in dollars
+ c = 7; //capacity in pounds
 ```
 
-In the code above, when we choose the item, we make the recursive call again with `n`th item still available:
+Here's my initial table for this scenario:
+
+|  | **0** | **1** | **2** | **3** | **4** | **5** | **6** | **7** |
+| -- | -- | -- | -- | -- | -- | -- |
+| **0** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **1** (1) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **2** (1,3) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **3** (1,3,4) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 
+| **4** (1,3,4,5) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+
+We've already initialized row 0 and column 0 so we'll start at (1,1). At this position, we have the option of either choosing this item or not choosing this item.
+
+**Choose**:
+
+Say I chose this item, then my new capacity is 1 - 1 = 0. Unlike 0-1 knapsack, in unbounded knapsack, I CAN pick this item again so my available items to be picked stays at 1. In essence, we've reduced our problem from finding the max profit from 1 item and capacity of 1 to item 1 and capacity of 0. Now, remember we said that we want to get current value from previously calculated values? Do I know what the profit is if my items are 1 and capacity is 0? ie do I know what dp[1][0] is? YES! It is 0! But wait, we're not done. Since we've chosen this item, we need to add its value to the value we got from the sub-problem. 
+
+Therefore, unbounded knapsack's choose would look like this (I've given 0-1 knapsack choose for comparison as well):
 
 ```cpp{numberLines: 4}
-int choose = val[n-1] + zeroOneKnapSack(val, wt, c - wt[n-1], n); // We're NOT reducing n since we can choose nth item again! 
+                int profitWithChoosing = val[i-1] + dp[i][j-wt[i-1]]; //Not reducing i 
+                                                       |
+//0-1 had this: int profitWithChoosing = val[i-1] + dp[i-1][j-wt[i-1]];
 ```
-
-Therefore, bottom up for unbounded would look like this:
+Everything else stays the same! That's it! Therefore, bottom up for unbounded would look like this:
 
 ```cpp
 int unBoundedKnapsack(vector<int> wt, vector<int> val, int c, int n){
@@ -151,7 +164,7 @@ int unBoundedKnapsack(vector<int> wt, vector<int> val, int c, int n){
 }
 ```
 
-Therefore, here's the line we changed:
+To summarize, here's the only line we changed:
 ```cpp
 //0-1knapsack
 int profitWithChoosing = val[i-1] + dp[i-1][j-wt[i-1]];
@@ -240,5 +253,41 @@ Now that I have the two pieces of information, what do I put in for dp[i][j]? Si
 int choose = prices[i-1] + dp[i][j - lengthArr[i-1]]; 
 int ignore = dp[i-1][j];
 dp[i][j] = max(choose,ignore);
+```
+
+If you notice, this is quite similar to the unbounded knapsack problem we saw earlier in this post. The only thing we did was change the input arrays because obviously, our input is different: we changed weight array to length array and value array was changed to price array for rod cutting problem!
+
+Putting it all together, here's the complete code:
+
+```cpp
+int rodMaxProfit(vector<int> lengthArr, vector<int> prices, int N){
+    int L = int(lengthArr.size() + 1);
+    vector<vector<int>> dp(L, vector<int>(N+1, 0));
+    
+    for (int i = 1; i <= N; i++){
+        for (int j = 1; j <= L; j++){
+            if (lengthArr[i-1] > N)
+                dp[i][j] = dp[i-1][j];
+            else {
+                int choose = prices[i-1] + dp[i][j - lengthArr[i-1]];
+                int ignore = dp[i-1][j];
+                dp[i][j] = max(choose,ignore);
+            }
+        }
+    }
+    
+    return dp[N][L];
+    
+}
+
+int main(int argc, const char * argv[]) {
+    // insert code here...
+    vector<int> length = {1,2,3,4,5,6,7,8};
+    vector<int> prices = {1,5,8,9,10,17,17,28};
+    int n = 8;
+    int ans = rodMaxProfit(length, prices, n);
+    cout << "ans: " << ans << endl;
+    return 0;
+}
 ```
 
