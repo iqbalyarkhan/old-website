@@ -294,3 +294,140 @@ int main(int argc, const char * argv[]) {
 
 ### Coin Change: Max number of ways
 **Given a value N, if we want to make change for N cents, and we have infinite supply of each of S = { S1, S2, .. , Sm} valued coins, how many ways can we make the change?**
+
+Let's see why this is a knapsack problem: Say we're given this input:
+
+```cpp
+vector<int> coins = {1,2,3,5};
+int changeToBeMade = 5;
+``` 
+
+So we're asked to make change for \$5 with only bills that are of the denomination 1,2,3 and 5. Ok, so what are my options? 
+- pick 1 and keep picking 1 until I get to 5 and ignore others
+- pick 2 and keep picking 2 and then pick 1 again and ignore others
+- pick 3 and pick 2 and ignore others
+- pick 5 and ignore others
+etc..
+
+Here we see that we've got the option to pick 1 or not pick 1. Then we've go the option to pick 2 or not pick 2. Then we've got the option t pick 3 or not pick 3 and so on. See the problem here? If we go down the recursion rabbit hole, we'd end up with $O2^N$ running time. So, we better use knapsack to solve this problem! 
+
+Now, which knapsack do we use? 0-1 or unbounded? Well, in the options we listed above are we picking the same item more than once? Yes! we can pick all 1s (multiple occurrences of the same input), or we can pick 2 2s (multiple occurrences here again!) and so on, so we'll use unbounded knapsack!
+
+Let's start with the table:
+
+|  | **0** | **1** | **2** | **3** | **4** | **5** |
+| -- | -- | -- | -- | -- | -- | -- |
+| **0** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **1** (1) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **2** (1,2) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **3** (1,2,3) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 
+| **4** (1,2,3,5) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+I've created the initial table with all 0s. Now let's recall:
+- What the rows mean: Each row is the coin that we have available for selection
+- What the columns mean: Each column is the change we need to get to
+
+Alright, so row 0 means that we have no coins. In that case, we can only make the sum 0 and no other sum. Therefore, (0,0) would equal 1 while every other entry in row 0 stays 0.
+
+Next, column 0: This means that our target sum is 0. In this case we can get to the sum of 0 by picking nothing no matter how many bills are given to us! Therefore, we have exactly 1 way to to get to target 0. So all entries in column 0 would be 1:
+
+|  | **0** | **1** | **2** | **3** | **4** | **5** |
+| -- | -- | -- | -- | -- | -- | -- |
+| **0** | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **1** (1) | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **2** (1,2) | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **3** (1,2,3) | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 
+| **4** (1,2,3,5) | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+So, we're done with row 0 and column 0. Let's start with (1,1). We'll use `i` to keep track of the rows and `j` for columns. 
+
+(1) (1,1) i = 1, j = 1.
+
+Here, it means that we want to get to sum of 1 (because j = 1) and we only have the first element available for selection (since i = 1). This element that is available for selection is a bill for \$1.
+
+We've got two options with this \$1 bill:
+
+- **Choose**:
+We decide to choose this bill. If we choose this bill, our new target becomes: 
+
+```cpp
+ = j - coins[i - 1]
+ = 1 - coins[1 - 1]
+ = 1 - coins[0]
+ = 1 - 1
+ = 0
+``` 
+
+Now remember, this is unbounded knapsack, so I can pick \$1 as many times as I want. Since I've already picked it, I cannot discard it since it may be picked again. Keeping that in mind, how many ways do I have to get to the target of 0 considering the only bills I can use are \$1? That information would be in dp[i][j] where i = 1 and j = 0. Do I have that information? Do I know what dp[1][0] is? Yes! It is 1. Converting this logic to code, if I'm choosing an element, I need to grab the possible ways using:
+
+```cpp
+int choose = dp[i][j - coins[i-1]];
+```
+
+Therefore, if I choose the \$1 bill I have 1 way to get to the target of 1. This makes sense right, because there's only one way to get to the sum of 1 if all I have is the \$1 bill which is by choosing the bill I have. 
+
+- **Ignore**:
+If I ignore this \$1 bill, how many ways do I have to get to the sum of 1? Well, I've decided I won't pick the \$1 bill, so the only things I can pick are the set of all elements seen so far except 1. This is the empty set, or where i = 0. Now, if I have nothing and I want to get to 1, ie my i = 0 and j = 1, how many ways are there to get to the target of 1. Do I have this information? It would be in  dp[0][1]. Yes! It is 0. Converting this logic to code, if I'm ignoring an element, I need to grab the possible ways to get to the current target **using only elements other than the current element** which is in the table: stay in the same column but go back one row:
+
+```cpp
+int ignored = dp[i-1][j];
+```  
+
+**Decision**:
+
+What do I do now that I have my values for choosing and ignoring the current bill? Well, I want all possible ways right? So I'll go ahead and add the two values and assign to dp[i][j]. That is because dp[i][j] represents all possible ways to get to the current sum:
+
+```cpp
+dp[i][j] = choose + ignored; 
+```
+
+The example above was one where the sum we need to get to is atleast as large as the denomination but what if we want to create the sum of 2 and the only denomination bill we have is 5, then no matter what we cannot get to the sum 2 with \$5 bill. In this case we'll just ignore the current denomination and copy over the running total from the previous denomination:
+
+```cpp
+if (coins[i - 1] > j)// If the coin I'm looking at is > target
+    dp[i][j] = dp[i-1][j];
+```  
+
+And that's it! We let the code run and get the max number of ways to get to a target. This is nothing but unbounded knapsack code without the values array. We substituted the weights array with the coins array. Other than that, the logic stayed the same:
+
+```cpp
+
+int coinChangeMaxWays(vector<int> coins, int s, int n){
+    vector<vector<int>>dp (n+1, vector<int>(s+1, 0));
+    for (int i = 0; i < dp.size(); i++){
+        dp[i][0] = 1;
+    }
+    
+    for (int i = 1; i <= n; i++){
+        for (int j = 1; j <= s; j++){
+            //coin > sum, ignore
+            if (coins[i-1] > j){
+                dp[i][j] = dp[i-1][j];
+            } else {
+                //choose:
+                int choose =  dp[i][j - coins[i-1]];
+                int ignored = dp[i-1][j];
+                dp[i][j] = choose + ignored;
+            }
+        }
+    }
+    return dp[n][s];
+}
+```
+
+Sample output for our example array where we had coins {1,2,3,5} and wanted to get to 5:
+
+```text
+1 0 0 0 0 0 
+1 1 1 1 1 1 
+1 1 2 2 3 3 
+1 1 2 3 4 5 
+1 1 2 3 4 6 
+```
+So there're a total of 6 ways:
+- 1 + 1 + 1 + 1 + 1 = 5
+- 1 + 1 + 1 + 2 = 5
+- 1 + 1 + 3 = 5
+- 2 + 2 + 1 = 5
+- 2 + 3 = 5
+- 5 = 5
