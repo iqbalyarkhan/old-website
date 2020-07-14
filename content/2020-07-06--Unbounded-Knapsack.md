@@ -510,4 +510,18 @@ int minimumNumberOfCoins(vector<int> coins, int target, int n){
 }
 ```
 
+If you run the above on our input of <1,2,3,4> and target 5, you'll get the following table:
+
+```text
+0 2147483647 2147483647 2147483647 2147483647 2147483647 
+0 1 2 3 4 5 
+0 1 1 2 2 3 
+0 1 1 1 2 2 
+0 1 1 1 1 2 
+```
+Notice:
+- If you're given only coin 1, then minimum number of coins needed to get to 5 are 5: all 1s. This is denoted by cell (1,5) 
+- If you're given coins 1 and 2, then minimum number of coins needed to get to 5 are 3: 2 + 2 + 1 = 3. This is denoted by cell (2,5)
+- If you're given coins 1, 2 and 3, then minimum number of coins needed to get to 5 are 2: 3 + 2 = 2. This is denoted by cell (3,5)
+
 Running time: $O(N * Target)$
