@@ -16,6 +16,7 @@ tags:
 4. [Problems](#problems)
 5. [Rod cutting](#rod-cutting-problem)
 6. [Coin change max number of ways](#coin-change-max-number-of-ways)
+7. [Coin change minimum number of coins](#coin-change-minimum-number-of-coins)
 
 ### Introduction
 
@@ -431,3 +432,82 @@ So there're a total of 6 ways:
 - 2 + 2 + 1 = 5
 - 2 + 3 = 5
 - 5 = 5
+
+### Coin change minimum number of coins
+**Given a set of coins and a target sum, find the minimum number of coins needed to get to the target**
+
+Example:
+```cpp
+input: 1,2,3,4
+target: 5
+
+return 2: 1 + 4 = 5 or 2 + 3 = 5
+```
+
+Why is this unbounded knapsack? Because the minimum number of coins might have repeated coins of the same denomination! We might use the same item more than once. 
+
+### Initialization
+This is quite an interesting problem. Let's start with initializing our table. Our inputs are:
+
+- coins: <1,2,3,4>
+- target: 5
+
+|  | **0** | **1** | **2** | **3** | **4** | **5** |
+| -- | -- | -- | -- | -- | -- | -- |
+| **0** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **1** (1) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **2** (1,2) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **3** (1,2,3) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 
+| **4** (1,2,3,4) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+Ok, so what does (0,0) mean? (0,0) means that if the target is 0 and the number of coins we're given is 0, what is the minimum number of coins needed to get to 0? Well, if we pick nothing, we'll get to 0! So, minimum coins is 0! Same is true of (1,0) where target is 0 and the number of coins we're given is 1: ie the first coin of value 1. In this case as well, if we pick nothing, we'll get to the sum of 0. Therefore, all values in column 0 are 0!
+
+Now, what about (0,1)? We need to get to sum 1 and we're given nothing! In this case, there's no number of 0c coins that would satisfy this! So, we'll put $\infty$. In our code, we'll use int's numeric limit to denote infinity. Same goes for all targets with coin 0:
+
+|  | **0** | **1** | **2** | **3** | **4** | **5** |
+| -- | -- | -- | -- | -- | -- | -- |
+| **0** | 0 | $\infty$ | $\infty$ | $\infty$ | $\infty$ | $\infty$ | $\infty$ | $\infty$ |
+| **1** (1) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **2** (1,2) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **3** (1,2,3) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 
+| **4** (1,2,3,4) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+### Logic
+
+Ok, let's start with position, (1,1): this means that we need to get to 1 given a coin of denomination 1c. Say, we pick this coin, now our target sum becomes 1 - 1 = 0 BUT we stay in the same row, ie we don't go to (0,1). Why? Because this is unbounded knapsack and we can pick the item we're on multiple times. Alright, so we're now at: dp[1][0]. Do I know the minimum number of coins needed to make change for 0 if I'm given only 1c coin? YES! It is 0 which was decided during initialization. Ok, so we know that the minimum number of coins for the sum 0 was 0, but we're solving the problem for the target of 1. Remember, we had already picked the 1c coin, so all we need to do is add 1 to the minimum we got because we've picked the current coin and we'll have the minimum number of coins for current position! 
+
+Now, so far we've seen that for each item, we had a choice, we either pick it, or ignore it, you can solve this problem using that logic as well but since we're only interested in the minimum, and we've already determined what the minimum is for each denomination and target preceding current target, all we need to do is grab the previous minimum and add 1 to it! 
+
+
+If the denomination we're looking at is greater than the sum, all we do is ignore current denomination and bring the minimum from the previous denominations similar to how we've been doing!
+
+### Code
+
+```cpp
+int minimumNumberOfCoins(vector<int> coins, int target, int n){
+    int maxInt = numeric_limits<int>::max();
+    vector<vector<int>> dp (n+1, vector<int>(target + 1, maxInt));
+    
+    for (int i = 0; i <= n; i++){
+        dp[i][0] = 0;
+    }
+    
+    for (int i = 1; i <= n; i++){
+        for (int j = 1; j <= target; j++){
+            if (coins[i-1] > j)
+                dp[i][j] = dp[i-1][j];
+            else {
+                int prevMin = dp[i][j - coins[i-1]];
+                if (prevMin < maxInt){
+                    dp[i][j] = prevMin + 1;
+                } else {
+                    dp[i][j] = maxInt;
+                }
+            }
+        }
+    }
+    return dp[n][target];
+}
+```
+
+Running time: $O(N * Target)$
