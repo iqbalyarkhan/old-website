@@ -122,7 +122,7 @@ int LCS(string A, string B, int n, int m){
 }
 ```
 
-The running time is exponential: $O(N * 2^N)$
+The running time is exponential: $O(2^{N+M})$
 
 ### Longest Common subsequence Memoized
 
