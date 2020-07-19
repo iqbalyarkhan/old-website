@@ -2,7 +2,7 @@
 title: LCS And Derivatives
 date: 2020-07-14
 thumbnail: /post-images/lcs.png
-draft: false
+draft: true
 extract: Longest Common Subsequence and its derivatives
 categories: 
     - Dynamic Programming
