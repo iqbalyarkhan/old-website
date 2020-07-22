@@ -11,6 +11,7 @@ tags:
 ---
 
 1. [Introduction](#introduction)
+2. [Approach](#approach)
 2. [Examples](#Examples)
     * [Sum](#sum)
     * [Factorial](#factorial)
@@ -34,6 +35,13 @@ Recursion is a common technique to define a problem or a relation where subseque
 A lot of the definitions of recursion insist that we reduce the size of our problem. That is something that I find misleading since the aim is not to reduce the size but to make decisions and as a result of making those decisions, our problem size in-effect decreases. It is a consequence of the decision we make. 
 
 Therefore, recursion is all about making decisions that help us reduce the input. How do we know that the problem has a recursive solution? The problem would be defined by the choices that we have and the decisions that we can make. It'd be clear that there are various choices and soon as we pick a choice, the complexity of our problem is reduced.
+
+### Approach
+We'll use this approach to break down recursive problems:
+- Determine the size of the problem (how many times do we have to recurse?)
+- Determine the base case (what is the smallest valid input?)
+- Create a diagram (we'll see them below)
+- Test!
 
 ### Examples
 Let's have a look at a few examples to build some recursive intuition:
@@ -287,6 +295,53 @@ odd input:
     C(3)    ----->  solution for smaller  3 = 11
   smaller input                  input
     7/2
+```
+
+### Count number of bits set to 1
+
+**Given an integer in base 10, count the number of bits that are set to 1 for this integer's binary representation**
+
+The problem is quite simple. Let's say we use 5 as an example:
+```text
+5 in binary is 0101
+```
+
+Let's first see a simple method to convert decimal to binary:
+
+```text
+
+5/2 = 2 remainder 1
+2/2 = 1 remainder 0
+1/2 = 0 remainder 1
+0/2 END ADD 0:    0         
+```
+
+Notice how the final result would have a 1 when the current element modulus 2 is 1. We'll take advantage of this fact. Finally, remember the problem is to **count the number of 1s in binary representation**.
+
+**Base Case**
+This occurs when we have smallest valid input: ie when n <= 1. In this case, we just return `n`. Why does this work? How many 1s are in binary representation of 1 (0001)? 1. How many 1s are in binary representation of 0 (0000)? 0. 
+
+**Decomposition**
+How are we going to make our way toward base cases? In the example above, we kept dividing n by 2, so we'll do the same. We'll decompose the problem in 2. 
+
+**Diagram**
+```text
+    count(5)               Final solution = 2 
+      |                        |        Recursive step:
+      |                        |        solution + n % 2. 
+      |                        |         1 + (5 % 2) = 2       
+      |                        |        
+    count(5/2)    ----->  solution for smaller 2 = 1 
+  smaller input                  input
+    5/2
+```
+
+```cpp
+int numberOfBitsSetToOne(int n){
+    if (n <= 1)
+        return n;
+    return numberOfBitsSetToOne(n/2) + n%2;
+}
 ```
 
 ### Binary Search
