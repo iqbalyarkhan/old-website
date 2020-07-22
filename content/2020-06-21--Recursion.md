@@ -22,6 +22,7 @@ tags:
 5. [Linear Recursion](#linear-recursion)
     * [Power](#power)
     * [Decimal to binary](#decimal-to-binary)
+    * [Count number of bits set to 1](#count-number-of-bits-set-to-1)
 6. [Binary Search](#binary-search)
 2. [Binary Search Tree](#binary-search-tree)
 3. [Recursion: Base, Hypothesis and Induction](#recursion-base-hypothesis-and-induction)
