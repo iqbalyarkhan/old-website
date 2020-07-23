@@ -2,7 +2,7 @@
 title: Recursion
 date: 2020-06-21
 thumbnail: /post-images/recursion.png
-draft: true
+draft: false
 extract: Principles of recursion
 categories: 
     - Dynamic Programming
@@ -24,7 +24,8 @@ tags:
     * [Decimal to binary](#decimal-to-binary)
     * [Count number of bits set to 1](#count-number-of-bits-set-to-1)
 6. [Binary Search](#binary-search)
-2. [Binary Search Tree](#binary-search-tree)
+7. [Multiple recursion](#multiple-recursion)
+    * [Is list sorted in ascending](#is-list-sorted-in-ascending-order)
 3. [Recursion: Base, Hypothesis and Induction](#recursion-base-hypothesis-and-induction)
 4. [Print from 1 to N](#print-from-1-to-n-using-recursion)
 5. [Print from N to 1](#print-from-n-to-1-using-recursion)
@@ -144,7 +145,7 @@ You assume that the code works for smaller problems even if you have not yet wri
 
 Let's look at a simple diagram that'll help us tackle recursive problems:
 
-```text
+```cpp
 
     input                  Final solution  
       |                        | 
@@ -165,7 +166,7 @@ Base case: sum is 1 if N = 1
 
 decomposition: keep subtracting 1
 
-```text
+```cpp
 
    input = 5            Final solution  = 15 
       |                        | 
@@ -189,7 +190,7 @@ int sum(int n){
 
 **Sum the digits of an integer: given 5432 you should return 14**
 
-```text
+```cpp
    input 5432           Final solution  = 14
       |                        | 
       |                        |        Perform recursive step  
@@ -217,7 +218,7 @@ So far we've seen problems where there's only a single sub-problem: ie divide n 
 
 **Given an array, find the max in the array by dividing array in 2 and getting max from each half**
 
-```text
+```cpp
    [9,2,8,4,5]           Final solution  = 9
       |                        | 
       |                        |   Perform recursive step  
@@ -248,7 +249,7 @@ Linear recursion is the case where a method calls itself once and in each call, 
 ### Power
 **Given base 2 and exponent P(base, exponent), return base raised to the power**
 
-```text
+```cpp
     P(2,4)               Final solution = 16  
       |                        | 
       |                        |        Perform recursive step  
@@ -275,7 +276,7 @@ int power(int base, int exp){
 
 At times, you have to look at all possible cases to determine the solution:
 even input:
-```text
+```cpp
     C(8)               Final solution = 1000  
       |                        |        Recursive step:
       |                        |        100 * 10  
@@ -287,7 +288,7 @@ even input:
 ```
 
 odd input:
-```text
+```cpp
     C(7)               Final solution = 111  
       |                        |        Recursive step:
       |                        |        11 * 10 + 1  
@@ -309,7 +310,7 @@ The problem is quite simple. Let's say we use 5 as an example:
 
 Let's first see a simple method to convert decimal to binary:
 
-```text
+```cpp
 
 5/2 = 2 remainder 1
 2/2 = 1 remainder 0
@@ -326,7 +327,7 @@ This occurs when we have smallest valid input: ie when n <= 1. In this case, we 
 How are we going to make our way toward base cases? In the example above, we kept dividing n by 2, so we'll do the same. We'll decompose the problem in 2. 
 
 **Diagram**
-```text
+```cpp
     count(5)               Final solution = 2 
       |                        |        Recursive step:
       |                        |        solution + n % 2. 
@@ -369,13 +370,85 @@ int binarySearch(vector<int>A, int f, int lo, int hi){
 }
 ```
 
-### Binary Search Tree
+### Multiple recursion
+So far we've seen linear recursion where the recursive function is called once in each recursive call. Multiple recursion, as the name suggests, has multiple recursive calls present in the method and the solutions from these multiple calls are combined, extended or modified to get the solution for the main problem. Divide and conquer fall in this category. Here, we'll see a few problems that use multiple recursion:
 
-Similar to binary search, a binary search tree has data stored in a logical manner where keys less than the node appear in left subtree and keys greater than the node appear in right subtree. Searching in a binary search tree also involves recursion:
+### Is List sorted in ascending order
+**Given a list (array), return true if it is sorted in ascending order, false otherwise**
 
-Base case: value is at root or root pointer is null
+**Base case**
+There's only one element in the list where we can return true
 
-Decomposition: Keep discarding half the tree based on whether the key is greater or less than the current node's value
+**Size of problem**
+`n`: number of elements
+
+**Decomposition**
+We can check one element at a time OR divide the list into two halves and check. We'll use the latter approach.
+
+**Example**
+Happy path example:
+[1,3,7,9]
+
+```cpp
+    1,3,7,9               Final solution = true 
+      |                        |        Recursive step:
+      |                        |        return (left && right);
+      |                        |         
+      |                        |        
+    1,3     ------------>  left = true;          
+    7,9     ------------>  right = true; 
+```
+Failing example:
+[1,8,6,9]
+
+```cpp
+    1,8,6,9               Final solution = false 
+      |                        |        Recursive step:
+      |                        |        return (left && right);
+      |                        |         
+      |                        |        
+    1,8     ------------>  left = true;          
+    6,9     ------------>  right = true; 
+```
+
+It is clear from the failing example that simply testing the two sub-lists isn't enough. In the top row our solution shows that the final answer should be false but in the recursive step our logic returns a true. How do we handle this? We need to check the two elements that are across sub-lists: ie last element of left and first element of right. This changes our solution:
+
+
+```cpp
+    1,8,6,9               Final solution = false 
+      |                        |        Recursive step:
+      |                        |        bool cross = leftLast && rightFirst;
+      |                        |        return left && cross && right;
+      |                        |        
+    1,8     ------------>  left = true;          
+    6,9     ------------>  right = true; 
+```
+
+```cpp
+bool isAscending(vector<int>A, int lo, int hi){
+    if (hi <= lo)
+        return true;
+    int m = lo + (hi - lo)/2;
+    bool left = isAscending(A, lo, m);
+    bool cross = (A[m] < A[m+1]);
+    bool right = isAscending(A, m+1, hi);
+    return left && cross && right;
+}
+```
+
+Here's the recursive definition for this function:
+
+$$$
+
+  T(n)=\begin{cases}
+    1 & \text{if $n$ <= $1$}.\\ 
+    2T(n/2) + 1 & \text{if $n>1$}.
+    
+  \end{cases}
+$$$
+
+Therefore, running time is $O(N)$
+
 
 ### Recursion Tree
 Let's talk about how we're going to represent the choices and the decisions that we need to make while using recursion. To represent the choices and the decisions, we'll use something called a recursion tree. Let's look at a concrete example.
