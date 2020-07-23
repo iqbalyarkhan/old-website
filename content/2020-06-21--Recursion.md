@@ -26,6 +26,7 @@ tags:
 6. [Binary Search](#binary-search)
 7. [Multiple recursion](#multiple-recursion)
     * [Is list sorted in ascending](#is-list-sorted-in-ascending-order)
+    * [Find max contiguous sum](#find-max-contiguous-sum)
 3. [Recursion: Base, Hypothesis and Induction](#recursion-base-hypothesis-and-induction)
 4. [Print from 1 to N](#print-from-1-to-n-using-recursion)
 5. [Print from N to 1](#print-from-n-to-1-using-recursion)
@@ -448,6 +449,120 @@ $$$
 $$$
 
 Therefore, running time is $O(N)$
+
+### Find max contiguous sum
+**Given an array, find the maximum continuous sum**
+
+Example: [-1, 3, 4, -5, 9, -2] Then the max contiguous sum is 3 + 4 -5 + 9 = 11
+
+**Base case**
+When there's just one element, max is that one element
+
+**Size of problem**
+Number of elements in the array
+
+**Decomposition**
+We'll break this problem in two halves, recursively solve each half and then do some more analysis.
+
+**Diagram**
+```cpp
+  -1,3,4,-5,9,-2        Final solution = 3 + 4  -5 + 9 = 11 
+      |                        |        Recursive step:
+      |                        |        max(leftSum,rightSum)
+      |                        |         
+      |                        |        
+    -1,3,4     ------------>  leftSum = 6           
+    -5,9,-2    ------------>  rightSum = 2; 
+```
+
+As the diagram above shows, just getting the max from each half is not enough. What if the max spans the two halves like this case? Well, in that case, we need to start on each side of mid and get the max sum. We'll then add the two sums that cross the middle:
+
+```cpp
+  -1,3,4,-5,9,-2        Final solution = 3 + 4  -5 + 9 = 11 
+      |                        |        Recursive step:
+      |                        |        <crossingSumCalculation>
+      |                        |         
+      |                        |        
+    -1,3,4     ------------>  leftSum = 6           
+    -5,9,-2    ------------>  rightSum = 2; 
+```
+
+Here's the crossing sum calculation:
+```cpp
+            <--------   -------->
+                    m   m+1
+            -1  3   4   -5  9   -2
+runningSum: 6   7   4   -5  4   2 
+```
+
+We're to get the max sum from both halves and add the two:
+
+```cpp
+            <--------   -------->
+                    m   m+1
+            -1  3   4   -5  9   -2
+runningSum: 6   7   4   -5  4   2 
+Return 7 + 4 = 11
+```
+
+Finally, our diagram is:
+
+```cpp
+  -1,3,4,-5,9,-2        Final solution = 3 + 4  -5 + 9 = 11 
+      |                        |        Recursive step:
+      |                        |        max (leftSum,rightSum,crossingSum)
+      |                        |        max(6,2,11)
+      |                        |        
+    -1,3,4     ------------>  leftSum = 6           
+    -5,9,-2    ------------>  rightSum = 2; 
+```
+
+code:
+
+```cpp{numberLines: true}
+int middleSum(vector<int>& A, int lo, int m, int hi){
+    int leftMax = A[m], leftSum = A[m], rightSum = A[m+1], rightMax = A[m+1];
+    for (int i = m-1; i >= lo; i--){
+        leftSum = leftSum + A[i];
+        if (leftSum > leftMax)
+            leftMax = leftSum;
+    }
+    for (int i = m + 2; i <= hi; i++){
+        rightSum = rightSum + A[i];
+        if (rightSum > rightMax)
+            rightMax = rightSum;
+    }
+    return leftMax + rightMax;
+}
+
+int maxSum(vector<int> A, int lo, int hi, int maximum){
+    if (hi <= lo){
+        return (A[hi] > maximum ? A[hi] : maximum);
+    }
+    int m = lo + (hi-lo)/2;
+    int left = maxSum(A, lo, m, maximum);
+    int right = maxSum(A, m+1, hi, maximum);
+    int midSum = middleSum(A, lo, m, hi);
+    return max(left, max(right, midSum));
+}
+```
+
+Running time:
+- In the `maxSum` function:
+    - the base case takes constant time
+    - calculation of `m` takes constant time
+    - call to get `left` takes $T(n/2)$ time
+    - call to get `right` takes $T(n/2)$ time
+    - call to get `midSum` takes $\theta(n)$ time
+    - return takes constant time
+
+Therefore, overall running time is:
+
+$$$
+2T(n/2) + \theta(n)
+$$$
+
+This is the same as merge sort therefore the running time is $O(nlogn)$
 
 
 ### Recursion Tree
