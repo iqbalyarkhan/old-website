@@ -23,6 +23,8 @@ tags:
     * [Power](#power)
     * [Decimal to binary](#decimal-to-binary)
     * [Count number of bits set to 1](#count-number-of-bits-set-to-1)
+    * [Reverse a string](#reverse-a-string)
+    * [isPalindrome](#ispalindrome)
 6. [Binary Search](#binary-search)
 7. [Multiple recursion](#multiple-recursion)
     * [Is list sorted in ascending](#is-list-sorted-in-ascending-order)
@@ -347,6 +349,79 @@ int numberOfBitsSetToOne(int n){
 }
 ```
 
+### Reverse a string
+**Given a string, reverse it using recursion**
+
+Base case: A single character, just return it
+Decomposition: Keep moving back one character
+
+```cpp
+string reversal(string s, int n, string ans){
+    if (n == 0){
+        stringstream ss;
+        string ret;
+        ss << s[n];
+        ss >> ret;
+        return ret;
+    }
+    return ans + s[n] + reversal(s, n-1, ans);
+}
+```
+
+### isPalindrome
+**Given a string, check if it is a palindrome**
+We can obviously solve this using an iterative approach but let's try using recursion:
+
+**Base Case**
+This occurs when the string has either 1 character or 2 characters
+
+**Decomposition**
+How would we check if a string is a palindrome? We need to check if:
+
+```yaml
+//A = string, n = size of string
+A[0] == A[n]
+A[1] == A[n-1]
+A[2] == A[n-2]
+....
+A[n/2] == A[(n/2)+1] 
+```
+Therefore, on each iteration, we're decreasing the size of the string by 2, by moving on from character at the last and the first position.
+
+**Diagram**
+```cpp
+    afccfa               Final solution = true
+      |                        |  Recursive step:
+      |                        |  compare the two removed        
+      |                        |  characters. Then AND with other result 
+      |                        |  return (currMatch && otherMatch)
+    fccf    --------------->  true     
+  smaller input               solution
+```
+
+```cpp
+bool isPalindrome(string A, int i, int j){
+    if (i == j)
+        return true;
+    if (abs(i-j) == 1){
+        return A[i] == A[j];
+    }
+    bool currMatch = A[i] == A[j];
+    bool othersMatch = isPalindrome(A, i+1, j-1);
+    return currMatch && othersMatch;
+}
+```
+
+We'll use two pointers, `i` and `j` to simulate removal of characters. The first base case is simple, where there's just a single character in the string. The second base case, where difference between `i` and `j` is that of 1, we're handling the case where we're given a string with just two characters:
+
+```yaml
+ab //not a palindrome
+aa //is a palindrome
+```
+Therefore, if we're given a string with 2 characters, all we need to return is the result of a check for the characters' equality.
+
+Running time: $O(N)$
+
 ### Binary Search
 **A common algorithm that uses recursion is binary search: given a sorted list, find the given element. If present, return the index, otherwise, return -1.**
 
@@ -452,6 +527,8 @@ Therefore, running time is $O(N)$
 
 ### Find max contiguous sum
 **Given an array, find the maximum continuous sum**
+
+(There's an algorithm called Kadane's algorithm that solves this problem in $O(N)$ time BUT we'll be using divide and conquer to better understand how this technique works!)
 
 Example: [-1, 3, 4, -5, 9, -2] Then the max contiguous sum is 3 + 4 -5 + 9 = 11
 
@@ -562,7 +639,7 @@ $$$
 2T(n/2) + \theta(n)
 $$$
 
-This is the same as merge sort therefore the running time is $O(nlogn)$
+This is the same as merge sort therefore the running time is $O(nlogn)$ 
 
 
 ### Recursion Tree
