@@ -32,6 +32,8 @@ tags:
     * [Find max contiguous sum](#find-max-contiguous-sum)
 8. [Counting Problems](#counting-problems)
     * [Permutations](#permutations)
+    * [Stair case](#stair-case)
+    * [Manhattan Path](#manhattan-path)
 
 
 
@@ -737,191 +739,83 @@ void generatePerms(string s, int n){
 
 Base is case is checking if the parameter, `n`, is equal to the size of the string, in which case we've got nothing to do but print the string. Secondly, notice above that we've got the loop running from `n` till the end of the string and not from 0 till end of string. This is to simulate the "ignore" effect. Finally, we recurse on next available character.
 
-### Recursion Tree
-Let's talk about how we're going to represent the choices and the decisions that we need to make while using recursion. To represent the choices and the decisions, we'll use something called a recursion tree. Let's look at a concrete example.
- 
- Say, you're to find all combinations (where order doesn't matter) of strings given a string. For example:
- 
- ```cpp
-Given: "ab"
-return: {"", "a", "b", "ab"} 
-``` 
+### Stair case
 
-How would we go about doing this? Iteratively, we might say let's start with the empty string. Then iterate over the characters and add each individual character to the set. Then start again at the first character and form a string with each of the other characters. Do the same for remaining characters. Then iterate over all characters again and add it to the set. This is just for a string with 3 characters. What if we had more? This seems like an inefficient way to solve this problem. 
+**Given that you can climb either 1 step at a time or 2 steps at a time, count the number of ways to climb 6 steps**
 
-Let's see how we can use recursion. To do so, we'll use a recursion tree where you keep track of your input (decision space) and the output (result when you make a choice from the decision space). Let's see what this means:
+**Base case**: This is the smallest valid step that you can take: ie you can take 1 step and the number of ways to take 1 step is 1 (by taking just 1 step). Another smallest valid step is that you can take 2 steps. How many ways can you take 2 steps? Well, you can take 1 step twice (way 1) or you can take 2 steps once (way 2):
 
 ```cpp
-                    OP: ""   IP: "ab"
-                    /                   \
-                reject 'a'              accept 'a'
-                /                           \
-              OP:"", IP: "b"               OP: "a", IP: "b"       
-``` 
-
-In the diagram above, we start with our output as empty because we haven't made any choices yet and our input is the entire string that was given to us. Next, we have two choices: we either include the first character, represented by `accept a` or we don't include it, represented by `reject a`. Once we've made our decision, our output would either include `a` or would not. In either case, we've reduced our input size by 1 since we've made a decision for one of the candidates. Let's continue:
-
-```cpp
-                                         OP: ""   IP: "ab"
-                                    /                        \
-                                reject 'a'                  accept 'a'
-                                /                                   \
-                        OP:"", IP: "b"                             OP: "a", IP: "b"       
-                       /            \                               /                 \ 
-                   reject `b`       accept `b`                   reject 'b'             accept 'b' 
-                   /                    \                       /                           \
-                OP: "", IP: ""      OP: "b", IP: ""          OP: "a", IP: ""             OP: "ab", IP: ""
-
-``` 
-
-We're done since we don't have any more input to process. Therefore, our output at the leaf level gives us our answer:
-
-```cpp
-OP: "", OP: "b", OP: "a", OP: "ab"
+if (n == 1)
+    return 1;
+if (n == 2)
+    return 2;
 ```
 
-### Recursion: Base, Hypothesis and Induction
-Let's talk about another technique that can be used to solve a different class of recursive problems. As a concrete example, let's look at fibonacci numbers. 
+**Decomposition**: Well, you've got 6 steps that you need to climb. In this case, let's look at our choice diagram:
 
 ```cpp
-0,1,1,2,3,5,8,13,21,.....
+                    6
+                  /   \         
+                 4     5
+               /   \ /  \
+              2    3 3   4
 ```
 
-A fibonacci series can be defined by:
-
-
-$$$
-F_{N} = F_{N-1} + F_{N-2}
-$$$
-$$$
-F(0) = 0; \textrm{(base case)}
-$$$
-$$$
-F(1) = 1; \textrm{(base case)}
-$$$
-
-
-Formally, this is how we can define fibonacci series:
+The diagram above shows that we start with 6 steps. Next, the left choice is when we take 2 steps and the right choice is when we take 1 step. On each step, we're to add the number of ways that we've calculated so far. Therefore, we'll be cascading up as we calculate the number of ways for each step. Then, it is clear to see that total number of ways that we can get to 6 steps is by adding the total number of ways we can get to 4 steps and the total number of ways we can get to 5 steps:
 
 $$$
-\textrm{
-Basis Step: Specifies the value of the function for the first terms. It is not needed to calculate the values for these terms recursively.}
-$$$
-$$$
-\textrm{
-Recursive Step: Gives a rule for finding subsequent values using previous values beginning at those defined in the basis step.
-}
+Ways(6) = Ways(5) + Ways(4) \\
+\textrm{ie } F(n) = F(n-1) + F(n-2)
 $$$
 
-It is easy to derive these equations but how do we prove these equations are correct? If you notice, these equations look a lot like mathematical induction (basis step, recursive step) which is exactly what we used to derive the relationships. I won't use induction to prove these equations but will use it to see how we can write a recursive C++ program to solve the fibonacci series.
+**Size of problem** Size is equal to the number of steps we're asked to climb ie 6 in our example
 
-Ok, so let's think through this. We know we've got a basis step:
+Now, the code becomes quite simple:
 
 ```cpp
-int Fib(int n){
-    if (n == 0)
-        return 0;
+int numberOfWaysToClimb(int n){
     if (n == 1)
         return 1;
+    if (n == 2)
+        return 2;
+    int oneBack = numberOfWaysToClimb(n-1);
+    int twoBack = numberOfWaysToClimb(n-2);
+    return oneBack + twoBack;
 }
 ```
 
-Now let's see how we can see use our recursive step. We'll say, let's assume we know what the previous two ($N-1$ and $N-2$) terms are. We are assuming that we've got our function `Fib()` that no matter what, will ALWAYS be able to calculate the previous two terms, then how are we going to calculate the current term ($N$)? It is quite simple: using the equation we derived above, we know 
+### Manhattan Path
+**Given a grid and a target point in that grid at (m,n), find the number of ways to get from 0,0 to m,n.**
 
-$$$
-F_{N} = F_{N-1} + F_{N-2}
-$$$
+Example:
 
-and we'll do the same in our recursive function. And what do I do once I get the current value? Just return it:
+![Grid-Image](./images/recursion/grid.png)
+
+Legal moves are denoted by the red arrows. 
+
+**Base case**: This is when either `m` or `n` is 0. In that case, we're either along the x axis (if n is 0) or y axis (if m is 0). In both these scenarios, the number of ways to get to the point is 1: ie move in one direction until the point is reached
+
+**Decomposition**: Here, we decompose our problem based on `m` and `n`:
+
+![Decomposition-Image](./images/recursion/decomposition.png)
+
+Where we want to reduce `m` by one and keep `n` the same or reduce `n` by one and keep `m` the same. 
+
+Finally, we add up all the ways up to `m` and `n`:
 
 ```cpp
-int Fib(int n){
-    if (n == 0)
-        return 0;
-    if (n == 1)
+int ManhattanPath(int m, int n){
+    if (m == 0 || n == 0)
         return 1;
-    int ans = Fib(n-1) + Fib(n-2);
-    return ans;
+    int reducedMWays = ManhattanPath(m-1, n);
+    int reducedNWays = ManhattanPath(m, n-1);
+    return reducedMWays + reducedNWays;
 }
 ```
 
-### Print from 1 to N using recursion
-**This is quite a simple problem: print all numbers from 1 to N using recursion.**
-
-Let's break this down into inductive step and base case:
-
-**Induction Step** Now let's say we have a function called `print()` and we know that this function is always able to print from 1 to N. This is the inductive step. No matter what we provide to this function, it'll be able to print from 1 to N.
-
-**Base case** This is the smallest valid input which in our case is 1. 
-
-Based on this information, let's create our **hypothesis** that'll allow us to create a solution:
-- If the value given, $N$, to us is 4, then our inductive step will print 1,2,3,4. 
-- What if I have a smaller input. For example if the value given to us is $N-1$, we know that the function will print from 1 till $N-1$. 
-
-This means that if we're given $N$ and asked to print till $N$, we'll call `print(n-1)`. This will get us all the values from $1$ till $N-1$. Now when I finally get my $N$, all I need to do is print it! Let's see the code for this logic:
-
-Base case:
-```cpp
-void Print(int n){
-    if (n == 1) {
-        cout << "1 ";   //Base
-        return;
-    }
-}
-```
-
-Here's the hypothesis added with the base condition:
-```cpp
-void Print(int n){
-    if (n == 1) {
-        cout << "1 ";   //Base --> Smallest valid input
-        return;
-    }
-    Print(n-1); //Inductive step
-    cout << n << " "; 
-}
-```
-
-We could've used a recursive tree for this problem as well but we'd soon realize there are no big decisions to be made in this problem. All we're doing is handing off the work we need to do by using the hypothesis we created. Therefore, we used basis, hypothesis and induction. If it is hard to see the decisions that need to be made, see if you can use induction.
-
-### Print from N to 1 using recursion
-**This is quite a simple problem: print all numbers from N to 1 using recursion.**
-
-**Induction Step** Let's say this time, when we call our function, `print(n)` on $N$ terms, it'll print for us all the integers from N to 1
-Now, if we call this function on $N - 1$ terms, then it'll get us all integers from N - 1 till 1. This means:
-- `print(7)` prints all numbers from 7 to 1
-- `print(6)` prints all numbers from 6 to 1
-
-So if I've already got all the elements from $N - 1$ to $1$, then what else is left for me to do? I need to print $N$ right? Because I've got all the elements from $N-1$ to $1$, the only thing left in the sequence to finish the job is to print $N$.
-Here's what this means:
-
-```cpp
-print N and call print(n-1) to print remaining
-```
-
-Finally, the base case, where the smallest valid input is 1.
-
-Here's the code:
-
-```cpp
-void Print(int n){
-    if (n == 1) {
-        cout << "1 ";
-        return;
-    }
-    
-    cout << n << " ";
-    Print(n-1);
-}
-```
-
-We need to print the current and then let `print(n-1)` call handle the rest
-
- 
-**For each recursive problem, there might be cases where it's easier for us to see a solution using recursion tree, or using induction.**
-
-
-Therefore recursive functions:
-- Call themselves 
-- The call made to itself is to solve a smaller version of the original problem
-- There's some version of the problem that doesn't need to be solved and can be returned without making another call (the base case)
+### Conclusion
+- Use recursion if
+    - The problems is worded such that the final solution is made up solutions to smaller problems
+    - There is some sort of counting involved: ie count the number of ways, or get the total number of ways etc
+- Sometimes, you can represent recursion using decomposition diagram (linear recursion mostly) and at other times you'd need a choice diagram (counting problems: stair climb)
