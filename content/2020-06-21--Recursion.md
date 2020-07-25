@@ -25,6 +25,7 @@ tags:
     * [Count number of bits set to 1](#count-number-of-bits-set-to-1)
     * [Reverse a string](#reverse-a-string)
     * [isPalindrome](#ispalindrome)
+    * [Power set]
 6. [Binary Search](#binary-search)
 7. [Multiple recursion](#multiple-recursion)
     * [Is list sorted in ascending](#is-list-sorted-in-ascending-order)
@@ -422,6 +423,60 @@ Therefore, if we're given a string with 2 characters, all we need to return is t
 
 Running time: $O(N)$
 
+### Power set
+A power set is the set of all possible subsets. For example, if we're given:
+
+```cpp
+abc
+```
+
+then the power set would be:
+
+```cpp
+{a},{b},{c},{ab},{bc},{ac},{abc}
+```
+
+**Base Case**
+This would occur when we're given just a single character. In that case, we'll push that character to the `perms` vector and return.
+
+**Problem size**
+This is equal to the number of characters in the string
+
+**Decomposition**
+We'll start from the end of the string and make our way down to the first character. Therefore, the decomposition would comprise of removing one character at a time.
+
+**Diagram**
+
+
+```cpp
+     abc        final solution={a},{b},{c},{ab},{bc},{ac},{abc}
+      |                        |  Recursive step:
+      |                        |  1. add current char to list
+      |                        |  2. Add curr char to every string in list      
+      |                        |  except for the current char added      
+     ab     ----------------> [{a},{b},{ab}]              
+```
+
+Code: 
+
+```cpp
+void getPowerSet(string A, int n, vector<string>& powerSet){
+    if (n == 0){
+        powerSet.emplace_back(string() + A[n]);
+        return;
+    }
+    getPowerSet(A, n-1, powerSet);
+    powerSet.emplace_back(string() + A[n]);
+    int currSize = int(powerSet.size()) - 1, i = 0;
+    while (i < currSize){
+        string newAdd = string() + powerSet[i] + A[n];
+        powerSet.emplace_back(newAdd);
+        i++;
+    }
+    return;
+}
+```
+
 ### Binary Search
 **A common algorithm that uses recursion is binary search: given a sorted list, find the given element. If present, return the index, otherwise, return -1.**
 
@@ -643,60 +698,6 @@ This is the same as merge sort therefore the running time is $O(nlogn)$
 
 ### Counting Problems
 Recursion can be used in combinatorics which is a mathematical field that deals with counting. This section will deal with such algorithms and we'll see how recursion will help us solve these types of problems. 
-
-### Permutations
-A permutation of a set of elements is nothing but a unique sequence of those elements. For example, if we're given:
-
-```cpp
-abc
-```
-
-then all possible permutations are:
-
-```cpp
-{a},{b},{c},{ab},{bc},{ac},{abc}
-```
-
-**Base Case**
-This would occur when we're given just a single character. In that case, we'll push that character to the `perms` vector and return.
-
-**Problem size**
-This is equal to the number of characters in the string
-
-**Decomposition**
-We'll start from the end of the string and make our way down to the first character. Therefore, the decomposition would comprise of removing one character at a time.
-
-**Diagram**
-
-
-```cpp
-     abc        final solution={a},{b},{c},{ab},{bc},{ac},{abc}
-      |                        |  Recursive step:
-      |                        |  1. add current char to list
-      |                        |  2. Add curr char to every string in list      
-      |                        |  except for the current char added      
-     ab     ----------------> [{a},{b},{ab}]              
-```
-
-Code: 
-
-```cpp
-void getPerms(string A, int n, vector<string>& perms){
-    if (n == 0){
-        perms.emplace_back(string() + A[n]);
-        return;
-    }
-    getPerms(A, n-1, perms);
-    perms.emplace_back(string() + A[n]);
-    int currSize = int(perms.size()) - 1, i = 0;
-    while (i < currSize){
-        string newPerm = string() + perms[i] + A[n];
-        perms.emplace_back(newPerm);
-        i++;
-    }
-    return;
-}
-```
 
 ### Recursion Tree
 Let's talk about how we're going to represent the choices and the decisions that we need to make while using recursion. To represent the choices and the decisions, we'll use something called a recursion tree. Let's look at a concrete example.
