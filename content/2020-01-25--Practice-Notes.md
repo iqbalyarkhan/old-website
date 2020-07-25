@@ -175,6 +175,13 @@ Example:
 	ss >> s;	
 ```
 
+An easier way to convert char to string is using the string constructor that takes the size of your new string and the character:
+
+```cpp
+char c = 'c';
+string s(1,c);
+```
+
 ### Declaring a generic object
 
 If you've got a class that is generic and want to initialize a generic object for some reason in that class, use the following syntax:

@@ -29,9 +29,9 @@ tags:
 7. [Multiple recursion](#multiple-recursion)
     * [Is list sorted in ascending](#is-list-sorted-in-ascending-order)
     * [Find max contiguous sum](#find-max-contiguous-sum)
-3. [Recursion: Base, Hypothesis and Induction](#recursion-base-hypothesis-and-induction)
-4. [Print from 1 to N](#print-from-1-to-n-using-recursion)
-5. [Print from N to 1](#print-from-n-to-1-using-recursion)
+8. [Counting Problems](#counting-problems)
+    * [Permutations]
+
 
 
 ### Introduction
@@ -640,6 +640,23 @@ $$$
 $$$
 
 This is the same as merge sort therefore the running time is $O(nlogn)$ 
+
+### Counting Problems
+Recursion can be used in combinatorics which is a mathematical field that deals with counting. This section will deal with such algorithms and we'll see how recursion will help us solve these types of problems. 
+
+### Permutations
+A permutation of a set of elements is nothing but a unique sequence of those elements. For example, if we're given:
+
+```cpp
+abc
+```
+
+then all possible permutations are:
+
+```cpp
+{a},{b},{c},{ab},{bc},{ac},{abc}
+```
+
 
 
 ### Recursion Tree
