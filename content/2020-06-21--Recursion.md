@@ -30,7 +30,7 @@ tags:
     * [Is list sorted in ascending](#is-list-sorted-in-ascending-order)
     * [Find max contiguous sum](#find-max-contiguous-sum)
 8. [Counting Problems](#counting-problems)
-    * [Permutations]
+    * [Permutations](#permutations)
 
 
 
@@ -657,7 +657,46 @@ then all possible permutations are:
 {a},{b},{c},{ab},{bc},{ac},{abc}
 ```
 
+**Base Case**
+This would occur when we're given just a single character. In that case, we'll push that character to the `perms` vector and return.
 
+**Problem size**
+This is equal to the number of characters in the string
+
+**Decomposition**
+We'll start from the end of the string and make our way down to the first character. Therefore, the decomposition would comprise of removing one character at a time.
+
+**Diagram**
+
+
+```cpp
+     abc        final solution={a},{b},{c},{ab},{bc},{ac},{abc}
+      |                        |  Recursive step:
+      |                        |  1. add current char to list
+      |                        |  2. Add curr char to every string in list      
+      |                        |  except for the current char added      
+     ab     ----------------> [{a},{b},{ab}]              
+```
+
+Code: 
+
+```cpp
+void getPerms(string A, int n, vector<string>& perms){
+    if (n == 0){
+        perms.emplace_back(string() + A[n]);
+        return;
+    }
+    getPerms(A, n-1, perms);
+    perms.emplace_back(string() + A[n]);
+    int currSize = int(perms.size()) - 1, i = 0;
+    while (i < currSize){
+        string newPerm = string() + perms[i] + A[n];
+        perms.emplace_back(newPerm);
+        i++;
+    }
+    return;
+}
+```
 
 ### Recursion Tree
 Let's talk about how we're going to represent the choices and the decisions that we need to make while using recursion. To represent the choices and the decisions, we'll use something called a recursion tree. Let's look at a concrete example.
