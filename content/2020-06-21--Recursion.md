@@ -25,7 +25,7 @@ tags:
     * [Count number of bits set to 1](#count-number-of-bits-set-to-1)
     * [Reverse a string](#reverse-a-string)
     * [isPalindrome](#ispalindrome)
-    * [Power set]
+    * [Power set](#power-set)
 6. [Binary Search](#binary-search)
 7. [Multiple recursion](#multiple-recursion)
     * [Is list sorted in ascending](#is-list-sorted-in-ascending-order)
@@ -698,6 +698,44 @@ This is the same as merge sort therefore the running time is $O(nlogn)$
 
 ### Counting Problems
 Recursion can be used in combinatorics which is a mathematical field that deals with counting. This section will deal with such algorithms and we'll see how recursion will help us solve these types of problems. 
+
+### Permutations
+**Given a string, print all possible permutations of the string**. Example:
+
+```cpp
+string A = "ABC"
+//permutations:
+ABC
+ACB
+BAC
+BCA
+CAB
+CBA
+```
+
+**Base case**: We've got just a single character, in which case, we'll print out that character and be done
+
+**Size of the problem**: Number of characters in the string
+
+**Decomposition**: Discard (or ignore) one character and permute the remaining characters. Keep ignoring until you reach the last character
+
+code:
+
+```cpp
+void generatePerms(string s, int n){
+    if (n == s.size() - 1){
+        cout << s << endl;
+        return;
+    }
+    for (int i = n; i < int(s.size()); i++){
+        swap(s[i], s[n]);
+        generatePerms(s, n+1);
+    }
+    return;
+}
+```
+
+Base is case is checking if the parameter, `n`, is equal to the size of the string, in which case we've got nothing to do but print the string. Secondly, notice above that we've got the loop running from `n` till the end of the string and not from 0 till end of string. This is to simulate the "ignore" effect. Finally, we recurse on next available character.
 
 ### Recursion Tree
 Let's talk about how we're going to represent the choices and the decisions that we need to make while using recursion. To represent the choices and the decisions, we'll use something called a recursion tree. Let's look at a concrete example.
