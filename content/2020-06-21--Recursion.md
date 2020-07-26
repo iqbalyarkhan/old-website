@@ -798,7 +798,7 @@ Legal moves are denoted by the red arrows.
 
 **Decomposition**: Here, we decompose our problem based on `m` and `n`:
 
-![Decomposition-Image](./images/recursion/decomposition.png)
+![Decomposition-Image](./images/recursion/decomposition.png)[Image credit](https://learning.oreilly.com/library/view/introduction-to-recursive/9781351647175/)
 
 Where we want to reduce `m` by one and keep `n` the same or reduce `n` by one and keep `m` the same. 
 
