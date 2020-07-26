@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Iqbal Khan]]></title><description><![CDATA[Iqbal Khan - My personal blog]]></description><link>https://iqbalyarkhan.github.io/</link><image><url>https://iqbalyarkhan.github.io//logos/logo-48.png</url><title>Iqbal Khan</title><link>https://iqbalyarkhan.github.io/</link></image><generator>GatsbyJS Advanced Starter</generator><lastBuildDate>Sat, 25 Jul 2020 23:34:12 GMT</lastBuildDate><atom:link href="https://iqbalyarkhan.github.io//rss.xml" rel="self" type="application/rss+xml"/><copyright><![CDATA[Copyright © 2020. All rights reserved.]]></copyright><item><title><![CDATA[Recursion]]></title><description><![CDATA[Introduction Approach Examples Sum Factorial Sum of first N integers Self similar Leap of faith Diagram Linear Recursion Power Decimal to…]]></description><link>https://iqbalyarkhan.github.io//recursion</link><guid isPermaLink="false">https://iqbalyarkhan.github.io//recursion</guid><category><![CDATA[Recursion]]></category><pubDate>Sun, 21 Jun 2020 05:00:00 GMT</pubDate><content:encoded>&lt;ol&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Iqbal Khan]]></title><description><![CDATA[Iqbal Khan - My personal blog]]></description><link>https://iqbalyarkhan.github.io/</link><image><url>https://iqbalyarkhan.github.io//logos/logo-48.png</url><title>Iqbal Khan</title><link>https://iqbalyarkhan.github.io/</link></image><generator>GatsbyJS Advanced Starter</generator><lastBuildDate>Sun, 26 Jul 2020 18:19:27 GMT</lastBuildDate><atom:link href="https://iqbalyarkhan.github.io//rss.xml" rel="self" type="application/rss+xml"/><copyright><![CDATA[Copyright © 2020. All rights reserved.]]></copyright><item><title><![CDATA[Recursion]]></title><description><![CDATA[Introduction Approach Examples Sum Factorial Sum of first N integers Self similar Leap of faith Diagram Linear Recursion Power Decimal to…]]></description><link>https://iqbalyarkhan.github.io//recursion</link><guid isPermaLink="false">https://iqbalyarkhan.github.io//recursion</guid><category><![CDATA[Recursion]]></category><pubDate>Sun, 21 Jun 2020 05:00:00 GMT</pubDate><content:encoded>&lt;ol&gt;
 &lt;li&gt;&lt;a href=&quot;#introduction&quot;&gt;Introduction&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;#approach&quot;&gt;Approach&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;
@@ -567,14 +567,7 @@ CBA&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
       class=&quot;gatsby-resp-image-wrapper&quot;
       style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 543px;&quot;
     &gt;
-      &lt;a
-    class=&quot;gatsby-resp-image-link&quot;
-    href=&quot;/static/2a948092ed22a6c7333c21dc48cac0d8/bd6bc/decomposition.png&quot;
-    style=&quot;display: block&quot;
-    target=&quot;_blank&quot;
-    rel=&quot;noopener&quot;
-  &gt;
-    &lt;span
+      &lt;span
     class=&quot;gatsby-resp-image-background-image&quot;
     style=&quot;padding-bottom: 59.66850828729282%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAYAAABiDJ37AAAACXBIWXMAAAsSAAALEgHS3X78AAABnklEQVQoz41TS0vDQBDOj/ei+MK7oHjw4LNqQVT04FWlSEEa+1Jos0mTzbOmbZJ+zqwmpA/EhWFnZ2a/mfl2VsPcmk6nxZ6kKZIkl0SdJ5OJ0stx5aXNg+UBbhDi4PYBezf32KedZff6Dq96E8l4jOw/gLzyQMf3sXNexebZFbZo365UsXZUQb3T/YnLsgWwPysUjoONkwusHlewfnqpZOXwBLX3VgG4tMIyF7k+ppZsAqx3PvDc0PH4UsPTWwO1ZhsyCBa4Lt/VisOcgyvwpMNKkd13pUq2DCi3FS3PsxEEPmzbVvb0FzSMIgwsa4G3Mp9aOVM4HKJnO+g7EoaUENKFdF01KrxseiiDbMpPovaBTcmDgtMZDl1ytISJjjlA27TQJj0ejRBRZezvkk3vCzTJzqL3DVVA3qFqOa+OM/DstYSFLmVl0JZhYkScxXEMz/PQM00MPKLCD5RYVL0XhjOcajk3ETkE8fNhCHQp86cQNDoSKf0ODmTACYHzLxkOI8RfX8h+feUuZzjkF0zpAgsHL5tPTsBxzGu2ZOS+AZLHmnEl1rTaAAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;
   &gt;&lt;/span&gt;
@@ -590,8 +583,7 @@ CBA&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
         style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
         loading=&quot;lazy&quot;
       /&gt;
-  &lt;/a&gt;
-    &lt;/span&gt;&lt;/p&gt;
+    &lt;/span&gt;&lt;a href=&quot;https://learning.oreilly.com/library/view/introduction-to-recursive/9781351647175/&quot;&gt;Image credit&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Where we want to reduce &lt;code class=&quot;language-cpptext&quot;&gt;m&lt;/code&gt; by one and keep &lt;code class=&quot;language-cpptext&quot;&gt;n&lt;/code&gt; the same or reduce &lt;code class=&quot;language-cpptext&quot;&gt;n&lt;/code&gt; by one and keep &lt;code class=&quot;language-cpptext&quot;&gt;m&lt;/code&gt; the same. &lt;/p&gt;
 &lt;p&gt;Finally, we add up all the ways up to &lt;code class=&quot;language-cpptext&quot;&gt;m&lt;/code&gt; and &lt;code class=&quot;language-cpptext&quot;&gt;n&lt;/code&gt;:&lt;/p&gt;
 &lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;cpp&quot;&gt;&lt;pre class=&quot;language-cppcpp&quot;&gt;&lt;code class=&quot;language-cppcpp&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;ManhattanPath&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;int&lt;/span&gt; m&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;int&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
