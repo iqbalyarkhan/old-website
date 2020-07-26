@@ -34,6 +34,7 @@ tags:
     * [Permutations](#permutations)
     * [Stair case](#stair-case)
     * [Manhattan Path](#manhattan-path)
+    * [BasketBall Score]
 
 
 
@@ -813,6 +814,48 @@ int ManhattanPath(int m, int n){
     return reducedMWays + reducedNWays;
 }
 ```
+
+### Basketball Score
+
+**In a game of basketball a team can score points in three different ways. A “free throw” scores one point, a “field goal” is worth two points, and a successful shot beyond the “three-point” line scores three points. Write a program that determines the number of ways a team can reach n points. For example, there are four ways to score three points: 1+1+1, 1+2, 2+1, and 3. Thus, assume that the order in which the points are scored matters.**
+
+- **Base case**
+This the minimum number of valid points that can be scored:
+- 1 point: there's only 1 way to score 1 point
+- 2 points: there're two ways to score 2 points: 1+1 and 2
+- 3 points: there're four ways to score 3 points: 1+1+1, 1+2, 2+1, and 3
+
+-**Decomposition**
+We'll break the problem down using our decision tree since it is easier to see all the different decisions that we need to make. Say, we're asked to get number of ways to go up till 4:
+
+
+```cpp
+                     4
+                  /  |  \         
+                 3   2   1 Add at each level
+               / |   |  
+              2  1   1      
+```
+
+-**Size of problem**
+The size of the problem obviously depends on the score that we need to generate. 
+
+```cpp
+int bbPts(int n){
+    if (n == 1)
+        return 1;
+    if (n == 2)
+        return 2;
+    if (n == 3)
+        return 4;
+    return bbPts(n-1) + bbPts(n-2) + bbPts(n-3);
+}
+```
+
+
+
+
+
 
 ### Conclusion
 - Use recursion if
