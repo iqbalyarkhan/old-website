@@ -34,7 +34,9 @@ tags:
     * [Permutations](#permutations)
     * [Stair case](#stair-case)
     * [Manhattan Path](#manhattan-path)
-    * [BasketBall Score]
+    * [BasketBall Score](#basketball-score)
+9. [Backtracking]
+    * [Dice Rolls]
 
 
 
@@ -852,9 +854,20 @@ int bbPts(int n){
 }
 ```
 
+### Backtracking
 
+In recursion, there's another technique that can be used to solve a particular type of problem. The term backtracking literally means to retrace your steps. In recursive backtracking, we use this technique to solve types of problems where the final solution depends on the constraints provided. Backtracking is used when we're given "choices" at each step and we're to make a decision on whether to include or exclude the choice at hand and then proceed. If we make a choice and go down a path and realize that the choices made so far don't take us to the solution, we **backtrack** to a previous choice and proceed from there.
 
+For some problems, the choices would be the available inputs and for others, the choices would be an actual decision on whether to pick and element or ignore it. This distinction will be clear when we see a few examples. For now, let's look at the mental model we'll follow to use backtracking as a technique:
 
+(1) Determine what the base step is and what you'll be doing at that base step.
+
+(2) Find what choices we have at each step, ie what are the different options for next step?
+
+(3) For each valid choice:
+   - Make the choice and explore remaining solution recursively. Pass relevant information to the next call.
+   - Once that call returns, undo the changes you made. Restore everything to the way it was before making this choice
+   - In some problems, the undo step is not needed since we're not doing an exhaustive search
 
 
 ### Conclusion
