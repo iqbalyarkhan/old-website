@@ -35,8 +35,9 @@ tags:
     * [Stair case](#stair-case)
     * [Manhattan Path](#manhattan-path)
     * [BasketBall Score](#basketball-score)
-9. [Backtracking]
-    * [Dice Rolls]
+9. [Backtracking](#backtracking)
+    * [Dice Rolls](#dice-rolls)
+    * [Generate All Subsets]
 
 
 
@@ -862,12 +863,216 @@ For some problems, the choices would be the available inputs and for others, the
 
 (1) Determine what the base step is and what you'll be doing at that base step.
 
+For **decomposition**, we'll ask ourselves these questions
 (2) Find what choices we have at each step, ie what are the different options for next step?
 
 (3) For each valid choice:
    - Make the choice and explore remaining solution recursively. Pass relevant information to the next call.
    - Once that call returns, undo the changes you made. Restore everything to the way it was before making this choice
    - In some problems, the undo step is not needed since we're not doing an exhaustive search
+   
+How are these analogous to the decomposition steps we've seen so far? Remember, decomposition is used to make the input smaller and it guides us toward the base case. Therefore, At each step, as I make a choice, I'll get closer to the base case. 
+
+### Dice rolls
+**Given a number dies, n, generate ALL possible outcomes of rolling those dies**
+
+For example, if we're given 2 dies, we can have 11, 12, 13, 14, 15, 16, 21, 22 ...
+
+Why does this qualify as a backtracking problem? Because we have choices that we need to make. Now, we need to decide whether this is an ignore/choose choice diagram or pick every choice diagram. Obviously, the problem asks for ALL possible outcomes, so we need to choose EVERY possible choice. 
+
+Let's start with the template we discussed above:
+(1) Base Step: This is when we don't have any more dice to roll: here, we'll print our result
+
+(2) Choices: the value of die that I can choose
+
+(3) Relevant info to be passed to next call: the numbers rolled so far.
+
+(4) Undo the decision: remove the rolled number 
+
+Let's code this:
+
+Function signature:
+- `n` for the number of dies we're asked to roll
+- `soFar` the numbers rolled so far
+
+```cpp
+void diceRolls(int n, string soFar){}
+```
+
+Let's add the base case:
+
+```cpp
+void diceRolls(int n, string soFar){
+    if (n == 0){
+        cout << soFar << endl;
+        return;
+    }
+}
+```
+
+Now, we need to determine how we'll represent the choices. `n` would be used to represent the number of dies and for each die we can go from 1 to 6.
+
+```cpp
+void diceRolls(int n, string soFar){
+    if (n == 0){
+        cout << soFar << endl;
+        return;
+    }
+    
+    for (int i = 1; i <=6; i++){
+        stringstream ss;
+        ss << i;
+        string curr;
+        ss >> curr;
+        soFar += curr;
+    }    
+
+}
+```
+
+We've made the choice, now we need to make a recursive call to get remaining choices:
+
+```cpp
+void diceRolls(int n, string soFar){
+    if (n == 0){
+        cout << soFar << endl;
+        return;
+    }
+    
+    for (int i = 1; i <=6; i++){
+        stringstream ss;
+        ss << i;
+        string curr;
+        ss >> curr;
+        soFar += curr;
+        diceRolls(n-1,soFar);
+    }    
+
+}
+```
+
+Finally, we need to undo the change we did before we made the recursive call: ie remove the roll added:
+
+```cpp
+void diceRolls(int n, string soFar){
+    if (n == 0){
+        cout << soFar << endl;
+        return;
+    }
+    
+    for (int i = 1; i <=6; i++){
+        stringstream ss;
+        ss << i;
+        string curr;
+        ss >> curr;
+        soFar += curr;
+        diceRolls(n-1,soFar);
+        soFar.pop_back();
+    }    
+}
+```
+
+That's it! We've basically made the following choices on each iteration:
+
+![Dice-Roll-Image](./images/recursion/dice-roll.png)[Image credit](https://web.stanford.edu/class/archive/cs/cs106x/cs106x.1192/lectures/Lecture10/Lecture10.pdf)
+
+### Generate All Subsets
+
+**Given a string, generate all possible subsets of that string**
+
+Example, given: ABC, you can have: ABC, AB, AC, A, BC, B, C, {}
+
+This is the same as the [power set](/recursion#power-set) problem, but we'll see how backtracking can be used here since at each step we need to make a decision. This will help us enhance our skill set as we tackle more problems where decisions are being made.
+
+-**Base Case**
+This is when the string given to us has no characters. We'll return an empty set (or string) in this case.
+
+-**Decomposition**
+What are the choices that I have? At each step, as I make a choice, I'll get closer to the base case. In this problem, the choices that I have are: either I choose the current character in my subset, or I ignore it. The choices I have are the characters provided to me.
+
+(I won't discuss the add element, undo it and go down the other path because we'll be implicitly doing so. I'll explain more once we look at the code)
+
+Notice, to get all subsets we're to come back to the current node and go down the other choice. So, if we chose `a` initially, we'll come back and go down the path where we ignore it.
+Let's look at the decision tree:
+
+```cpp
+
+                {}
+           /         \      +a ?
+          a          {}   
+       /    \     /     \   +b ?
+     ab     a    b      {}
+   /   \   /  \ /  \   /  \ +c ?
+  abc  ab ac  a bc b  c   {}
+```
+
+In the diagram above, we start with an empty set. Next, we look at our decisions. The first decision we'll make is regarding `a`. There're 2 options for us with `a`. We can either choose `a` or ignore `a`. The left path of the node is taken if we choose the character, otherwise right path is taken. At each level, we have the choice of either choosing or ignoring the current character.
+
+A quick aside into why our choices are either to pick `a` or ignore `a` and NOT whether to pick a,b or c like so: 
+
+```cpp
+    
+        {}
+      / |  \      
+     a  b  c
+    ........
+```
+
+That is because while we're coding this solution, our solution would look at each character one at a time so we can only make a decision based on what we have in front of us which would be the current character. Therefore, possible decisions for the character in front of us are choose or ignore. 
+
+Let's start with the function signature:
+
+```cpp
+void subsets(string input,int n, string generated){}
+```
+
+`input` is the string we're operating on, ie `abc`. 
+
+`n` is the position we're on in the string
+
+`generated` is the generated string based on the decisions we've made
+
+-**Base case**
+This is reached when the size of the string is less than 0. ie we're done with all characters in the string. Here, we'll simply print the solution we have so far:
+
+```cpp
+void subsets(string input,int n, string generated){
+    if (n < 0)
+        cout << "{"<<generated<<"}" << endl;
+}
+```
+
+Next we'll look at the choices we have:
+- **Choose** 
+
+Choose the current character, ie go down the left path in the diagram above:
+
+```cpp
+void subsets(string input,int n, string generated){
+    if (n < 0)
+        cout << "{"<<generated<<"}" << endl;
+    subsets(input, n-1, generated + string() + input[n]);
+}
+```
+
+Come back to the character and go down the remaining choices which is to:
+
+- **Ignore**
+
+Here, we'll simply not add the current character to the generated string:
+
+```cpp
+void subsets(string input,int n, string generated){
+    if (n < 0)
+        cout << "{"<<generated<<"}" << endl;
+    //choose
+    subsets(input, n-1, generated + string() + input[n]);
+    //ignore
+    subsets(input, n-1, generated);
+}
+```
+
+
 
 
 ### Conclusion
