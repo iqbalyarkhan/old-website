@@ -37,7 +37,8 @@ tags:
     * [BasketBall Score](#basketball-score)
 9. [Backtracking](#backtracking)
     * [Dice Rolls](#dice-rolls)
-    * [Generate All Subsets]
+    * [Dice Rolls with target]
+    * [Generate All Subsets](#generate-all-subsets)
 
 
 
@@ -976,6 +977,34 @@ That's it! We've basically made the following choices on each iteration:
 
 ![Dice-Roll-Image](./images/recursion/dice-roll.png)[Image credit](https://web.stanford.edu/class/archive/cs/cs106x/cs106x.1192/lectures/Lecture10/Lecture10.pdf)
 
+### Dice Rolls with Target
+Let's say you're given a number of dies and want to print all rolls that add up to a target. How would that modify our code? Well, the solution is similar to what we had for the origin dice roll problem but here're the additions:
+- Our base case will check to see if the chosen elements so far have sum equal to the target
+- We'll use a vector to keep track of `chosen` elements
+- We'll add checks to make sure we don't go down unnecessary paths. For example, if target is 4, we can ignore values of 5 and 6 for dice rolls
+
+Here's the code:
+
+```cpp
+void getRolls(int dice, int target, vector<int>& chosen){
+    if (dice == 0){
+        //getSum is helper function that adds elements
+        //in the vector and returns their sum
+        if (getSum(chosen) == target)
+            printVec(chosen); //to print vector
+    }
+    
+    int sum = getSum(chosen);
+    for (int i = 1; i <= 6; i++){
+        if (sum + i <= target){
+            chosen.push_back(i);
+            getRolls(dice-1, target, chosen);
+            chosen.pop_back();
+        }
+    }
+}
+```
+
 ### Generate All Subsets
 
 **Given a string, generate all possible subsets of that string**
@@ -989,8 +1018,6 @@ This is when the string given to us has no characters. We'll return an empty set
 
 -**Decomposition**
 What are the choices that I have? At each step, as I make a choice, I'll get closer to the base case. In this problem, the choices that I have are: either I choose the current character in my subset, or I ignore it. The choices I have are the characters provided to me.
-
-(I won't discuss the add element, undo it and go down the other path because we'll be implicitly doing so. I'll explain more once we look at the code)
 
 Notice, to get all subsets we're to come back to the current node and go down the other choice. So, if we chose `a` initially, we'll come back and go down the path where we ignore it.
 Let's look at the decision tree:
@@ -1018,7 +1045,7 @@ A quick aside into why our choices are either to pick `a` or ignore `a` and NOT 
     ........
 ```
 
-That is because while we're coding this solution, our solution would look at each character one at a time so we can only make a decision based on what we have in front of us which would be the current character. Therefore, possible decisions for the character in front of us are choose or ignore. 
+That is because while we're coding this solution, our solution would look at each character one at a time so we can only make a decision based on what we have in front of us which would be the current character. Each decision then becomes: "Include `a` or not?" ... "Include `b` or not?". The order of characters chosen does not matter; only the membership. Therefore, possible decisions for the character in front of us are choose or ignore. 
 
 Let's start with the function signature:
 
@@ -1072,7 +1099,20 @@ void subsets(string input,int n, string generated){
 }
 ```
 
+If you noticed, I've skipped the add next choice and undo it part. That is not entirely true. When we make the decision of choosing the current character, I'm generating the string inside the recursive call. So when that call returns, we're back at our original string.
 
+Finally, running the program above, would generate this output:
+
+```cpp
+{ABC}
+{AB}
+{AC}
+{A}
+{BC}
+{B}
+{C}
+{}
+```
 
 
 ### Conclusion
