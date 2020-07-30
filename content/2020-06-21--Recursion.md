@@ -27,16 +27,16 @@ tags:
     * [isPalindrome](#ispalindrome)
     * [Power set](#power-set)
     * [Alternate approach to subsets](#alternate-approach-to-subsets)
-6. [Binary Search](#binary-search)
-7. [Multiple recursion](#multiple-recursion)
-    * [Is list sorted in ascending](#is-list-sorted-in-ascending-order)
-    * [Find max contiguous sum](#find-max-contiguous-sum)
 8. [Counting Problems](#counting-problems)
     * [Permutations](#permutations)
     * [Alternate approach to permutations](#alternate-approach-to-permutations)
     * [Stair case](#stair-case)
     * [Manhattan Path](#manhattan-path)
     * [BasketBall Score](#basketball-score)
+6. [Binary Search](#binary-search)
+7. [Multiple recursion](#multiple-recursion)
+    * [Is list sorted in ascending](#is-list-sorted-in-ascending-order)
+    * [Find max contiguous sum](#find-max-contiguous-sum)
 9. [Backtracking](#backtracking)
     * [Dice Rolls](#dice-rolls)
     * [Dice Rolls with target](#dice-rolls-with-target)
@@ -624,6 +624,214 @@ void forcedRemovalSubset(string soFar, string rest){
 }
 ```
 
+### Counting Problems
+Recursion can be used in combinatorics which is a mathematical field that deals with counting. This section will deal with such algorithms and we'll see how recursion will help us solve these types of problems. 
+
+### Permutations
+**Given a string, print all possible permutations of the string**. Example:
+
+```cpp
+string A = "ABC"
+//permutations:
+ABC
+ACB
+BAC
+BCA
+CAB
+CBA
+```
+
+**Base case**: We've got just a single character, in which case, we'll print out that character and be done
+
+**Size of the problem**: Number of characters in the string
+
+**Decomposition**: Discard (or ignore) one character and permute the remaining characters. Keep ignoring until you reach the last character
+
+code:
+
+```cpp
+void generatePerms(string s, int n){
+    if (n == s.size() - 1){
+        cout << s << endl;
+        return;
+    }
+    for (int i = n; i < int(s.size()); i++){
+        swap(s[i], s[n]);
+        generatePerms(s, n+1);
+    }
+    return;
+}
+```
+
+Base is case is checking if the parameter, `n`, is equal to the size of the string, in which case we've got nothing to do but print the string. Secondly, notice above that we've got the loop running from `n` till the end of the string and not from 0 till end of string. This is to simulate the "ignore" effect. Finally, we recurse on next available character.
+
+### Alternate approach to permutations
+
+Let's have a look at another approach to solve permutations. You can think of the process as removing a character from our available set and adding it to the permuted string. Next, we call the function recursively to generate permutations for the remainder of strings. Therefore, we'll have to keep track of 2 strings: `soFar` which will represent all the permutations and `rest` which'll represent our decision space. Initially this is what we'll have:
+
+```cpp
+       soFar  rest 
+        "", "ABC"
+```
+
+Then, we'll pick an element from the `rest` string and place in the `soFar` string. Then, our strings would look like:
+
+```cpp
+           soFar  rest 
+            "", "ABC"
+            /
+        "A", "BC"
+```
+
+We then pick the next available character from `rest` and append to `soFar`. We keep doing this until rest is empty:
+
+```cpp
+           soFar  rest 
+            "", "ABC"
+            /
+        "A", "BC"
+         /
+   "AB", "C"
+      /
+"ABC", ""
+```
+
+This'll be our base case: when we have no more decisions to make. Next, we return back to the call where we had another option and continue recursing. 
+
+Here's the code representing the logic we discussed above:
+
+
+```cpp{numberLines: true}
+void permute(string soFar, string rest){
+    if (rest == "")
+        cout << soFar << endl;
+    for (int i = 0; i < rest.size(); i++){
+        //Grabbing the next available character
+        string next = soFar + rest[i]      
+        //Removing this character from decision space
+        //which is the string rest
+        string remaining = rest.substr(0,i) + rest.substr(i+1);
+        permute(next, remaining);
+    }
+}
+```
+
+We're using the loop to pick between the choices we have. On each call, we're adding the picked element to our result and removing this choice from the decision space since we don't want to repeat the decision. 
+
+Having said that, if you run this code, you'll notice that it'll start with the first character of the string you provide and print all permutations starting with that first character. Next, it'll do the same for the second character and so on until the string `rest` is empty.
+
+### Stair case
+
+**Given that you can climb either 1 step at a time or 2 steps at a time, count the number of ways to climb 6 steps**
+
+**Base case**: This is the smallest valid step that you can take: ie you can take 1 step and the number of ways to take 1 step is 1 (by taking just 1 step). Another smallest valid step is that you can take 2 steps. How many ways can you take 2 steps? Well, you can take 1 step twice (way 1) or you can take 2 steps once (way 2):
+
+```cpp
+if (n == 1)
+    return 1;
+if (n == 2)
+    return 2;
+```
+
+**Decomposition**: Well, you've got 6 steps that you need to climb. In this case, let's look at our choice diagram:
+
+```cpp
+                    6
+                  /   \         
+                 4     5
+               /   \ /  \
+              2    3 3   4
+```
+
+The diagram above shows that we start with 6 steps. Next, the left choice is when we take 2 steps and the right choice is when we take 1 step. On each step, we're to add the number of ways that we've calculated so far. Therefore, we'll be cascading up as we calculate the number of ways for each step. Then, it is clear to see that total number of ways that we can get to 6 steps is by adding the total number of ways we can get to 4 steps and the total number of ways we can get to 5 steps:
+
+$$$
+Ways(6) = Ways(5) + Ways(4) \\
+\textrm{ie } F(n) = F(n-1) + F(n-2)
+$$$
+
+**Size of problem** Size is equal to the number of steps we're asked to climb ie 6 in our example
+
+Now, the code becomes quite simple:
+
+```cpp
+int numberOfWaysToClimb(int n){
+    if (n == 1)
+        return 1;
+    if (n == 2)
+        return 2;
+    int oneBack = numberOfWaysToClimb(n-1);
+    int twoBack = numberOfWaysToClimb(n-2);
+    return oneBack + twoBack;
+}
+```
+
+### Manhattan Path
+**Given a grid and a target point in that grid at (m,n), find the number of ways to get from 0,0 to m,n.**
+
+Example:
+
+![Grid-Image](./images/recursion/grid.png)
+
+Legal moves are denoted by the red arrows. 
+
+**Base case**: This is when either `m` or `n` is 0. In that case, we're either along the x axis (if n is 0) or y axis (if m is 0). In both these scenarios, the number of ways to get to the point is 1: ie move in one direction until the point is reached
+
+**Decomposition**: Here, we decompose our problem based on `m` and `n`:
+
+![Decomposition-Image](./images/recursion/decomposition.png)[Image credit](https://learning.oreilly.com/library/view/introduction-to-recursive/9781351647175/)
+
+Where we want to reduce `m` by one and keep `n` the same or reduce `n` by one and keep `m` the same. 
+
+Finally, we add up all the ways up to `m` and `n`:
+
+```cpp
+int ManhattanPath(int m, int n){
+    if (m == 0 || n == 0)
+        return 1;
+    int reducedMWays = ManhattanPath(m-1, n);
+    int reducedNWays = ManhattanPath(m, n-1);
+    return reducedMWays + reducedNWays;
+}
+```
+
+### Basketball Score
+
+**In a game of basketball a team can score points in three different ways. A “free throw” scores one point, a “field goal” is worth two points, and a successful shot beyond the “three-point” line scores three points. Write a program that determines the number of ways a team can reach n points. For example, there are four ways to score three points: 1+1+1, 1+2, 2+1, and 3. Thus, assume that the order in which the points are scored matters.**
+
+- **Base case**
+This the minimum number of valid points that can be scored:
+- 1 point: there's only 1 way to score 1 point
+- 2 points: there're two ways to score 2 points: 1+1 and 2
+- 3 points: there're four ways to score 3 points: 1+1+1, 1+2, 2+1, and 3
+
+-**Decomposition**
+We'll break the problem down using our decision tree since it is easier to see all the different decisions that we need to make. Say, we're asked to get number of ways to go up till 4:
+
+
+```cpp
+                     4
+                  /  |  \         
+                 3   2   1 Add at each level
+               / |   |  
+              2  1   1      
+```
+
+-**Size of problem**
+The size of the problem obviously depends on the score that we need to generate. 
+
+```cpp
+int bbPts(int n){
+    if (n == 1)
+        return 1;
+    if (n == 2)
+        return 2;
+    if (n == 3)
+        return 4;
+    return bbPts(n-1) + bbPts(n-2) + bbPts(n-3);
+}
+```
+
 ### Binary Search
 **A common algorithm that uses recursion is binary search: given a sorted list, find the given element. If present, return the index, otherwise, return -1.**
 
@@ -843,213 +1051,6 @@ $$$
 
 This is the same as merge sort therefore the running time is $O(nlogn)$ 
 
-### Counting Problems
-Recursion can be used in combinatorics which is a mathematical field that deals with counting. This section will deal with such algorithms and we'll see how recursion will help us solve these types of problems. 
-
-### Permutations
-**Given a string, print all possible permutations of the string**. Example:
-
-```cpp
-string A = "ABC"
-//permutations:
-ABC
-ACB
-BAC
-BCA
-CAB
-CBA
-```
-
-**Base case**: We've got just a single character, in which case, we'll print out that character and be done
-
-**Size of the problem**: Number of characters in the string
-
-**Decomposition**: Discard (or ignore) one character and permute the remaining characters. Keep ignoring until you reach the last character
-
-code:
-
-```cpp
-void generatePerms(string s, int n){
-    if (n == s.size() - 1){
-        cout << s << endl;
-        return;
-    }
-    for (int i = n; i < int(s.size()); i++){
-        swap(s[i], s[n]);
-        generatePerms(s, n+1);
-    }
-    return;
-}
-```
-
-Base is case is checking if the parameter, `n`, is equal to the size of the string, in which case we've got nothing to do but print the string. Secondly, notice above that we've got the loop running from `n` till the end of the string and not from 0 till end of string. This is to simulate the "ignore" effect. Finally, we recurse on next available character.
-
-### Alternate approach to permutations
-
-Let's have a look at another approach to solve permutations. You can think of the process as removing a character from our available set and adding it to the permuted string. Next, we call the function recursively to generate permutations for the remainder of strings. Therefore, we'll have to keep track of 2 strings: `soFar` which will represent all the permutations and `rest` which'll represent our decision space. Initially this is what we'll have:
-
-```cpp
-       soFar  rest 
-        "", "ABC"
-```
-
-Then, we'll pick an element from the `rest` string and place in the `soFar` string. Then, our strings would look like:
-
-```cpp
-           soFar  rest 
-            "", "ABC"
-            /
-        "A", "BC"
-```
-
-We then pick the next available character from `rest` and append to `soFar`. We keep doing this until rest is empty:
-
-```cpp
-           soFar  rest 
-            "", "ABC"
-            /
-        "A", "BC"
-         /
-   "AB", "C"
-      /
-"ABC", ""
-```
-
-This'll be our base case: when we have no more decisions to make. Next, we return back to the call where we had another option and continue recursing. 
-
-Here's the code representing the logic we discussed above:
-
-
-```cpp{numberLines: true}
-void permute(string soFar, string rest){
-    if (rest == "")
-        cout << soFar << endl;
-    for (int i = 0; i < rest.size(); i++){
-        //Grabbing the next available character
-        string next = soFar + rest[i]      
-        //Removing this character from decision space
-        //which is the string rest
-        string remaining = rest.substr(0,i) + rest.substr(i+1);
-        permute(next, remaining);
-    }
-}
-```
-
-We're using the loop to pick between the choices we have. On each call, we're adding the picked element to our result and removing this choice from the decision space since we don't want to repeat the decision. 
-
-Having said that, if you run this code, you'll notice that it'll start with the first character of the string you provide and print all permutations starting with that first character. Next, it'll do the same for the second character and so on until the string `rest` is empty.
-
-### Stair case
-
-**Given that you can climb either 1 step at a time or 2 steps at a time, count the number of ways to climb 6 steps**
-
-**Base case**: This is the smallest valid step that you can take: ie you can take 1 step and the number of ways to take 1 step is 1 (by taking just 1 step). Another smallest valid step is that you can take 2 steps. How many ways can you take 2 steps? Well, you can take 1 step twice (way 1) or you can take 2 steps once (way 2):
-
-```cpp
-if (n == 1)
-    return 1;
-if (n == 2)
-    return 2;
-```
-
-**Decomposition**: Well, you've got 6 steps that you need to climb. In this case, let's look at our choice diagram:
-
-```cpp
-                    6
-                  /   \         
-                 4     5
-               /   \ /  \
-              2    3 3   4
-```
-
-The diagram above shows that we start with 6 steps. Next, the left choice is when we take 2 steps and the right choice is when we take 1 step. On each step, we're to add the number of ways that we've calculated so far. Therefore, we'll be cascading up as we calculate the number of ways for each step. Then, it is clear to see that total number of ways that we can get to 6 steps is by adding the total number of ways we can get to 4 steps and the total number of ways we can get to 5 steps:
-
-$$$
-Ways(6) = Ways(5) + Ways(4) \\
-\textrm{ie } F(n) = F(n-1) + F(n-2)
-$$$
-
-**Size of problem** Size is equal to the number of steps we're asked to climb ie 6 in our example
-
-Now, the code becomes quite simple:
-
-```cpp
-int numberOfWaysToClimb(int n){
-    if (n == 1)
-        return 1;
-    if (n == 2)
-        return 2;
-    int oneBack = numberOfWaysToClimb(n-1);
-    int twoBack = numberOfWaysToClimb(n-2);
-    return oneBack + twoBack;
-}
-```
-
-### Manhattan Path
-**Given a grid and a target point in that grid at (m,n), find the number of ways to get from 0,0 to m,n.**
-
-Example:
-
-![Grid-Image](./images/recursion/grid.png)
-
-Legal moves are denoted by the red arrows. 
-
-**Base case**: This is when either `m` or `n` is 0. In that case, we're either along the x axis (if n is 0) or y axis (if m is 0). In both these scenarios, the number of ways to get to the point is 1: ie move in one direction until the point is reached
-
-**Decomposition**: Here, we decompose our problem based on `m` and `n`:
-
-![Decomposition-Image](./images/recursion/decomposition.png)[Image credit](https://learning.oreilly.com/library/view/introduction-to-recursive/9781351647175/)
-
-Where we want to reduce `m` by one and keep `n` the same or reduce `n` by one and keep `m` the same. 
-
-Finally, we add up all the ways up to `m` and `n`:
-
-```cpp
-int ManhattanPath(int m, int n){
-    if (m == 0 || n == 0)
-        return 1;
-    int reducedMWays = ManhattanPath(m-1, n);
-    int reducedNWays = ManhattanPath(m, n-1);
-    return reducedMWays + reducedNWays;
-}
-```
-
-### Basketball Score
-
-**In a game of basketball a team can score points in three different ways. A “free throw” scores one point, a “field goal” is worth two points, and a successful shot beyond the “three-point” line scores three points. Write a program that determines the number of ways a team can reach n points. For example, there are four ways to score three points: 1+1+1, 1+2, 2+1, and 3. Thus, assume that the order in which the points are scored matters.**
-
-- **Base case**
-This the minimum number of valid points that can be scored:
-- 1 point: there's only 1 way to score 1 point
-- 2 points: there're two ways to score 2 points: 1+1 and 2
-- 3 points: there're four ways to score 3 points: 1+1+1, 1+2, 2+1, and 3
-
--**Decomposition**
-We'll break the problem down using our decision tree since it is easier to see all the different decisions that we need to make. Say, we're asked to get number of ways to go up till 4:
-
-
-```cpp
-                     4
-                  /  |  \         
-                 3   2   1 Add at each level
-               / |   |  
-              2  1   1      
-```
-
--**Size of problem**
-The size of the problem obviously depends on the score that we need to generate. 
-
-```cpp
-int bbPts(int n){
-    if (n == 1)
-        return 1;
-    if (n == 2)
-        return 2;
-    if (n == 3)
-        return 4;
-    return bbPts(n-1) + bbPts(n-2) + bbPts(n-3);
-}
-```
 
 ### Backtracking
 
