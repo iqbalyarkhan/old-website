@@ -605,7 +605,24 @@ Finally, running the program above, would generate this output:
 {}
 ```
 
+If you're more inclined to see a version where the removal and addition is more explicit, here it is:
 
+```cpp
+void forcedRemovalSubset(string soFar, string rest){
+    if (rest == ""){
+        cout << soFar << endl;
+        return;
+    }
+    //choose
+    //Pick next available character from rest,
+    //add it to soFar and remove it from rest
+    forcedRemovalSubset(soFar + rest[0] , rest.substr(1));
+    //ignore
+    //Pick next available character from rest,
+    //DON'T add it to soFar but just remove it from rest
+    forcedRemovalSubset(soFar, rest.substr(1));
+}
+```
 
 ### Binary Search
 **A common algorithm that uses recursion is binary search: given a sorted list, find the given element. If present, return the index, otherwise, return -1.**
