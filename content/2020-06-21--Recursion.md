@@ -26,20 +26,20 @@ tags:
     * [Reverse a string](#reverse-a-string)
     * [isPalindrome](#ispalindrome)
     * [Power set](#power-set)
+    * [Alternate approach to subsets](#alternate-approach-to-subsets)
 6. [Binary Search](#binary-search)
 7. [Multiple recursion](#multiple-recursion)
     * [Is list sorted in ascending](#is-list-sorted-in-ascending-order)
     * [Find max contiguous sum](#find-max-contiguous-sum)
 8. [Counting Problems](#counting-problems)
     * [Permutations](#permutations)
+    * [Alternate approach to permutations](#alternate-approach-to-permutations)
     * [Stair case](#stair-case)
     * [Manhattan Path](#manhattan-path)
     * [BasketBall Score](#basketball-score)
 9. [Backtracking](#backtracking)
     * [Dice Rolls](#dice-rolls)
-    * [Dice Rolls with target]
-    * [Generate All Subsets](#generate-all-subsets)
-
+    * [Dice Rolls with target](#dice-rolls-with-target)
 
 
 ### Introduction
@@ -443,6 +443,8 @@ then the power set would be:
 {a},{b},{c},{ab},{bc},{ac},{abc}
 ```
 
+This is also known as the subset problem
+
 **Base Case**
 This would occur when we're given just a single character. In that case, we'll push that character to the `perms` vector and return.
 
@@ -483,6 +485,127 @@ void getPowerSet(string A, int n, vector<string>& powerSet){
     return;
 }
 ```
+
+### Alternate approach to subsets
+
+Let's have a look at another approach to solving the power set or the subset problem. Again, the problem requires us to print all subsets of a given set. To recursively solve this, we'll:
+
+- Recursively separate an element from the original set
+- We then have 2 choices: include in the current subset or not include in the current subset
+- We'll then form subsets recursively including the element
+- We'll then form subsets recursively excluding the element
+- Continue until base case
+
+In this problem, we're not worried about order, for example, bc is the same as cb. We're only going to concern ourselves with inclusion: do we include `a` or exclude it and so on. Therefore, given: ABC, you can have: ABC, AB, AC, A, BC, B, C, {}. Each element that I'm given has the option of being in the subset or not. 
+
+Therefore, for each element, I need to make the possible decisions to generate all possible subsets. Therefore, there'll be a total of 2 recursive calls: one where I choose the current element and then generate other subsets and the other where I ignore the current element and generate other subsets.
+
+On each iteration, we're **removing** the possible choices we have therefore moving toward the base case where we have nothing left to pick from. As a result, on each recursive call, we're reducing our decision space (ie elements left to be picked).  
+
+This is the same as the [power set](/recursion#power-set) problem, but at each step we need to make a decision. This approach can be used with various different problems where we need to make decisions. 
+
+-**Base Case**
+This is when the string given to us has no characters. We'll return an empty set (or string) in this case.
+
+-**Decomposition**
+What are the choices that I have? At each step, as I make a choice, I'll get closer to the base case. In this problem, the choices that I have are: either I choose the current character in my subset, or I ignore it. The choices I have are the characters provided to me.
+
+Notice, to get all subsets we're to come back to the current node and go down the other choice. So, if we chose `a` initially, we'll come back and go down the path where we ignore it.
+Let's look at the decision tree:
+
+```cpp
+
+                {}
+           /         \      +a ?
+          a          {}   
+       /    \     /     \   +b ?
+     ab     a    b      {}
+   /   \   /  \ /  \   /  \ +c ?
+  abc  ab ac  a bc b  c   {}
+```
+
+In the diagram above, we start with an empty set. Next, we look at our decisions. The first decision we'll make is regarding `a`. There're 2 options for us with `a`. We can either choose `a` or ignore `a`. The left path of the node is taken if we choose the character, otherwise right path is taken. At each level, we have the choice of either choosing or ignoring the current character.
+
+A quick aside into why our choices are either to pick `a` or ignore `a` and NOT whether to pick a,b or c like so: 
+
+```cpp
+    
+        {}
+      / |  \      
+     a  b  c
+    ........
+```
+
+That is because while we're coding this solution, our solution would look at each character one at a time so we can only make a decision based on what we have in front of us which would be the current character. Each decision then becomes: "Include `a` or not?" ... "Include `b` or not?". The order of characters chosen does not matter; only the membership. Therefore, possible decisions for the character in front of us are choose or ignore. 
+
+Let's start with the function signature:
+
+```cpp
+void subsets(string input,int n, string generated){}
+```
+
+`input` is the string we're operating on, ie `abc`. 
+
+`n` is the position we're on in the string
+
+`generated` is the generated string based on the decisions we've made
+
+-**Base case**
+This is reached when the size of the string is less than 0. ie we're done with all characters in the string. Here, we'll simply print the solution we have so far:
+
+```cpp
+void subsets(string input,int n, string generated){
+    if (n < 0)
+        cout << "{"<<generated<<"}" << endl;
+}
+```
+
+Next we'll look at the choices we have:
+- **Choose** 
+
+Choose the current character, ie go down the left path in the diagram above:
+
+```cpp
+void subsets(string input,int n, string generated){
+    if (n < 0)
+        cout << "{"<<generated<<"}" << endl;
+    subsets(input, n-1, generated + string() + input[n]);
+}
+```
+
+Come back to the character and go down the remaining choices which is to:
+
+- **Ignore**
+
+Here, we'll simply not add the current character to the generated string:
+
+```cpp
+void subsets(string input,int n, string generated){
+    if (n < 0)
+        cout << "{"<<generated<<"}" << endl;
+    //choose by adding to subset and removing from input
+    subsets(input, n-1, generated + string() + input[n]);
+    //ignore by NOT adding to subset BUT just remove from input
+    subsets(input, n-1, generated);
+}
+```
+
+When we make the decision of choosing the current character, I'm generating the string inside the recursive call. So when that call returns, we're back at our original string.
+
+Finally, running the program above, would generate this output:
+
+```cpp
+{ABC}
+{AB}
+{AC}
+{A}
+{BC}
+{B}
+{C}
+{}
+```
+
+
 
 ### Binary Search
 **A common algorithm that uses recursion is binary search: given a sorted list, find the given element. If present, return the index, otherwise, return -1.**
@@ -744,6 +867,61 @@ void generatePerms(string s, int n){
 
 Base is case is checking if the parameter, `n`, is equal to the size of the string, in which case we've got nothing to do but print the string. Secondly, notice above that we've got the loop running from `n` till the end of the string and not from 0 till end of string. This is to simulate the "ignore" effect. Finally, we recurse on next available character.
 
+### Alternate approach to permutations
+
+Let's have a look at another approach to solve permutations. You can think of the process as removing a character from our available set and adding it to the permuted string. Next, we call the function recursively to generate permutations for the remainder of strings. Therefore, we'll have to keep track of 2 strings: `soFar` which will represent all the permutations and `rest` which'll represent our decision space. Initially this is what we'll have:
+
+```cpp
+       soFar  rest 
+        "", "ABC"
+```
+
+Then, we'll pick an element from the `rest` string and place in the `soFar` string. Then, our strings would look like:
+
+```cpp
+           soFar  rest 
+            "", "ABC"
+            /
+        "A", "BC"
+```
+
+We then pick the next available character from `rest` and append to `soFar`. We keep doing this until rest is empty:
+
+```cpp
+           soFar  rest 
+            "", "ABC"
+            /
+        "A", "BC"
+         /
+   "AB", "C"
+      /
+"ABC", ""
+```
+
+This'll be our base case: when we have no more decisions to make. Next, we return back to the call where we had another option and continue recursing. 
+
+Here's the code representing the logic we discussed above:
+
+
+```cpp{numberLines: true}
+void permute(string soFar, string rest){
+    if (rest == "")
+        cout << soFar << endl;
+    for (int i = 0; i < rest.size(); i++){
+        //Grabbing the next available character
+        string next = soFar + rest[i]      
+        //Removing this character from decision space
+        //which is the string rest
+        string remaining = rest.substr(0,i) + rest.substr(i+1);
+        permute(next, remaining);
+    }
+}
+```
+
+We're using the loop to pick between the choices we have. On each call, we're adding the picked element to our result and removing this choice from the decision space since we don't want to repeat the decision. 
+
+Having said that, if you run this code, you'll notice that it'll start with the first character of the string you provide and print all permutations starting with that first character. Next, it'll do the same for the second character and so on until the string `rest` is empty.
+
 ### Stair case
 
 **Given that you can climb either 1 step at a time or 2 steps at a time, count the number of ways to climb 6 steps**
@@ -1004,116 +1182,6 @@ void getRolls(int dice, int target, vector<int>& chosen){
     }
 }
 ```
-
-### Generate All Subsets
-
-**Given a string, generate all possible subsets of that string**
-
-Example, given: ABC, you can have: ABC, AB, AC, A, BC, B, C, {}
-
-This is the same as the [power set](/recursion#power-set) problem, but we'll see how backtracking can be used here since at each step we need to make a decision. This will help us enhance our skill set as we tackle more problems where decisions are being made.
-
--**Base Case**
-This is when the string given to us has no characters. We'll return an empty set (or string) in this case.
-
--**Decomposition**
-What are the choices that I have? At each step, as I make a choice, I'll get closer to the base case. In this problem, the choices that I have are: either I choose the current character in my subset, or I ignore it. The choices I have are the characters provided to me.
-
-Notice, to get all subsets we're to come back to the current node and go down the other choice. So, if we chose `a` initially, we'll come back and go down the path where we ignore it.
-Let's look at the decision tree:
-
-```cpp
-
-                {}
-           /         \      +a ?
-          a          {}   
-       /    \     /     \   +b ?
-     ab     a    b      {}
-   /   \   /  \ /  \   /  \ +c ?
-  abc  ab ac  a bc b  c   {}
-```
-
-In the diagram above, we start with an empty set. Next, we look at our decisions. The first decision we'll make is regarding `a`. There're 2 options for us with `a`. We can either choose `a` or ignore `a`. The left path of the node is taken if we choose the character, otherwise right path is taken. At each level, we have the choice of either choosing or ignoring the current character.
-
-A quick aside into why our choices are either to pick `a` or ignore `a` and NOT whether to pick a,b or c like so: 
-
-```cpp
-    
-        {}
-      / |  \      
-     a  b  c
-    ........
-```
-
-That is because while we're coding this solution, our solution would look at each character one at a time so we can only make a decision based on what we have in front of us which would be the current character. Each decision then becomes: "Include `a` or not?" ... "Include `b` or not?". The order of characters chosen does not matter; only the membership. Therefore, possible decisions for the character in front of us are choose or ignore. 
-
-Let's start with the function signature:
-
-```cpp
-void subsets(string input,int n, string generated){}
-```
-
-`input` is the string we're operating on, ie `abc`. 
-
-`n` is the position we're on in the string
-
-`generated` is the generated string based on the decisions we've made
-
--**Base case**
-This is reached when the size of the string is less than 0. ie we're done with all characters in the string. Here, we'll simply print the solution we have so far:
-
-```cpp
-void subsets(string input,int n, string generated){
-    if (n < 0)
-        cout << "{"<<generated<<"}" << endl;
-}
-```
-
-Next we'll look at the choices we have:
-- **Choose** 
-
-Choose the current character, ie go down the left path in the diagram above:
-
-```cpp
-void subsets(string input,int n, string generated){
-    if (n < 0)
-        cout << "{"<<generated<<"}" << endl;
-    subsets(input, n-1, generated + string() + input[n]);
-}
-```
-
-Come back to the character and go down the remaining choices which is to:
-
-- **Ignore**
-
-Here, we'll simply not add the current character to the generated string:
-
-```cpp
-void subsets(string input,int n, string generated){
-    if (n < 0)
-        cout << "{"<<generated<<"}" << endl;
-    //choose
-    subsets(input, n-1, generated + string() + input[n]);
-    //ignore
-    subsets(input, n-1, generated);
-}
-```
-
-If you noticed, I've skipped the add next choice and undo it part. That is not entirely true. When we make the decision of choosing the current character, I'm generating the string inside the recursive call. So when that call returns, we're back at our original string.
-
-Finally, running the program above, would generate this output:
-
-```cpp
-{ABC}
-{AB}
-{AC}
-{A}
-{BC}
-{B}
-{C}
-{}
-```
-
 
 ### Conclusion
 - Use recursion if
