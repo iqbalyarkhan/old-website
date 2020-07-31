@@ -1267,8 +1267,112 @@ As a recap, here's the tree we used for subset sum:
 This occurs when we're out of decisions to make ie, when we're past the end of the input list. At this point, we can print the list we've accumulated so far IF the results add up to the target.
 
 - **Recursive Case**
-Here, we choose the current element, make a recursive call with that decision. Once this returns, we undo any changes we did for choose. We then ignore the current element and make a recursive call again. 
+Here, we choose the current element and make a recursive call with that decision. Once this returns, we undo any changes we did for while choosing the element such as removing the chosen element from a vector that we maintain. We then ignore the current element and make a recursive call again. 
 
+Let's look at the functions signature:
+
+```cpp
+void subsetSumPrint(vector<int>& elems, vector<int>& arr, int c, int sumSoFar, int n){}
+```
+
+- `elems` contains the input array
+- `arr` to keep track of the elements seen so far
+- `c` the target sum we're searching for
+- `sumSoFar` the sum we've seen so far of the elements chosen/ignored
+- `n` to iterate over the elements in the `elems` array
+
+Next, here's the base case:
+
+```cpp
+void subsetSumPrint(vector<int>& elems, vector<int>& arr, int c, int sumSoFar, int n){
+    if (n == elems.size()){
+        if (sumSoFar == c){
+            cout << "{";
+            for (int i = 0; i < arr.size(); i++){
+                cout << arr[i];
+            }
+            cout << "}" << endl;
+        }
+        return;
+    }
+}
+```
+
+The base case occurs when there are no more elements to pick. Here, we check to see if the sum we've been accruing up till now is equal to the target. If so, we print out the elements in the vector. Otherwise, we return without printing
+
+Next, when we're going through the elements, we can choose the element. Choosing means we add the current element, `elems[n]` to `sumSoFar`:
+
+```cpp
+void subsetSumPrint(vector<int>& elems, vector<int>& arr, int c, int sumSoFar, int n){
+    if (n == elems.size()){
+        if (sumSoFar == c){
+            cout << "{";
+            for (int i = 0; i < arr.size(); i++){
+                cout << arr[i];
+            }
+            cout << "}" << endl;
+        }
+        return;
+    }
+    //Choose
+    arr.push_back(n);
+    subsetSumPrint(elems, arr, c, sumSoFar + elems[n], n+1);
+}
+```
+
+After choose, we can ignore the element. Before ignoring, we need to undo what we did in the choose section. Therefore, we need to pop the element we just pushed:
+
+```cpp
+void subsetSumPrint(vector<int>& elems, vector<int>& arr, int c, int sumSoFar, int n){
+    if (n == elems.size()){
+        if (sumSoFar == c){
+            cout << "{";
+            for (int i = 0; i < arr.size(); i++){
+                cout << arr[i];
+            }
+            cout << "}" << endl;
+        }
+        return;
+    }
+    //Choose
+    arr.push_back(n);
+    subsetSumPrint(elems, arr, c, sumSoFar + elems[n], n+1);
+    //Ignore
+    arr.pop_back();
+    subsetSumPrint(elems, arr, c, sumSoFar, n+1);
+}
+```
+
+Given the following parameters:
+```cpp
+elems = {1,2,3}
+target = 3
+```
+
+Output will be:
+```cpp
+{12}
+{3}
+```
+
+
+Tree where a left branch is taken when we choose the current element in question and right branch is taken when we ignore it:
+```cpp
+
+                {}
+           /          \      +1 ?
+          1           {}   
+       /    \       /     \   +2 ?
+     3      1      2      {}
+   /   \   / \   /  \   /  \ +3 ?
+  6    3  4  1  5   2  3   {}
+```
+
+Let's have a look at a sample run to better understand what's going on:
+
+For the first base case, we would've chosen ALL elements in the `elems` array. So, our `arr` at base case where sum equals 6 would be: {1,2,3} (I've chosen to add indices of elements in `arr`). Here, `sumSoFar` would be 6. Since 6 != 3 (where 3 is our target), we return back to the previous state and remove the 3 from our `arr`. 
+
+Next, we ignore 3 (since the previous decision was choose 3) and check the sum again. This time, our `arr` would have elements: {1,2} which equals the target sum of 3. Therefore, we go ahead and print the indices where we encountered.     
 
 ### Conclusion
 - Use recursion if
