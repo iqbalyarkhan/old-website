@@ -41,6 +41,9 @@ tags:
 7. [Multiple recursion](#multiple-recursion)
     * [Is list sorted in ascending](#is-list-sorted-in-ascending-order)
     * [Find max contiguous sum](#find-max-contiguous-sum)
+    
+10. [Additional Problems](#additional-problems)
+    * [Subset Sum Print](#subset-sum-print)
 
 
 ### Introduction
@@ -764,6 +767,7 @@ bool Solve (configuration conf){
         }        
         //Undo the changes
         unmake choice c;
+        //Go back up to the loop and try a different choice
     }
     //No solution found
     return false;
@@ -1237,6 +1241,34 @@ $$$
 $$$
 
 This is the same as merge sort therefore the running time is $O(nlogn)$ 
+
+### Additional Problems
+Let's tackle a few more problems and some variations of the problems already seen above:
+
+### Subset Sum Print
+**Given a set and a target sum, print subsets that add up to a given target**
+
+This one has an extra requirement on top of the subset sum problem: ie to print the found results. I really like this problem as it is a good way to actually translate the decision tree that we built for subset sum to code. 
+
+As a recap, here's the tree we used for subset sum:
+
+```cpp
+
+                {}
+           /         \      +a ?
+          a          {}   
+       /    \     /     \   +b ?
+     ab     a    b      {}
+   /   \   /  \ /  \   /  \ +c ?
+  abc  ab ac  a bc b  c   {}
+```
+
+- **Base Case**
+This occurs when we're out of decisions to make ie, when we're past the end of the input list. At this point, we can print the list we've accumulated so far IF the results add up to the target.
+
+- **Recursive Case**
+Here, we choose the current element, make a recursive call with that decision. Once this returns, we undo any changes we did for choose. We then ignore the current element and make a recursive call again. 
+
 
 ### Conclusion
 - Use recursion if
