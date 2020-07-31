@@ -27,9 +27,13 @@ tags:
     * [isPalindrome](#ispalindrome)
     * [Power set](#power-set)
     * [Alternate approach to subsets](#alternate-approach-to-subsets)
-8. [Counting Problems](#counting-problems)
     * [Permutations](#permutations)
     * [Alternate approach to permutations](#alternate-approach-to-permutations)
+    * [Permutations and Subsets](#permutations-and-subsets)
+9. [Backtracking](#backtracking)
+    * [Dice Rolls](#dice-rolls)
+    * [Dice Rolls with target](#dice-rolls-with-target)
+8. [Counting Problems](#counting-problems)
     * [Stair case](#stair-case)
     * [Manhattan Path](#manhattan-path)
     * [BasketBall Score](#basketball-score)
@@ -37,9 +41,6 @@ tags:
 7. [Multiple recursion](#multiple-recursion)
     * [Is list sorted in ascending](#is-list-sorted-in-ascending-order)
     * [Find max contiguous sum](#find-max-contiguous-sum)
-9. [Backtracking](#backtracking)
-    * [Dice Rolls](#dice-rolls)
-    * [Dice Rolls with target](#dice-rolls-with-target)
 
 
 ### Introduction
@@ -624,9 +625,6 @@ void forcedRemovalSubset(string soFar, string rest){
 }
 ```
 
-### Counting Problems
-Recursion can be used in combinatorics which is a mathematical field that deals with counting. This section will deal with such algorithms and we'll see how recursion will help us solve these types of problems. 
-
 ### Permutations
 **Given a string, print all possible permutations of the string**. Example:
 
@@ -719,6 +717,195 @@ void permute(string soFar, string rest){
 We're using the loop to pick between the choices we have. On each call, we're adding the picked element to our result and removing this choice from the decision space since we don't want to repeat the decision. 
 
 Having said that, if you run this code, you'll notice that it'll start with the first character of the string you provide and print all permutations starting with that first character. Next, it'll do the same for the second character and so on until the string `rest` is empty.
+
+### Permutations and Subsets
+Let's recap what we learned from permutation and subsets problems:
+- Both problems use the idea of **choices**: you include an element or not include an element
+- Depths of their respective trees represent the number of decisions made and width represents number of available options per decision
+    - In the subset problem, we have 2 branches at each level since for each option we have 2 options: choose or ignore
+    - In the permutations problem, the first call has `n` branches because we have `n` different options for the first position. At the next level, we have `n-1` branches and so on until we're out of elements to pick from.
+- Therefore, the tree in each case represents the decisions that are to be made and we move toward the point where there are no more decisions to be made
+- These problems are considered to be exhaustive where we look at every possible option. We can improve our run time by pruning the tree when certain criteria is provided that'll rule out some part of the tree.
+
+
+### Backtracking
+Now permutations and subsets problems used exhaustive search which explores ALL possible options at our disposal. Some times, it is wise to prune the recursive calls we make based on some criteria so that we don't perform unnecessary calculations. We can choose to go down a path by making certain choices and if we fail, we can backtrack to our starting point and go down another **valid** avenue. This is called backtracking.
+
+The term backtracking literally means to retrace your steps. In recursive backtracking, we use this technique to solve types of problems where the final solution depends on the constraints provided. Backtracking is used when we're given "choices" at each step and we're to make a decision on whether to include or exclude the choice at hand and then proceed. If we make a choice and go down a path and realize that the choices made so far don't take us to the solution, we **backtrack** to a previous choice and proceed from there.
+
+For some problems, the choices would be the available inputs and for others, the choices would be an actual decision on whether to pick and element or ignore it. This distinction will be clear when we see a few examples. For now, let's look at the mental model we'll follow to use backtracking as a technique:
+
+(1) Determine what the base step is and what you'll be doing at that base step.
+
+For **decomposition**, we'll ask ourselves these questions
+(2) Find what choices we have at each step, ie what are the different options for next step?
+
+(3) For each valid choice:
+   - Make the choice and explore remaining solution recursively. Pass relevant information to the next call.
+   - Once that call returns, undo the changes you made. Restore everything to the way it was before making this choice
+   - In some problems, the undo step is not needed since we're not doing an exhaustive search
+   
+How are these analogous to the decomposition steps we've seen so far? Remember, decomposition is used to make the input smaller and it guides us toward the base case. Therefore, At each step, as I make a choice, I'll get closer to the base case. 
+
+In pseudocode, here is what backtracking does:
+
+```cpp
+bool Solve (configuration conf){
+    //base case
+    if (no more choices){
+        return (conf in goal state);
+    }
+    
+    for (all available choices){
+        try one choice c;
+        //If this choice worked out, you're done!
+        if (Solve (conf with choice c made)){
+            return true;
+        }        
+        //Undo the changes
+        unmake choice c;
+    }
+    //No solution found
+    return false;
+}
+```
+
+- We return true at the base case therefore not needing to go over EVERY possibility, once we hit a true, we're done
+- Inside the for loop, we make a choice and then call the method, `Solve` again
+
+### Dice rolls
+**Given a number dies, n, generate ALL possible outcomes of rolling those dies**
+
+For example, if we're given 2 dies, we can have 11, 12, 13, 14, 15, 16, 21, 22 ...
+
+Why does this qualify as a backtracking problem? Because we have choices that we need to make. Now, we need to decide whether this is an ignore/choose choice diagram or pick every choice diagram. Obviously, the problem asks for ALL possible outcomes, so we need to choose EVERY possible choice. 
+
+Let's start with the template we discussed above:
+(1) Base Step: This is when we don't have any more dice to roll: here, we'll print our result
+
+(2) Choices: the value of die that I can choose
+
+(3) Relevant info to be passed to next call: the numbers rolled so far.
+
+(4) Undo the decision: remove the rolled number 
+
+Let's code this:
+
+Function signature:
+- `n` for the number of dies we're asked to roll
+- `soFar` the numbers rolled so far
+
+```cpp
+void diceRolls(int n, string soFar){}
+```
+
+Let's add the base case:
+
+```cpp
+void diceRolls(int n, string soFar){
+    if (n == 0){
+        cout << soFar << endl;
+        return;
+    }
+}
+```
+
+Now, we need to determine how we'll represent the choices. `n` would be used to represent the number of dies and for each die we can go from 1 to 6.
+
+```cpp
+void diceRolls(int n, string soFar){
+    if (n == 0){
+        cout << soFar << endl;
+        return;
+    }
+    
+    for (int i = 1; i <=6; i++){
+        stringstream ss;
+        ss << i;
+        string curr;
+        ss >> curr;
+        soFar += curr;
+    }    
+
+}
+```
+
+We've made the choice, now we need to make a recursive call to get remaining choices:
+
+```cpp
+void diceRolls(int n, string soFar){
+    if (n == 0){
+        cout << soFar << endl;
+        return;
+    }
+    
+    for (int i = 1; i <=6; i++){
+        stringstream ss;
+        ss << i;
+        string curr;
+        ss >> curr;
+        soFar += curr;
+        diceRolls(n-1,soFar);
+    }    
+
+}
+```
+
+Finally, we need to undo the change we did before we made the recursive call: ie remove the roll added:
+
+```cpp
+void diceRolls(int n, string soFar){
+    if (n == 0){
+        cout << soFar << endl;
+        return;
+    }
+    
+    for (int i = 1; i <=6; i++){
+        stringstream ss;
+        ss << i;
+        string curr;
+        ss >> curr;
+        soFar += curr;
+        diceRolls(n-1,soFar);
+        soFar.pop_back();
+    }    
+}
+```
+
+That's it! We've basically made the following choices on each iteration:
+
+![Dice-Roll-Image](./images/recursion/dice-roll.png)[Image credit](https://web.stanford.edu/class/archive/cs/cs106x/cs106x.1192/lectures/Lecture10/Lecture10.pdf)
+
+### Dice Rolls with Target
+Let's say you're given a number of dies and want to print all rolls that add up to a target. How would that modify our code? Well, the solution is similar to what we had for the origin dice roll problem but here're the additions:
+- Our base case will check to see if the chosen elements so far have sum equal to the target
+- We'll use a vector to keep track of `chosen` elements
+- We'll add checks to make sure we don't go down unnecessary paths. For example, if target is 4, we can ignore values of 5 and 6 for dice rolls
+
+Here's the code:
+
+```cpp
+void getRolls(int dice, int target, vector<int>& chosen){
+    if (dice == 0){
+        //getSum is helper function that adds elements
+        //in the vector and returns their sum
+        if (getSum(chosen) == target)
+            printVec(chosen); //to print vector
+    }
+    
+    int sum = getSum(chosen);
+    for (int i = 1; i <= 6; i++){
+        if (sum + i <= target){
+            chosen.push_back(i);
+            getRolls(dice-1, target, chosen);
+            chosen.pop_back();
+        }
+    }
+}
+```
+
+### Counting Problems
+Recursion can be used in combinatorics which is a mathematical field that deals with counting. This section will deal with such algorithms and we'll see how recursion will help us solve these types of problems. 
 
 ### Stair case
 
@@ -1050,156 +1237,6 @@ $$$
 $$$
 
 This is the same as merge sort therefore the running time is $O(nlogn)$ 
-
-
-### Backtracking
-
-In recursion, there's another technique that can be used to solve a particular type of problem. The term backtracking literally means to retrace your steps. In recursive backtracking, we use this technique to solve types of problems where the final solution depends on the constraints provided. Backtracking is used when we're given "choices" at each step and we're to make a decision on whether to include or exclude the choice at hand and then proceed. If we make a choice and go down a path and realize that the choices made so far don't take us to the solution, we **backtrack** to a previous choice and proceed from there.
-
-For some problems, the choices would be the available inputs and for others, the choices would be an actual decision on whether to pick and element or ignore it. This distinction will be clear when we see a few examples. For now, let's look at the mental model we'll follow to use backtracking as a technique:
-
-(1) Determine what the base step is and what you'll be doing at that base step.
-
-For **decomposition**, we'll ask ourselves these questions
-(2) Find what choices we have at each step, ie what are the different options for next step?
-
-(3) For each valid choice:
-   - Make the choice and explore remaining solution recursively. Pass relevant information to the next call.
-   - Once that call returns, undo the changes you made. Restore everything to the way it was before making this choice
-   - In some problems, the undo step is not needed since we're not doing an exhaustive search
-   
-How are these analogous to the decomposition steps we've seen so far? Remember, decomposition is used to make the input smaller and it guides us toward the base case. Therefore, At each step, as I make a choice, I'll get closer to the base case. 
-
-### Dice rolls
-**Given a number dies, n, generate ALL possible outcomes of rolling those dies**
-
-For example, if we're given 2 dies, we can have 11, 12, 13, 14, 15, 16, 21, 22 ...
-
-Why does this qualify as a backtracking problem? Because we have choices that we need to make. Now, we need to decide whether this is an ignore/choose choice diagram or pick every choice diagram. Obviously, the problem asks for ALL possible outcomes, so we need to choose EVERY possible choice. 
-
-Let's start with the template we discussed above:
-(1) Base Step: This is when we don't have any more dice to roll: here, we'll print our result
-
-(2) Choices: the value of die that I can choose
-
-(3) Relevant info to be passed to next call: the numbers rolled so far.
-
-(4) Undo the decision: remove the rolled number 
-
-Let's code this:
-
-Function signature:
-- `n` for the number of dies we're asked to roll
-- `soFar` the numbers rolled so far
-
-```cpp
-void diceRolls(int n, string soFar){}
-```
-
-Let's add the base case:
-
-```cpp
-void diceRolls(int n, string soFar){
-    if (n == 0){
-        cout << soFar << endl;
-        return;
-    }
-}
-```
-
-Now, we need to determine how we'll represent the choices. `n` would be used to represent the number of dies and for each die we can go from 1 to 6.
-
-```cpp
-void diceRolls(int n, string soFar){
-    if (n == 0){
-        cout << soFar << endl;
-        return;
-    }
-    
-    for (int i = 1; i <=6; i++){
-        stringstream ss;
-        ss << i;
-        string curr;
-        ss >> curr;
-        soFar += curr;
-    }    
-
-}
-```
-
-We've made the choice, now we need to make a recursive call to get remaining choices:
-
-```cpp
-void diceRolls(int n, string soFar){
-    if (n == 0){
-        cout << soFar << endl;
-        return;
-    }
-    
-    for (int i = 1; i <=6; i++){
-        stringstream ss;
-        ss << i;
-        string curr;
-        ss >> curr;
-        soFar += curr;
-        diceRolls(n-1,soFar);
-    }    
-
-}
-```
-
-Finally, we need to undo the change we did before we made the recursive call: ie remove the roll added:
-
-```cpp
-void diceRolls(int n, string soFar){
-    if (n == 0){
-        cout << soFar << endl;
-        return;
-    }
-    
-    for (int i = 1; i <=6; i++){
-        stringstream ss;
-        ss << i;
-        string curr;
-        ss >> curr;
-        soFar += curr;
-        diceRolls(n-1,soFar);
-        soFar.pop_back();
-    }    
-}
-```
-
-That's it! We've basically made the following choices on each iteration:
-
-![Dice-Roll-Image](./images/recursion/dice-roll.png)[Image credit](https://web.stanford.edu/class/archive/cs/cs106x/cs106x.1192/lectures/Lecture10/Lecture10.pdf)
-
-### Dice Rolls with Target
-Let's say you're given a number of dies and want to print all rolls that add up to a target. How would that modify our code? Well, the solution is similar to what we had for the origin dice roll problem but here're the additions:
-- Our base case will check to see if the chosen elements so far have sum equal to the target
-- We'll use a vector to keep track of `chosen` elements
-- We'll add checks to make sure we don't go down unnecessary paths. For example, if target is 4, we can ignore values of 5 and 6 for dice rolls
-
-Here's the code:
-
-```cpp
-void getRolls(int dice, int target, vector<int>& chosen){
-    if (dice == 0){
-        //getSum is helper function that adds elements
-        //in the vector and returns their sum
-        if (getSum(chosen) == target)
-            printVec(chosen); //to print vector
-    }
-    
-    int sum = getSum(chosen);
-    for (int i = 1; i <= 6; i++){
-        if (sum + i <= target){
-            chosen.push_back(i);
-            getRolls(dice-1, target, chosen);
-            chosen.pop_back();
-        }
-    }
-}
-```
 
 ### Conclusion
 - Use recursion if
