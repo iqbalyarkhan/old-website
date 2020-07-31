@@ -1343,13 +1343,37 @@ void subsetSumPrint(vector<int>& elems, vector<int>& arr, int c, int sumSoFar, i
 }
 ```
 
-Given the following parameters:
+The code above uses an extra `sumSoFar` variable to keep track of the sum. We can solve the problem without that variable as well by just decrementing the target's, ie c, value by every element we're looking at:
+
+```cpp
+void subsetSumPrint(vector<int>& elems, vector<int>& arr, int c, int n){
+    if (n == elems.size()){
+        if (c == 0){
+            cout << "{";
+            for (int i = 0; i < arr.size(); i++){
+                cout << elems[arr[i]];
+            }
+            cout << "}" << endl;
+        }
+        return;
+    }
+    
+    arr.push_back(n);
+    subsetSumPrint(elems, arr, c-elems[n], n+1);
+    arr.pop_back();
+    subsetSumPrint(elems, arr, c, n+1);
+}
+```
+
+Also, in the code above, notice how we start at `0` and go up till `n`. In previous problems, we've started at the end of the array and made our way back. I've chosen to go the other way since it makes the logic of removal from vector easier. It naturally flows with the decision tree we've created.
+
+Say we're given the following parameters:
 ```cpp
 elems = {1,2,3}
 target = 3
 ```
 
-Output will be:
+Then, the output will be:
 ```cpp
 {12}
 {3}
