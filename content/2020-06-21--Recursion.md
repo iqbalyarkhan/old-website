@@ -43,8 +43,11 @@ tags:
     * [Find max contiguous sum](#find-max-contiguous-sum)
     
 10. [Additional Problems](#additional-problems)
+    * [Integer Permutations](#integer-permutations)
+    * [Yet Another Subset Sum ](#yet-another-subset-sum)
     * [Subset Sum Print](#subset-sum-print)
-
+    * [0-1 Knapsack](#0-1-knapsack)
+    * [Equal Sum Partition](#equal-sum-partition)
 
 ### Introduction
 Recursion is a common technique to define a problem or a relation where subsequent "terms" build on calculations for previous terms. Our aim is to make decisions based on the existing choices we have and each time we make a choice, we obviously would reduce the number of problems that we'd have to solve. 
@@ -1245,6 +1248,57 @@ This is the same as merge sort therefore the running time is $O(nlogn)$
 ### Additional Problems
 Let's tackle a few more problems and some variations of the problems already seen above:
 
+### Integer Permutations
+**Given a vector of integers, generate all possible permutations**
+
+This is similar to string permutations. The only difference here is that we're swapping integers in a vector instead of characters in a string:
+
+Again, the template is:
+- Check for base case
+- Make a choice
+- Recurse with the choice made
+
+```cpp
+void generatePerms(vector<int> s, int n){
+    if (n == s.size() - 1){
+        for (int i = 0; i < s.size(); i++){
+            cout << s[i];
+        }
+        cout << endl;
+        return;
+    }
+    for (int i = n; i < int(s.size()); i++){
+        swap(s[i], s[n]);
+        generatePerms(s, n+1);
+    }
+    return;
+}
+```
+
+### Yet Another Subset Sum
+
+In this approach, we'll solve subset sum using an approach similar to permutations problem above: Here, the for loop is used to choose or ignore the elements:
+
+```cpp
+void genSubsets(int i, vector<int> sol, vector<int> elems){
+    if (i == elems.size()){
+        cout << "{";
+        for (int j = 0; j < sol.size(); j++){
+            if (sol[j] != 0){
+                cout << elems[j];
+            }
+        }
+        cout << "}" << endl;
+    } else {
+        for (int k = 0; k < 2; k++){
+            sol.push_back(k);
+            genSubsets(i+1, sol, elems);
+            sol.pop_back();
+        }
+    }
+}
+```
+
 ### Subset Sum Print
 **Given a set and a target sum, print subsets that add up to a given target**
 
@@ -1394,9 +1448,68 @@ Tree where a left branch is taken when we choose the current element in question
 
 Let's have a look at a sample run to better understand what's going on:
 
-For the first base case, we would've chosen ALL elements in the `elems` array. So, our `arr` at base case where sum equals 6 would be: {1,2,3} (I've chosen to add indices of elements in `arr`). Here, `sumSoFar` would be 6. Since 6 != 3 (where 3 is our target), we return back to the previous state and remove the 3 from our `arr`. 
+For the first base case, we would've chosen ALL elements in the `elems` array. So, our `arr` at base case where sum equals 6 would be: {1,2,3}. Here, `sumSoFar` would be 6. Since 6 != 3 (where 3 is our target), we return back to the previous state and remove the 3 from our `arr`. 
 
 Next, we ignore 3 (since the previous decision was choose 3) and check the sum again. This time, our `arr` would have elements: {1,2} which equals the target sum of 3. Therefore, we go ahead and print the indices where we encountered.     
+
+### 0-1 Knapsack
+**The knapsack problem is a problem in combinatorial optimization: Given a set of items, each with a weight and a value, determine the number of each item to include in a collection so that the total weight is less than or equal to a given limit and the total value is as large as possible. It derives its name from the problem faced by someone who is constrained by a fixed-size knapsack and must fill it with the most valuable items.**
+
+Let's see what our input will be:
+
+```text
+                    Item1   Item2   Item3   Item14
+wt[] in pounds        5       4       6        3    
+val[] in dollars     10      40       30      50
+Capacity: 10       
+```
+We'll be given two arrays: a weight array that'll hold the weight of each item and a value array that holds the value of each item in dollars. We'll also be given the capacity of our sack and a value `n` denoting the number of elements in the arrays. 
+
+This is similar to the subset problem we saw above. That is because we've got choices to make: pick an element or ignore it. Then, we need to return max of the two decisions we made.
+
+-**Base Case**
+Our base case is when we have no more decisions to make: ie when we don't have any more items or when the capacity of our sack is 0.
+
+-**Recursive Case**
+We first need to check if the current item's weight is <= the capacity, if so:
+      - we can include the element, add its value, and reduce left capacity
+      - we can ignore the element and move on to the next element.
+When the two values above are returned, we need to return the `max` of the two decisions.
+
+If current item's weight > capacity, we simply move to the next element.
+
+Code:
+
+```cpp
+int knapSackRec(vector<int> wt, vector<int> val, int c, int n){
+    if (n == 0 || c == 0)
+        return 0;
+    //Weight can either be <= c or > c
+    if (wt[n] <= c){
+        //Choice 1: choose this item
+        //Since we're choosing this item, we add the current item's value to whatever we get from next recursive call
+        int profitWithChoosing = val[n] + knapSackRec(wt, val, c - wt[n], n-1);
+        //Choice 2: Don't choose this item
+        //Since we don't choose this item, we simply ignore its value and move to the next item
+        int profitWithNotChoosing = knapSackRec(wt, val, c, n-1);
+        //Need to return max profit
+        //Finally, based on the two decisions above, we choose the max of the two and return that value
+        return max (profitWithChoosing, profitWithNotChoosing);
+    }
+    return knapSackRec(wt, val,c, n-1);
+}
+```
+
+### Equal Sum Partition
+This is another interesting problem: **Given an array, determine if the values in the array can be partitioned into two sets that have equal sums.**
+
+Example: {2,3,7,8,10}
+Answer: True: {2,3,10} and {8,7}
+
+This problem is similar to subset sum where were trying to find if a subset adds up to a given sum. Here however, we need to make an observation:
+- If the sum in the array is even, then and only then will we be able to partition it into two equal subsets
+
+If the sum in the array is even, we know we can divide the sum by 2 and then check to see if there's a subset in the array that adds to that sum. If so, then obviously remaining elements would add up to the remaining half of the sum. 
 
 ### Conclusion
 - Use recursion if
