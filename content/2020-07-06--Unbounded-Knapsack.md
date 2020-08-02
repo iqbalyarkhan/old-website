@@ -188,9 +188,10 @@ Like I said earlier, if the problem allows you to choose multiple instances of t
 **Given a rod of fixed length, and a price for each possible piece of the rod, determine the max profit that can be obtained by cutting the rod into pieces.**
 
 Example: 
-
+```cpp
 Length(meters):     1   2   3   4   5   6   7   8 
 Price(dollars):     1   5   8   9   10  17  17  20
+```
 
 So, if I cut the 8 meter rod into 2 and 6 meters and sell it, my profit would be: 5 + 17 = \$22.
 
@@ -310,7 +311,7 @@ So we're asked to make change for \$5 with only bills that are of the denominati
 - pick 5 and ignore others
 etc..
 
-Here we see that we've got the option to pick 1 or not pick 1. Then we've go the option to pick 2 or not pick 2. Then we've got the option t pick 3 or not pick 3 and so on. See the problem here? If we go down the recursion rabbit hole, we'd end up with $O2^N$ running time. So, we better use knapsack to solve this problem! 
+Here we see that we've got the option to pick 1 or not pick 1. Then we've go the option to pick 2 or not pick 2. Then we've got the option t pick 3 or not pick 3 and so on. See the problem here? If we go down the recursion rabbit hole, we'd end up with $O(2^N)$ running time. So, we better use knapsack to solve this problem! 
 
 Now, which knapsack do we use? 0-1 or unbounded? Well, in the options we listed above are we picking the same item more than once? Yes! we can pick all 1s (multiple occurrences of the same input), or we can pick 2 2s (multiple occurrences here again!) and so on, so we'll use unbounded knapsack!
 
@@ -342,7 +343,9 @@ Next, column 0: This means that our target sum is 0. In this case we can get to 
 
 So, we're done with row 0 and column 0. Let's start with (1,1). We'll use `i` to keep track of the rows and `j` for columns. 
 
-(1) (1,1) i = 1, j = 1.
+(1) **(1,1)** 
+
+i = 1, j = 1.
 
 Here, it means that we want to get to sum of 1 (because j = 1) and we only have the first element available for selection (since i = 1). This element that is available for selection is a bill for \$1.
 
