@@ -51,6 +51,7 @@ tags:
     * [Longest Common Subsequence Length](#longest-common-subsequence-length)
     * [Print Longest Common Subsequence](#print-longest-common-subsequence)
     * [Longest Common Substring Length](#longest-common-substring-length)
+    * [Min Insertions Or Deletions](#min-insertions-or-deletions)
 
 ### Introduction
 Recursion is a common technique to define a problem or a relation where subsequent "terms" build on calculations for previous terms. Our aim is to make decisions based on the existing choices we have and each time we make a choice, we obviously would reduce the number of problems that we'd have to solve. 
@@ -1798,6 +1799,62 @@ if (A[m-1] == B[n-1]){
     return max(len, max(one, two));
 }
 ```
+
+### Min Insertions or Deletions
+**Given two strings, determine the minimum number of insertions or deletions to convert string A to string B**
+
+Example:
+```cpp
+string A = "TEARS";
+string B = "EARTH"
+
+//You can remove T and S from TEARS to get EAR
+//Then add T and H to EAR to get EARTH
+//Deletions = 2, additions = 2
+```
+
+How do we go about tackling this problem? Let's use the process that we described above:
+
+- Remove T and S from TEARS to get EAR
+That seemed logical but why? Because both TEARS and EARTH have EAR in common so we're looking to see how we can go from TEARS to something that is also present in EARTH.
+
+- Then add T and H to the common subsequence to get new string
+Then, we added T and H to EAR to get EARTH
+
+This seems like something we've already solved in the past! All we're doing is getting longest common subsequence of the two strings and then calculating the deletions and insertions based on the size of `A` and `B`. How do we get the **number** of deletions and insertions:
+
+- **Deletions**
+
+We need to remove those characters from `A` that are not in `B`. We know for sure that `B` has the longest common subsequence present, so the number of deletions would equal:
+
+$$$
+\textrm{Deletions} = \textrm{Length of A} - \textrm{Length of longest common subsequence} 
+$$$
+
+While insertions would be the difference between `B` and LCS:
+
+$$$
+\textrm{Insertions} = \textrm{Length of B} - \textrm{Length of longest common subsequence} 
+$$$
+
+Here're the steps that we performed:
+```cpp
+TEARS   EARTH
+    \   /
+     EAR 
+```
+
+Here's the function that performs our calculations for us: (LCS function is omitted since it is the same as the one from previous section):
+
+```cpp
+void minInsOrDel(string A, string B){
+    int common = LCS(A, B, A.size(), B.size());
+    cout << "Common length: " << common <<endl;
+    cout << "Deletions: " << A.size() - common << endl;
+    cout << "Additions: " << B.size() - common << endl;
+}
+```
+
 
 ### Conclusion
 - Use recursion if
