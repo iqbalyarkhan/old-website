@@ -48,6 +48,9 @@ tags:
     * [Subset Sum Print](#subset-sum-print)
     * [0-1 Knapsack](#0-1-knapsack)
     * [Equal Sum Partition](#equal-sum-partition)
+    * [Longest Common Subsequence Length](#longest-common-subsequence-length)
+    * [Print Longest Common Subsequence](#print-longest-common-subsequence)
+    * [Longest Common Substring Length](#longest-common-substring-length)
 
 ### Introduction
 Recursion is a common technique to define a problem or a relation where subsequent "terms" build on calculations for previous terms. Our aim is to make decisions based on the existing choices we have and each time we make a choice, we obviously would reduce the number of problems that we'd have to solve. 
@@ -1510,6 +1513,291 @@ This problem is similar to subset sum where were trying to find if a subset adds
 - If the sum in the array is even, then and only then will we be able to partition it into two equal subsets
 
 If the sum in the array is even, we know we can divide the sum by 2 and then check to see if there's a subset in the array that adds to that sum. If so, then obviously remaining elements would add up to the remaining half of the sum. 
+
+### Longest Common Subsequence Length
+**Given two strings, find the length of longest common subsequence present in both strings**
+
+```cpp
+string A = "ABDGEWL";
+string B = "GFEDWSL";
+//Longest common subsequence: GEWL therefore 4
+```
+
+(1) **Base Case**
+In our recursion post, we started with the smallest valid input. Therefore, if we're given two strings as input, then what would be the smallest valid input? It would be where n == 0 OR m == 0 where n is the size of string A and m is the size of string B.
+
+If any one of our two strings is of size 0, ie one is empty or both are empty, what is the length of LCS of these two strings? It'd be 0! So, we've figured out what our base case should be.
+
+Translating this to code we have:
+
+```cpp
+int LCS(string A, string B, int n, int m){
+    if (m == 0 || n == 0)
+        return 0;
+}
+```
+
+(2) **Choices we have**
+Next, let's look at the case where our strings aren't empty:
+* **Current characters match**:
+If the two characters match, you've found a member of the sequence, so you recursively call the function again but add 1 to the total since there's a match. For example, say you have the following two strings and `n` and `m` are pointing to the characters shown:
+
+```cpp
+                n
+A   B   J   L   P
+                m
+B   N   L   C   P
+```
+
+Here, the two characters are equal, so we will continue to recurse BUT will add 1 to our total. Also, we'll decrement both `n` and `m` to search remaining characters:
+
+```cpp
+if (A[n-1] == B[m-1]){
+    return 1 + LCS(A, B, n-1, m-1); 
+}
+```
+
+* **Current characters do not match**:
+
+```cpp
+                n
+A   B   J   L   P
+                m
+B   N   L   P   K
+```
+
+In this case, you might get a match from a smaller substring in either one of the strings so you can't decrement both `n` and `m` at the same time. That is because we're told that the strings need not be of the same size. Therefore, you'll have two options in this case:
+
+- Keep A as is and search in the shorter version of B:
+
+```cpp
+                n
+A   B   J   L   P
+            m
+B   N   L   P   K
+```
+
+- Keep B as is and search in the shorter version of A:
+
+```cpp
+            n
+A   B   J   L   P
+                m
+B   N   L   P   K
+```
+
+Then, you return the max of the results from these two recursive calls:
+
+```cpp
+//Decrement one and compare
+b = LCS(A, B, n-1, m);
+//Decrement other and compare
+c = LCS(A, B, n, m-1);
+return max(b,c);
+```
+
+Putting all these cases together, we get:
+
+```cpp {numberLines: true}
+int LCS(string A, string B, int n, int m){
+    if (n == 0 || m == 0)
+        return 0;
+    if (A[n-1] == B[m-1]){
+        //There's a match!
+        return (1 + LCS(A, B, n-1, m-1));
+    } else {
+        int b = 0, c = 0;
+        //Decrement one and compare
+        b = LCS(A, B, n-1, m);
+        //Decrement other and compare
+        c = LCS(A, B, n, m-1);
+        return max(b,c);
+    }
+}
+```
+
+The running time is exponential: $O(2^{N+M})$
+
+### Print Longest Common Subsequence
+This problem is the same as the LCS length problem except this problem asks you to **print** the longest common subsequence found. I won't go over the entire explanation of LCS again but will directly start with the LCS length code and discuss the modifications:
+
+```cpp {numberLines: true}
+int LCS(string A, string B, int n, int m){
+    if (n == 0 || m == 0)
+        return 0;
+    if (A[n-1] == B[m-1]){
+        //There's a match!
+        return (1 + LCS(A, B, n-1, m-1));
+    } else {
+        int b = 0, c = 0;
+        //Decrement one and compare
+        b = LCS(A, B, n-1, m);
+        //Decrement other and compare
+        c = LCS(A, B, n, m-1);
+        return max(b,c);
+    }
+}
+```
+
+So we're certain of two things:
+
+- We'll get candidate **characters** of the longest common subsequence from the section where the characters match. ie lines 4-6. 
+- We'll get our complete potential **string** candidates in the base case because that is the point where no more characters will be added to the subsequence. 
+
+Acting on the above two certainties, I can add an additional variable to the function signature: `op` (short for output):
+ 
+```cpp
+int LCS(string A, string B, int n, int m, string op){
+    if (n == 0 || m == 0){
+        return 0;
+    }
+    if (A[n-1] == B[m-1]){
+        //There's a match!
+        op += A[n-1]; //ADD CHARACTER TO OP
+        return (1 + LCS(A, B, n-1, m-1,op));
+    } else {
+        int b = 0, c = 0;
+        //Decrement one and compare
+        b = LCS(A, B, n-1, m,op);
+        //Decrement other and compare
+        c = LCS(A, B, n, m-1,op);
+        return max(b,c);
+    }
+}
+``` 
+ 
+Then, I can print the longest subsequence seen so far in the base case:
+
+```cpp
+int LCS(string A, string B, int n, int m, string op){
+    if (n == 0 || m == 0){
+        cout << "op: " << op << endl;
+        return 0;
+    }
+    if (A[n-1] == B[m-1]){
+        //There's a match!
+        op += A[n-1]; //ADD CHARACTER TO OP
+        return (1 + LCS(A, B, n-1, m-1,op));
+    } else {
+        int b = 0, c = 0;
+        //Decrement one and compare
+        b = LCS(A, B, n-1, m,op);
+        //Decrement other and compare
+        c = LCS(A, B, n, m-1,op);
+        return max(b,c);
+    }
+}
+```
+
+If you run the code above via this call: 
+```cpp
+int ans = LCS("ABCD", "AZBCTD", 4, 6,"");
+//LCS is ABCD
+```
+
+You'll get the following output:
+
+```cpp
+op: D
+op: D
+op: D
+op: D
+op: DA
+op: D
+op: D
+op: D
+op: DA
+op: DB
+op: DBA
+op: DCB
+op: DCBA
+```
+
+You can then compare each generated string's length and return the longest length string in a global variable.
+
+### Longest Common Substring Length
+**Given a string, determine the length of the longest common substring**
+
+Example:
+```cpp
+string A = "JAVA"
+string B = "LAVA"
+ans = 3; // AVA 
+```
+
+Before we can find the longest common substring, we need to find all the substrings of the two strings. Let's look at a sample of the two:
+
+```cpp
+JAVA -> J, JA, JAV, JAVA, A, AV, AVA, V, VA, A
+LAVA -> L, LA, LAV, LAVA, A, AV, AVA V, VA, A
+COMMON: A, AV, AVA, V, VA, A
+LONGEST COMMON:
+```
+
+As with any recursive algorithm, let's start with the base case:
+-**Base Case**
+This occurs when either string has no characters ie `m` or `n` equals 0 (where `m` and `n` are lengths of each string)
+
+```cpp
+//Base case
+if (m == 0 || n == 0)
+    return 0;
+```
+
+-**Recursive Case**
+
+**The characters match:**
+If the characters match, we increment the variable that's keeping track of the running total, `len`, by 1 and make a recursive call with remaining characters:
+
+```cpp
+//Base case
+if (m == 0 || n == 0)
+    return 0;
+
+//Recursive cases:
+//Characters match
+if (A[m-1] == B[n-1]){
+    return subString(A,B, m-1, n-1, len + 1);
+}
+```
+
+**The characters do not match:**
+If the characters do not match, we decrement count of 1 string and recurse with entirety of the other string. We then decrement the remaining string and recurse with entirety of first string. For each recursive call, we reset the running total to 0:
+
+```cpp
+//Base case
+if (m == 0 || n == 0)
+    return 0;
+
+//Recursive cases:
+//Characters match
+if (A[m-1] == B[n-1]){
+    return subString(A,B, m-1, n-1, len + 1);
+} else {
+    //Characters don't match
+    int one = subString(A, B, m, n-1, 0);
+    int two = subString(A, B, m-1, n, 0);
+}
+```
+
+Finally, we return max of match and the two cases of no matches:
+
+```cpp
+//Base case
+if (m == 0 || n == 0)
+    return 0;
+
+//Recursive cases:
+//Characters match
+if (A[m-1] == B[n-1]){
+    return subString(A,B, m-1, n-1, len + 1);
+} else {
+    //Characters don't match
+    int one = subString(A, B, m, n-1, 0);
+    int two = subString(A, B, m-1, n, 0);
+    return max(len, max(one, two));
+}
+```
 
 ### Conclusion
 - Use recursion if
