@@ -64,6 +64,24 @@
 <li><a href="#ispalindrome">isPalindrome</a></li>
 <li><a href="#power-set">Power set</a></li>
 <li><a href="#alternate-approach-to-subsets">Alternate approach to subsets</a></li>
+<li><a href="#permutations">Permutations</a></li>
+<li><a href="#alternate-approach-to-permutations">Alternate approach to permutations</a></li>
+<li><a href="#permutations-and-subsets">Permutations and Subsets</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#backtracking">Backtracking</a></p>
+<ul>
+<li><a href="#dice-rolls">Dice Rolls</a></li>
+<li><a href="#dice-rolls-with-target">Dice Rolls with target</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#counting-problems">Counting Problems</a></p>
+<ul>
+<li><a href="#stair-case">Stair case</a></li>
+<li><a href="#manhattan-path">Manhattan Path</a></li>
+<li><a href="#basketball-score">BasketBall Score</a></li>
 </ul>
 </li>
 <li><a href="#binary-search">Binary Search</a></li>
@@ -75,20 +93,13 @@
 </ul>
 </li>
 <li>
-<p><a href="#counting-problems">Counting Problems</a></p>
+<p><a href="#additional-problems">Additional Problems</a></p>
 <ul>
-<li><a href="#permutations">Permutations</a></li>
-<li><a href="#alternate-approach-to-permutations">Alternate approach to permutations</a></li>
-<li><a href="#stair-case">Stair case</a></li>
-<li><a href="#manhattan-path">Manhattan Path</a></li>
-<li><a href="#basketball-score">BasketBall Score</a></li>
-</ul>
-</li>
-<li>
-<p><a href="#backtracking">Backtracking</a></p>
-<ul>
-<li><a href="#dice-rolls">Dice Rolls</a></li>
-<li><a href="#dice-rolls-with-target">Dice Rolls with target</a></li>
+<li><a href="#integer-permutations">Integer Permutations</a></li>
+<li><a href="#yet-another-subset-sum">Yet Another Subset Sum </a></li>
+<li><a href="#subset-sum-print">Subset Sum Print</a></li>
+<li><a href="#0-1-knapsack">0-1 Knapsack</a></li>
+<li><a href="#equal-sum-partition">Equal Sum Partition</a></li>
 </ul>
 </li>
 </ol>
@@ -447,6 +458,374 @@ This is reached when the size of the string is less than 0. ie we're done with a
 <span class="token punctuation">{</span>B<span class="token punctuation">}</span>
 <span class="token punctuation">{</span>C<span class="token punctuation">}</span>
 <span class="token punctuation">{</span><span class="token punctuation">}</span></code></pre></div>
+<p>If you're more inclined to see a version where the removal and addition is more explicit, here it is:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">forcedRemovalSubset</span><span class="token punctuation">(</span>string soFar<span class="token punctuation">,</span> string rest<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>rest <span class="token operator">==</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        cout <span class="token operator">&lt;&lt;</span> soFar <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">//choose</span>
+    <span class="token comment">//Pick next available character from rest,</span>
+    <span class="token comment">//add it to soFar and remove it from rest</span>
+    <span class="token function">forcedRemovalSubset</span><span class="token punctuation">(</span>soFar <span class="token operator">+</span> rest<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token punctuation">,</span> rest<span class="token punctuation">.</span><span class="token function">substr</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//ignore</span>
+    <span class="token comment">//Pick next available character from rest,</span>
+    <span class="token comment">//DON'T add it to soFar but just remove it from rest</span>
+    <span class="token function">forcedRemovalSubset</span><span class="token punctuation">(</span>soFar<span class="token punctuation">,</span> rest<span class="token punctuation">.</span><span class="token function">substr</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="permutations"><a href="#permutations" aria-label="permutations permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Permutations</h3>
+<p><strong>Given a string, print all possible permutations of the string</strong>. Example:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">string A <span class="token operator">=</span> <span class="token string">"ABC"</span>
+<span class="token comment">//permutations:</span>
+ABC
+ACB
+BAC
+BCA
+CAB
+CBA</code></pre></div>
+<p><strong>Base case</strong>: We've got just a single character, in which case, we'll print out that character and be done</p>
+<p><strong>Size of the problem</strong>: Number of characters in the string</p>
+<p><strong>Decomposition</strong>: Discard (or ignore) one character and permute the remaining characters. Keep ignoring until you reach the last character</p>
+<p>code:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">generatePerms</span><span class="token punctuation">(</span>string s<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> s<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        cout <span class="token operator">&lt;&lt;</span> s <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> n<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token keyword">int</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token function">swap</span><span class="token punctuation">(</span>s<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> s<span class="token punctuation">[</span>n<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">generatePerms</span><span class="token punctuation">(</span>s<span class="token punctuation">,</span> n<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>Base is case is checking if the parameter, <code class="language-cpptext">n</code>, is equal to the size of the string, in which case we've got nothing to do but print the string. Secondly, notice above that we've got the loop running from <code class="language-cpptext">n</code> till the end of the string and not from 0 till end of string. This is to simulate the "ignore" effect. Finally, we recurse on next available character.</p>
+<h3 id="alternate-approach-to-permutations"><a href="#alternate-approach-to-permutations" aria-label="alternate approach to permutations permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Alternate approach to permutations</h3>
+<p>Let's have a look at another approach to solve permutations. You can think of the process as removing a character from our available set and adding it to the permuted string. Next, we call the function recursively to generate permutations for the remainder of strings. Therefore, we'll have to keep track of 2 strings: <code class="language-cpptext">soFar</code> which will represent all the permutations and <code class="language-cpptext">rest</code> which'll represent our decision space. Initially this is what we'll have:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">       soFar  rest 
+        <span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"ABC"</span></code></pre></div>
+<p>Then, we'll pick an element from the <code class="language-cpptext">rest</code> string and place in the <code class="language-cpptext">soFar</code> string. Then, our strings would look like:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">           soFar  rest 
+            <span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"ABC"</span>
+            <span class="token operator">/</span>
+        <span class="token string">"A"</span><span class="token punctuation">,</span> <span class="token string">"BC"</span></code></pre></div>
+<p>We then pick the next available character from <code class="language-cpptext">rest</code> and append to <code class="language-cpptext">soFar</code>. We keep doing this until rest is empty:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">           soFar  rest 
+            <span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"ABC"</span>
+            <span class="token operator">/</span>
+        <span class="token string">"A"</span><span class="token punctuation">,</span> <span class="token string">"BC"</span>
+         <span class="token operator">/</span>
+   <span class="token string">"AB"</span><span class="token punctuation">,</span> <span class="token string">"C"</span>
+      <span class="token operator">/</span>
+<span class="token string">"ABC"</span><span class="token punctuation">,</span> <span class="token string">""</span></code></pre></div>
+<p>This'll be our base case: when we have no more decisions to make. Next, we return back to the call where we had another option and continue recursing. </p>
+<p>Here's the code representing the logic we discussed above:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">permute</span><span class="token punctuation">(</span>string soFar<span class="token punctuation">,</span> string rest<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>rest <span class="token operator">==</span> <span class="token string">""</span><span class="token punctuation">)</span>
+        cout <span class="token operator">&lt;&lt;</span> soFar <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> rest<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token comment">//Grabbing the next available character</span>
+        string next <span class="token operator">=</span> soFar <span class="token operator">+</span> rest<span class="token punctuation">[</span>i<span class="token punctuation">]</span>      
+        <span class="token comment">//Removing this character from decision space</span>
+        <span class="token comment">//which is the string rest</span>
+        string remaining <span class="token operator">=</span> rest<span class="token punctuation">.</span><span class="token function">substr</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span>i<span class="token punctuation">)</span> <span class="token operator">+</span> rest<span class="token punctuation">.</span><span class="token function">substr</span><span class="token punctuation">(</span>i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">permute</span><span class="token punctuation">(</span>next<span class="token punctuation">,</span> remaining<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
+<p>We're using the loop to pick between the choices we have. On each call, we're adding the picked element to our result and removing this choice from the decision space since we don't want to repeat the decision. </p>
+<p>Having said that, if you run this code, you'll notice that it'll start with the first character of the string you provide and print all permutations starting with that first character. Next, it'll do the same for the second character and so on until the string <code class="language-cpptext">rest</code> is empty.</p>
+<h3 id="permutations-and-subsets"><a href="#permutations-and-subsets" aria-label="permutations and subsets permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Permutations and Subsets</h3>
+<p>Let's recap what we learned from permutation and subsets problems:</p>
+<ul>
+<li>Both problems use the idea of <strong>choices</strong>: you include an element or not include an element</li>
+<li>
+<p>Depths of their respective trees represent the number of decisions made and width represents number of available options per decision</p>
+<ul>
+<li>In the subset problem, we have 2 branches at each level since for each option we have 2 options: choose or ignore</li>
+<li>In the permutations problem, the first call has <code class="language-cpptext">n</code> branches because we have <code class="language-cpptext">n</code> different options for the first position. At the next level, we have <code class="language-cpptext">n-1</code> branches and so on until we're out of elements to pick from.</li>
+</ul>
+</li>
+<li>Therefore, the tree in each case represents the decisions that are to be made and we move toward the point where there are no more decisions to be made</li>
+<li>These problems are considered to be exhaustive where we look at every possible option. We can improve our run time by pruning the tree when certain criteria is provided that'll rule out some part of the tree.</li>
+</ul>
+<h3 id="backtracking"><a href="#backtracking" aria-label="backtracking permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Backtracking</h3>
+<p>Now permutations and subsets problems used exhaustive search which explores ALL possible options at our disposal. Some times, it is wise to prune the recursive calls we make based on some criteria so that we don't perform unnecessary calculations. We can choose to go down a path by making certain choices and if we fail, we can backtrack to our starting point and go down another <strong>valid</strong> avenue. This is called backtracking.</p>
+<p>The term backtracking literally means to retrace your steps. In recursive backtracking, we use this technique to solve types of problems where the final solution depends on the constraints provided. Backtracking is used when we're given "choices" at each step and we're to make a decision on whether to include or exclude the choice at hand and then proceed. If we make a choice and go down a path and realize that the choices made so far don't take us to the solution, we <strong>backtrack</strong> to a previous choice and proceed from there.</p>
+<p>For some problems, the choices would be the available inputs and for others, the choices would be an actual decision on whether to pick and element or ignore it. This distinction will be clear when we see a few examples. For now, let's look at the mental model we'll follow to use backtracking as a technique:</p>
+<p>(1) Determine what the base step is and what you'll be doing at that base step.</p>
+<p>For <strong>decomposition</strong>, we'll ask ourselves these questions
+(2) Find what choices we have at each step, ie what are the different options for next step?</p>
+<p>(3) For each valid choice:</p>
+<ul>
+<li>Make the choice and explore remaining solution recursively. Pass relevant information to the next call.</li>
+<li>Once that call returns, undo the changes you made. Restore everything to the way it was before making this choice</li>
+<li>In some problems, the undo step is not needed since we're not doing an exhaustive search</li>
+</ul>
+<p>How are these analogous to the decomposition steps we've seen so far? Remember, decomposition is used to make the input smaller and it guides us toward the base case. Therefore, At each step, as I make a choice, I'll get closer to the base case. </p>
+<p>In pseudocode, here is what backtracking does:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">bool</span> Solve <span class="token punctuation">(</span>configuration conf<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token comment">//base case</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>no more choices<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">(</span>conf in goal state<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>all available choices<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">try</span> one choice c<span class="token punctuation">;</span>
+        <span class="token comment">//If this choice worked out, you're done!</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>Solve <span class="token punctuation">(</span>conf with choice c made<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>        
+        <span class="token comment">//Undo the changes</span>
+        unmake choice c<span class="token punctuation">;</span>
+        <span class="token comment">//Go back up to the loop and try a different choice</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">//No solution found</span>
+    <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<ul>
+<li>We return true at the base case therefore not needing to go over EVERY possibility, once we hit a true, we're done</li>
+<li>Inside the for loop, we make a choice and then call the method, <code class="language-cpptext">Solve</code> again</li>
+</ul>
+<h3 id="dice-rolls"><a href="#dice-rolls" aria-label="dice rolls permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Dice rolls</h3>
+<p><strong>Given a number dies, n, generate ALL possible outcomes of rolling those dies</strong></p>
+<p>For example, if we're given 2 dies, we can have 11, 12, 13, 14, 15, 16, 21, 22 ...</p>
+<p>Why does this qualify as a backtracking problem? Because we have choices that we need to make. Now, we need to decide whether this is an ignore/choose choice diagram or pick every choice diagram. Obviously, the problem asks for ALL possible outcomes, so we need to choose EVERY possible choice. </p>
+<p>Let's start with the template we discussed above:
+(1) Base Step: This is when we don't have any more dice to roll: here, we'll print our result</p>
+<p>(2) Choices: the value of die that I can choose</p>
+<p>(3) Relevant info to be passed to next call: the numbers rolled so far.</p>
+<p>(4) Undo the decision: remove the rolled number </p>
+<p>Let's code this:</p>
+<p>Function signature:</p>
+<ul>
+<li><code class="language-cpptext">n</code> for the number of dies we're asked to roll</li>
+<li><code class="language-cpptext">soFar</code> the numbers rolled so far</li>
+</ul>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">diceRolls</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">,</span> string soFar<span class="token punctuation">)</span><span class="token punctuation">{</span><span class="token punctuation">}</span></code></pre></div>
+<p>Let's add the base case:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">diceRolls</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">,</span> string soFar<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        cout <span class="token operator">&lt;&lt;</span> soFar <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>Now, we need to determine how we'll represent the choices. <code class="language-cpptext">n</code> would be used to represent the number of dies and for each die we can go from 1 to 6.</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">diceRolls</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">,</span> string soFar<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        cout <span class="token operator">&lt;&lt;</span> soFar <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span><span class="token number">6</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        stringstream ss<span class="token punctuation">;</span>
+        ss <span class="token operator">&lt;&lt;</span> i<span class="token punctuation">;</span>
+        string curr<span class="token punctuation">;</span>
+        ss <span class="token operator">>></span> curr<span class="token punctuation">;</span>
+        soFar <span class="token operator">+=</span> curr<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>    
+
+<span class="token punctuation">}</span></code></pre></div>
+<p>We've made the choice, now we need to make a recursive call to get remaining choices:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">diceRolls</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">,</span> string soFar<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        cout <span class="token operator">&lt;&lt;</span> soFar <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span><span class="token number">6</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        stringstream ss<span class="token punctuation">;</span>
+        ss <span class="token operator">&lt;&lt;</span> i<span class="token punctuation">;</span>
+        string curr<span class="token punctuation">;</span>
+        ss <span class="token operator">>></span> curr<span class="token punctuation">;</span>
+        soFar <span class="token operator">+=</span> curr<span class="token punctuation">;</span>
+        <span class="token function">diceRolls</span><span class="token punctuation">(</span>n<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>soFar<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>    
+
+<span class="token punctuation">}</span></code></pre></div>
+<p>Finally, we need to undo the change we did before we made the recursive call: ie remove the roll added:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">diceRolls</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">,</span> string soFar<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        cout <span class="token operator">&lt;&lt;</span> soFar <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span><span class="token number">6</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        stringstream ss<span class="token punctuation">;</span>
+        ss <span class="token operator">&lt;&lt;</span> i<span class="token punctuation">;</span>
+        string curr<span class="token punctuation">;</span>
+        ss <span class="token operator">>></span> curr<span class="token punctuation">;</span>
+        soFar <span class="token operator">+=</span> curr<span class="token punctuation">;</span>
+        <span class="token function">diceRolls</span><span class="token punctuation">(</span>n<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>soFar<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        soFar<span class="token punctuation">.</span><span class="token function">pop_back</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>    
+<span class="token punctuation">}</span></code></pre></div>
+<p>That's it! We've basically made the following choices on each iteration:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 44.51345755693582%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAAAsSAAALEgHS3X78AAAB20lEQVQoz21S246bUAzk/z+m2j50d/tQqepNzTYQSML9QAiQACEhmwTYQC7T4UiV9qGWLOFje2Zso1imCU1VMdE0GLqOTVGgO5/Rdx3iJMWHxyd8e3nB198jPDw94xfr9vs93toWTdOgpTd1I+Nqt4NyOBxkQjof+76Xfr/fsWVBmCSIswx2EOAngW0hULP2f3a5XKG8Uc176/sLTqcTsixHFEVSves4qE9H+J4Pc27Cti0EJNiRMM8LbDYlCk421CuDqsE6jng8HlHXNdq2QRwnWCwijMd/YNk2rtcLSQoslzEcEggq7bozXl+PWK9zSTCZTKCc3yksy5LJDKZpESyE53lkLuH7PkajEabTGYECKrShc9+rVc76NUki3G43uTJlkLrbblFVlWSZzUyoHFPTVKpTqcaFYRgEM6TiAVDXJxLEdX3mppjP51Sf8Q4ETNM1mwQWUUqAMTxfcBcJwROEYSjBhQgJkHENKXSCV9WBuxuUB3xPYFnDRAvucgMlWweUbiMMpnwM4NgaAqGxISBAzOYSeeZC+Bpj5h1Tfhe5T1/K4w3TDX/GsD5lZjxCeJ+Qrb6zQfCiX2ScJj9ItCJwCMd6QBR+JoCDeOky/ojAfyaRLg/yz1ru8C9v/pMCgBzr5wAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Dice-Roll-Image"
+        title="Dice-Roll-Image"
+        src="/static/ecba8d493e4488031251517daf002f05/1dda8/dice-roll.png"
+        srcset="/static/ecba8d493e4488031251517daf002f05/27f03/dice-roll.png 173w,
+/static/ecba8d493e4488031251517daf002f05/376d0/dice-roll.png 345w,
+/static/ecba8d493e4488031251517daf002f05/1dda8/dice-roll.png 690w,
+/static/ecba8d493e4488031251517daf002f05/5309d/dice-roll.png 966w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span><a href="https://web.stanford.edu/class/archive/cs/cs106x/cs106x.1192/lectures/Lecture10/Lecture10.pdf">Image credit</a></p>
+<h3 id="dice-rolls-with-target"><a href="#dice-rolls-with-target" aria-label="dice rolls with target permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Dice Rolls with Target</h3>
+<p>Let's say you're given a number of dies and want to print all rolls that add up to a target. How would that modify our code? Well, the solution is similar to what we had for the origin dice roll problem but here're the additions:</p>
+<ul>
+<li>Our base case will check to see if the chosen elements so far have sum equal to the target</li>
+<li>We'll use a vector to keep track of <code class="language-cpptext">chosen</code> elements</li>
+<li>We'll add checks to make sure we don't go down unnecessary paths. For example, if target is 4, we can ignore values of 5 and 6 for dice rolls</li>
+</ul>
+<p>Here's the code:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">getRolls</span><span class="token punctuation">(</span><span class="token keyword">int</span> dice<span class="token punctuation">,</span> <span class="token keyword">int</span> target<span class="token punctuation">,</span> vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">&amp;</span> chosen<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>dice <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token comment">//getSum is helper function that adds elements</span>
+        <span class="token comment">//in the vector and returns their sum</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">getSum</span><span class="token punctuation">(</span>chosen<span class="token punctuation">)</span> <span class="token operator">==</span> target<span class="token punctuation">)</span>
+            <span class="token function">printVec</span><span class="token punctuation">(</span>chosen<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//to print vector</span>
+    <span class="token punctuation">}</span>
+    
+    <span class="token keyword">int</span> sum <span class="token operator">=</span> <span class="token function">getSum</span><span class="token punctuation">(</span>chosen<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> <span class="token number">6</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>sum <span class="token operator">+</span> i <span class="token operator">&lt;=</span> target<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            chosen<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">getRolls</span><span class="token punctuation">(</span>dice<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> target<span class="token punctuation">,</span> chosen<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            chosen<span class="token punctuation">.</span><span class="token function">pop_back</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="counting-problems"><a href="#counting-problems" aria-label="counting problems permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Counting Problems</h3>
+<p>Recursion can be used in combinatorics which is a mathematical field that deals with counting. This section will deal with such algorithms and we'll see how recursion will help us solve these types of problems. </p>
+<h3 id="stair-case"><a href="#stair-case" aria-label="stair case permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Stair case</h3>
+<p><strong>Given that you can climb either 1 step at a time or 2 steps at a time, count the number of ways to climb 6 steps</strong></p>
+<p><strong>Base case</strong>: This is the smallest valid step that you can take: ie you can take 1 step and the number of ways to take 1 step is 1 (by taking just 1 step). Another smallest valid step is that you can take 2 steps. How many ways can you take 2 steps? Well, you can take 1 step twice (way 1) or you can take 2 steps once (way 2):</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token number">2</span><span class="token punctuation">;</span></code></pre></div>
+<p><strong>Decomposition</strong>: Well, you've got 6 steps that you need to climb. In this case, let's look at our choice diagram:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">                    <span class="token number">6</span>
+                  <span class="token operator">/</span>   \         
+                 <span class="token number">4</span>     <span class="token number">5</span>
+               <span class="token operator">/</span>   \ <span class="token operator">/</span>  \
+              <span class="token number">2</span>    <span class="token number">3</span> <span class="token number">3</span>   <span class="token number">4</span></code></pre></div>
+<p>The diagram above shows that we start with 6 steps. Next, the left choice is when we take 2 steps and the right choice is when we take 1 step. On each step, we're to add the number of ways that we've calculated so far. Therefore, we'll be cascading up as we calculate the number of ways for each step. Then, it is clear to see that total number of ways that we can get to 6 steps is by adding the total number of ways we can get to 4 steps and the total number of ways we can get to 5 steps:</p>
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mi>a</mi><mi>y</mi><mi>s</mi><mo stretchy="false">(</mo><mn>6</mn><mo stretchy="false">)</mo><mo>=</mo><mi>W</mi><mi>a</mi><mi>y</mi><mi>s</mi><mo stretchy="false">(</mo><mn>5</mn><mo stretchy="false">)</mo><mo>+</mo><mi>W</mi><mi>a</mi><mi>y</mi><mi>s</mi><mo stretchy="false">(</mo><mn>4</mn><mo stretchy="false">)</mo><mspace linebreak="newline"></mspace><mtext>ie </mtext><mi>F</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mi>F</mi><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo>+</mo><mi>F</mi><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mn>2</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">Ways(6) = Ways(5) + Ways(4) \\
+\textrm{ie } F(n) = F(n-1) + F(n-2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">s</span><span class="mopen">(</span><span class="mord">6</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">s</span><span class="mopen">(</span><span class="mord">5</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">s</span><span class="mopen">(</span><span class="mord">4</span><span class="mclose">)</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord textrm">ie </span></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">(</span><span class="mord mathdefault">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">(</span><span class="mord mathdefault">n</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">(</span><span class="mord mathdefault">n</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">2</span><span class="mclose">)</span></span></span></span></span>
+<p><strong>Size of problem</strong> Size is equal to the number of steps we're asked to climb ie 6 in our example</p>
+<p>Now, the code becomes quite simple:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">int</span> <span class="token function">numberOfWaysToClimb</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token number">2</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> oneBack <span class="token operator">=</span> <span class="token function">numberOfWaysToClimb</span><span class="token punctuation">(</span>n<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> twoBack <span class="token operator">=</span> <span class="token function">numberOfWaysToClimb</span><span class="token punctuation">(</span>n<span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> oneBack <span class="token operator">+</span> twoBack<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="manhattan-path"><a href="#manhattan-path" aria-label="manhattan path permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Manhattan Path</h3>
+<p><strong>Given a grid and a target point in that grid at (m,n), find the number of ways to get from 0,0 to m,n.</strong></p>
+<p>Example:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 242px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/bdc322ec4f14dbd7815618e67cb2168f/90a29/grid.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 98.7603305785124%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAACH0lEQVQ4y7WUTU9TURCGp+deSwMKJTamCyIfwV7aSoQaWBhXRkPYiSKGSCxYrYRI4gcgRtkaUGNNcCEbSDRxo8aFG+PG8DPYuDP8BJaX99z7giM9rIwneXqnb6bTmTMzVyQ+efANrIDXZBm8Bz/Ac1Cjbn026L+s/F+AdcaTfnBT6k8BTDn0LnDZoXfqgBXaPjBKrzp0W9Eo7Qal53TAW7Q95dB3SMAAjIN5cB8M0y/QAScdJfSC2w69G1wDrQxi/dI6Q5vJDO0W0MxMz4FZ6mnqNtOzYIJ6imXvJbZ/+R+Z/mNi7TfgC4MuUn8AXoEPtJ+QR+ClLnmvmwlV2hlwh7ZRui3tqsP/lKspRjn1qYCe0gPVZe2f+68Bp5j/v5eMtpW8P/NmO5akbbs57dCL4DrtpNILeq42OKhL4BlYAKvgK3hI7Sn1GqdizqGL/O6UK1sdsuYYYJvhXZWJrzIZo31E6fnoc7tLFne65fuFRmnH1/aGhJzE8wR/WHXcYXDgDv9uymlfej9lZQTmeS8uo4rnqIkdph273KO67B3YcZGLKSl9zsaZHDeSbzVRt+y/FhN8C5n6bo4csuMiA0kZqGWiS90/YTnq6iBX0J5joIl2CZRpNyk93uWCL9nVjKzPtsg7sDZxVN7+6pCtzTb5affUxC/fCod/Uu12mXqF+j2ZaWZGQ+KHPZIOA1CUVJiTG2E+2hS51CgmY+oaIC57F3OzXTYGC7EoAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Grid-Image"
+        title="Grid-Image"
+        src="/static/bdc322ec4f14dbd7815618e67cb2168f/90a29/grid.png"
+        srcset="/static/bdc322ec4f14dbd7815618e67cb2168f/27f03/grid.png 173w,
+/static/bdc322ec4f14dbd7815618e67cb2168f/90a29/grid.png 242w"
+        sizes="(max-width: 242px) 100vw, 242px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
+<p>Legal moves are denoted by the red arrows. </p>
+<p><strong>Base case</strong>: This is when either <code class="language-cpptext">m</code> or <code class="language-cpptext">n</code> is 0. In that case, we're either along the x axis (if n is 0) or y axis (if m is 0). In both these scenarios, the number of ways to get to the point is 1: ie move in one direction until the point is reached</p>
+<p><strong>Decomposition</strong>: Here, we decompose our problem based on <code class="language-cpptext">m</code> and <code class="language-cpptext">n</code>:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 543px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 59.66850828729282%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAYAAABiDJ37AAAACXBIWXMAAAsSAAALEgHS3X78AAABnklEQVQoz41TS0vDQBDOj/ei+MK7oHjw4LNqQVT04FWlSEEa+1Jos0mTzbOmbZJ+zqwmpA/EhWFnZ2a/mfl2VsPcmk6nxZ6kKZIkl0SdJ5OJ0stx5aXNg+UBbhDi4PYBezf32KedZff6Dq96E8l4jOw/gLzyQMf3sXNexebZFbZo365UsXZUQb3T/YnLsgWwPysUjoONkwusHlewfnqpZOXwBLX3VgG4tMIyF7k+ppZsAqx3PvDc0PH4UsPTWwO1ZhsyCBa4Lt/VisOcgyvwpMNKkd13pUq2DCi3FS3PsxEEPmzbVvb0FzSMIgwsa4G3Mp9aOVM4HKJnO+g7EoaUENKFdF01KrxseiiDbMpPovaBTcmDgtMZDl1ytISJjjlA27TQJj0ejRBRZezvkk3vCzTJzqL3DVVA3qFqOa+OM/DstYSFLmVl0JZhYkScxXEMz/PQM00MPKLCD5RYVL0XhjOcajk3ETkE8fNhCHQp86cQNDoSKf0ODmTACYHzLxkOI8RfX8h+feUuZzjkF0zpAgsHL5tPTsBxzGu2ZOS+AZLHmnEl1rTaAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Decomposition-Image"
+        title="Decomposition-Image"
+        src="/static/2a948092ed22a6c7333c21dc48cac0d8/bd6bc/decomposition.png"
+        srcset="/static/2a948092ed22a6c7333c21dc48cac0d8/27f03/decomposition.png 173w,
+/static/2a948092ed22a6c7333c21dc48cac0d8/376d0/decomposition.png 345w,
+/static/2a948092ed22a6c7333c21dc48cac0d8/bd6bc/decomposition.png 543w"
+        sizes="(max-width: 543px) 100vw, 543px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span><a href="https://learning.oreilly.com/library/view/introduction-to-recursive/9781351647175/">Image credit</a></p>
+<p>Where we want to reduce <code class="language-cpptext">m</code> by one and keep <code class="language-cpptext">n</code> the same or reduce <code class="language-cpptext">n</code> by one and keep <code class="language-cpptext">m</code> the same. </p>
+<p>Finally, we add up all the ways up to <code class="language-cpptext">m</code> and <code class="language-cpptext">n</code>:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">int</span> <span class="token function">ManhattanPath</span><span class="token punctuation">(</span><span class="token keyword">int</span> m<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>m <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> n <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> reducedMWays <span class="token operator">=</span> <span class="token function">ManhattanPath</span><span class="token punctuation">(</span>m<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> reducedNWays <span class="token operator">=</span> <span class="token function">ManhattanPath</span><span class="token punctuation">(</span>m<span class="token punctuation">,</span> n<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> reducedMWays <span class="token operator">+</span> reducedNWays<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="basketball-score"><a href="#basketball-score" aria-label="basketball score permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Basketball Score</h3>
+<p><strong>In a game of basketball a team can score points in three different ways. A “free throw” scores one point, a “field goal” is worth two points, and a successful shot beyond the “three-point” line scores three points. Write a program that determines the number of ways a team can reach n points. For example, there are four ways to score three points: 1+1+1, 1+2, 2+1, and 3. Thus, assume that the order in which the points are scored matters.</strong></p>
+<ul>
+<li><strong>Base case</strong>
+This the minimum number of valid points that can be scored:</li>
+<li>1 point: there's only 1 way to score 1 point</li>
+<li>2 points: there're two ways to score 2 points: 1+1 and 2</li>
+<li>3 points: there're four ways to score 3 points: 1+1+1, 1+2, 2+1, and 3</li>
+</ul>
+<p>-<strong>Decomposition</strong>
+We'll break the problem down using our decision tree since it is easier to see all the different decisions that we need to make. Say, we're asked to get number of ways to go up till 4:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">                     <span class="token number">4</span>
+                  <span class="token operator">/</span>  <span class="token operator">|</span>  \         
+                 <span class="token number">3</span>   <span class="token number">2</span>   <span class="token number">1</span> Add at each level
+               <span class="token operator">/</span> <span class="token operator">|</span>   <span class="token operator">|</span>  
+              <span class="token number">2</span>  <span class="token number">1</span>   <span class="token number">1</span>      </code></pre></div>
+<p>-<strong>Size of problem</strong>
+The size of the problem obviously depends on the score that we need to generate. </p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">int</span> <span class="token function">bbPts</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token number">2</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">3</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token number">4</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token function">bbPts</span><span class="token punctuation">(</span>n<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token function">bbPts</span><span class="token punctuation">(</span>n<span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token function">bbPts</span><span class="token punctuation">(</span>n<span class="token operator">-</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
 <h3 id="binary-search"><a href="#binary-search" aria-label="binary search permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Binary Search</h3>
 <p><strong>A common algorithm that uses recursion is binary search: given a sorted list, find the given element. If present, return the index, otherwise, return -1.</strong></p>
 <p>Base case: array is comprised of 1 item: perform check and return</p>
@@ -605,25 +984,23 @@ Return <span class="token number">7</span> <span class="token operator">+</span>
 <p>Therefore, overall running time is:</p>
 <span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>T</mi><mo stretchy="false">(</mo><mi>n</mi><mi mathvariant="normal">/</mi><mn>2</mn><mo stretchy="false">)</mo><mo>+</mo><mi>θ</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">2T(n/2) + \theta(n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">2</span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mopen">(</span><span class="mord mathdefault">n</span><span class="mord">/</span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">θ</span><span class="mopen">(</span><span class="mord mathdefault">n</span><span class="mclose">)</span></span></span></span></span>
 <p>This is the same as merge sort therefore the running time is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mi>l</mi><mi>o</mi><mi>g</mi><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(nlogn)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault">n</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord mathdefault">n</span><span class="mclose">)</span></span></span></span> </p>
-<h3 id="counting-problems"><a href="#counting-problems" aria-label="counting problems permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Counting Problems</h3>
-<p>Recursion can be used in combinatorics which is a mathematical field that deals with counting. This section will deal with such algorithms and we'll see how recursion will help us solve these types of problems. </p>
-<h3 id="permutations"><a href="#permutations" aria-label="permutations permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Permutations</h3>
-<p><strong>Given a string, print all possible permutations of the string</strong>. Example:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">string A <span class="token operator">=</span> <span class="token string">"ABC"</span>
-<span class="token comment">//permutations:</span>
-ABC
-ACB
-BAC
-BCA
-CAB
-CBA</code></pre></div>
-<p><strong>Base case</strong>: We've got just a single character, in which case, we'll print out that character and be done</p>
-<p><strong>Size of the problem</strong>: Number of characters in the string</p>
-<p><strong>Decomposition</strong>: Discard (or ignore) one character and permute the remaining characters. Keep ignoring until you reach the last character</p>
-<p>code:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">generatePerms</span><span class="token punctuation">(</span>string s<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<h3 id="additional-problems"><a href="#additional-problems" aria-label="additional problems permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Additional Problems</h3>
+<p>Let's tackle a few more problems and some variations of the problems already seen above:</p>
+<h3 id="integer-permutations"><a href="#integer-permutations" aria-label="integer permutations permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Integer Permutations</h3>
+<p><strong>Given a vector of integers, generate all possible permutations</strong></p>
+<p>This is similar to string permutations. The only difference here is that we're swapping integers in a vector instead of characters in a string:</p>
+<p>Again, the template is:</p>
+<ul>
+<li>Check for base case</li>
+<li>Make a choice</li>
+<li>Recurse with the choice made</li>
+</ul>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">generatePerms</span><span class="token punctuation">(</span>vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> s<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> s<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        cout <span class="token operator">&lt;&lt;</span> s <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> s<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            cout <span class="token operator">&lt;&lt;</span> s<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        cout <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
         <span class="token keyword">return</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
     <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> n<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token keyword">int</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
@@ -632,293 +1009,180 @@ CBA</code></pre></div>
     <span class="token punctuation">}</span>
     <span class="token keyword">return</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre></div>
-<p>Base is case is checking if the parameter, <code class="language-cpptext">n</code>, is equal to the size of the string, in which case we've got nothing to do but print the string. Secondly, notice above that we've got the loop running from <code class="language-cpptext">n</code> till the end of the string and not from 0 till end of string. This is to simulate the "ignore" effect. Finally, we recurse on next available character.</p>
-<h3 id="alternate-approach-to-permutations"><a href="#alternate-approach-to-permutations" aria-label="alternate approach to permutations permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Alternate approach to permutations</h3>
-<p>Let's have a look at another approach to solve permutations. You can think of the process as removing a character from our available set and adding it to the permuted string. Next, we call the function recursively to generate permutations for the remainder of strings. Therefore, we'll have to keep track of 2 strings: <code class="language-cpptext">soFar</code> which will represent all the permutations and <code class="language-cpptext">rest</code> which'll represent our decision space. Initially this is what we'll have:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">       soFar  rest 
-        <span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"ABC"</span></code></pre></div>
-<p>Then, we'll pick an element from the <code class="language-cpptext">rest</code> string and place in the <code class="language-cpptext">soFar</code> string. Then, our strings would look like:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">           soFar  rest 
-            <span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"ABC"</span>
-            <span class="token operator">/</span>
-        <span class="token string">"A"</span><span class="token punctuation">,</span> <span class="token string">"BC"</span></code></pre></div>
-<p>We then pick the next available character from <code class="language-cpptext">rest</code> and append to <code class="language-cpptext">soFar</code>. We keep doing this until rest is empty:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">           soFar  rest 
-            <span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"ABC"</span>
-            <span class="token operator">/</span>
-        <span class="token string">"A"</span><span class="token punctuation">,</span> <span class="token string">"BC"</span>
-         <span class="token operator">/</span>
-   <span class="token string">"AB"</span><span class="token punctuation">,</span> <span class="token string">"C"</span>
-      <span class="token operator">/</span>
-<span class="token string">"ABC"</span><span class="token punctuation">,</span> <span class="token string">""</span></code></pre></div>
-<p>This'll be our base case: when we have no more decisions to make. Next, we return back to the call where we had another option and continue recursing. </p>
-<p>Here's the code representing the logic we discussed above:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre style="counter-reset: linenumber 0" class="language-cppcpp line-numbers"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">permute</span><span class="token punctuation">(</span>string soFar<span class="token punctuation">,</span> string rest<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>rest <span class="token operator">==</span> <span class="token string">""</span><span class="token punctuation">)</span>
-        cout <span class="token operator">&lt;&lt;</span> soFar <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> rest<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token comment">//Grabbing the next available character</span>
-        string next <span class="token operator">=</span> soFar <span class="token operator">+</span> rest<span class="token punctuation">[</span>i<span class="token punctuation">]</span>      
-        <span class="token comment">//Removing this character from decision space</span>
-        <span class="token comment">//which is the string rest</span>
-        string remaining <span class="token operator">=</span> rest<span class="token punctuation">.</span><span class="token function">substr</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span>i<span class="token punctuation">)</span> <span class="token operator">+</span> rest<span class="token punctuation">.</span><span class="token function">substr</span><span class="token punctuation">(</span>i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">permute</span><span class="token punctuation">(</span>next<span class="token punctuation">,</span> remaining<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code><span aria-hidden="true" class="line-numbers-rows" style="white-space: normal; width: auto; left: 0;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre></div>
-<p>We're using the loop to pick between the choices we have. On each call, we're adding the picked element to our result and removing this choice from the decision space since we don't want to repeat the decision. </p>
-<p>Having said that, if you run this code, you'll notice that it'll start with the first character of the string you provide and print all permutations starting with that first character. Next, it'll do the same for the second character and so on until the string <code class="language-cpptext">rest</code> is empty.</p>
-<h3 id="stair-case"><a href="#stair-case" aria-label="stair case permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Stair case</h3>
-<p><strong>Given that you can climb either 1 step at a time or 2 steps at a time, count the number of ways to climb 6 steps</strong></p>
-<p><strong>Base case</strong>: This is the smallest valid step that you can take: ie you can take 1 step and the number of ways to take 1 step is 1 (by taking just 1 step). Another smallest valid step is that you can take 2 steps. How many ways can you take 2 steps? Well, you can take 1 step twice (way 1) or you can take 2 steps once (way 2):</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span>
-    <span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
-<span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span>
-    <span class="token keyword">return</span> <span class="token number">2</span><span class="token punctuation">;</span></code></pre></div>
-<p><strong>Decomposition</strong>: Well, you've got 6 steps that you need to climb. In this case, let's look at our choice diagram:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">                    <span class="token number">6</span>
-                  <span class="token operator">/</span>   \         
-                 <span class="token number">4</span>     <span class="token number">5</span>
-               <span class="token operator">/</span>   \ <span class="token operator">/</span>  \
-              <span class="token number">2</span>    <span class="token number">3</span> <span class="token number">3</span>   <span class="token number">4</span></code></pre></div>
-<p>The diagram above shows that we start with 6 steps. Next, the left choice is when we take 2 steps and the right choice is when we take 1 step. On each step, we're to add the number of ways that we've calculated so far. Therefore, we'll be cascading up as we calculate the number of ways for each step. Then, it is clear to see that total number of ways that we can get to 6 steps is by adding the total number of ways we can get to 4 steps and the total number of ways we can get to 5 steps:</p>
-<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mi>a</mi><mi>y</mi><mi>s</mi><mo stretchy="false">(</mo><mn>6</mn><mo stretchy="false">)</mo><mo>=</mo><mi>W</mi><mi>a</mi><mi>y</mi><mi>s</mi><mo stretchy="false">(</mo><mn>5</mn><mo stretchy="false">)</mo><mo>+</mo><mi>W</mi><mi>a</mi><mi>y</mi><mi>s</mi><mo stretchy="false">(</mo><mn>4</mn><mo stretchy="false">)</mo><mspace linebreak="newline"></mspace><mtext>ie </mtext><mi>F</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mi>F</mi><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo>+</mo><mi>F</mi><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mn>2</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">Ways(6) = Ways(5) + Ways(4) \\
-\textrm{ie } F(n) = F(n-1) + F(n-2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">s</span><span class="mopen">(</span><span class="mord">6</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">s</span><span class="mopen">(</span><span class="mord">5</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">s</span><span class="mopen">(</span><span class="mord">4</span><span class="mclose">)</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord textrm">ie </span></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">(</span><span class="mord mathdefault">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">(</span><span class="mord mathdefault">n</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">(</span><span class="mord mathdefault">n</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">2</span><span class="mclose">)</span></span></span></span></span>
-<p><strong>Size of problem</strong> Size is equal to the number of steps we're asked to climb ie 6 in our example</p>
-<p>Now, the code becomes quite simple:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">int</span> <span class="token function">numberOfWaysToClimb</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span>
-        <span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span>
-        <span class="token keyword">return</span> <span class="token number">2</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> oneBack <span class="token operator">=</span> <span class="token function">numberOfWaysToClimb</span><span class="token punctuation">(</span>n<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> twoBack <span class="token operator">=</span> <span class="token function">numberOfWaysToClimb</span><span class="token punctuation">(</span>n<span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> oneBack <span class="token operator">+</span> twoBack<span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre></div>
-<h3 id="manhattan-path"><a href="#manhattan-path" aria-label="manhattan path permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Manhattan Path</h3>
-<p><strong>Given a grid and a target point in that grid at (m,n), find the number of ways to get from 0,0 to m,n.</strong></p>
-<p>Example:</p>
-<p><span
-      class="gatsby-resp-image-wrapper"
-      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 242px;"
-    >
-      <a
-    class="gatsby-resp-image-link"
-    href="/static/bdc322ec4f14dbd7815618e67cb2168f/90a29/grid.png"
-    style="display: block"
-    target="_blank"
-    rel="noopener"
-  >
-    <span
-    class="gatsby-resp-image-background-image"
-    style="padding-bottom: 98.7603305785124%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAACH0lEQVQ4y7WUTU9TURCGp+deSwMKJTamCyIfwV7aSoQaWBhXRkPYiSKGSCxYrYRI4gcgRtkaUGNNcCEbSDRxo8aFG+PG8DPYuDP8BJaX99z7giM9rIwneXqnb6bTmTMzVyQ+efANrIDXZBm8Bz/Ac1Cjbn026L+s/F+AdcaTfnBT6k8BTDn0LnDZoXfqgBXaPjBKrzp0W9Eo7Qal53TAW7Q95dB3SMAAjIN5cB8M0y/QAScdJfSC2w69G1wDrQxi/dI6Q5vJDO0W0MxMz4FZ6mnqNtOzYIJ6imXvJbZ/+R+Z/mNi7TfgC4MuUn8AXoEPtJ+QR+ClLnmvmwlV2hlwh7ZRui3tqsP/lKspRjn1qYCe0gPVZe2f+68Bp5j/v5eMtpW8P/NmO5akbbs57dCL4DrtpNILeq42OKhL4BlYAKvgK3hI7Sn1GqdizqGL/O6UK1sdsuYYYJvhXZWJrzIZo31E6fnoc7tLFne65fuFRmnH1/aGhJzE8wR/WHXcYXDgDv9uymlfej9lZQTmeS8uo4rnqIkdph273KO67B3YcZGLKSl9zsaZHDeSbzVRt+y/FhN8C5n6bo4csuMiA0kZqGWiS90/YTnq6iBX0J5joIl2CZRpNyk93uWCL9nVjKzPtsg7sDZxVN7+6pCtzTb5affUxC/fCod/Uu12mXqF+j2ZaWZGQ+KHPZIOA1CUVJiTG2E+2hS51CgmY+oaIC57F3OzXTYGC7EoAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
-  ></span>
-  <img
-        class="gatsby-resp-image-image"
-        alt="Grid-Image"
-        title="Grid-Image"
-        src="/static/bdc322ec4f14dbd7815618e67cb2168f/90a29/grid.png"
-        srcset="/static/bdc322ec4f14dbd7815618e67cb2168f/27f03/grid.png 173w,
-/static/bdc322ec4f14dbd7815618e67cb2168f/90a29/grid.png 242w"
-        sizes="(max-width: 242px) 100vw, 242px"
-        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
-        loading="lazy"
-      />
-  </a>
-    </span></p>
-<p>Legal moves are denoted by the red arrows. </p>
-<p><strong>Base case</strong>: This is when either <code class="language-cpptext">m</code> or <code class="language-cpptext">n</code> is 0. In that case, we're either along the x axis (if n is 0) or y axis (if m is 0). In both these scenarios, the number of ways to get to the point is 1: ie move in one direction until the point is reached</p>
-<p><strong>Decomposition</strong>: Here, we decompose our problem based on <code class="language-cpptext">m</code> and <code class="language-cpptext">n</code>:</p>
-<p><span
-      class="gatsby-resp-image-wrapper"
-      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 543px;"
-    >
-      <span
-    class="gatsby-resp-image-background-image"
-    style="padding-bottom: 59.66850828729282%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAYAAABiDJ37AAAACXBIWXMAAAsSAAALEgHS3X78AAABnklEQVQoz41TS0vDQBDOj/ei+MK7oHjw4LNqQVT04FWlSEEa+1Jos0mTzbOmbZJ+zqwmpA/EhWFnZ2a/mfl2VsPcmk6nxZ6kKZIkl0SdJ5OJ0stx5aXNg+UBbhDi4PYBezf32KedZff6Dq96E8l4jOw/gLzyQMf3sXNexebZFbZo365UsXZUQb3T/YnLsgWwPysUjoONkwusHlewfnqpZOXwBLX3VgG4tMIyF7k+ppZsAqx3PvDc0PH4UsPTWwO1ZhsyCBa4Lt/VisOcgyvwpMNKkd13pUq2DCi3FS3PsxEEPmzbVvb0FzSMIgwsa4G3Mp9aOVM4HKJnO+g7EoaUENKFdF01KrxseiiDbMpPovaBTcmDgtMZDl1ytISJjjlA27TQJj0ejRBRZezvkk3vCzTJzqL3DVVA3qFqOa+OM/DstYSFLmVl0JZhYkScxXEMz/PQM00MPKLCD5RYVL0XhjOcajk3ETkE8fNhCHQp86cQNDoSKf0ODmTACYHzLxkOI8RfX8h+feUuZzjkF0zpAgsHL5tPTsBxzGu2ZOS+AZLHmnEl1rTaAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
-  ></span>
-  <img
-        class="gatsby-resp-image-image"
-        alt="Decomposition-Image"
-        title="Decomposition-Image"
-        src="/static/2a948092ed22a6c7333c21dc48cac0d8/bd6bc/decomposition.png"
-        srcset="/static/2a948092ed22a6c7333c21dc48cac0d8/27f03/decomposition.png 173w,
-/static/2a948092ed22a6c7333c21dc48cac0d8/376d0/decomposition.png 345w,
-/static/2a948092ed22a6c7333c21dc48cac0d8/bd6bc/decomposition.png 543w"
-        sizes="(max-width: 543px) 100vw, 543px"
-        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
-        loading="lazy"
-      />
-    </span><a href="https://learning.oreilly.com/library/view/introduction-to-recursive/9781351647175/">Image credit</a></p>
-<p>Where we want to reduce <code class="language-cpptext">m</code> by one and keep <code class="language-cpptext">n</code> the same or reduce <code class="language-cpptext">n</code> by one and keep <code class="language-cpptext">m</code> the same. </p>
-<p>Finally, we add up all the ways up to <code class="language-cpptext">m</code> and <code class="language-cpptext">n</code>:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">int</span> <span class="token function">ManhattanPath</span><span class="token punctuation">(</span><span class="token keyword">int</span> m<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>m <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> n <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
-        <span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> reducedMWays <span class="token operator">=</span> <span class="token function">ManhattanPath</span><span class="token punctuation">(</span>m<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> n<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> reducedNWays <span class="token operator">=</span> <span class="token function">ManhattanPath</span><span class="token punctuation">(</span>m<span class="token punctuation">,</span> n<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> reducedMWays <span class="token operator">+</span> reducedNWays<span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre></div>
-<h3 id="basketball-score"><a href="#basketball-score" aria-label="basketball score permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Basketball Score</h3>
-<p><strong>In a game of basketball a team can score points in three different ways. A “free throw” scores one point, a “field goal” is worth two points, and a successful shot beyond the “three-point” line scores three points. Write a program that determines the number of ways a team can reach n points. For example, there are four ways to score three points: 1+1+1, 1+2, 2+1, and 3. Thus, assume that the order in which the points are scored matters.</strong></p>
-<ul>
-<li><strong>Base case</strong>
-This the minimum number of valid points that can be scored:</li>
-<li>1 point: there's only 1 way to score 1 point</li>
-<li>2 points: there're two ways to score 2 points: 1+1 and 2</li>
-<li>3 points: there're four ways to score 3 points: 1+1+1, 1+2, 2+1, and 3</li>
-</ul>
-<p>-<strong>Decomposition</strong>
-We'll break the problem down using our decision tree since it is easier to see all the different decisions that we need to make. Say, we're asked to get number of ways to go up till 4:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">                     <span class="token number">4</span>
-                  <span class="token operator">/</span>  <span class="token operator">|</span>  \         
-                 <span class="token number">3</span>   <span class="token number">2</span>   <span class="token number">1</span> Add at each level
-               <span class="token operator">/</span> <span class="token operator">|</span>   <span class="token operator">|</span>  
-              <span class="token number">2</span>  <span class="token number">1</span>   <span class="token number">1</span>      </code></pre></div>
-<p>-<strong>Size of problem</strong>
-The size of the problem obviously depends on the score that we need to generate. </p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">int</span> <span class="token function">bbPts</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span>
-        <span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span>
-        <span class="token keyword">return</span> <span class="token number">2</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">3</span><span class="token punctuation">)</span>
-        <span class="token keyword">return</span> <span class="token number">4</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> <span class="token function">bbPts</span><span class="token punctuation">(</span>n<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token function">bbPts</span><span class="token punctuation">(</span>n<span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token function">bbPts</span><span class="token punctuation">(</span>n<span class="token operator">-</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre></div>
-<h3 id="backtracking"><a href="#backtracking" aria-label="backtracking permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Backtracking</h3>
-<p>In recursion, there's another technique that can be used to solve a particular type of problem. The term backtracking literally means to retrace your steps. In recursive backtracking, we use this technique to solve types of problems where the final solution depends on the constraints provided. Backtracking is used when we're given "choices" at each step and we're to make a decision on whether to include or exclude the choice at hand and then proceed. If we make a choice and go down a path and realize that the choices made so far don't take us to the solution, we <strong>backtrack</strong> to a previous choice and proceed from there.</p>
-<p>For some problems, the choices would be the available inputs and for others, the choices would be an actual decision on whether to pick and element or ignore it. This distinction will be clear when we see a few examples. For now, let's look at the mental model we'll follow to use backtracking as a technique:</p>
-<p>(1) Determine what the base step is and what you'll be doing at that base step.</p>
-<p>For <strong>decomposition</strong>, we'll ask ourselves these questions
-(2) Find what choices we have at each step, ie what are the different options for next step?</p>
-<p>(3) For each valid choice:</p>
-<ul>
-<li>Make the choice and explore remaining solution recursively. Pass relevant information to the next call.</li>
-<li>Once that call returns, undo the changes you made. Restore everything to the way it was before making this choice</li>
-<li>In some problems, the undo step is not needed since we're not doing an exhaustive search</li>
-</ul>
-<p>How are these analogous to the decomposition steps we've seen so far? Remember, decomposition is used to make the input smaller and it guides us toward the base case. Therefore, At each step, as I make a choice, I'll get closer to the base case. </p>
-<h3 id="dice-rolls"><a href="#dice-rolls" aria-label="dice rolls permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Dice rolls</h3>
-<p><strong>Given a number dies, n, generate ALL possible outcomes of rolling those dies</strong></p>
-<p>For example, if we're given 2 dies, we can have 11, 12, 13, 14, 15, 16, 21, 22 ...</p>
-<p>Why does this qualify as a backtracking problem? Because we have choices that we need to make. Now, we need to decide whether this is an ignore/choose choice diagram or pick every choice diagram. Obviously, the problem asks for ALL possible outcomes, so we need to choose EVERY possible choice. </p>
-<p>Let's start with the template we discussed above:
-(1) Base Step: This is when we don't have any more dice to roll: here, we'll print our result</p>
-<p>(2) Choices: the value of die that I can choose</p>
-<p>(3) Relevant info to be passed to next call: the numbers rolled so far.</p>
-<p>(4) Undo the decision: remove the rolled number </p>
-<p>Let's code this:</p>
-<p>Function signature:</p>
-<ul>
-<li><code class="language-cpptext">n</code> for the number of dies we're asked to roll</li>
-<li><code class="language-cpptext">soFar</code> the numbers rolled so far</li>
-</ul>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">diceRolls</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">,</span> string soFar<span class="token punctuation">)</span><span class="token punctuation">{</span><span class="token punctuation">}</span></code></pre></div>
-<p>Let's add the base case:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">diceRolls</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">,</span> string soFar<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        cout <span class="token operator">&lt;&lt;</span> soFar <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
-        <span class="token keyword">return</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre></div>
-<p>Now, we need to determine how we'll represent the choices. <code class="language-cpptext">n</code> would be used to represent the number of dies and for each die we can go from 1 to 6.</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">diceRolls</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">,</span> string soFar<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        cout <span class="token operator">&lt;&lt;</span> soFar <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
-        <span class="token keyword">return</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span><span class="token number">6</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        stringstream ss<span class="token punctuation">;</span>
-        ss <span class="token operator">&lt;&lt;</span> i<span class="token punctuation">;</span>
-        string curr<span class="token punctuation">;</span>
-        ss <span class="token operator">>></span> curr<span class="token punctuation">;</span>
-        soFar <span class="token operator">+=</span> curr<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>    
-
-<span class="token punctuation">}</span></code></pre></div>
-<p>We've made the choice, now we need to make a recursive call to get remaining choices:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">diceRolls</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">,</span> string soFar<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        cout <span class="token operator">&lt;&lt;</span> soFar <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
-        <span class="token keyword">return</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span><span class="token number">6</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        stringstream ss<span class="token punctuation">;</span>
-        ss <span class="token operator">&lt;&lt;</span> i<span class="token punctuation">;</span>
-        string curr<span class="token punctuation">;</span>
-        ss <span class="token operator">>></span> curr<span class="token punctuation">;</span>
-        soFar <span class="token operator">+=</span> curr<span class="token punctuation">;</span>
-        <span class="token function">diceRolls</span><span class="token punctuation">(</span>n<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>soFar<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>    
-
-<span class="token punctuation">}</span></code></pre></div>
-<p>Finally, we need to undo the change we did before we made the recursive call: ie remove the roll added:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">diceRolls</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">,</span> string soFar<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        cout <span class="token operator">&lt;&lt;</span> soFar <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
-        <span class="token keyword">return</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span><span class="token number">6</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        stringstream ss<span class="token punctuation">;</span>
-        ss <span class="token operator">&lt;&lt;</span> i<span class="token punctuation">;</span>
-        string curr<span class="token punctuation">;</span>
-        ss <span class="token operator">>></span> curr<span class="token punctuation">;</span>
-        soFar <span class="token operator">+=</span> curr<span class="token punctuation">;</span>
-        <span class="token function">diceRolls</span><span class="token punctuation">(</span>n<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>soFar<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        soFar<span class="token punctuation">.</span><span class="token function">pop_back</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>    
-<span class="token punctuation">}</span></code></pre></div>
-<p>That's it! We've basically made the following choices on each iteration:</p>
-<p><span
-      class="gatsby-resp-image-wrapper"
-      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
-    >
-      <span
-    class="gatsby-resp-image-background-image"
-    style="padding-bottom: 44.51345755693582%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAAAsSAAALEgHS3X78AAAB20lEQVQoz21S246bUAzk/z+m2j50d/tQqepNzTYQSML9QAiQACEhmwTYQC7T4UiV9qGWLOFje2Zso1imCU1VMdE0GLqOTVGgO5/Rdx3iJMWHxyd8e3nB198jPDw94xfr9vs93toWTdOgpTd1I+Nqt4NyOBxkQjof+76Xfr/fsWVBmCSIswx2EOAngW0hULP2f3a5XKG8Uc176/sLTqcTsixHFEVSves4qE9H+J4Pc27Cti0EJNiRMM8LbDYlCk421CuDqsE6jng8HlHXNdq2QRwnWCwijMd/YNk2rtcLSQoslzEcEggq7bozXl+PWK9zSTCZTKCc3yksy5LJDKZpESyE53lkLuH7PkajEabTGYECKrShc9+rVc76NUki3G43uTJlkLrbblFVlWSZzUyoHFPTVKpTqcaFYRgEM6TiAVDXJxLEdX3mppjP51Sf8Q4ETNM1mwQWUUqAMTxfcBcJwROEYSjBhQgJkHENKXSCV9WBuxuUB3xPYFnDRAvucgMlWweUbiMMpnwM4NgaAqGxISBAzOYSeeZC+Bpj5h1Tfhe5T1/K4w3TDX/GsD5lZjxCeJ+Qrb6zQfCiX2ScJj9ItCJwCMd6QBR+JoCDeOky/ojAfyaRLg/yz1ru8C9v/pMCgBzr5wAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
-  ></span>
-  <img
-        class="gatsby-resp-image-image"
-        alt="Dice-Roll-Image"
-        title="Dice-Roll-Image"
-        src="/static/ecba8d493e4488031251517daf002f05/1dda8/dice-roll.png"
-        srcset="/static/ecba8d493e4488031251517daf002f05/27f03/dice-roll.png 173w,
-/static/ecba8d493e4488031251517daf002f05/376d0/dice-roll.png 345w,
-/static/ecba8d493e4488031251517daf002f05/1dda8/dice-roll.png 690w,
-/static/ecba8d493e4488031251517daf002f05/5309d/dice-roll.png 966w"
-        sizes="(max-width: 690px) 100vw, 690px"
-        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
-        loading="lazy"
-      />
-    </span><a href="https://web.stanford.edu/class/archive/cs/cs106x/cs106x.1192/lectures/Lecture10/Lecture10.pdf">Image credit</a></p>
-<h3 id="dice-rolls-with-target"><a href="#dice-rolls-with-target" aria-label="dice rolls with target permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Dice Rolls with Target</h3>
-<p>Let's say you're given a number of dies and want to print all rolls that add up to a target. How would that modify our code? Well, the solution is similar to what we had for the origin dice roll problem but here're the additions:</p>
-<ul>
-<li>Our base case will check to see if the chosen elements so far have sum equal to the target</li>
-<li>We'll use a vector to keep track of <code class="language-cpptext">chosen</code> elements</li>
-<li>We'll add checks to make sure we don't go down unnecessary paths. For example, if target is 4, we can ignore values of 5 and 6 for dice rolls</li>
-</ul>
-<p>Here's the code:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">getRolls</span><span class="token punctuation">(</span><span class="token keyword">int</span> dice<span class="token punctuation">,</span> <span class="token keyword">int</span> target<span class="token punctuation">,</span> vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">&amp;</span> chosen<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>dice <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token comment">//getSum is helper function that adds elements</span>
-        <span class="token comment">//in the vector and returns their sum</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">getSum</span><span class="token punctuation">(</span>chosen<span class="token punctuation">)</span> <span class="token operator">==</span> target<span class="token punctuation">)</span>
-            <span class="token function">printVec</span><span class="token punctuation">(</span>chosen<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//to print vector</span>
-    <span class="token punctuation">}</span>
-    
-    <span class="token keyword">int</span> sum <span class="token operator">=</span> <span class="token function">getSum</span><span class="token punctuation">(</span>chosen<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> <span class="token number">6</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>sum <span class="token operator">+</span> i <span class="token operator">&lt;=</span> target<span class="token punctuation">)</span><span class="token punctuation">{</span>
-            chosen<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token function">getRolls</span><span class="token punctuation">(</span>dice<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> target<span class="token punctuation">,</span> chosen<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            chosen<span class="token punctuation">.</span><span class="token function">pop_back</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h3 id="yet-another-subset-sum"><a href="#yet-another-subset-sum" aria-label="yet another subset sum permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Yet Another Subset Sum</h3>
+<p>In this approach, we'll solve subset sum using an approach similar to permutations problem above: Here, the for loop is used to choose or ignore the elements:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">genSubsets</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token punctuation">,</span> vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> sol<span class="token punctuation">,</span> vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> elems<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">==</span> elems<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        cout <span class="token operator">&lt;&lt;</span> <span class="token string">"{"</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> sol<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>sol<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                cout <span class="token operator">&lt;&lt;</span> elems<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        cout <span class="token operator">&lt;&lt;</span> <span class="token string">"}"</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> k <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> k <span class="token operator">&lt;</span> <span class="token number">2</span><span class="token punctuation">;</span> k<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            sol<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">genSubsets</span><span class="token punctuation">(</span>i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">,</span> sol<span class="token punctuation">,</span> elems<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            sol<span class="token punctuation">.</span><span class="token function">pop_back</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre></div>
+<h3 id="subset-sum-print"><a href="#subset-sum-print" aria-label="subset sum print permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Subset Sum Print</h3>
+<p><strong>Given a set and a target sum, print subsets that add up to a given target</strong></p>
+<p>This one has an extra requirement on top of the subset sum problem: ie to print the found results. I really like this problem as it is a good way to actually translate the decision tree that we built for subset sum to code. </p>
+<p>As a recap, here's the tree we used for subset sum:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">                <span class="token punctuation">{</span><span class="token punctuation">}</span>
+           <span class="token operator">/</span>         \      <span class="token operator">+</span>a <span class="token operator">?</span>
+          a          <span class="token punctuation">{</span><span class="token punctuation">}</span>   
+       <span class="token operator">/</span>    \     <span class="token operator">/</span>     \   <span class="token operator">+</span>b <span class="token operator">?</span>
+     ab     a    b      <span class="token punctuation">{</span><span class="token punctuation">}</span>
+   <span class="token operator">/</span>   \   <span class="token operator">/</span>  \ <span class="token operator">/</span>  \   <span class="token operator">/</span>  \ <span class="token operator">+</span>c <span class="token operator">?</span>
+  abc  ab ac  a bc b  c   <span class="token punctuation">{</span><span class="token punctuation">}</span></code></pre></div>
+<ul>
+<li><strong>Base Case</strong>
+This occurs when we're out of decisions to make ie, when we're past the end of the input list. At this point, we can print the list we've accumulated so far IF the results add up to the target.</li>
+<li><strong>Recursive Case</strong>
+Here, we choose the current element and make a recursive call with that decision. Once this returns, we undo any changes we did for while choosing the element such as removing the chosen element from a vector that we maintain. We then ignore the current element and make a recursive call again. </li>
+</ul>
+<p>Let's look at the functions signature:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">subsetSumPrint</span><span class="token punctuation">(</span>vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">&amp;</span> elems<span class="token punctuation">,</span> vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">&amp;</span> arr<span class="token punctuation">,</span> <span class="token keyword">int</span> c<span class="token punctuation">,</span> <span class="token keyword">int</span> sumSoFar<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span><span class="token punctuation">}</span></code></pre></div>
+<ul>
+<li><code class="language-cpptext">elems</code> contains the input array</li>
+<li><code class="language-cpptext">arr</code> to keep track of the elements seen so far</li>
+<li><code class="language-cpptext">c</code> the target sum we're searching for</li>
+<li><code class="language-cpptext">sumSoFar</code> the sum we've seen so far of the elements chosen/ignored</li>
+<li><code class="language-cpptext">n</code> to iterate over the elements in the <code class="language-cpptext">elems</code> array</li>
+</ul>
+<p>Next, here's the base case:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">subsetSumPrint</span><span class="token punctuation">(</span>vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">&amp;</span> elems<span class="token punctuation">,</span> vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">&amp;</span> arr<span class="token punctuation">,</span> <span class="token keyword">int</span> c<span class="token punctuation">,</span> <span class="token keyword">int</span> sumSoFar<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> elems<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>sumSoFar <span class="token operator">==</span> c<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            cout <span class="token operator">&lt;&lt;</span> <span class="token string">"{"</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> arr<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                cout <span class="token operator">&lt;&lt;</span> arr<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            cout <span class="token operator">&lt;&lt;</span> <span class="token string">"}"</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>The base case occurs when there are no more elements to pick. Here, we check to see if the sum we've been accruing up till now is equal to the target. If so, we print out the elements in the vector. Otherwise, we return without printing</p>
+<p>Next, when we're going through the elements, we can choose the element. Choosing means we add the current element, <code class="language-cpptext">elems[n]</code> to <code class="language-cpptext">sumSoFar</code>:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">subsetSumPrint</span><span class="token punctuation">(</span>vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">&amp;</span> elems<span class="token punctuation">,</span> vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">&amp;</span> arr<span class="token punctuation">,</span> <span class="token keyword">int</span> c<span class="token punctuation">,</span> <span class="token keyword">int</span> sumSoFar<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> elems<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>sumSoFar <span class="token operator">==</span> c<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            cout <span class="token operator">&lt;&lt;</span> <span class="token string">"{"</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> arr<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                cout <span class="token operator">&lt;&lt;</span> arr<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            cout <span class="token operator">&lt;&lt;</span> <span class="token string">"}"</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">//Choose</span>
+    arr<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">subsetSumPrint</span><span class="token punctuation">(</span>elems<span class="token punctuation">,</span> arr<span class="token punctuation">,</span> c<span class="token punctuation">,</span> sumSoFar <span class="token operator">+</span> elems<span class="token punctuation">[</span>n<span class="token punctuation">]</span><span class="token punctuation">,</span> n<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>After choose, we can ignore the element. Before ignoring, we need to undo what we did in the choose section. Therefore, we need to pop the element we just pushed:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">subsetSumPrint</span><span class="token punctuation">(</span>vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">&amp;</span> elems<span class="token punctuation">,</span> vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">&amp;</span> arr<span class="token punctuation">,</span> <span class="token keyword">int</span> c<span class="token punctuation">,</span> <span class="token keyword">int</span> sumSoFar<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> elems<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>sumSoFar <span class="token operator">==</span> c<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            cout <span class="token operator">&lt;&lt;</span> <span class="token string">"{"</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> arr<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                cout <span class="token operator">&lt;&lt;</span> arr<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            cout <span class="token operator">&lt;&lt;</span> <span class="token string">"}"</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">//Choose</span>
+    arr<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">subsetSumPrint</span><span class="token punctuation">(</span>elems<span class="token punctuation">,</span> arr<span class="token punctuation">,</span> c<span class="token punctuation">,</span> sumSoFar <span class="token operator">+</span> elems<span class="token punctuation">[</span>n<span class="token punctuation">]</span><span class="token punctuation">,</span> n<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//Ignore</span>
+    arr<span class="token punctuation">.</span><span class="token function">pop_back</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">subsetSumPrint</span><span class="token punctuation">(</span>elems<span class="token punctuation">,</span> arr<span class="token punctuation">,</span> c<span class="token punctuation">,</span> sumSoFar<span class="token punctuation">,</span> n<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>The code above uses an extra <code class="language-cpptext">sumSoFar</code> variable to keep track of the sum. We can solve the problem without that variable as well by just decrementing the target's, ie c, value by every element we're looking at:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">void</span> <span class="token function">subsetSumPrint</span><span class="token punctuation">(</span>vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">&amp;</span> elems<span class="token punctuation">,</span> vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">&amp;</span> arr<span class="token punctuation">,</span> <span class="token keyword">int</span> c<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> elems<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>c <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            cout <span class="token operator">&lt;&lt;</span> <span class="token string">"{"</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> arr<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                cout <span class="token operator">&lt;&lt;</span> elems<span class="token punctuation">[</span>arr<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            cout <span class="token operator">&lt;&lt;</span> <span class="token string">"}"</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    
+    arr<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">subsetSumPrint</span><span class="token punctuation">(</span>elems<span class="token punctuation">,</span> arr<span class="token punctuation">,</span> c<span class="token operator">-</span>elems<span class="token punctuation">[</span>n<span class="token punctuation">]</span><span class="token punctuation">,</span> n<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    arr<span class="token punctuation">.</span><span class="token function">pop_back</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">subsetSumPrint</span><span class="token punctuation">(</span>elems<span class="token punctuation">,</span> arr<span class="token punctuation">,</span> c<span class="token punctuation">,</span> n<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>Also, in the code above, notice how we start at <code class="language-cpptext">0</code> and go up till <code class="language-cpptext">n</code>. In previous problems, we've started at the end of the array and made our way back. I've chosen to go the other way since it makes the logic of removal from vector easier. It naturally flows with the decision tree we've created.</p>
+<p>Say we're given the following parameters:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">elems <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">}</span>
+target <span class="token operator">=</span> <span class="token number">3</span></code></pre></div>
+<p>Then, the output will be:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token punctuation">{</span><span class="token number">12</span><span class="token punctuation">}</span>
+<span class="token punctuation">{</span><span class="token number">3</span><span class="token punctuation">}</span></code></pre></div>
+<p>Tree where a left branch is taken when we choose the current element in question and right branch is taken when we ignore it:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">                <span class="token punctuation">{</span><span class="token punctuation">}</span>
+           <span class="token operator">/</span>          \      <span class="token operator">+</span><span class="token number">1</span> <span class="token operator">?</span>
+          <span class="token number">1</span>           <span class="token punctuation">{</span><span class="token punctuation">}</span>   
+       <span class="token operator">/</span>    \       <span class="token operator">/</span>     \   <span class="token operator">+</span><span class="token number">2</span> <span class="token operator">?</span>
+     <span class="token number">3</span>      <span class="token number">1</span>      <span class="token number">2</span>      <span class="token punctuation">{</span><span class="token punctuation">}</span>
+   <span class="token operator">/</span>   \   <span class="token operator">/</span> \   <span class="token operator">/</span>  \   <span class="token operator">/</span>  \ <span class="token operator">+</span><span class="token number">3</span> <span class="token operator">?</span>
+  <span class="token number">6</span>    <span class="token number">3</span>  <span class="token number">4</span>  <span class="token number">1</span>  <span class="token number">5</span>   <span class="token number">2</span>  <span class="token number">3</span>   <span class="token punctuation">{</span><span class="token punctuation">}</span></code></pre></div>
+<p>Let's have a look at a sample run to better understand what's going on:</p>
+<p>For the first base case, we would've chosen ALL elements in the <code class="language-cpptext">elems</code> array. So, our <code class="language-cpptext">arr</code> at base case where sum equals 6 would be: {1,2,3}. Here, <code class="language-cpptext">sumSoFar</code> would be 6. Since 6 != 3 (where 3 is our target), we return back to the previous state and remove the 3 from our <code class="language-cpptext">arr</code>. </p>
+<p>Next, we ignore 3 (since the previous decision was choose 3) and check the sum again. This time, our <code class="language-cpptext">arr</code> would have elements: {1,2} which equals the target sum of 3. Therefore, we go ahead and print the indices where we encountered.     </p>
+<h3 id="0-1-knapsack"><a href="#0-1-knapsack" aria-label="0 1 knapsack permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>0-1 Knapsack</h3>
+<p><strong>The knapsack problem is a problem in combinatorial optimization: Given a set of items, each with a weight and a value, determine the number of each item to include in a collection so that the total weight is less than or equal to a given limit and the total value is as large as possible. It derives its name from the problem faced by someone who is constrained by a fixed-size knapsack and must fill it with the most valuable items.</strong></p>
+<p>Let's see what our input will be:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">                    Item1   Item2   Item3   Item14
+wt[] in pounds        5       4       6        3    
+val[] in dollars     10      40       30      50
+Capacity: 10       </code></pre></div>
+<p>We'll be given two arrays: a weight array that'll hold the weight of each item and a value array that holds the value of each item in dollars. We'll also be given the capacity of our sack and a value <code class="language-cpptext">n</code> denoting the number of elements in the arrays. </p>
+<p>This is similar to the subset problem we saw above. That is because we've got choices to make: pick an element or ignore it. Then, we need to return max of the two decisions we made.</p>
+<p>-<strong>Base Case</strong>
+Our base case is when we have no more decisions to make: ie when we don't have any more items or when the capacity of our sack is 0.</p>
+<p>-<strong>Recursive Case</strong>
+We first need to check if the current item's weight is &#x3C;= the capacity, if so:
+- we can include the element, add its value, and reduce left capacity
+- we can ignore the element and move on to the next element.
+When the two values above are returned, we need to return the <code class="language-cpptext">max</code> of the two decisions.</p>
+<p>If current item's weight > capacity, we simply move to the next element.</p>
+<p>Code:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">int</span> <span class="token function">knapSackRec</span><span class="token punctuation">(</span>vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> wt<span class="token punctuation">,</span> vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> val<span class="token punctuation">,</span> <span class="token keyword">int</span> c<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> c <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token comment">//Weight can either be &lt;= c or > c</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>wt<span class="token punctuation">[</span>n<span class="token punctuation">]</span> <span class="token operator">&lt;=</span> c<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token comment">//Choice 1: choose this item</span>
+        <span class="token comment">//Since we're choosing this item, we add the current item's value to whatever we get from next recursive call</span>
+        <span class="token keyword">int</span> profitWithChoosing <span class="token operator">=</span> val<span class="token punctuation">[</span>n<span class="token punctuation">]</span> <span class="token operator">+</span> <span class="token function">knapSackRec</span><span class="token punctuation">(</span>wt<span class="token punctuation">,</span> val<span class="token punctuation">,</span> c <span class="token operator">-</span> wt<span class="token punctuation">[</span>n<span class="token punctuation">]</span><span class="token punctuation">,</span> n<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//Choice 2: Don't choose this item</span>
+        <span class="token comment">//Since we don't choose this item, we simply ignore its value and move to the next item</span>
+        <span class="token keyword">int</span> profitWithNotChoosing <span class="token operator">=</span> <span class="token function">knapSackRec</span><span class="token punctuation">(</span>wt<span class="token punctuation">,</span> val<span class="token punctuation">,</span> c<span class="token punctuation">,</span> n<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//Need to return max profit</span>
+        <span class="token comment">//Finally, based on the two decisions above, we choose the max of the two and return that value</span>
+        <span class="token keyword">return</span> max <span class="token punctuation">(</span>profitWithChoosing<span class="token punctuation">,</span> profitWithNotChoosing<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token function">knapSackRec</span><span class="token punctuation">(</span>wt<span class="token punctuation">,</span> val<span class="token punctuation">,</span>c<span class="token punctuation">,</span> n<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="equal-sum-partition"><a href="#equal-sum-partition" aria-label="equal sum partition permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Equal Sum Partition</h3>
+<p>This is another interesting problem: <strong>Given an array, determine if the values in the array can be partitioned into two sets that have equal sums.</strong></p>
+<p>Example: {2,3,7,8,10}
+Answer: True: {2,3,10} and {8,7}</p>
+<p>This problem is similar to subset sum where were trying to find if a subset adds up to a given sum. Here however, we need to make an observation:</p>
+<ul>
+<li>If the sum in the array is even, then and only then will we be able to partition it into two equal subsets</li>
+</ul>
+<p>If the sum in the array is even, we know we can divide the sum by 2 and then check to see if there's a subset in the array that adds to that sum. If so, then obviously remaining elements would add up to the remaining half of the sum. </p>
 <h3 id="conclusion"><a href="#conclusion" aria-label="conclusion permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Conclusion</h3>
 <ul>
 <li>
@@ -929,7 +1193,7 @@ The size of the problem obviously depends on the score that we need to generate.
 </ul>
 </li>
 <li>Sometimes, you can represent recursion using decomposition diagram (linear recursion mostly) and at other times you'd need a choice diagram (counting problems: stair climb)</li>
-</ul></div><div class="post-module--post-meta--1ci95"><div class="PostTags-module--tag-container--ksSgQ"><a href="/tags/recursion"><span>Recursion</span></a></div><div class="SocialLinks-module--social-links--1RDpJ"><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--reddit"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--reddit "><g><circle cx="32" cy="32" r="31" fill="#5f99cf"></circle></g><g><path d="m 52.8165,31.942362 c 0,-2.4803 -2.0264,-4.4965 -4.5169,-4.4965 -1.2155,0 -2.3171,0.4862 -3.128,1.2682 -3.077,-2.0247 -7.2403,-3.3133 -11.8507,-3.4782 l 2.5211,-7.9373 6.8272,1.5997 -0.0102,0.0986 c 0,2.0281 1.6575,3.6771 3.6958,3.6771 2.0366,0 3.6924,-1.649 3.6924,-3.6771 0,-2.0281 -1.6575,-3.6788 -3.6924,-3.6788 -1.564,0 -2.8968,0.9758 -3.4357,2.3443 l -7.3593,-1.7255 c -0.3213,-0.0782 -0.6477,0.1071 -0.748,0.4233 L 32,25.212062 c -4.8246,0.0578 -9.1953,1.3566 -12.41,3.4425 -0.8058,-0.7446 -1.8751,-1.2104 -3.0583,-1.2104 -2.4905,0 -4.5152,2.0179 -4.5152,4.4982 0,1.649 0.9061,3.0787 2.2389,3.8607 -0.0884,0.4794 -0.1462,0.9639 -0.1462,1.4569 0,6.6487 8.1736,12.0581 18.2223,12.0581 10.0487,0 18.224,-5.4094 18.224,-12.0581 0,-0.4658 -0.0493,-0.9248 -0.1275,-1.377 1.4144,-0.7599 2.3885,-2.2304 2.3885,-3.9406 z m -29.2808,3.0872 c 0,-1.4756 1.207,-2.6775 2.6894,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 -1.4824,0 -2.6894,-1.2002 -2.6894,-2.6758 z m 15.4037,7.9373 c -1.3549,1.3481 -3.4816,2.0043 -6.5008,2.0043 l -0.0221,-0.0051 -0.0221,0.0051 c -3.0209,0 -5.1476,-0.6562 -6.5008,-2.0043 -0.2465,-0.2448 -0.2465,-0.6443 0,-0.8891 0.2465,-0.2465 0.6477,-0.2465 0.8942,0 1.105,1.0999 2.9393,1.6337 5.6066,1.6337 l 0.0221,0.0051 0.0221,-0.0051 c 2.6673,0 4.5016,-0.5355 5.6066,-1.6354 0.2465,-0.2465 0.6477,-0.2448 0.8942,0 0.2465,0.2465 0.2465,0.6443 0,0.8908 z m -0.3213,-5.2615 c -1.4824,0 -2.6877,-1.2002 -2.6877,-2.6758 0,-1.4756 1.2053,-2.6775 2.6877,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--twitter"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--twitter "><g><circle cx="32" cy="32" r="31" fill="#00aced"></circle></g><g><path d="M48,22.1c-1.2,0.5-2.4,0.9-3.8,1c1.4-0.8,2.4-2.1,2.9-3.6c-1.3,0.8-2.7,1.3-4.2,1.6 C41.7,19.8,40,19,38.2,19c-3.6,0-6.6,2.9-6.6,6.6c0,0.5,0.1,1,0.2,1.5c-5.5-0.3-10.3-2.9-13.5-6.9c-0.6,1-0.9,2.1-0.9,3.3 c0,2.3,1.2,4.3,2.9,5.5c-1.1,0-2.1-0.3-3-0.8c0,0,0,0.1,0,0.1c0,3.2,2.3,5.8,5.3,6.4c-0.6,0.1-1.1,0.2-1.7,0.2c-0.4,0-0.8,0-1.2-0.1 c0.8,2.6,3.3,4.5,6.1,4.6c-2.2,1.8-5.1,2.8-8.2,2.8c-0.5,0-1.1,0-1.6-0.1c2.9,1.9,6.4,2.9,10.1,2.9c12.1,0,18.7-10,18.7-18.7 c0-0.3,0-0.6,0-0.8C46,24.5,47.1,23.4,48,22.1z" fill="white"></path></g></svg></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--facebook"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--facebook "><g><circle cx="32" cy="32" r="31" fill="#3b5998"></circle></g><g><path d="M34.1,47V33.3h4.6l0.7-5.3h-5.3v-3.4c0-1.5,0.4-2.6,2.6-2.6l2.8,0v-4.8c-0.5-0.1-2.2-0.2-4.1-0.2 c-4.1,0-6.9,2.5-6.9,7V28H24v5.3h4.6V47H34.1z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--linkedin"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--linkedin "><g><circle cx="32" cy="32" r="31" fill="#007fb1"></circle></g><g><path d="M20.4,44h5.4V26.6h-5.4V44z M23.1,18c-1.7,0-3.1,1.4-3.1,3.1c0,1.7,1.4,3.1,3.1,3.1 c1.7,0,3.1-1.4,3.1-3.1C26.2,19.4,24.8,18,23.1,18z M39.5,26.2c-2.6,0-4.4,1.4-5.1,2.8h-0.1v-2.4h-5.2V44h5.4v-8.6 c0-2.3,0.4-4.5,3.2-4.5c2.8,0,2.8,2.6,2.8,4.6V44H46v-9.5C46,29.8,45,26.2,39.5,26.2z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div></div></div><hr/></div><nav><ul class="post-module--pagination--1F-V0"><li><a rel="prev" href="/0-1-knapsack">← <!-- -->0-1 Knapsack</a></li><li><a rel="next" href="/sorting-problems">Sorting Problems<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--3Dvn1"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2uglW">Copyright © 2020. All rights reserved.</div></div></footer></div></div><script>
+</ul></div><div class="post-module--post-meta--1ci95"><div class="PostTags-module--tag-container--ksSgQ"><a href="/tags/recursion"><span>Recursion</span></a></div><div class="SocialLinks-module--social-links--1RDpJ"><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--reddit"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--reddit "><g><circle cx="32" cy="32" r="31" fill="#5f99cf"></circle></g><g><path d="m 52.8165,31.942362 c 0,-2.4803 -2.0264,-4.4965 -4.5169,-4.4965 -1.2155,0 -2.3171,0.4862 -3.128,1.2682 -3.077,-2.0247 -7.2403,-3.3133 -11.8507,-3.4782 l 2.5211,-7.9373 6.8272,1.5997 -0.0102,0.0986 c 0,2.0281 1.6575,3.6771 3.6958,3.6771 2.0366,0 3.6924,-1.649 3.6924,-3.6771 0,-2.0281 -1.6575,-3.6788 -3.6924,-3.6788 -1.564,0 -2.8968,0.9758 -3.4357,2.3443 l -7.3593,-1.7255 c -0.3213,-0.0782 -0.6477,0.1071 -0.748,0.4233 L 32,25.212062 c -4.8246,0.0578 -9.1953,1.3566 -12.41,3.4425 -0.8058,-0.7446 -1.8751,-1.2104 -3.0583,-1.2104 -2.4905,0 -4.5152,2.0179 -4.5152,4.4982 0,1.649 0.9061,3.0787 2.2389,3.8607 -0.0884,0.4794 -0.1462,0.9639 -0.1462,1.4569 0,6.6487 8.1736,12.0581 18.2223,12.0581 10.0487,0 18.224,-5.4094 18.224,-12.0581 0,-0.4658 -0.0493,-0.9248 -0.1275,-1.377 1.4144,-0.7599 2.3885,-2.2304 2.3885,-3.9406 z m -29.2808,3.0872 c 0,-1.4756 1.207,-2.6775 2.6894,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 -1.4824,0 -2.6894,-1.2002 -2.6894,-2.6758 z m 15.4037,7.9373 c -1.3549,1.3481 -3.4816,2.0043 -6.5008,2.0043 l -0.0221,-0.0051 -0.0221,0.0051 c -3.0209,0 -5.1476,-0.6562 -6.5008,-2.0043 -0.2465,-0.2448 -0.2465,-0.6443 0,-0.8891 0.2465,-0.2465 0.6477,-0.2465 0.8942,0 1.105,1.0999 2.9393,1.6337 5.6066,1.6337 l 0.0221,0.0051 0.0221,-0.0051 c 2.6673,0 4.5016,-0.5355 5.6066,-1.6354 0.2465,-0.2465 0.6477,-0.2448 0.8942,0 0.2465,0.2465 0.2465,0.6443 0,0.8908 z m -0.3213,-5.2615 c -1.4824,0 -2.6877,-1.2002 -2.6877,-2.6758 0,-1.4756 1.2053,-2.6775 2.6877,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--twitter"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--twitter "><g><circle cx="32" cy="32" r="31" fill="#00aced"></circle></g><g><path d="M48,22.1c-1.2,0.5-2.4,0.9-3.8,1c1.4-0.8,2.4-2.1,2.9-3.6c-1.3,0.8-2.7,1.3-4.2,1.6 C41.7,19.8,40,19,38.2,19c-3.6,0-6.6,2.9-6.6,6.6c0,0.5,0.1,1,0.2,1.5c-5.5-0.3-10.3-2.9-13.5-6.9c-0.6,1-0.9,2.1-0.9,3.3 c0,2.3,1.2,4.3,2.9,5.5c-1.1,0-2.1-0.3-3-0.8c0,0,0,0.1,0,0.1c0,3.2,2.3,5.8,5.3,6.4c-0.6,0.1-1.1,0.2-1.7,0.2c-0.4,0-0.8,0-1.2-0.1 c0.8,2.6,3.3,4.5,6.1,4.6c-2.2,1.8-5.1,2.8-8.2,2.8c-0.5,0-1.1,0-1.6-0.1c2.9,1.9,6.4,2.9,10.1,2.9c12.1,0,18.7-10,18.7-18.7 c0-0.3,0-0.6,0-0.8C46,24.5,47.1,23.4,48,22.1z" fill="white"></path></g></svg></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--facebook"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--facebook "><g><circle cx="32" cy="32" r="31" fill="#3b5998"></circle></g><g><path d="M34.1,47V33.3h4.6l0.7-5.3h-5.3v-3.4c0-1.5,0.4-2.6,2.6-2.6l2.8,0v-4.8c-0.5-0.1-2.2-0.2-4.1-0.2 c-4.1,0-6.9,2.5-6.9,7V28H24v5.3h4.6V47H34.1z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--linkedin"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--linkedin "><g><circle cx="32" cy="32" r="31" fill="#007fb1"></circle></g><g><path d="M20.4,44h5.4V26.6h-5.4V44z M23.1,18c-1.7,0-3.1,1.4-3.1,3.1c0,1.7,1.4,3.1,3.1,3.1 c1.7,0,3.1-1.4,3.1-3.1C26.2,19.4,24.8,18,23.1,18z M39.5,26.2c-2.6,0-4.4,1.4-5.1,2.8h-0.1v-2.4h-5.2V44h5.4v-8.6 c0-2.3,0.4-4.5,3.2-4.5c2.8,0,2.8,2.6,2.8,4.6V44H46v-9.5C46,29.8,45,26.2,39.5,26.2z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div></div></div><hr/></div><nav><ul class="post-module--pagination--1F-V0"><li><a rel="prev" href="/c-standard-input">← <!-- -->C++ Standard input</a></li><li><a rel="next" href="/sorting-problems">Sorting Problems<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--3Dvn1"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2uglW">Copyright © 2020. All rights reserved.</div></div></footer></div></div><script>
   
   
   if(true) {
