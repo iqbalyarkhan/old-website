@@ -2,7 +2,7 @@
 title: Unbounded Knapsack
 date: 2020-07-06
 thumbnail: /post-images/knapsack.png
-draft: true
+draft: false
 extract: Detailed look at Unbounded Knapsack
 categories: 
     - Dynamic Programming
