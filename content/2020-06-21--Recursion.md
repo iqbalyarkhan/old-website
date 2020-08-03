@@ -52,7 +52,7 @@ tags:
     * [Print Longest Common Subsequence](#print-longest-common-subsequence)
     * [Longest Common Substring Length](#longest-common-substring-length)
     * [Min Insertions Or Deletions](#min-insertions-or-deletions)
-    * [Longest Palindromic Substring]
+    * [Longest Palindromic Subsequence](#longest-palindromic-subsequence)
 
 ### Introduction
 Recursion is a common technique to define a problem or a relation where subsequent "terms" build on calculations for previous terms. Our aim is to make decisions based on the existing choices we have and each time we make a choice, we obviously would reduce the number of problems that we'd have to solve. 
@@ -1856,15 +1856,15 @@ void minInsOrDel(string A, string B){
 }
 ```
 
-### Longest Palindromic Substring
+### Longest Palindromic Subsequence
 
-**Given a string, determine the longest palindromic substring**
+**Given a string, determine the longest palindromic subsequence**
 
-Before we get into finding the longest palindromic substring we need to break this problem down into its pieces: We first need to see if we can get all substrings for a string. Once we are able to get all substrings of a string, we can check to see if that substring is a palindrome and then return the longest one. 
+Before we get into finding the longest palindromic subsequence we need to break this problem down into its pieces: We first need to see if we can get all subsequence for a string. Once we are able to get all subsequences of a string, we can check to see if that subsequence is a palindrome and then return the longest one. 
 
-- **Get all substrings**
+- **Get all subsequences**
 
-Say we're given string `abac`, then, few of its substrings are: 
+Say we're given string `abac`, then, few of its subsequences are: 
 ```cpp
 abac
 aba
@@ -1897,7 +1897,7 @@ void forcedRemovalSubset(string soFar, string rest){
 }
 ```
 
-Now, in the base case, we'll have a substring for the particular choices we made. All we need to do is check if it's a palindrome and if so, check to see if it is longer than palindromes seen so far. We've also written a recursive function to check whether a string is a palindrome or not [here](#ispalindrome):
+Now, in the base case, we'll have a subsequence for the particular choices we made. All we need to do is check if it's a palindrome and if so, check to see if it is longer than palindromes seen so far. We've also written a recursive function to check whether a string is a palindrome or not [here](#ispalindrome):
 
 ```cpp
 bool isPalindrome(string A, int i, int j){
@@ -1912,7 +1912,7 @@ bool isPalindrome(string A, int i, int j){
 }
 ```
 
-That said, here's the complete code for longest palindromic substring:
+That said, here's the complete code for longest palindromic subsequence:
 
 ```cpp
 bool isPalindrome(string A, int i, int j){
@@ -1940,7 +1940,6 @@ void lps(string soFar, string rest, string& palSS){
     lps(soFar, rest.substr(1), palSS);
 }
 ```
-
 
 ### Conclusion
 - Use recursion if
