@@ -52,6 +52,7 @@ tags:
     * [Print Longest Common Subsequence](#print-longest-common-subsequence)
     * [Longest Common Substring Length](#longest-common-substring-length)
     * [Min Insertions Or Deletions](#min-insertions-or-deletions)
+    * [Longest Palindromic Substring]
 
 ### Introduction
 Recursion is a common technique to define a problem or a relation where subsequent "terms" build on calculations for previous terms. Our aim is to make decisions based on the existing choices we have and each time we make a choice, we obviously would reduce the number of problems that we'd have to solve. 
@@ -1852,6 +1853,91 @@ void minInsOrDel(string A, string B){
     cout << "Common length: " << common <<endl;
     cout << "Deletions: " << A.size() - common << endl;
     cout << "Additions: " << B.size() - common << endl;
+}
+```
+
+### Longest Palindromic Substring
+
+**Given a string, determine the longest palindromic substring**
+
+Before we get into finding the longest palindromic substring we need to break this problem down into its pieces: We first need to see if we can get all substrings for a string. Once we are able to get all substrings of a string, we can check to see if that substring is a palindrome and then return the longest one. 
+
+- **Get all substrings**
+
+Say we're given string `abac`, then, few of its substrings are: 
+```cpp
+abac
+aba
+abc
+ab
+aac
+aa
+ac
+...
+``` 
+
+Hmm, it seems like this problem requires us to choose or ignore certain characters in the string. For example, substring `aac` chose the first `a`, ignored the `b`, chose the second `a` and chose the `c`. This sounds VERY much like the subset problem: ie generate all possible subsets of this string! 
+
+Ok, we know how to generate [subsets](#alternate-approach-to-subsets):
+
+```cpp
+void forcedRemovalSubset(string soFar, string rest){
+    if (rest == ""){
+        cout << soFar << endl;
+        return;
+    }
+    //choose
+    //Pick next available character from rest,
+    //add it to soFar and remove it from rest
+    forcedRemovalSubset(soFar + rest[0] , rest.substr(1));
+    //ignore
+    //Pick next available character from rest,
+    //DON'T add it to soFar but just remove it from rest
+    forcedRemovalSubset(soFar, rest.substr(1));
+}
+```
+
+Now, in the base case, we'll have a substring for the particular choices we made. All we need to do is check if it's a palindrome and if so, check to see if it is longer than palindromes seen so far. We've also written a recursive function to check whether a string is a palindrome or not [here](#ispalindrome):
+
+```cpp
+bool isPalindrome(string A, int i, int j){
+    if (i == j)
+        return true;
+    if (abs(i-j) == 1){
+        return A[i] == A[j];
+    }
+    bool currMatch = A[i] == A[j];
+    bool othersMatch = isPalindrome(A, i+1, j-1);
+    return currMatch && othersMatch;
+}
+```
+
+That said, here's the complete code for longest palindromic substring:
+
+```cpp
+bool isPalindrome(string A, int i, int j){
+    if (i == j)
+        return true;
+    if (abs(i-j) == 1){
+        return A[i] == A[j];
+    }
+    bool currMatch = A[i] == A[j];
+    bool othersMatch = isPalindrome(A, i+1, j-1);
+    return currMatch && othersMatch;
+}
+
+void lps(string soFar, string rest, string& palSS){
+    if (rest == ""){
+        if (isPalindrome(soFar, 0, int(soFar.size()) - 1)){
+            if (soFar.length() > palSS.length()){
+                cout << "New palindrome subsequence: " << soFar << endl;
+                palSS = soFar;
+            }
+        }
+        return;
+    }
+    lps(soFar + rest[0], rest.substr(1), palSS);
+    lps(soFar, rest.substr(1), palSS);
 }
 ```
 
