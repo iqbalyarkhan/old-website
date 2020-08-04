@@ -781,7 +781,6 @@ $$$
 
 Going back to our example, we need to find a way to place our parenthesis such that we get the minimum cost.
 
-
 ### Conclusion
 - Use recursion if
     - The problems is worded such that the final solution is made up of solutions to smaller problems
