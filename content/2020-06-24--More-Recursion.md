@@ -781,6 +781,83 @@ $$$
 
 Going back to our example, we need to find a way to place our parenthesis such that we get the minimum cost.
 
+Let's start with an example array that we'll be using:
+
+```cpp
+Input: p[] = {40, 20, 30, 10, 30}   
+Output: 26000
+
+Dimensions of Matrices from given array:
+A = 40 X 20
+B = 20 X 30
+C = 30 X 10
+D = 10 X 30
+```
+
+Note that matrix $A_i$'s dimensions are in the array as `arr[i-1] * arr[i]`. Therefore, to perform our calculations, we'll have to start at index 1. We'll use `i` to keep track of our start index. Next, we'll end at `j`, the last entry in the array. Finally, we'll use `k` to move between `i` and `j` to get every possible arrangement of parens. 
+
+- **Base Case**
+
+This occurs when `i` and `j` are equal: ie the size of the array equals 1, in which case, we can return 0.
+
+```cpp
+int mcm(vector<int>& A, int i, int j){
+    if (i == j)
+        return 0;
+//.....
+}
+```
+
+- **Recursive Case**
+
+We need to set `i` to 1, and run between `i` and `j`. We'll use multiple recursion to break the array down into 2 parts and calculate the costs associated:
+
+```cpp
+int mcm(vector<int>& A, int i, int j){
+    if (i == j)
+        return 0;
+    for (int k = i; k < j; k++){
+        int left = mcm(A, i, k);
+        int right = mcm(A,k+1, j);
+//.....
+    }
+// return something here
+}
+```
+
+Next, the two recursive calls will get us the cost for multiplying, for example, this arrangement:
+
+```cpp
+        ___________
+{40, 20, 30, 10, 30}
+-----------
+
+40*20 20*30
+30*10 10*30
+```
+
+One thing the recursive call doesn't perform is the cost for entire span for current `i`, `k` and `j`. To do so, we simply multiple 40 * 30 * 30.
+Next, we add up left, right and totalCost and compare this against running minimum. In the end, we return the minimum:
+
+```cpp
+int mcm(vector<int>& A, int i, int j){
+    if (i == j)
+        return 0;
+    int minimum = numeric_limits<int>::max();
+    for (int k = i; k < j; k++){
+        int left = mcm(A, i, k);
+        int right = mcm(A,k+1, j);
+        int allCost = A[i-1] * A[k] * A[j];
+        int curr = left + right + allCost;
+        if (curr < minimum)
+            minimum = curr;
+    }
+    
+    return minimum;
+    
+}
+```
+
 ### Conclusion
 - Use recursion if
     - The problems is worded such that the final solution is made up of solutions to smaller problems
