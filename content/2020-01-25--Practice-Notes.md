@@ -702,4 +702,4 @@ char findTheDifference(string s, string t) {
 }
 ```
 
-Keep XORing the characters. Since equivalent characters cancel out, as soon as a mismatch is found, you can return the mismatched character. Same can be done for integers
+Keep XORing the characters. Since equivalent characters cancel out, as soon as a mismatch is found, you can return the mismatched character. Same can be done for integers only if the integers are contiguous as described [here](https://stackoverflow.com/a/10766752/11556612)
