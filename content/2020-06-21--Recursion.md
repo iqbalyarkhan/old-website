@@ -29,6 +29,7 @@ tags:
     * [Alternate approach to subsets](#alternate-approach-to-subsets)
     * [Permutations](#permutations)
     * [Alternate approach to permutations](#alternate-approach-to-permutations)
+    * [Letter Case Permutations]
     * [Permutations and Subsets](#permutations-and-subsets)
 9. [Backtracking](#backtracking)
     * [Dice Rolls](#dice-rolls)
@@ -728,6 +729,50 @@ void permute(string soFar, string rest){
 We're using the loop to pick between the choices we have. On each call, we're adding the picked element to our result and removing this choice from the decision space since we don't want to repeat the decision. 
 
 Having said that, if you run this code, you'll notice that it'll start with the first character of the string you provide and print all permutations starting with that first character. Next, it'll do the same for the second character and so on until the string `rest` is empty.
+
+### Letter Case Permutations
+**Given a string S, we can transform every letter individually to be lowercase or uppercase to create another string.  Return a list of all possible strings we could create.**
+
+For example, given the string:
+```cpp
+a1b2c3
+```
+
+return:
+
+```cpp
+A1B2C3
+A1B2c3
+A1b2C3
+A1b2c3
+a1B2C3
+a1B2c3
+a1b2C3
+a1b2c3
+```
+
+This is nothing but going down the tree, making one recursive call with the current character as upper case and another with current character as lower case. If the current character is not an alphabet, we simply add it to the current string and continue our recursive calls:
+
+```cpp
+void getPerms(string S, string perm, int i, vector<string>& ans){
+    if (i == S.length()){
+        ans.push_back(perm);
+        return;
+    }
+    
+    if (isalpha(S[i])){
+        char ch = S[i];
+        char upper = toupper(ch);
+        char lower = tolower(ch);
+        getPerms(S, perm + upper, i+1,ans);
+        getPerms(S,perm + lower, i+1,ans);
+    } else {
+        perm += S[i];
+        getPerms(S, perm, i+1,ans);
+    }
+}
+```
+
 
 ### Permutations and Subsets
 Let's recap what we learned from permutation and subsets problems:
