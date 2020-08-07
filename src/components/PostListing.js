@@ -32,7 +32,7 @@ import styles from  './PostsListing.module.scss'
               <div className={styles.right}>
                 <img src={post.thumbnail}/>
                 <h2>{post.title}</h2>
-                <div className={styles.meta}>{post.date}  &mdash; <span>{post.categories.join(' / ')}</span>  &mdash; {post.timeToRead} Min Read </div>
+                <div className={styles.meta}>{post.date}  &mdash; <span>{post.categories.join(' / ')}</span></div>
                 <p>{post.extract}</p>
               </div>
             </article>
