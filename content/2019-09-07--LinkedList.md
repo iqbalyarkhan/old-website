@@ -11,6 +11,31 @@ tags:
   - C++
 ---
 
+1. [Introduction](#introduction)
+2. [Code](#code)
+3. [Setup](#setup)
+4. [Inserts](#inserts)
+5. [Reverse Singly Linked List](#reverse-a-singly-linked-list)
+6. [Move to Front Algorithm](#move-to-front-algorithm)
+7. [Intro](#intro)
+    * [Search](#search)
+    * [Merge Two Sorted Lists](#merge-two-sorted-lists)
+    * [Reverse a sublist](#reverse-a-sublist)
+    * [Reverse a singly linked list](#reverse-a-singly-linked-list)
+    * [Check if list is circular](#check-if-list-is-circular)
+    * [Check if lists overlap](#check-if-lists-overlap)
+    * [Remove Kth last node from list](#remove-kth-last-node-from-list)
+    * [Remove duplicates from sorted list](#remove-duplicates-from-sorted-list)
+    * [Right shift elements in a linked list](#right-shift-elements-in-a-linked-list)
+    * [Even odd list](#even-odd-list)
+    * [Check if list is a palindrome](#check-if-list-is-a-palindrome)
+    * [Pivot list](#pivot-list)
+    * [Add numbers in a list](#add-numbers-in-a-list)
+    * [Swap pairs in a list](#swap-pairs-in-a-list)
+
+2. [Conclusion](#conclusion)
+
+
 ### Introduction
 
 In this post I'll talk about a very common data structure called linked list. The idea behind linked lists is to have data objects **linked** together like a chain where each element **points** to the next element it is linked to. Have enough of these connected together and you've got yourself a **linked list**. You can visualize a linked list like so:
@@ -329,29 +354,6 @@ void LinkedList<T>::MoveToFront(T elem){
 ```
 
 The idea is simple: we use two pointers, `temp` and `prev` to iterate over the list. If the element pointed to by `temp` is what we've been searching for, we sever the links and move `temp` to the front of the list.
-
-### Conclusion
-
-Linked lists are extremely powerful if you're required to constantly update your data (inserts and deletes). Insertion into a linked list would require you to sequentially iterate through your list - $O(n)$ - and then add your new node: $O(1)$. The down side is that if you need to search your list, you'd have to iterate through all the elements: $O(n)$.
-However, if your updates are infrequent, it'd be better to use an array since arrays provide us with fast lookup: $O(1)$. However, if you need to add a new item to your array, you'd have to allocate a new array, shift entries down and insert the new element in its correct position.
-
-1. [Intro](#intro)
-    * [Search](#search)
-    * [Merge Two Sorted Lists](#merge-two-sorted-lists)
-    * [Reverse a sublist](#reverse-a-sublist)
-    * [Reverse a singly linked list](#reverse-a-singly-linked-list)
-    * [Check if list is circular](#check-if-list-is-circular)
-    * [Check if lists overlap](#check-if-lists-overlap)
-    * [Remove Kth last node from list](#remove-kth-last-node-from-list)
-    * [Remove duplicates from sorted list](#remove-duplicates-from-sorted-list)
-    * [Right shift elements in a linked list](#right-shift-elements-in-a-linked-list)
-    * [Even odd list](#even-odd-list)
-    * [Check if list is a palindrome](#check-if-list-is-a-palindrome)
-    * [Pivot list](#pivot-list)
-    * [Add numbers in a list](#add-numbers-in-a-list)
-    * [Swap pairs in a list](#swap-pairs-in-a-list)
-
-2. [Conclusion](#conclusion)
 
 ### Intro
 
@@ -1192,3 +1194,7 @@ This approach takes $O(N)$ time and $O(1)$ space.
 - Remember to move to next node when iterating over the list!
 
 - When rotating a list, make it circular (connect tail to head) and figure out what the new tail should be. Then from there, the node after newTail is the newHead.
+
+- Linked lists are extremely powerful if you're required to constantly update your data (inserts and deletes). Insertion into a linked list would require you to sequentially iterate through your list - $O(n)$ - and then add your new node: $O(1)$. The down side is that if you need to search your list, you'd have to iterate through all the elements: $O(n)$.
+
+However, if your updates are infrequent, it'd be better to use an array since arrays provide us with fast lookup: $O(1)$. However, if you need to add a new item to your array, you'd have to allocate a new array, shift entries down and insert the new element in its correct position.
