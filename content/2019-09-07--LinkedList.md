@@ -24,6 +24,7 @@ tags:
     * [Reverse a singly linked list](#reverse-a-singly-linked-list)
     * [Check if list is circular](#check-if-list-is-circular)
     * [Check if lists overlap](#check-if-lists-overlap)
+    * [Return overlap node](#return-overlap-node)
     * [Remove Kth last node from list](#remove-kth-last-node-from-list)
     * [Remove duplicates from sorted list](#remove-duplicates-from-sorted-list)
     * [Right shift elements in a linked list](#right-shift-elements-in-a-linked-list)
