@@ -17,6 +17,7 @@ tags:
 3. [Scalability](#scalability)
     * [Load](#load)
     * [Twitter](#twitter)
+4. [Storage and Retrieval](#storage-and-retrieval)
 
 ### Intro
 
@@ -79,4 +80,7 @@ When twitter initially launched, the first approach was used but the systems wer
 
 The second approach also has a downside: every time someone tweets, the system has to lookup all that person's followers and add it to their cached TLs. Consider this for a famous person who has millions of followers, delivering the new tweets to each follower's TL in < 5 secs is a challenge. Therefore, in our twitter example, the key **load parameter** would be the number of followers per user weighted by the frequency of tweets. If a person with millions of followers tweets a lot, this would be a significant increase in twitter's load as compared to a person with few followers who rarely tweets. 
 
-As it turns out, twitter has implemented a hybrid approach where people with few followers are delivered cached tweets (approach 2) while people with millions of followers are delivered tweets using approach 1.  
+As it turns out, twitter has implemented a hybrid approach where people with few followers are delivered cached tweets (approach 2) while people with millions of followers are delivered tweets using approach 1.
+
+
+### Storage and retrieval  

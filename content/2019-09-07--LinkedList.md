@@ -726,6 +726,80 @@ bool doOverlap(Node<int>* L1, Node<int>* L2){
 }
 ``` 
 
+### Return overlap node
+**Extension of previous problem, check if the nodes overlap and if they do, return overlap node**
+
+Let's look at an example:
+
+```cpp
+list a: 1-2-3-4
+              |
+list b: 3-4-5-7-9-NULL
+```
+
+We'll check if they end at the same node which'll return true. Next, notice `b` length is 5 and `a` length is 6. One way to get to the overlap node is:
+
+```cpp
+int diff = longer - shorter; //6 - 5 = 1
+int pos = shorter - diff; //5 - 1 = 4
+```
+
+Node in shorter list at position `pos` is the overlap node. Let's try with a different example:
+
+```cpp
+list a: 1-2-3-4
+              |
+list b:   3-4-5-7-9-NULL
+```
+
+Then our calculations would be:
+
+```cpp
+int diff = longer - shorter; //7 - 5 = 2
+int pos = shorter - diff; //5 - 2 = 3
+```
+
+Notice how the `shorter[pos]` is the overlap node.
+
+Here's the code for logic above:
+
+```cpp
+Node<int>* getOverlapNodeIfExists(Node<int>* a, Node<int>* b){
+    Node<int>* overLapNode = nullptr;
+    int aLen = 1, bLen = 1;
+    Node<int>* aTemp = a;
+    Node<int>* bTemp = b;
+    
+    while (aTemp->next){
+        aTemp = aTemp->next;
+        aLen++;
+    }
+    
+    while (bTemp->next){
+        bTemp = bTemp->next;
+        bLen++;
+    }
+    
+    if (aTemp == bTemp){
+        int diff = abs(aLen - bLen);
+        int pos = (bLen < aLen) ? (bLen - diff): (aLen - diff);
+        if (bLen < aLen){
+            overLapNode = b;
+        } else {
+            overLapNode = a;
+        }
+        
+        while (pos != 1){
+            overLapNode = overLapNode->next;
+            pos--;
+        }
+    }
+
+    return overLapNode;
+}
+```
+
+
 ### Remove Kth last node from list
 
 **Given a singly linked list and an integer k, write a program to remove the /cth last element from the list. Your algorithm cannot use more than a few words of storage, regardless of the length of the list. In particular, you cannot assume that it is possible to record the length of the list.**
