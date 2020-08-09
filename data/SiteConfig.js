@@ -14,7 +14,7 @@ const config = {
   dateFromFormat: "YYYY-MM-DD", // Date format used in the frontmatter.
   dateFormat: "MM/DD/YYYY", // Date format for display.
   userName: "Iqbal Khan", // Username to display in the author segment.
-  userEmail: "iqbalyarkhan@hotmail.com", // Email used for RSS feed's author segment
+  userEmail: "iqbalyarkhan@icloud.com", // Email used for RSS feed's author segment
   userTwitter: "iqbalyarkhan", // Optionally renders "Follow Me" in the Bio segment.
   userGitHub: "iqbalyarkhan", // Optionally renders "Follow Me" in the Bio segment.
   userLocation: "Dallas, TX", // User location to display in the author segment.
