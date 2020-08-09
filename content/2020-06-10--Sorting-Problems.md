@@ -21,7 +21,7 @@ Header credit: <a href="https://iconscout.com/icons/text-rotation-down" target="
     * [Merge two sorted arrays](#merge-two-sorted-arrays)
     * [Find h index](#find-h-index)
     * [Remove first name duplicates](#remove-first-name-duplicates)
-    * [Merge Intervals]
+    * [Merge Intervals](#merge-intervals)
 2. [Conclusion](#conclusion)
 
 ### Introduction
