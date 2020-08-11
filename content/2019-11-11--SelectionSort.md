@@ -1,6 +1,6 @@
 ---
 title: Selection Sort
-date: 2019-11-11
+date: 2019-08-18
 thumbnail: /post-images/selection.png
 draft: false
 extract: Implementation and analysis of selection sort in C++
@@ -13,7 +13,9 @@ tags:
 
 ### Introduction
 
-In this post I'll talk about one of the most common sorting algorithms called Selection Sort.The idea behind selection sort is to start with an array that has two sections: a sorted section and an unsorted section. We'll **select** the smallest element from the unsorted section and place it in the sorted section. So, we'd first find the smallest element in the unsorted section and insert it at arr[0]. Then we'll find the second smallest element from the array and insert it at arr[1] and so on. As it is obvious, unlike [bubble sort](/bubble-sort), sorted elements are gathered at the left end (end starting with subscript 0) of our array, while bubble sort gathered elements at the opposite end.
+In this post I'll talk about one of the most common sorting algorithms called Selection Sort.The idea behind selection sort is to start with an array that has two sections: a sorted section and an unsorted section. We'll **select** the smallest element from the unsorted section and place it in the sorted section. 
+
+We'll first find the smallest element in the unsorted section and insert it at arr[0]. Then we'll find the second smallest element from the array and insert it at arr[1] and so on. As it is obvious, unlike [bubble sort](/bubble-sort), sorted elements are gathered at the left end (end starting with subscript 0) of our array, while bubble sort gathered elements at the opposite end.
 
 ### Code
 
