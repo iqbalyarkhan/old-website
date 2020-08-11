@@ -29,7 +29,6 @@ tags:
     * [Remove duplicates from sorted list](#remove-duplicates-from-sorted-list)
     * [Right shift elements in a linked list](#right-shift-elements-in-a-linked-list)
     * [Even odd list](#even-odd-list)
-    * [Check if list is a palindrome](#check-if-list-is-a-palindrome)
     * [Pivot list](#pivot-list)
     * [Add numbers in a list](#add-numbers-in-a-list)
     * [Swap pairs in a list](#swap-pairs-in-a-list)
@@ -942,21 +941,6 @@ Node<int>* EvenOddList(Node<int>* L){
 }
 ```
 
-### Check if list is a palindrome 
-
-**Given a singly linked list, return true if it is a palindrome and false otherwise**
-
-example:
-
-```cpp
-1->2->3->4->3->2->1 true
-1->2->3 false
-```
-
-Naive approach would be to choose the first node and then take a pointer to the last node and compare. Then, move to the second node and take a pointer to the second to last node and compare. This would take $O(N^2)$ time. 
-
-A better approach would be to first figure out the size of our list ($O(N)$), then place a pointer at the mid point and then compare with start of list. This approach would take $O(N)$ time.
-
 ### Pivot list
 
 **For any integer k, the pivot of a list of integers with respect to k is that list with its nodes reordered so that all nodes containing keys less than k appear before nodes containing k, and all nodes containing keys greater than k appear after the nodes containing k.Implement a function which takes as input a singly linked list and an integer k and performs a pivot of the list with respect to k.**
@@ -1171,5 +1155,3 @@ This approach takes $O(N)$ time and $O(1)$ space.
 - When rotating a list, make it circular (connect tail to head) and figure out what the new tail should be. Then from there, the node after newTail is the newHead.
 
 - Linked lists are extremely powerful if you're required to constantly update your data (inserts and deletes). Insertion into a linked list would require you to sequentially iterate through your list - $O(n)$ - and then add your new node: $O(1)$. The down side is that if you need to search your list, you'd have to iterate through all the elements: $O(n)$.
-
-However, if your updates are infrequent, it'd be better to use an array since arrays provide us with fast lookup: $O(1)$. However, if you need to add a new item to your array, you'd have to allocate a new array, shift entries down and insert the new element in its correct position.
