@@ -357,33 +357,7 @@ void LinkedList<T>::MoveToFront(T elem){
 The idea is simple: we use two pointers, `temp` and `prev` to iterate over the list. If the element pointed to by `temp` is what we've been searching for, we sever the links and move `temp` to the front of the list.
 
 ### Intro
-
-Before we look at the problems, let's have a look at the node struct we'd be using:
-```cpp
-template <typename T>
-struct ListNode{
-    T data;
-    shared_ptr<ListNode<T>> next;
-};
-```
-
-It is a template node that has two fields: `data` that stores the actual value and `next` which is of type `shared_ptr<ListNode<T>>` . This next field points to the next node in the list.
-
-### Search
-**Search for an element in the list**
-
-```cpp
-
-shared_ptr<ListNode<int>> Search(shared_ptr<ListNode<int>> l, int key){
-   shared_ptr<ListNode<int>> ptr = l;
-    while (l && l->data != key){
-        l = l->next;
-    }
-    
-    return l;
-}
-
-```
+Let's have a look at some more interesting problems that 
 
 ### Merge two sorted lists
 
@@ -578,7 +552,7 @@ Adding up those we take overall $O(B)$ time where $B$ is the finish index.
 
 The idea here is similar to what we did while reversing sublist: Pick an element from the left end, place after right end. Continue until left and right pointers point to the same node:
 
-```text
+```cpp
 a              b
 1 -> 2 -> 3 -> 4
 
