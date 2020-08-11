@@ -94,6 +94,6 @@ It is also true at the end:
 
 ### Conclusion
 
-The running time of bubble sort is $O(N^2)$. This is because at worst, we need to sort an array which is in reverse order and we need to bubble each element from the left of the array to the right for **each** element in the array. 
+The running time of bubble sort is $O(N^2)$. This is because at worst, we need to sort an array which is in reverse order and we need to bubble each element from the left of the array to the right. We need to perform this bubbling up process $N$ times. 
 
 At best, bubble sort would run in $O(N)$ time since we'd have to pass through the array once to realize that no swaps were required. 
