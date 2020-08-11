@@ -604,23 +604,7 @@ LinkedList<span class="token operator">&lt;</span>T<span class="token operator">
 <span class="token punctuation">}</span></code></pre></div>
 <p>The idea is simple: we use two pointers, <code class="language-cpptext">temp</code> and <code class="language-cpptext">prev</code> to iterate over the list. If the element pointed to by <code class="language-cpptext">temp</code> is what we've been searching for, we sever the links and move <code class="language-cpptext">temp</code> to the front of the list.</p>
 <h3 id="intro"><a href="#intro" aria-label="intro permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Intro</h3>
-<p>Before we look at the problems, let's have a look at the node struct we'd be using:</p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">typename</span> T<span class="token operator">></span>
-<span class="token keyword">struct</span> <span class="token class-name">ListNode</span><span class="token punctuation">{</span>
-    T data<span class="token punctuation">;</span>
-    shared_ptr<span class="token operator">&lt;</span>ListNode<span class="token operator">&lt;</span>T<span class="token operator">>></span> next<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre></div>
-<p>It is a template node that has two fields: <code class="language-cpptext">data</code> that stores the actual value and <code class="language-cpptext">next</code> which is of type <code class="language-cpptext">shared_ptr&lt;ListNode&lt;T&gt;&gt;</code> . This next field points to the next node in the list.</p>
-<h3 id="search"><a href="#search" aria-label="search permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Search</h3>
-<p><strong>Search for an element in the list</strong></p>
-<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">shared_ptr<span class="token operator">&lt;</span>ListNode<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">>></span> <span class="token function">Search</span><span class="token punctuation">(</span>shared_ptr<span class="token operator">&lt;</span>ListNode<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">>></span> l<span class="token punctuation">,</span> <span class="token keyword">int</span> key<span class="token punctuation">)</span><span class="token punctuation">{</span>
-   shared_ptr<span class="token operator">&lt;</span>ListNode<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">>></span> ptr <span class="token operator">=</span> l<span class="token punctuation">;</span>
-    <span class="token keyword">while</span> <span class="token punctuation">(</span>l <span class="token operator">&amp;&amp;</span> l<span class="token operator">-></span>data <span class="token operator">!=</span> key<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        l <span class="token operator">=</span> l<span class="token operator">-></span>next<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    
-    <span class="token keyword">return</span> l<span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre></div>
+<p>Let's have a look at some more interesting problems that </p>
 <h3 id="merge-two-sorted-lists"><a href="#merge-two-sorted-lists" aria-label="merge two sorted lists permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Merge two sorted lists</h3>
 <p><strong>Merge two sorted singly linked lists. You must not use extra space but use of extra constant space is allowed</strong>. </p>
 <p>Without the limitations, this problem is easy. You can create a new list and then iterate over existing lists and keep adding elements by comparing them. You can also append the two lists and then sort them. Both methods are inefficient. Here's a look at an efficient method. Say, here are our two lists:</p>
@@ -758,25 +742,25 @@ then:
 <h3 id="reverse-a-singly-linked-list"><a href="#reverse-a-singly-linked-list" aria-label="reverse a singly linked list permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Reverse a singly linked list</h3>
 <p><strong>Given a singly linked list, reverse it</strong>. Example: 1234 -> 4321</p>
 <p>The idea here is similar to what we did while reversing sublist: Pick an element from the left end, place after right end. Continue until left and right pointers point to the same node:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">a              b
-1 -&gt; 2 -&gt; 3 -&gt; 4
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">a              b
+<span class="token number">1</span> <span class="token operator">-></span> <span class="token number">2</span> <span class="token operator">-></span> <span class="token number">3</span> <span class="token operator">-></span> <span class="token number">4</span>
 
-Pick aundefined put after b:
+Pick a<span class="token punctuation">,</span> put after b<span class="token operator">:</span>
 
 a         b
-2 -&gt; 3 -&gt; 4 -&gt; 1
+<span class="token number">2</span> <span class="token operator">-></span> <span class="token number">3</span> <span class="token operator">-></span> <span class="token number">4</span> <span class="token operator">-></span> <span class="token number">1</span>
 
-Pick aundefined put after b:
+Pick a<span class="token punctuation">,</span> put after b<span class="token operator">:</span>
 
 a    b
-3 -&gt; 4 -&gt; 2 -&gt; 1
+<span class="token number">3</span> <span class="token operator">-></span> <span class="token number">4</span> <span class="token operator">-></span> <span class="token number">2</span> <span class="token operator">-></span> <span class="token number">1</span>
 
-Pick aundefined put after b:
+Pick a<span class="token punctuation">,</span> put after b<span class="token operator">:</span>
 
 ab
-4 -&gt; 3 -&gt; 2 -&gt; 1
+<span class="token number">4</span> <span class="token operator">-></span> <span class="token number">3</span> <span class="token operator">-></span> <span class="token number">2</span> <span class="token operator">-></span> <span class="token number">1</span>
 
-Return!</code></pre></div>
+Return<span class="token operator">!</span></code></pre></div>
 <p>Here's the code for this:</p>
 <div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">Node<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">*</span> <span class="token function">ReverseASinglyLinkedList</span><span class="token punctuation">(</span>Node<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">*</span> L<span class="token punctuation">)</span><span class="token punctuation">{</span>
     Node<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">*</span> a <span class="token operator">=</span> L<span class="token punctuation">;</span>
