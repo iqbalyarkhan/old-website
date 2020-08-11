@@ -779,7 +779,7 @@ Node<int>* getOverlapNodeIfExists(Node<int>* a, Node<int>* b){
 
 ### Remove Kth last node from list
 
-**Given a singly linked list and an integer k, write a program to remove the /cth last element from the list. Your algorithm cannot use more than a few words of storage, regardless of the length of the list. In particular, you cannot assume that it is possible to record the length of the list.**
+**Given a singly linked list and an integer k, write a program to remove the kth last element from the list. Your algorithm cannot use more than a few words of storage, regardless of the length of the list. In particular, you cannot assume that it is possible to record the length of the list.**
 
 Naive approach would be to first iterate over the length of the list to get its length. Then, once you have the length, subtract the value of K from this length and then iterate again up till this value you calculated and then delete the node. This is not possible since the question states you cannot assume that it is possible to record the length of the list. 
 
