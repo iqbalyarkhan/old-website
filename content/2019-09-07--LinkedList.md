@@ -32,6 +32,7 @@ tags:
     * [Pivot list](#pivot-list)
     * [Add numbers in a list](#add-numbers-in-a-list)
     * [Swap pairs in a list](#swap-pairs-in-a-list)
+    * [Root to leaf path with specified sum]
 
 2. [Conclusion](#conclusion)
 
@@ -1139,6 +1140,39 @@ A better approach would edit the list in place. We first create a dummy head and
 ```
 
 This approach takes $O(N)$ time and $O(1)$ space.
+
+### Root to leaf path with specified sum
+**Given a tree and a target sum, print the path from root to leaf if the path's sum equals target**
+
+This is quite similar to the previous recursive approaches we've taken. We'll keep going down the path and keep appending elements to a vector in the path. If at the leaf we find the running sum equals target, we'll print the path.
+
+One caveat here is that the last element is added inside the leaf check. This saves us unnecessary popping of elements from the vector:
+
+```cpp
+void RootToLeafPathWithSpecifiedSum(Node<int>* root, vector<int>& elems, int sum, int target){
+    if (!root){
+        return;
+    }
+    
+    if (!root->left && !root->right){
+        if (sum + root->data == target){
+            elems.push_back(root->data);
+            for (int i = 0; i < elems.size(); i++){
+                cout << elems[i] << " ";
+            }
+            cout << endl;
+        }
+        
+        return;
+    }
+    
+    elems.push_back(root->data);
+    RootToLeafPathWithSpecifiedSum(root->left, elems, sum+root->data, target);
+    RootToLeafPathWithSpecifiedSum(root->right, elems, sum+root->data, target);
+}
+```
+
+Running time is $O(N)$ and space complexity is $O(2h)$: for the solutions vector and the recursive call stack. This can be simplified to $O(h)$.   
 
 ### Conclusion
 
