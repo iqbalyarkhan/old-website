@@ -35,9 +35,7 @@ int main(){
         int curr = a[i];
         int ptr = i;
         while( a[j] > curr && j >= 0){
-            int temp = a[j];
-            a[j] = a[ptr];
-            a[ptr] = temp;
+            swap(a[j],a[ptr]);
             j--;
             ptr--;
         }
