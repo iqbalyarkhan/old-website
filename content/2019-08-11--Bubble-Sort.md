@@ -13,18 +13,12 @@ tags:
 
 ### Introduction
 
-In this post I'll talk about one of the most common sorting algorithms called Bubble Sort. 
-There are plenty of implementations available on the internet but I, instead of looking at someone else's code, 
-decided to understand the logic and implement it on my own. I like to do things this way so that I remember how it's done. 
-The best way to understand anything is to do it yourself! I'd hate to memorize bubble sort implementation thus I'm using this 
-post as a 'note to self' to keep a track of the things I learned while implementing bubble sort. To make sure we get the most out 
-of this post, instead of just copying and pasting code from my IDE, I'll explain each line of code and why I chose to do what I did. Let's begin.
-
 The idea behind bubble sort is to build our array from the right end (part of the array with the largest index) and move 
-gradually to the opposite end. We begin by looking at each adjacent pair `i` and  `j` and checking whether the value `i` is 
-greater than `j`. This could be changed if you're sorting your array in decreasing order (we'll then simply check if `i`
- is less than `j`). We keep repeating this until we find that **we've not made any swaps** in our iteration. As the algorithm 
- progresses, the biggest item bubble up to the top end of the array. Simple! 
+gradually to the opposite end. We begin by looking at each adjacent pair `i` and  `i+1` and check whether the value `i` is 
+greater than `i+1`. This could be changed if you're sorting your array in decreasing order (we'll then simply check if `i`
+ is less than `i+1`). If the value at position `i` is greater than the value at position `i+1`, we'll swap the two values. 
+ 
+ We keep repeating this until we're out of elements to check and swap (Some optimized implementations stop when **we've not made any swaps** in our iteration). As the algorithm progresses, the biggest item bubbles up to the top end of the array. Simple! 
 
 
 ### Approach
