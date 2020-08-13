@@ -1112,7 +1112,7 @@ $$$
 
 If it does, return `rightMax` along with `true` meaning that the property holds so far, up the recursive calls. If it doesn't, return `false`. 
 
-Also, keep in mind what you need to do if the node has only a left child or only a right child. 
+Also, keep in mind what you need to do if the node has only a left child or only a right child. This approach seems too complicated though! Always try to see if the problem can be solved using the 3 traversal techniques first and then try something more exotic! Since we've already discussed the complicated approach, let's look at its implementation as well (you can scroll down to approach 2 that uses traversal based solution if you like!)
 
 ```cpp
 template<typename T>
