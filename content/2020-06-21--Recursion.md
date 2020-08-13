@@ -29,7 +29,7 @@ tags:
     * [Alternate approach to subsets](#alternate-approach-to-subsets)
     * [Permutations](#permutations)
     * [Alternate approach to permutations](#alternate-approach-to-permutations)
-    * [Letter Case Permutations]
+    * [Letter Case Permutations](#letter-case-permutations)
     * [Permutations and Subsets](#permutations-and-subsets)
 9. [Backtracking](#backtracking)
     * [Dice Rolls](#dice-rolls)
