@@ -1,6 +1,6 @@
 ---
 title: Binary Trees
-date: 2020-05-10
+date: 2020-01-27
 thumbnail: /post-images/tree.png
 draft: false
 extract: Binary tree data structure
