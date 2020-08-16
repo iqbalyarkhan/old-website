@@ -20,7 +20,7 @@ tags:
  8. [Longest Common Substring Length](#longest-common-substring-length)
  9. [Min Insertions Or Deletions](#min-insertions-or-deletions)
  10. [Longest Palindromic Subsequence](#longest-palindromic-subsequence)
- 11. [Matrix Chain Multiplication]
+ 11. [Matrix Chain Multiplication](#matrix-chain-multiplication)
 
 ### Additional Problems
 Let's tackle a few more problems and some variations of the problems already seen in the [recursion](/recursion) post.
@@ -245,12 +245,17 @@ We'll be given two arrays: a weight array that'll hold the weight of each item a
 This is similar to the subset problem we saw above. That is because we've got choices to make: pick an element or ignore it. Then, we need to return max of the two decisions we made.
 
 -**Base Case**
+
 Our base case is when we have no more decisions to make: ie when we don't have any more items or when the capacity of our sack is 0.
 
 -**Recursive Case**
+
 We first need to check if the current item's weight is <= the capacity, if so:
-      - we can include the element, add its value, and reduce left capacity
-      - we can ignore the element and move on to the next element.
+
+      * we can include the element, add its value, and reduce left capacity
+      
+      * we can ignore the element and move on to the next element.
+      
 When the two values above are returned, we need to return the `max` of the two decisions.
 
 If current item's weight > capacity, we simply move to the next element.
