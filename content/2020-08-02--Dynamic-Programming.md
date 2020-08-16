@@ -2,7 +2,7 @@
 title: DP Discussion
 date: 2020-08-02
 thumbnail: /post-images/dynamic-programming.png
-draft: false
+draft: true
 extract: A deep dive into DP problems
 categories: 
     - Dynamic Programming
