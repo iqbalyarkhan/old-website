@@ -34,7 +34,7 @@ All of these problems fall under the broad area of graph search or computation o
 
 ### Depth First Search
 
-The idea behind depth first search is to go as deep down a path as possible until you hit a dead-end and then backtrack your way to the next available path that can be taken. We'll use an algorithm called, **depth first search** to do so:
+The idea behind **depth first search** is to go as deep down a path as possible until you hit a dead-end and then backtrack your way to the next available path that can be taken:
 
 ```cpp{numberLines:true}
 
