@@ -59,67 +59,13 @@ A graph is nothing but a set of vertices that are connected by edges. Formally, 
 - **Degree**: Degree of a vertex is the number of edges going into or out of (ie touch) a vertex
 - **Path**: A path in a graph (directed and undirected) for vertex u to v is a sequence of vertices and edges that connect u to v
 
-How would we go about representing a graph in our code? As you can notice, there is no defined structure. It is hard to determine what our left and right child is going to be for each node. To represent an undirected graph in memory, we've got 2 options:
+How would we go about representing a graph in our code? As you can notice for the undirected graph above, there is no defined structure. It is hard to determine what our left and right child is going to be for each node. To represent an undirected graph in memory, we've got 2 options:
 
 
 
 ### Adjacency Matrix
 
-A matrix is nothing but a 2D array where the size of each array is equal to the number of vertices in our graph. A value of 1 at a particular index would mean that the vertex is connected to another vertex. A value of 0 would signify that no connection is present. So, for the above graph, a 1 at $(2,4)$ and $(4,2)$ would signify that 2 is connected to 4 and 4 is connected to 2. Let's create an adjacency matrix for the image above:
-
-
-|  | 1 | 2 | 3 | 4 | 5 |
-| -- | -- | -- | -- | -- | -- |
-| **1** | 0 | 0 | 0 | 0 | 0 | 0 | 
-| **2** | 0 | 0 | 0 | 0 | 0 | 0 |
-| **3** | 0 | 0 | 0 | 0 | 0 | 0 |
-| **4** | 0 | 0 | 0 | 0 | 0 | 0 |
-| **5** | 0 | 0 | 0 | 0 | 0 | 0 |
-
-The matrix has a 2D array where each array is of size 5 (5 because our number of vertices are 5). Next, we see that 1 is connected to 4. Since this is an undirected graph, it also means that 4 is connected to 1. So, at indices $(1,4)$ and $(4,1)$ we can put a value of 1:
-
-
-|  | 1 | 2 | 3 | 4 | 5 |
-| -- | -- | -- | -- | -- | -- |
-| **1** | 0 | 0 | 0 | 1 | 0 | 0 | 
-| **2** | 0 | 0 | 0 | 0 | 0 | 0 |
-| **3** | 0 | 0 | 0 | 0 | 0 | 0 |
-| **4** | 1 | 0 | 0 | 0 | 0 | 0 |
-| **5** | 0 | 0 | 0 | 0 | 0 | 0 |
-
-4 is connected to 1,2 and 5. So we need to add 1s to the following positions:
-
-$$$
-(1,4) and (4,1) 
-$$$
-
-$$$
-(2,4) and (4,2) 
-$$$
-
-$$$
-(5,4) and (4,5) 
-$$$
-
-|  | 1 | 2 | 3 | 4 | 5 |
-| -- | -- | -- | -- | -- | -- |
-| **1** | 0 | 0 | 0 | 1 | 0 | 
-| **2** | 0 | 0 | 0 | 1 | 0 | 
-| **3** | 0 | 0 | 0 | 0 | 0 | 
-| **4** | 1 | 1 | 0 | 0 | 1 | 
-| **5** | 0 | 0 | 0 | 1 | 0 | 
-
-3 and 5 are connected:
-
-|  | 1 | 2 | 3 | 4 | 5 |
-| -- | -- | -- | -- | -- | -- |
-| **1** | 0 | 0 | 0 | 1 | 0 | 
-| **2** | 0 | 0 | 0 | 1 | 0 | 
-| **3** | 0 | 0 | 0 | 0 | 1 | 
-| **4** | 1 | 1 | 0 | 0 | 1 | 
-| **5** | 0 | 0 | 1 | 1 | 0 | 
-
-Finally, 2 is connected to 4 and 5:
+A matrix is nothing but a 2D array where the size of each array is equal to the number of vertices in our graph. A value of 1 at a particular index would mean that the vertex is connected to another vertex. A value of 0 would signify that no connection is present. So, for the above graph, a 1 at $(2,4)$ and $(4,2)$ would signify that 2 is connected to 4 and 4 is connected to 2. Here's the adjacency matrix for the undirected graph above:
 
 |  | 1 | 2 | 3 | 4 | 5 |
 | -- | -- | -- | -- | -- | -- |
