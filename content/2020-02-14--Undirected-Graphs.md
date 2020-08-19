@@ -41,7 +41,13 @@ tags:
 
 ### Introduction
 
-In this post I'll talk about a type data structure called graph (particularly undirected graphs). We've already seen a type of a graph: binary search tree. Graphs can be used to model your data depending on the type of problem you have. Graphs do not have a rigid, well defined shape (unlike trees) and can be created to solve the problem at hand.
+In this post I'll talk about a type of data structure called graph (particularly undirected graphs). Graphs can be used to model your data depending on the type of problem you have. Graphs do not have a rigid, well defined shape (unlike trees) and can be created to solve the problem at hand.
+
+Here is what an undirected graph looks like:
+
+![Undirected-Graph](images/graphs/undirectedgraph.png) [Image Credit - Undirected Graph](http://www.algolist.net/Data_structures/Graph/Internal_representation)
+
+A graph is nothing but a set of vertices that are connected by edges. Formally, a directed graph is a set V of vertices and a set of edges. Given an edge e = (u,v), the vertex u is its source, and v is its sink. Graphs can represent more than just edges between vertices for, e.g., by adding lengths to edges, weights to vertices, a start vertex, etc.
 
 ### Definitions
 
@@ -51,10 +57,7 @@ In this post I'll talk about a type data structure called graph (particularly un
 - **Undirected**: Undirected graph allows you to travel in any direction (A to B or B to A) as long as the two vertices are connected.
 - **Adjacent**: Two vertices are said to be adjacent if they're connected (ie one edge away from one another)
 - **Degree**: Degree of a vertex is the number of edges going into or out of (ie touch) a vertex
-
-Here is what an undirected graph looks like:
-
-![Undirected-Graph](images/graphs/undirectedgraph.png) [Image Credit - Undirected Graph](http://www.algolist.net/Data_structures/Graph/Internal_representation)
+- **Path**: A path in a graph (directed and undirected) for vertex u to v is a sequence of vertices and edges that connect u to v
 
 How would we go about representing a graph in our code? As you can notice, there is no defined structure. It is hard to determine what our left and right child is going to be for each node. To represent an undirected graph in memory, we've got 2 options:
 
