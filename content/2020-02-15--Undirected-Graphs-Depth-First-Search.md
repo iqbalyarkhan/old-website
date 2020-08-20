@@ -88,6 +88,7 @@ visited[0] = F
 visited[1] = F 
 visited[2] = F
 visited[3] = F
+visited[4] = F
 visited[5] = F
 ```
 
@@ -99,6 +100,7 @@ visited[0] = T
 visited[1] = F 
 visited[2] = F
 visited[3] = F
+visited[4] = F
 visited[5] = F
 ```
 
@@ -109,6 +111,7 @@ visited[0] = T
 visited[1] = F 
 visited[2] = F
 visited[3] = F
+visited[4] = F
 visited[5] = F
 
      |
@@ -124,6 +127,7 @@ visited[0] = T
 visited[1] = T 
 visited[2] = F
 visited[3] = F
+visited[4] = F
 visited[5] = F
 
      |
