@@ -60,7 +60,11 @@ We want to manipulate our array in such a way that we'd be able to answer questi
 
 ### Union
 
-Ok, so we've got our array setup where each element is disconnected fom every other component. Initially, the number of components in our structures equals the number of objects (12 in our example). Let's say we want to union 2 objects by calling the`union(int p, int q)` function. Say, we call union with the following:
+Ok, so we've got our array setup where each element is disconnected fom every other component. Initially, the number of components in our structures equals the number of objects (12 in our example). Let's say we want to union 2 objects by calling: 
+```cpp
+union(int p, int q)
+``` 
+function. Say, we call union with the following:
 ```cpp
 union(4, 9)
 union(1, 0)
