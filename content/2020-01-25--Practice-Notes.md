@@ -376,6 +376,8 @@ vector<int> v;
 int size;
 cin >> size; // 4
 v.resize(size); //Would fill up with default values till size is reached: [0,0,0,0]
+//or
+v.resize(size,100) //Would fill up with 100 till size is reached: [100,100,100,100]
 ```
 
 #### Erase From Vectors
