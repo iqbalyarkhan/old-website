@@ -31,7 +31,7 @@ Let's write an algorithm that answers the simple question whether the graph cont
 
 ### Logic
 
- In order to check whether a cycle exists, we'll use a modified version of [recursive depth first search](/graphs#depth-first-search)algorithm. Before we dive into the modified version let's understand logically how we can tackle this problem. Similar to DFS, we'll maintain a visited array and start with vertex 0. Here's the crux of our algorithm:
+ In order to check whether a cycle exists, we'll use a modified version of [recursive depth first search](/undirected-graphs-depth-first-search)algorithm. Before we dive into the modified version let's understand logically how we can tackle this problem. Similar to DFS, we'll maintain a visited array and start with vertex 0. Here's the crux of our algorithm:
  
 ```css
 If we find a vertex, called neighbor in a vertex's adjacency list and find that 
