@@ -31,6 +31,7 @@ tags:
     * [Pre-order without recursion](#pre-order-without-recursion)
     * [Find in-order successor](#find-in-order-successor)
     * [Form list from leaves](#form-list-from-leaves)
+    * [Vertical Order Traversal](#vertical-order-traversal)
     
 3. [Conclusion](#conclusion)
 
@@ -851,6 +852,48 @@ void generateList(Node<int>* root){
 ```
 
 Running time $O(N)$, space, $O(h)$ + $O(l)$ where $l$ is the number of leaves. 
+
+### Vertical Order Traversal
+
+**Given a tree, return vertical order traversal for the tree**.
+
+Example:
+
+```cpp
+            3
+          /   \
+        9     20
+             /  \           
+            15  7
+```
+
+If you go from left to right, you can see that 9 is by itself vertically. Nodes 3 and 15 align vertically and finally 20 and 7 are by themselves:
+
+```cpp
+Input: [3,9,20,null,null,15,7]
+Output: [[9],[3,15],[20],[7]]
+```
+
+It is clear that we need to traverse the tree in some order and keep track of the position relative to the root. Let's start with this step. How do we keep track of how far to the right or the left a node is with respect to the root? We can assign integers to each position. How do we go about deciding which integer gets assigned where. An insight that we can derive is that if we go left, we can perform one arithmetic operation and if we go right we can perform a complementary operation. For example:
+
+```cpp
+
+    0   
+     \
+      1
+     /
+    0    
+```
+
+Notice how the two nodes that align have the same value! We got that by adding 1 if we go to the right child and subtracting one if we go to the left child. Let's label our tree and see if this scheme works (the labels are in parenthesis):
+
+```cpp
+            3
+          /   \
+        9     20
+             /  \           
+            15  7
+```
 
 ### Conclusion
 
