@@ -888,11 +888,61 @@ It is clear that we need to traverse the tree in some order and keep track of th
 Notice how the two nodes that align have the same value! We got that by adding 1 if we go to the right child and subtracting one if we go to the left child. Let's label our tree and see if this scheme works (the labels are in parenthesis):
 
 ```cpp
-            3
+            3 (0)
           /   \
-        9     20
+    (-1) 9    20 (+1)
              /  \           
-            15  7
+        (0) 15  7 (+2)
+```
+
+Notice how 3 and 15 have the same label, while all other labels are different. 
+
+Let's look at the piece of code that assigns labels to each node and stores this information in a multi-map (multi-map because multiple nodes can have the same label):
+```cpp
+void verticalOrderTraversal(TreeNode* root, multimap<int,int>& info, int pos){
+    if (!root)
+        return;
+    cout << "Pushing to map: " << pos << " -> " << root->val << endl;
+    info.insert({pos,root->val});
+    verticalOrderTraversal(root->left, info, pos-1);
+    verticalOrderTraversal(root->right, info, pos+1);
+}
+```
+
+Once completed, our multi-map (which is in sorted order) will look like this for the tree above:
+```cpp
+Pushing to map: 0 -> 3
+Pushing to map: -1 -> 9
+Pushing to map: 1 -> 20
+Pushing to map: 0 -> 15
+Pushing to map: 2 -> 7
+```
+
+Finally, we populate our vector of vectors to return vertical order traversal information:
+
+```cpp
+
+vector<vector<int>> verticalOrderTraversal(TreeNode* root){
+    vector<vector<int>> ans;
+    multimap<int,int> info;
+    verticalOrderTraversal(root, info, 0);
+    
+    multimap<int,int>::iterator itr = info.begin();
+    int prev = numeric_limits<int>::min();
+    while (itr != info.end()){
+        vector<int> curr;
+        curr.push_back(itr->second);
+        prev = itr->first;
+        itr++;
+        while (itr->first == prev){
+            curr.push_back(itr->second);
+            itr++;
+        }
+        ans.push_back(curr);
+    }
+    
+    return ans;
+}
 ```
 
 ### Conclusion
