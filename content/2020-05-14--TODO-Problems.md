@@ -41,10 +41,11 @@ tags:
 
 #### Dynamic Programming
 
+- Minimum Cost for Tickets - https://leetcode.com/explore/challenge/card/august-leetcoding-challenge/552/week-4-august-22nd-august-28th/3436/
 - Climbing Stairs - https://leetcode.com/problems/climbing-stairs/
 - Coin Change - https://leetcode.com/problems/coin-change/
 - Longest Increasing Subsequence - https://leetcode.com/problems/longest-increasing-subsequence/
-- Longest Common Subsequence -
+- Longest Common Subsequence
 - Word Break Problem - https://leetcode.com/problems/word-break/
 - Combination Sum - https://leetcode.com/problems/combination-sum-iv/
 - House Robber - https://leetcode.com/problems/house-robber/
