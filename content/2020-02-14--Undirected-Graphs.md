@@ -450,4 +450,4 @@ Here we need to use the `erase()` call to delete the matched element in the vect
 
 ### Conclusion
 
-Relationship between objects that can be represented using undirected graphs and a lot of questions can be answered about the said objects. Explore the graphs section to see how this implementation can be put to use to answer interesting questions. 
+Relationship between objects that can be represented using undirected graphs and a lot of questions can be answered about the said objects. Explore the graphs section to see howw this implementation can be put to use to answer interesting questions. 

@@ -43,6 +43,7 @@ tags:
     * [Test if a Binary Tree satisfies the Binary Search Tree Property](#test-if-a-bt-satisfies-the-bst-property)
     * [Find next in in-order traversal](#find-next-in-in-order-traversal)
     * [Find k largest elements](#find-k-largest-elements)
+    * [Find kth smallest element](#find-kth-smallest-element)
     * [Find LCA](#find-lca)
     * [Construct tree from pre-order](#construct-tree-from-pre-order)
     * [Construct tree from post-order](#construct-tree-from-post-order)
@@ -1437,6 +1438,69 @@ void ReverseInOrder(Node<int>* root, int k){
 ```
 
 Running time: $O(h + k)$ this is because we first need to make our way down to the largest element and then move back k places again. Space: $O(h)$ for the recursive call stack
+
+### Find Kth Smallest Element
+**Given a binary search tree, write a function to find the kth smallest element in it.**
+
+Example, if we have this tree:
+
+
+```cpp
+              24
+            /    \
+          16      32
+         /  \    /   \  
+       10  18  28     40
+      / \       \    /  \ 
+     6  12       30  35  45
+    / \
+   5   7 
+``` 
+
+then these are the first, second, third and so on smallest values:
+
+```cpp
+1st=5
+2nd=6
+3rd=7
+4th=10
+...
+```
+
+**Approach 1**: We can perform an in-order traversal and store the elements in an array. We can then iterate over the array and return the element. Notice, how this requires us to run over the entire tree ($O(h)$) time (even in the best case!!) and then iterate over the array $k$ times. In addition, this approach also requires extra space of $O(h)$. Can we eliminate the need for extra space and remove the need to run over the ENTIRE tree. 
+
+**Approach 2**: Let's see, we still need to iterate over the tree but which traversal order should we use? Since we're looking for kth smallest, we'll definitely need to go left first. So, in-order can be used. How do we keep track of the kth? To do so, we'll have to get creative:
+
+- Keep a variable that keeps track of whether null has been reached. That is because we start our count once we reach the smallest element (ie left-most node).
+- Once null has been reached, we can start incrementing another global variable and soon as that variable equals `k`, we've found our `k`th smallest node!
+
+Here's the code:
+
+```cpp
+bool foundNull = false;
+int ans = -1;
+int foundSoFar = 0;
+
+void kthSmallestHelper(Node<int>* root, int k){
+    if (!root){
+        foundNull = true;
+        return;
+    }
+    
+    kthSmallestHelper(root->left, k);
+    if (foundNull){
+        foundSoFar++;
+        if (foundSoFar == k){
+            ans = root->data;
+            return;
+        }
+    }
+    
+    kthSmallestHelper(root->right, k);
+}
+```
+
+Running time for this approach: $O(h)$ in worst case and space complexity is $O(1)$.
 
 ### Find LCA
 
