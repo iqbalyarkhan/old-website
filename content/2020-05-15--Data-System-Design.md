@@ -18,6 +18,13 @@ tags:
     * [Load](#load)
     * [Twitter](#twitter)
 4. [Storage and Retrieval](#storage-and-retrieval)
+5. [Storage Engines](#storage-engines)
+6. [Log structured](#log-structured)
+    * [Index](#index)
+    * [B-trees](#b-trees)
+7. [Page oriented](#page-oriented)
+8. [OLTP vs OLAP](#oltp-vs-olap)
+9. [Data Warehouses]
 
 ### Intro
 
@@ -84,3 +91,49 @@ As it turns out, twitter has implemented a hybrid approach where people with few
 
 
 ### Storage and retrieval  
+There are various different "ways" to store data depending on the type of data that is being stored. There are:
+
+- **Document databases**
+
+These target use cases where data being stored is a self-contained document and there are no relations between two documents. This is part of the NoSQL data store family. 
+
+- **Graph databases**
+
+These are for use cases where anything is potentially related to everything.This is also part of the NoSQL data store family. 
+
+- **Relational Databases**
+
+These are for use cases where the data can have many to many relationships. 
+
+### Storage Engines
+Let's talk about the various ways in which databases will store information internally. As you can imagine, different storage engines would best suit a particular data storage and retrieval scenario. There isn't a one size fit all solution. For example, you might have a workload that is transaction heavy while others might be optimized for analytics. Let's start by discussing the two types of simpler storage engines: **log-structured** and **page-oriented**.
+
+### Log structured
+In a log structured engine, in order to save a record to the database, roughly an entry is **logged** or appended to the end of a simple data structure (such as a file). Each new entry would keep appending to this log. Appending to a file is generally very efficient.
+
+However, as the number of entries grow, the cost of retrieval also increases since the engine has to go through all the entries to get to the latest entry. To efficiently return records, another data structure is used behind the scenes. It is called **index**.
+
+### Index 
+The idea behind an index is simple: store extra metadata information on the side that acts as a marker telling you where to find the record. Many databases allow you to specify the type of indexes that you want to create which in turn affects lookup speeds. As you can imagine, as we add more data to the DB, these indexes must also be updated, therefore increasing the time it takes to write the data.
+ 
+ **This is an important trade-off in storage systems: indexes speed up reads but each that needs to be maintained slows down writes**. Due to this, databases will not index everything by default but would require the developer, with his/her knowledge of application's query patterns, to create indexes as required. It is an act of balancing the write and read times!
+ 
+ There are various types of indexes that can be created using:
+ - Hash tables
+ - Sorted-String Tables and LSM-Trees
+ - B-Trees
+
+### Page Oriented
+Let's talk about page oriented indexing. This is where information is stored in fixed sizes called pages. B-trees allow us to implement page-oriented indexing:
+
+### B-Trees
+B-trees break down the database into blocks that are called **pages** of size, usually, 4KB. B-trees read and write one page at a time. Each page is identified using an address and the b-tree stores addresses of each of these pages. The number of references to child pages is determined by the branching factor. If number of entries go above the branching factor, a page split is required to keep the branch factor.
+
+### OLTP vs OLAP 
+Now that we've seen how indexing can speed up information lookup and the role it plays in data writes, let's discuss the types of read/writes that we can come across when dealing with data intensive applications. 
+
+We can have **online transaction processing** where the queries are typically related to lookups on a small set of rows and updates are not too intensive either. OLTP is primarily used by applications that interact directly with the end users and answer simple questions posed by the user. In OLTP, raw data is returned to the user with little or no modification.
+
+We can also have **online analytic processing** where large amounts of information need to be processed where manipulation of the underlying data is required. This manipulation could be aggregating values in multiple rows, averaging a particular value etc. OLAP help derive business intelligence from raw data. Even though SQL DBs were apt for OLAP, many new data warehouses have been built specifically for this purpose.
+
+### Data Warehouses  
