@@ -24,7 +24,7 @@ tags:
     * [B-trees](#b-trees)
 7. [Page oriented](#page-oriented)
 8. [OLTP vs OLAP](#oltp-vs-olap)
-9. [Data Warehouses]
+9. [Data Warehouses](#data-warehouses)
 
 ### Intro
 
