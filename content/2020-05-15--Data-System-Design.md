@@ -136,4 +136,10 @@ We can have **online transaction processing** where the queries are typically re
 
 We can also have **online analytic processing** where large amounts of information need to be processed where manipulation of the underlying data is required. This manipulation could be aggregating values in multiple rows, averaging a particular value etc. OLAP help derive business intelligence from raw data. Even though SQL DBs were apt for OLAP, many new data warehouses have been built specifically for this purpose.
 
-### Data Warehouses  
+### Data Warehouses
+As we discussed in the previous section, data warehouses were specifically created to perform analytics without affecting transactions occurring on the main DB. A data warehouse is separate database that can be queried without affecting OLTP operations. Data warehouse contains read-only copy of the data in all the various OLTP systems. This copy is made either via a stream of updates or periodic updates so that latest data is available for OLAP. Before the data is dumped into the warehouse, it is usually transformed into analytics friendly schema, cleaned and then uploaded into the warehouse. This process is called **extract-transform-load** (ETL):
+
+![Warehouse-Image](images/systemdesign/warehouse.png)[Image Credit - Warehouse](https://learning.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/)
+
+
+ 
