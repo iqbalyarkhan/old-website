@@ -26,6 +26,8 @@ tags:
 8. [OLTP vs OLAP](#oltp-vs-olap)
 9. [Data Warehouses](#data-warehouses)
 10. [Distributed Data](#distributed-data)
+11. [Leaders and Followers](#leaders-and-followers)
+12. [Adding followers]
 
 ### Intro
 
@@ -153,7 +155,7 @@ This architecture where data is distributed among machines is called **shared-no
 
 - **Replication**
 
-Replication is where a copy of the data (an exact replica) is store on several different nodes in different locations. This helps provide redundancy: case where if a node goes down, we have another node with the same data that can continue to serve our customers. 
+Replication is where a copy of the data is store on several different nodes in different locations. This helps provide redundancy: case where if a node goes down, we have another node with the same data that can continue to serve our customers. 
 
 - **Partitioning**
 
@@ -169,8 +171,58 @@ Like we said in the previous section, replication means to keep a copy of the sa
 - To make your data highly available and fault tolerant
 - To improve overall performance by scaling our system
 
-In this section, we'll assume that partitioning is not required ie our data is small enough to be stored on a single machine 
+In this section, we'll assume that partitioning is not required ie our data is small enough to be stored on a single machine. Now, let's start to think about how we'd replicate data across multiple machines:
+
+- **Static data**
+
+This is where our data is written once and NEVER changes. In this case, all we need to do is grab the data and write to all the nodes and be done! Real challenge is when we need to replicate dynamic, or changing data
+
+- **Dynamic Data**
+
+This is where our data gets updated quite often: think of a customer's transaction data base. This data will get updated every time the customer makes a purchase or returns an item. Here, each change to the data needs to be propagated to every machine that holds a copy of the data so that the **replicas** (each node that stores a copy of the database is called a replica) are up to date. There are 3 main algorithms for replicating dynamic data: **single-leader**, **multi-leader** and **leaderless** replication. In addition to updating the nodes, there're other trade-offs to consider as well when we perform replication:
+
+    - How to update nodes (what we discussed earlier)
+     
+    - Whether to use synchronous or asynchronous replication (and the idea of eventual consistency)
+    
+    - How to handle failed replicas
+    
+Let's start with how we might replicate data across nodes:
+
+### Leaders and Followers
+Every write to the database needs to be processed by every replica otherwise our replicas would be useless! One way to do so is to use **leader-based** replication which works like so:
+
+- One of the replicas is designated the **leader**. When a client writes to the database, they send their request to the leader which writes that information first to its own local storage.
+
+- The other replicas, known as **followers**, receive this information from the leader every time the leader receives a new request. Whenever a leader writes to its local storage, it also sends the data to all its followers as part of the **replication log**. Each follower then takes the replication log from the leader and updates its local copy of the database with the new changes applying all writes in the same order as they were processed on the leader.
+
+- Reads can be done by querying either the leader or the followers BUT writes need to ALWAYS go through the leader.
+
+Here's an example flow with leader and 2 followers:
 
 
+![Leader-Follower-Image](images/systemdesign/leader-follower-replication.png)[Image Credit - Leader/Follower Replication](https://learning.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/)
 
- 
+### Synchronous vs Asynchronous Replication
+
+Now, one concern with this replication is how long (if at all) the leader should wait until it is sure that all the followers have been updated. What if there are 1000 followers? To answer this question, we need to understand the 2 modes of replication:
+
+- **Synchronous**:
+
+For this type of replication, the leader **waits** until the follower sends back an ok before returning back to the client saying that the write was successful. Here, the leader would wait. The advantage here is that the follower is guaranteed to have most up to date information because leader won't return success until follower returns success. Disadvantage here is that writes would be slow since the leader would wait for all the followers to return a success. What if one of the followers is down? We'd be waiting for that follower to come back online, request the replication log, update its local storage and then return a success. See the problem? One down node would bring our whole system to a halt!
+
+
+- **Asynchronous**:
+
+For this type of replication, the leader **does not wait** until the follower sends back an ok before returning back to the client saying that the write was successful. Here, the leader updates its local storage and returns success. The follower would eventually send back a success. Advantage here is that the wait time is as minimal as possible ie the time it takes for the leader to update local storage. Disadvantage here is that the followers might not be able to update their local and clients would receive stale data. 
+
+In reality, replication is done in a **semi-synchronous** fashion: leader waits for atleast 1 node to return success and then the leader conveys back to the client that the write was successful.
+
+### Adding Followers
+
+Now say our system is consisted of multiple followers and a single leader. Our clients are consistently writing via the leader and we realize that our number of followers are not enough based on the load. How do we go about adding more followers? We can't take the system offline while we replicate data to new followers since clients are consistently writing. Here's the process to do so:
+
+(1) Take a **snapshot** of the leader's database at some point in time.
+(2) Copy the snapshot to the follower node
+(3) Once the copy is completed, request the leader for all the writes that happened since the snapshot was taken. This is determined by comparing the snapshot with the leader's replication log.
+(4) Once the replica gets its missing records, we say that is now **caught up** and it can now continue to receive updates from the leader.
