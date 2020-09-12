@@ -223,6 +223,9 @@ In reality, replication is done in a **semi-synchronous** fashion: leader waits 
 Now say our system is consisted of multiple followers and a single leader. Our clients are consistently writing via the leader and we realize that our number of followers are not enough based on the load. How do we go about adding more followers? We can't take the system offline while we replicate data to new followers since clients are consistently writing. Here's the process to do so:
 
 (1) Take a **snapshot** of the leader's database at some point in time.
+
 (2) Copy the snapshot to the follower node
+
 (3) Once the copy is completed, request the leader for all the writes that happened since the snapshot was taken. This is determined by comparing the snapshot with the leader's replication log.
+
 (4) Once the replica gets its missing records, we say that is now **caught up** and it can now continue to receive updates from the leader.
