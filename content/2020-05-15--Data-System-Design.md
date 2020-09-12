@@ -25,6 +25,7 @@ tags:
 7. [Page oriented](#page-oriented)
 8. [OLTP vs OLAP](#oltp-vs-olap)
 9. [Data Warehouses](#data-warehouses)
+10. [Distributed Data](#distributed-data)
 
 ### Intro
 
@@ -140,6 +141,36 @@ We can also have **online analytic processing** where large amounts of informati
 As we discussed in the previous section, data warehouses were specifically created to perform analytics without affecting transactions occurring on the main DB. A data warehouse is separate database that can be queried without affecting OLTP operations. Data warehouse contains read-only copy of the data in all the various OLTP systems. This copy is made either via a stream of updates or periodic updates so that latest data is available for OLAP. Before the data is dumped into the warehouse, it is usually transformed into analytics friendly schema, cleaned and then uploaded into the warehouse. This process is called **extract-transform-load** (ETL):
 
 ![Warehouse-Image](images/systemdesign/warehouse.png)[Image Credit - Warehouse](https://learning.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/)
+
+### Distributed Data
+So far, our discussion has revolved around data stored on a single machine. In this section, we'll talk about another approach (which is more prevalent) for storing/retrieving data: one where data is stored on multiple machines. Before we deep dive, we'd want to ask ourselves WHY we need more than a single machine to store data?
+
+- What if our application's load (# of requests) is too high for a single machine to handle? Issue of **scalability**
+- What if our single machine goes down? Issue of **fault tolerance** and **high availability**
+- What if our machine is geographically far away from the customers it serves content to? Issue of **latency**
+
+This architecture where data is distributed among machines is called **shared-nothing** architecture. Here, each machine, or a **node** is a stand-alone unit where coordination between nodes is done on a network level. There are 2 common ways data is distributed among multiple nodes: 
+
+- **Replication**
+
+Replication is where a copy of the data (an exact replica) is store on several different nodes in different locations. This helps provide redundancy: case where if a node goes down, we have another node with the same data that can continue to serve our customers. 
+
+- **Partitioning**
+
+What if our data set is too large to be stored on a single machine? In this case, we partition our data: ie break it down into chunks that can be stored on different nodes. This is also known as **sharding**.
+
+Most often, replication and partition are both carried out in large scale data systems. 
+
+### Replication
+
+Like we said in the previous section, replication means to keep a copy of the same data on multiple machines that are then connected via a network. You'd want to replicate data to:
+
+- Resolve latency issues
+- To make your data highly available and fault tolerant
+- To improve overall performance by scaling our system
+
+In this section, we'll assume that partitioning is not required ie our data is small enough to be stored on a single machine 
+
 
 
  
