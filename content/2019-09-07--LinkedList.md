@@ -32,7 +32,7 @@ tags:
     * [Pivot list](#pivot-list)
     * [Add numbers in a list](#add-numbers-in-a-list)
     * [Swap pairs in a list](#swap-pairs-in-a-list)
-    * [Root to leaf path with specified sum]
+    * [Root to leaf path with specified sum](#root-to-leaf-path-with-specified-sum)
 
 2. [Conclusion](#conclusion)
 
