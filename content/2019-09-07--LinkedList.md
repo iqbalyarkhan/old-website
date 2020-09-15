@@ -357,7 +357,7 @@ void LinkedList<T>::MoveToFront(T elem){
 The idea is simple: we use two pointers, `temp` and `prev` to iterate over the list. If the element pointed to by `temp` is what we've been searching for, we sever the links and move `temp` to the front of the list.
 
 ### Intro
-Let's have a look at some more interesting problems that 
+Let's have a look at some more interesting problems: 
 
 ### Merge two sorted lists
 
