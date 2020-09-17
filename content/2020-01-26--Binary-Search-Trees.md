@@ -1261,30 +1261,25 @@ Check to see if currentNode < lastNode, IT IS!! The tree is NOT A BST!!
 We can break and return now
 ```
 
-The idea in the implementation above was to check whether the currentNode we're processing via in-order traversal is greater than the previous node we processed. On each process, we update the lastNode.
+The idea in the implementation above was to check whether the currentNode we're processing via in-order traversal is greater than the previous node we processed. On each process, we update the lastNode. We also short-circuit the logic so that as soon as we encounter the breaking condition, we return:
 
 
 ```cpp
 int lastNode = -1;
-void simpleBST(Node<int>* root){
+bool isBST(Node<int>* root){
     if (!root)
-        return;
+        return true;
     if (!root->left && !root->right){
-        if (root->data < lastNode){
-            cout << "not a bst since " << root->data << " < " << lastNode << endl;
-        }
         lastNode = root->data;
-        return;
+        return true;
     }
-
-    simpleBST(root->left);
-    if (root->data < lastNode){
-        cout << "not a bst since " << root->data << " < " << lastNode << endl;
-    } else {
-        lastNode = root->data;
+    
+    bool left = isBST(root->left);
+    if (!left || root->data < lastNode){
+        return false;
     }
-    simpleBST(root->right);
-
+    lastNode = root->data;
+    return isBST(root->right);
 }
 ```
 
