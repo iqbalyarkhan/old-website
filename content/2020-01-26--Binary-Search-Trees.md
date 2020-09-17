@@ -54,7 +54,7 @@ tags:
 
 ### Introduction
 
-In this post I'll talk about a data structure called Binary Search Tree. This post is related to my [binary search](/binary-search) post where we discussed the binary search algorithm. BSTs use a similar idea but allow us to store our data efficiently so that we don't have to iterate over an entire array to perform various operations on the data that we stored. We'll look at this in more detail as we go over the code.
+In this post I'll talk about a data structure called Binary Search Tree. This post is related to my [binary search](/arrays/#binary-search) post where we discussed the binary search algorithm. BSTs use a similar idea but allow us to store our data efficiently so that we don't have to iterate over an entire array to perform various operations on the data that we stored. We'll look at this in more detail as we go over the code.
 
 Formally, a BST is a **rooted [binary tree](/binary-trees) whose internal nodes each store a key greater than all the keys in the node's left subtree and less than those in its right subtree**
 
@@ -1093,7 +1093,7 @@ BST is a workhorse of data structures and can be used to solve almost any proble
 
 Key lookup, insertion and deletion take time proportional to $O(h)$ where $h$ is the height of our tree which in the worst case can be $O(N)$ if insertions and deletions are naively implemented. 
 
-**Searching** os the single most fundamental application of BSTs. Unlike hash tables, you can find min, max, next largest, smallest element using BSTs. These operations, along with lookup and delete take $O(logN)$ time for library implementations (due to balanced trees). 
+**Searching** is the single most fundamental application of BSTs. Unlike hash tables, you can find min, max, next largest, smallest element using BSTs. These operations, along with lookup and delete take $O(logN)$ time for library implementations (due to balanced trees). 
 
 C++ STL offers two BST based containers: `set` and `map`:
 - sets store keys only
