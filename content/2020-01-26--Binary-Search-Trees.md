@@ -1635,7 +1635,7 @@ Approach 1: Create root from `arr[arr.size()-1]`. Then for each remaining elemen
 Approach 2: Notice that the root is at the last element. So, instead of starting at the first index in the array, we'll start from the last and will work our way backwards. We'll process the tree from right subtree to left subtree. Similar to how we constructed a tree from pre-order, we'll check for 2 things:
 
 - The value of `i`, our pointer in the array, is not past the end of the array, ie > 0 
-- The element is in the range `[low,high]` for the subtree we're processing
+- The element is in the range $[low,high]$ for the subtree we're processing
 
 We'll start at 24 and then determine the min and the max based on 24's value. Since we're starting with the right subtree, the minimum value that can fall in the right subtree is 24 + 1 = 25 and the max is infinity. For left subtree of 24, the max is 24 - 1 = 23 and min is `arr[0]` because notice that the smallest value in the tree is at `arr[0]`. 
 
