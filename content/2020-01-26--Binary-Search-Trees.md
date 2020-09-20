@@ -1582,10 +1582,10 @@ preorder: vector<int>A = {24,16,10,6,5,7,12,18,32,28,30,40,35,45};
    5   7 
 ``` 
 
-Then we can create our root using `A[0]`. Now, what would go at root->left? First we'll create the node that we're going to insert. Then, We need to check a few things:
+Then we can create our root using `A[0]`. Now, what would go at root->left? First we'll create the node that we're going to insert. Then, we need to check a few things:
 
 - The value of `i`, our pointer in the array, is not past the end of the array 
-- The element is in the range `[low,high]` for the subtree we're processing
+- The element is in the range $[low,high]$ for the subtree we're processing
 
 If both hold, we'll set the left and right recursively, recalculating the relevant range on each step.
 
