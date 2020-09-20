@@ -459,7 +459,7 @@ then the power set would be:
 This is also known as the subset problem
 
 **Base Case**
-This would occur when we're given just a single character. In that case, we'll push that character to the `perms` vector and return.
+This would occur when we're given just a single character. In that case, we'll push that character to the `ans` vector and return.
 
 **Problem size**
 This is equal to the number of characters in the string
