@@ -32,10 +32,6 @@ tags:
     * [Delete Vertex](#delete-vertex)
 
     * [Pros and Cons of Adjacency List](#pros-and-cons-of-adjacency-list)
-    
-7. [Breadth First Search](#breadth-first-search)
-
-8. [BFS vs DFS](#bfs-vs-dfs)
 
 10. [Conclusion](#conclusion)
 
