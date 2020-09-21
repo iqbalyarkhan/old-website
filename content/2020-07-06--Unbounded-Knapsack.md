@@ -217,7 +217,7 @@ Now let's solve this problem! We've already seen that recursive solution is not 
 int rodMaxProfit(vector<int> lengthArr, vector<int> prices, int N){}
 ```
 
-(2) Let's create our 2D matrix and see how we initialize it. We'll have `i` represent the length of possible cuts array + 1 and `j` represent the length of the rod + 1. In our example, we're given allowed cuts from 1 till 8 so the size of `i` is 8 and the length of rod is 8 as well so we have a square matrix: (The Fs mean that we still need to fill these spots):
+(2) Let's create our 2D matrix and see how we initialize it. We'll have `i` represent the length of possible cuts array + 1 and `j` represent the length of the rod + 1. In our example, we're given allowed cuts from 1 till 8 so the size of `i` is 8 and the length of rod is 8 as well so we have the following matrix: (The Fs mean that we still need to fill these spots):
  
  |  | **0** | **1** | **2** | **3** | **4** | **5** | **6** | **7** | **8** |
  | -- | -- | -- | -- | -- | -- | -- | -- | -- |
