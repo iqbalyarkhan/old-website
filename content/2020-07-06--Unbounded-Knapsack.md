@@ -57,122 +57,38 @@ So use unbounded when you know you can re-use a previously used item. For exampl
 ### Code Difference
 So we've seen the two flavors of knapsack problem: one where the item is processed as soon as you receive it (0-1 knapsack) and one where an item is not processed until you've vehemently rejected it (unbounded knapsack) ie items are re-usable.
 
-Let's start with 0-1 Knapsack's recursive code that should be familiar:   
+Let's start with 0-1 Knapsack's recursive code that should be familiar. We'll only look at the choose portion of the code:   
 
-```cpp
+```cpp{numberLines: true}
 int zeroOneKnapSack(vector<int> val, vector<int> wt, int c, int n){
-    //base case
-    if (n == 0 || c == 0)
-        return 0;
-    //weight > capacity, ignore and move on
-    if (wt[n-1] > c){
-        return zeroOneKnapSack(val,wt,c,n-1);
-    }
-    
-    //Choose so reduce capacity and add value    
+    //....
+    //Choose: reduce capacity and add value    
     int choose = val[n-1] + zeroOneKnapSack(val, wt, c - wt[n-1], n-1);
-    //Ignore so just move one 
-    int ignore = zeroOneKnapSack(val, wt, c, n-1);
-    return max(choose, ignore);
+    //....
 }
 ```
-
-This recursive code converted to tabular code would look like this:
-
-```cpp
-int zeroOneKnapSack(vector<int> wt, vector<int> val, int c, int n){
-    //i = n, j = c
-    //Weight can either be <= c or > c
-    for (int i = 1; i <= n; i++){
-        for (int j = 1; j <= c; j++){
-            if (wt[i-1] <= j){
-                //Choice 1: choose this item
-                //Since we're choosing this item, we add the current item's value to whatever we get from next recursive call
-                int profitWithChoosing = val[i-1] + dp[i-1][j-wt[i-1]];
-                
-                //Choice 2: Don't choose this item
-                //Since we don't choose this item, we simply ignore its value and move to the next item
-                int profitWithNotChoosing = dp[i-1][j];
-                //Need to return max profit
-                //Finally, based on the two decisions above, we choose the max of the two and return that value
-                dp[i][j] = max (profitWithChoosing, profitWithNotChoosing);
-            } else {
-                //weight is > capacity, just continue recursing...
-                dp[i][j] = dp[i-1][j];
-            }
-        }
-    }
-    return dp[n][c];
-}
-```
-
-Let's look at a concrete example to drive home the point:
-
-```cpp
- wt = {1,3,4,5}; // weight of each item in pounds
- val = {2,4,6,8}; //value of each item in dollars
- c = 7; //capacity in pounds
-```
-
-Here's my initial table for this scenario:
-
-|  | **0** | **1** | **2** | **3** | **4** | **5** | **6** | **7** |
-| -- | -- | -- | -- | -- | -- | -- |
-| **0** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **1** (1) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **2** (1,3) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **3** (1,3,4) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 
-| **4** (1,3,4,5) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-
-
-We've already initialized row 0 and column 0 so we'll start at (1,1). At this position, we have the option of either choosing this item or not choosing this item.
 
 **Choose**:
 
-Say I chose this item, then my new capacity is 1 - 1 = 0. Unlike 0-1 knapsack, in unbounded knapsack, I CAN pick this item again so my available items to be picked stays at 1. In essence, we've reduced our problem from finding the max profit from 1 item and capacity of 1 to item 1 and capacity of 0. Now, remember we said that we want to get current value from previously calculated values? Do I know what the profit is if my items are 1 and capacity is 0? ie do I know what dp[1][0] is? YES! It is 0! But wait, we're not done. Since we've chosen this item, we need to add its value to the value we got from the sub-problem. 
+In 0-1 knapsack, when I choose an item, I cannot pick it again, so I decrement `n` on line 4 (the very last parameter) to represent the fact. However, in unbounded knapsack, I'm allowed to pick the same item multiple times. To denote the same in my recursive solution, I'll do the following:
 
-Therefore, unbounded knapsack's choose would look like this (I've given 0-1 knapsack choose for comparison as well):
+```cpp{numberLines: true}
+int unboundedKnapSack(vector<int> val, vector<int> wt, int c, int n){
+    //....
+    //Choose: reduce capacity and add value    
+    int choose = val[n-1] + unboundedKnapSack(val, wt, c - wt[n-1], n);
+    //....
+}
+```
 
-```cpp{numberLines: 4}
+Converting the same to bottom up approach, I'll get this for unbounded knapsack:
+
+```cpp
                 int profitWithChoosing = val[i-1] + dp[i][j-wt[i-1]]; //Not reducing i 
                                                        |
 //0-1 had this: int profitWithChoosing = val[i-1] + dp[i-1][j-wt[i-1]];
 ```
-Everything else stays the same! That's it! Therefore, bottom up for unbounded would look like this:
 
-```cpp
-int unBoundedKnapsack(vector<int> wt, vector<int> val, int c, int n){
-    //i = n, j = c
-    //Weight can either be <= c or > c
-    for (int i = 1; i <= n; i++){
-        for (int j = 1; j <= c; j++){
-            if (wt[i-1] <= j){
-                //Choice 1: choose this item
-                //                                     | not reducing this i since it can be chosen again
-                int profitWithChoosing = val[i-1] + dp[i][j-wt[i-1]]; //Not reducing i here since we can choose ith item again!
-                
-                //Choice 2: Don't choose this item
-                //Since we don't choose this item, we simply ignore its value and move to the next item
-                int profitWithNotChoosing = dp[i-1][j];
-                //Need to return max profit
-                dp[i][j] = max (profitWithChoosing, profitWithNotChoosing);
-            } else {
-                //weight is > capacity, just continue recursing...
-                dp[i][j] = dp[i-1][j];
-            }
-        }
-    }
-    return dp[n][c];
-}
-```
-
-To summarize, here's the only line we changed:
-```cpp
-//0-1knapsack
-int profitWithChoosing = val[i-1] + dp[i-1][j-wt[i-1]];
-//unbounded                            |
-int profitWithChoosing = val[i-1] + dp[i][j-wt[i-1]]; //Not reducing i here since we can choose ith item again!
-```
 
 That is the only difference between 0-1 and unbounded where a chosen item can be chosen again. This has far-reaching implications. It implies that:
 - Unbounded is to be used where the number of items available are infinite. ie the number of options you have can be used again and again
