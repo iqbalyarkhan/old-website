@@ -15,6 +15,7 @@ tags:
 3. [Code Difference](#code-difference)
 4. [Problems](#problems)
 5. [Rod cutting](#rod-cutting-problem)
+    * [Rod Cutting Recursive Solution](#rod-cutting-recursive-solution)
 6. [Coin change max number of ways](#coin-change-max-number-of-ways)
 7. [Coin change minimum number of coins](#coin-change-minimum-number-of-coins)
 
@@ -125,12 +126,118 @@ Let's first discuss why this is a general knapsack problem:
 Now, why is this unbounded knapsack? 
 - It is unbounded knapsack because we can cut the 8m rod into eight 1m pieces: I've got more than one instance of the same length! If I choose, I can have four 2m pieces and so on. The main observation is that once I've chosen a piece of a particular length, I can come back and choose it again. Therefore this is unbounded knapsack.
 
-Now let's solve this problem! We've already seen that recursive solution is not the most efficient solution, so let's start directly with our bottom-up tabular solution:
+Now let's solve this problem! 
+
+### Rod Cutting Recursive Solution
+Let's start with the first step:
+
+### Base case:
+This occurs for the smallest valid input: ie when the rod is of length 0 or when we've iterated over all the elements in our price and length array. In this case our profit is 0. I'll use the variable `target` to keep track of remaining length. We'll reduce the remaining length every time we make a choice:
+
+```cpp
+int maxProfit(vector<int>& len, vector<int>& price, int target, int n){
+    if (target == 0 || n == 0)
+        return 0;
+}
+```
+
+### Recursive Case
+Let's look at the cases and then we'll dive deeper to explain each case:
+
+(1) Length of current element we're considering is <= length of the rod
+    (a) We can choose current element
+    (b) We can ignore current element
+(2) Length of current element we're considering is > length of the rod: only option is to ignore
+
+### 1a: Choose current element
+
+Ok, so first let's check if current element is <= length of rod remaining:
+
+```cpp
+int maxProfit(vector<int>& len, vector<int>& price, int target, int n){
+    if (target == 0 || n == 0)
+        return 0;
+    if (len[n-1] <= target){
+        //choose or ignore
+    }
+}
+```
+
+Now, let's choose this element:
+
+```cpp{numberLines: true}
+int maxProfit(vector<int>& len, vector<int>& price, int target, int n){
+    if (target == 0 || n == 0)
+        return 0;
+    if (len[n-1] <= target){
+        //choose
+        int profitChoose = price[n-1] + maxProfit(len, price, target - len[n-1], n);
+    }
+}
+```
+
+Notice on line 6 in the code above (the recursive call), we don't reduce the value of `n`. That, as we discussed, is because the current element of length is eligible to be chosen again!
+
+### 1b: Ignore current element
+Next, let's ignore the current element:
+
+```cpp{numberLines: true}
+int maxProfit(vector<int>& len, vector<int>& price, int target, int n){
+    if (target == 0 || n == 0)
+        return 0;
+    if (len[n-1] <= target){
+        //choose
+        int profitChoose = price[n-1] + maxProfit(len, price, target - len[n-1], n);
+        //ignore
+        int profitIgnore = maxProfit(len, price, target - len[n-1], n-1);
+    }
+}
+```
+
+Finally, after we have our two profits, we want to return the max profit:
+
+```cpp{numberLines: true}
+int maxProfit(vector<int>& len, vector<int>& price, int target, int n){
+    if (target == 0 || n == 0)
+        return 0;
+    if (len[n-1] <= target){
+        //choose
+        int profitChoose = price[n-1] + maxProfit(len, price, target - len[n-1], n);
+        //ignore
+        int profitIgnore = maxProfit(len, price, target - len[n-1], n-1);
+        return max(profitChoose,profitIgnore);
+    }
+}
+```
+
+### Length of current element we're considering is > length of the rod
+What if length of current element > rod length (ie target)? Here, the only option we have is to ignore the element:
+
+```cpp{numberLines: true}
+int maxProfit(vector<int>& len, vector<int>& price, int target, int n){
+    if (target == 0 || n == 0)
+        return 0;
+    if (len[n-1] <= target){
+        //choose
+        int profitChoose = price[n-1] + maxProfit(len, price, target - len[n-1], n);
+        //ignore
+        int profitIgnore = maxProfit(len, price, target - len[n-1], n-1);
+        return max(profitChoose,profitIgnore);
+    }
+
+    return maxProfit(len,price,target,n-1);
+}
+```
+
+That's it! We're done. Running time is $O(N*2^N)$
+     
+     
+We've already seen that recursive solution is not the most efficient solution, so let's now discuss bottom-up tabular solution:
 
 (1) Function signature stays the same:
 
 ```cpp
-int rodMaxProfit(vector<int> lengthArr, vector<int> prices, int N){}
+int rodMaxProfit(vector<int> lengthArr, vector<int> prices, int L, int N){}
 ```
 
 (2) Let's create our 2D matrix and see how we initialize it. We'll have `i` represent the length of possible cuts array + 1 and `j` represent the length of the rod + 1. In our example, we're given allowed cuts from 1 till 8 so the size of `i` is 8 and the length of rod is 8 as well so we have the following matrix: (The Fs mean that we still need to fill these spots):
@@ -179,8 +286,7 @@ If you notice, this is quite similar to the unbounded knapsack problem we saw ea
 Putting it all together, here's the complete code:
 
 ```cpp
-int rodMaxProfit(vector<int> lengthArr, vector<int> prices, int N){
-    int L = int(lengthArr.size() + 1);
+int rodMaxProfit(vector<int> lengthArr, vector<int> prices,int L, int N){
     vector<vector<int>> dp(L, vector<int>(N+1, 0));
     
     for (int i = 1; i <= N; i++){
@@ -204,7 +310,7 @@ int main(int argc, const char * argv[]) {
     vector<int> length = {1,2,3,4,5,6,7,8};
     vector<int> prices = {1,5,8,9,10,17,17,28};
     int n = 8;
-    int ans = rodMaxProfit(length, prices, n);
+    int ans = rodMaxProfit(length, prices, 8, n);
     cout << "ans: " << ans << endl;
     return 0;
 }
