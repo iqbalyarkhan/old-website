@@ -1,8 +1,8 @@
 ---
-title: LCS And Derivatives
+title: Strings and DP
 date: 2020-07-14
 thumbnail: /post-images/lcs.png
-draft: true
+draft: false
 extract: Longest Common Subsequence and its derivatives
 categories: 
     - Dynamic Programming
@@ -11,16 +11,18 @@ tags:
 ---
 
 1. [Introduction](#introduction)
-2. [Longest Common Subsequence Recursive](#longest-common-subsequence-recursive)
+2. [Longest Common Subsequence](#longest-common-subsequence)
+    * [LCSubsequence Recursive](#lcsubsequence-recursive)
+    * [LCSubsequence Bottom Up]
 3. [Longest Common Subsequence Memoized](#longest-common-subsequence-memoized)
 4. [Longest Common Subsequence Bottom up](#longest-common-subsequence-bottom-up)
 
 
 ### Introduction
 
-In this section we'll be dealing with some interesting string problems and we'll understand how to use DP to solve them
+In this section we'll be dealing with some interesting string problems and we'll understand how to use DP to solve them. 
 
-### Longest Common subsequence recursive
+### Longest Common subsequence
 **Given two strings, find the length of longest common subsequence present in both strings**
 
 ```cpp
@@ -28,6 +30,9 @@ string A = "ABDGEWL";
 string B = "GFEDWSL";
 //Longest common subsequence: GEWL therefore 4
 ```
+Let's start with the recursive approach:
+
+### LCSubsequence Recursive
 
 (1) **Base Case**
 In our recursion post, we started with the smallest valid input. Therefore, if we're given two strings as input, then what would be the smallest valid input? It would be where n == 0 OR m == 0 where n is the size of string A and m is the size of string B.
