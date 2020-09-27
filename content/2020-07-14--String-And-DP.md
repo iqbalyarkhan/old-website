@@ -13,10 +13,8 @@ tags:
 1. [Introduction](#introduction)
 2. [Longest Common Subsequence](#longest-common-subsequence)
     * [LCSubsequence Recursive](#lcsubsequence-recursive)
-    * [LCSubsequence Bottom Up]
-3. [Longest Common Subsequence Memoized](#longest-common-subsequence-memoized)
-4. [Longest Common Subsequence Bottom up](#longest-common-subsequence-bottom-up)
-
+    * [LCSubsequence Bottom Up](#longest-common-subsequence-bottom-up)
+3. [Min number of insertions and deletions](#minimum-number-of-insertions-and-deletions)
 
 ### Introduction
 
@@ -129,36 +127,6 @@ int LCS(string A, string B, int n, int m){
 
 The running time is exponential: $O(2^{N+M})$
 
-### Longest Common subsequence Memoized
-
-As we learned in previous posts, when a recursive call is being made to the function itself more than once, there's a good chance that we're redoing a lot of the work. Therefore, an obvious improvement would be to store intermediate results using memoization:
-
-```cpp
-vector<vector<int>> dp (A.size() + 1, vector<int> (B.size() + 1, 0));
-```
-
-Next, before a recursive call, we'll check to see if the result is already saved. If so, we'll return, otherwise at each recursive call, we'll save the computed result:
-
-```cpp
-vector<vector<int>> dp (A.size() + 1, vector<int>(B.size() + 1,-1));
-int LCSMemoized(string A, string B, int n, int m){
-    if (n == 0 || m == 0)
-        return 0;
-    
-    if (dp[n][m] != -1)
-        return dp[n][m];
-    
-    if (A[n-1] == B[m-1]){
-        return dp[n][m] = (1 + LCS(A, B, n-1, m-1));
-    } else {
-        int b = 0, c = 0;
-        b = LCS(A, B, n-1, m);
-        c = LCS(A, B, n, m-1);
-        return dp[n][m] = max(b,c);
-    }
-}
-```
-
 ### Longest Common subsequence Bottom Up
 
 Let's look at the most preferable solution: the bottom up solution! Here, we'll take the memoized solution one step further and get rid of the recursive calls by creating a 2D table. 
@@ -203,14 +171,6 @@ int LCSTabular(string A, string B, int n, int m){
             }
         }
     }
-    
-    for (int i = 0; i <= A.size(); i++){
-        for (int j = 0; j <= B.size(); j++){
-            cout << dp[i][j] << " ";
-        }
-        cout << endl;
-    }
-    
     return dp[n][m];
 }
 ```
@@ -224,3 +184,20 @@ Once completely filled, the table would look like this for the example we chose 
 0 1 1 2 2 2 
 0 1 1 2 2 3
 ```
+
+Running time for bottom up approach is $O(N*M)$ where `n` is the length of string `A` and `m` is the length of string `B`.
+
+### Minimum number of insertions and deletions
+**Given two strings, find the minimum number of insertions and deletions to convert string `A` to string `B`**
+
+Example:
+
+```cpp
+string A = "minister"
+string B = "sister"
+remove min from minister to get: ister
+add s to ister to get: sister
+therefore 3 deletions and 1 addition
+```
+
+Ok, let's think about this logically: notice that the untouched part of final answer is the subsequence common between both `minister` and `sister` which is `ister`. Then, if we remove characters that are NOT in common subsequence from longer string, we get the number of deletions. If we remove common subsequence from shorter string, we get the number of additions! This is as simple as finding LCS and performing the math we just explained!
