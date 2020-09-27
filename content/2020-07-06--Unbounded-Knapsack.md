@@ -16,8 +16,13 @@ tags:
 4. [Problems](#problems)
 5. [Rod cutting](#rod-cutting-problem)
     * [Rod Cutting Recursive Solution](#rod-cutting-recursive-solution)
-6. [Coin change max number of ways](#coin-change-max-number-of-ways)
+    * [Rod cutting bottom up](#rod-cutting-bottom-up)
+6. [Coin change number of ways](#coin-change-number-of-ways)
+    * [Coin number of ways recursive](#coin-number-of-ways-recursive)
+    * [Coin number of ways bottom up](#coin-number-of-ways-bottom-up)
 7. [Coin change minimum number of coins](#coin-change-minimum-number-of-coins)
+    * [Min num of coins recursive](#min-num-of-coins-recursive)
+    * [Min num of coins bottom up]
 
 ### Introduction
 
@@ -231,8 +236,8 @@ int maxProfit(vector<int>& len, vector<int>& price, int target, int n){
 
 That's it! We're done. Running time is $O(N*2^N)$
      
-     
-We've already seen that recursive solution is not the most efficient solution, so let's now discuss bottom-up tabular solution:
+### Rod cutting bottom up
+We've seen that recursive solution is not the most efficient solution, so let's now discuss bottom-up tabular solution:
 
 (1) Function signature stays the same:
 
@@ -316,7 +321,7 @@ int main(int argc, const char * argv[]) {
 }
 ```
 
-### Coin Change: Max number of ways
+### Coin Change: Number of ways
 **Given a value N, if we want to make change for N cents, and we have infinite supply of each of S = { S1, S2, .. , Sm} valued coins, how many ways can we make the change?**
 
 Let's see why this is a knapsack problem: Say we're given this input:
@@ -333,86 +338,85 @@ So we're asked to make change for \$5 with only bills that are of the denominati
 - pick 5 and ignore others
 etc..
 
-Here we see that we've got the option to pick 1 or not pick 1. Then we've go the option to pick 2 or not pick 2. Then we've got the option t pick 3 or not pick 3 and so on. See the problem here? If we go down the recursion rabbit hole, we'd end up with $O(2^N)$ running time. So, we better use knapsack to solve this problem! 
+Here we see that we've got the option to pick 1 or not pick 1. Then we've go the option to pick 2 or not pick 2. Then we've got the option to pick 3 or not pick 3 and so on. See the problem here? So it is clear that this is a knapsack type of problem.
 
-Now, which knapsack do we use? 0-1 or unbounded? Well, in the options we listed above are we picking the same item more than once? Yes! we can pick all 1s (multiple occurrences of the same input), or we can pick 2 2s (multiple occurrences here again!) and so on, so we'll use unbounded knapsack!
+Now, which knapsack do we use? 0-1 or unbounded? Well, in the options we listed above are we picking the same item more than once? Yes! we can pick all 1s (multiple occurrences of the same input), or we can pick 2 2s (multiple occurrences here again!) and so on, so we'll use unbounded knapsack! 
 
-Let's start with the table:
+Let's look at the recursive approach:
 
-|  | **0** | **1** | **2** | **3** | **4** | **5** |
-| -- | -- | -- | -- | -- | -- | -- |
-| **0** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **1** (1) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **2** (1,2) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **3** (1,2,3) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 
-| **4** (1,2,3,5) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-
-I've created the initial table with all 0s. Now let's recall:
-- What the rows mean: Each row is the coin that we have available for selection
-- What the columns mean: Each column is the change we need to get to
-
-Alright, so row 0 means that we have no coins. In that case, we can only make the sum 0 and no other sum. Therefore, (0,0) would equal 1 while every other entry in row 0 stays 0.
-
-Next, column 0: This means that our target sum is 0. In this case we can get to the sum of 0 by picking nothing no matter how many bills are given to us! Therefore, we have exactly 1 way to to get to target 0. So all entries in column 0 would be 1:
-
-|  | **0** | **1** | **2** | **3** | **4** | **5** |
-| -- | -- | -- | -- | -- | -- | -- |
-| **0** | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **1** (1) | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **2** (1,2) | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **3** (1,2,3) | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 
-| **4** (1,2,3,5) | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-
-So, we're done with row 0 and column 0. Let's start with (1,1). We'll use `i` to keep track of the rows and `j` for columns. 
-
-(1) **(1,1)** 
-
-i = 1, j = 1.
-
-Here, it means that we want to get to sum of 1 (because j = 1) and we only have the first element available for selection (since i = 1). This element that is available for selection is a bill for \$1.
-
-We've got two options with this \$1 bill:
-
-- **Choose**:
-We decide to choose this bill. If we choose this bill, our new target becomes: 
+### Coin number of ways recursive
+Function signature:
 
 ```cpp
- = j - coins[i - 1]
- = 1 - coins[1 - 1]
- = 1 - coins[0]
- = 1 - 1
- = 0
-``` 
-
-Now remember, this is unbounded knapsack, so I can pick \$1 as many times as I want. Since I've already picked it, I cannot discard it since it may be picked again. Keeping that in mind, how many ways do I have to get to the target of 0 considering the only bills I can use are \$1? That information would be in dp[i][j] where i = 1 and j = 0. Do I have that information? Do I know what dp[1][0] is? Yes! It is 1. Converting this logic to code, if I'm choosing an element, I need to grab the possible ways using:
-
-```cpp
-int choose = dp[i][j - coins[i-1]];
+//Vals - with actual denominations
+//target - sum we want to get to
+// n - to keep track of current denomination we're on
+int waysToMakeChange(vector<int>& vals, int target, int n){}
 ```
 
-Therefore, if I choose the \$1 bill I have 1 way to get to the target of 1. This makes sense right, because there's only one way to get to the sum of 1 if all I have is the \$1 bill which is by choosing the bill I have. 
-
-- **Ignore**:
-If I ignore this \$1 bill, how many ways do I have to get to the sum of 1? Well, I've decided I won't pick the \$1 bill, so the only things I can pick are the set of all elements seen so far except 1. This is the empty set, or where i = 0. Now, if I have nothing and I want to get to 1, ie my i = 0 and j = 1, how many ways are there to get to the target of 1. Do I have this information? It would be in  dp[0][1]. Yes! It is 0. Converting this logic to code, if I'm ignoring an element, I need to grab the possible ways to get to the current target **using only elements other than the current element** which is in the table: stay in the same column but go back one row:
+Let's start with the base case: this occurs when either the sum we want is 0 or when we have no more coins. If the sum we want is 0 (ie target = 0), then there's only 1 way to get to 0 which is by choosing nothing! If we have no coins, then no matter what the denomination is, we won't be able to get to it so the number of ways is 0:
 
 ```cpp
-int ignored = dp[i-1][j];
-```  
-
-**Decision**:
-
-What do I do now that I have my values for choosing and ignoring the current bill? Well, I want all possible ways right? So I'll go ahead and add the two values and assign to dp[i][j]. That is because dp[i][j] represents all possible ways to get to the current sum:
-
-```cpp
-dp[i][j] = choose + ignored; 
+int waysToMakeChange(vector<int>& vals, int target, int n){
+    if (target == 0)
+        return 1;
+    if (n == 0)
+        return 0;
 ```
 
-The example above was one where the sum we need to get to is atleast as large as the denomination but what if we want to create the sum of 2 and the only denomination bill we have is 5, then no matter what we cannot get to the sum 2 with \$5 bill. In this case we'll just ignore the current denomination and copy over the running total from the previous denomination:
+Now we'll handle the recursive cases:
+(1) The coin we're on right now is <= target remaining:
+    (a) We can choose the current coin
+    (b) We can ignore the current coin
+(2) The coin we're on right now is > target remaining: only choice is to ignore it.
+
+### 1(a) Choose current coin
+
+If we choose the current coin, we decrement the `target` BUT not `n`:
+```cpp
+int waysToMakeChange(vector<int>& vals, int target, int n){
+    if (target == 0)
+        return 1;
+    if (n == 0)
+        return 0;
+    if (vals[n-1] <= target){
+        int choose = waysToMakeChange(vals, target - vals[n-1], n);
+```
+
+### 1(b) Ignore current coin
 
 ```cpp
-if (coins[i - 1] > j)// If the coin I'm looking at is > target
-    dp[i][j] = dp[i-1][j];
-```  
+int waysToMakeChange(vector<int>& vals, int target, int n){
+    if (target == 0)
+        return 1;
+    if (n == 0)
+        return 0;
+    if (vals[n-1] <= target){
+        int choose = waysToMakeChange(vals, target - vals[n-1], n);
+        int ignore = waysToMakeChange(vals, target, n-1);
+```
+
+### The coin we're on right now is > target remaining: only choice is to ignore it
+```cpp
+int waysToMakeChange(vector<int>& vals, int target, int n){
+    if (target == 0)
+        return 1;
+    if (n == 0)
+        return 0;
+    if (vals[n-1] <= target){
+        int choose = waysToMakeChange(vals, target - vals[n-1], n);
+        int ignore = waysToMakeChange(vals, target, n-1);
+        return choose + ignore;
+    }
+    
+    return  waysToMakeChange(vals, target, n-1);
+}
+```
+And that's it! Now, let's use bottom up approach to improve our running time:
+
+### Coin number of ways bottom up
+
+Once you have the recursive solution, it is quite simple to get the bottom up solution. All we need to do is replace the recursive calls with the process of looking up values from a 2D vector. We then setup 2 nested loops where outer loop runs till `n` and inner loop runs till `target`.
 
 And that's it! We let the code run and get the max number of ways to get to a target. This is nothing but unbounded knapsack code without the values array. We substituted the weights array with the coins array. Other than that, the logic stayed the same:
 
@@ -471,42 +475,100 @@ return 2: 1 + 4 = 5 or 2 + 3 = 5
 
 Why is this unbounded knapsack? Because the minimum number of coins might have repeated coins of the same denomination! We might use the same item more than once. 
 
-### Initialization
-This is quite an interesting problem. Let's start with initializing our table. Our inputs are:
+### Min num of coins recursive
 
-- coins: <1,2,3,4>
-- target: 5
+Let's start with the function signature: 
 
-|  | **0** | **1** | **2** | **3** | **4** | **5** |
-| -- | -- | -- | -- | -- | -- | -- |
-| **0** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **1** (1) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **2** (1,2) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **3** (1,2,3) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 
-| **4** (1,2,3,4) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+```cpp
+//vals: denominations array
+//target: value we're trying to get to
+//n: to iterate over the array
+int minWays(vector<int>& vals, int target, int n){}
+```
 
-Ok, so what does (0,0) mean? (0,0) means that if the target is 0 and the number of coins we're given is 0, what is the minimum number of coins needed to get to 0? Well, if we pick nothing, we'll get to 0! So, minimum coins is 0! Same is true of (1,0) where target is 0 and the number of coins we're given is 1: ie the first coin of value 1. In this case as well, if we pick nothing, we'll get to the sum of 0. Therefore, all values in column 0 are 0!
+### Base case:
+This occurs when the target is 0 or when we're out of coins. When the target is 0, there're 0 min number of ways to get to target! When `n` is 0, there's no way we can get to target so the number of ways are infinite:
 
-Now, what about (0,1)? We need to get to sum 1 and we're given nothing! In this case, there's no number of 0c coins that would satisfy this! So, we'll put $\infty$. In our code, we'll use int's numeric limit to denote infinity. Same goes for all targets with coin 0:
+```cpp
+int minWays(vector<int>& vals, int target, int n){
+    if (target == 0)
+        return 0;
+    if (n == 0)
+        return numeric_limits<int>::max();
+```
 
-|  | **0** | **1** | **2** | **3** | **4** | **5** |
-| -- | -- | -- | -- | -- | -- | -- |
-| **0** | 0 | $\infty$ | $\infty$ | $\infty$ | $\infty$ | $\infty$ | $\infty$ | $\infty$ |
-| **1** (1) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **2** (1,2) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **3** (1,2,3) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 
-| **4** (1,2,3,4) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+### Recursive case:
+(1) The coin we're on right now is <= target remaining:
+    (a) We can choose the current coin and add 1 to the total. That is because we've picked current coin so our num of coins goes up by 1
+    (b) We can ignore the current coin
+(2) The coin we're on right now is > target remaining: only choice is to ignore it.
 
-### Logic
+### 1a: We can choose the current coin and add 1 to the total
+```cpp
+int minCoins(vector<int>& vals, int target, int n){
+    if (target == 0)
+        return 0;
+    if (n == 0)
+        return numeric_limits<int>::max();
+    
+    if (vals[n-1] <= target){
+        int choose = 1 + minCoins(vals, target - vals[n-1], n);
+```
 
-Ok, let's start with position, (1,1): this means that we need to get to 1 given a coin of denomination 1c. Say, we pick this coin, now our target sum becomes 1 - 1 = 0 BUT we stay in the same row, ie we don't go to (0,1). Why? Because this is unbounded knapsack and we can pick the item we're on multiple times. Alright, so we're now at: dp[1][0]. Do I know the minimum number of coins needed to make change for 0 if I'm given only 1c coin? YES! It is 0 which was decided during initialization. Ok, so we know that the minimum number of coins for the sum 0 was 0, but we're solving the problem for the target of 1. Remember, we had already picked the 1c coin, so all we need to do is add 1 to the minimum we got because we've picked the current coin and we'll have the minimum number of coins for current position! 
+### 1b: We can ignore the current coin
 
-Now, so far we've seen that for each item, we had a choice, we either pick it, or ignore it, you can solve this problem using that logic as well but since we're only interested in the minimum, and we've already determined what the minimum is for each denomination and target preceding current target, all we need to do is grab the previous minimum and add 1 to it! 
+```cpp
+int minCoins(vector<int>& vals, int target, int n){
+    if (target == 0)
+        return 0;
+    if (n == 0)
+        return numeric_limits<int>::max();
+    
+    if (vals[n-1] <= target){
+        int choose = 1 + minCoins(vals, target - vals[n-1], n);
+        int ignore = minCoins(vals, target, n-1);
+    }
+```
 
+Finally we'll return the minimum of choosing or ignoring:
 
-If the denomination we're looking at is greater than the sum, all we do is ignore current denomination and bring the minimum from the previous denominations similar to how we've been doing!
+```cpp
+int minCoins(vector<int>& vals, int target, int n){
+    if (target == 0)
+        return 0;
+    if (n == 0)
+        return numeric_limits<int>::max();
+    
+    if (vals[n-1] <= target){
+        int choose = 1 + minCoins(vals, target - vals[n-1], n);
+        int ignore = minCoins(vals, target, n-1);
+        return min(choose,ignore);
+    }
+```
 
-### Code
+### 2: The coin we're on right now is > target remaining: only choice is to ignore it
+
+```cpp
+int minCoins(vector<int>& vals, int target, int n){
+    if (target == 0)
+        return 0;
+    if (n == 0)
+        return numeric_limits<int>::max();
+    
+    if (vals[n-1] <= target){
+        int choose = 1 + minCoins(vals, target - vals[n-1], n);
+        int ignore = minCoins(vals, target, n-1);
+        return min(choose,ignore);
+    }
+    
+    return minCoins(vals, target, n-1);   
+}
+```
+
+Let's look at bottom up approach now:
+
+### Min num of coins bottom up
+Similar to other problems, it is quite easy to convert recursive solution to bottom up:
 
 ```cpp
 int minimumNumberOfCoins(vector<int> coins, int target, int n){
