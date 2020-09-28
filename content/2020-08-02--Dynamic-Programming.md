@@ -11,48 +11,53 @@ tags:
 ---
 
 1. [Introduction](#introduction)
-2. [Longest Increasing Subsequence](#longest-increasing-subsequence)
+2. [Tiling](#tiling)
+3. [Dominoes Board Filling]
+
+100. [Conclusion](#conclusion)
 
 
 ### Introduction
 In this post, we'll be dealing with some interesting problems and we'll understand how to use DP to solve them. Before we deep dive let's see what types of problems can be solved using DP:
 
-- Recursive problems with overlapping structures. This means, any problem in the [recursion](/recursion) post that has substructure where we're solving already solved subproblems (factorial, subset sum, common subsequence, common substring, min insertions and deletions, stair case et). I've discussed such approaches in the [unbounded knapsack](/unbounded-knapsack) and [0-1 knapsack](/0-1-knapsack) posts.
+- Recursive problems with overlapping structures. This means, any problem in the [recursion](/recursion) post that has substructure where we're solving already solved sub-problems (factorial, subset sum, common subsequence, common substring, min insertions and deletions, stair case etc). I've discussed such approaches in the [unbounded knapsack](/unbounded-knapsack) and [0-1 knapsack](/0-1-knapsack) posts.
 
-- DP programming can also be used to solve problems where solutions are built on top of previously derived solutions. Let's look at a few such problems:
+Let's look at a few techniques on how to solve such problems:
 
-### Longest Increasing Subsequence
+### Tiling
 
-**Given an array, return the length of the longest increasing subsequence**.
+**Given a “2 x n” board and tiles of size “2 x 1”, count the number of ways to tile the given board using the 2 x 1 tiles. A tile can either be placed horizontally i.e., as a 1 x 2 tile or vertically i.e., as 2 x 1 tile.**
 
-Example:
+Ok, so let's start with the base case: 
+
+- **Base Cases**
+
+One base case is when the board is 2 X 1. Here, we've got one way to fill it: by vertically placing our tile.
+
+Another base case is when the board is 2 X 2. Here, we've got two ways to fill it: by vertically placing the tile twice or by horizontally placing the tile twice
+
+- **Recursive Cases**
+
+Recursive case is determined when we apply our choices to the problem. We have two choices:
+
+- If we choose to place our tile vertically, the problem is reduced to $2 \times N - 1$ since a vertical tile will cover only one column
+- If we choose to place our tile horizontally, the problem is reduced to $2 \times N - 2$ since a horizontal tile will cover two columns
+
+Finally, the total number of ways is the sum of the two choices above. Converting this to code we have:
+
 ```cpp
-Input: arr[] = {50, 3, 10, 7, 40, 2, 60}
-Output: Length of LIS = 4
-The longest increasing subsequence is {3, 7, 40, 50}
+int numWays(int n){
+    if (n == 1 || n == 2)
+        return n;
+    int vert = numWays(n-1);
+    int horiz = numWays(n-2);
+    return vert + horiz;
+}
 ```
 
-You can think of this problem recursively where each element can either be picked or ignored. In that case, our running time would be $O(2^N)$ since each element has 2 choices and there are a total of $N$ elements. A better approach might be possible if we think about the subproblems involved.
+We can then apply factorial DP technique to reduce the run time of this problem 
 
-Let's see. The base case is when there just a single element, since an element by itself can be characterized as increasing. Therefore, our LIS length if we're given just a single character would be 1. 
 
-Next, as we move along our array of elements, we need som way to keep track of the LIS so far, we'll use a variable called `lisSoFar`. Initially, this would be 1. Next, we'll also keep track of the position where we changed this value just so that we can keep track of the last increasing value we saw. We'll call this `lisPos`. 
+### Conclusion
 
-```cpp
-//Initialization
-lisSoFar = 1
-lisPos = 0 //first element
-``` 
-
-Next, we'll start with `arr[1]`, `i` represents our current position:
-```cpp
-
-lisSoFar = 1
-lisPos = 0
-
-    i
-50  3   10  7   40  2   60
-```
-
-If our `arr[i]` > the last element in the increasing subsequence, we'll increment `lisSoFar` and assign `i` to `lisPos`. However, 3 < 50, so we'll not make any updates and 
-
+- For generic DP problems, look to break the problem down by starting with smallest valid input. Next, determine what choices you have and what to do with results you get back after applying those choices to the problem.

@@ -15,6 +15,7 @@ tags:
     * [LCSubsequence Recursive](#lcsubsequence-recursive)
     * [LCSubsequence Bottom Up](#longest-common-subsequence-bottom-up)
 3. [Min number of insertions and deletions](#minimum-number-of-insertions-and-deletions)
+4. [Longest Palindromic Substring]
 
 ### Introduction
 
@@ -201,3 +202,58 @@ therefore 3 deletions and 1 addition
 ```
 
 Ok, let's think about this logically: notice that the untouched part of final answer is the subsequence common between both `minister` and `sister` which is `ister`. Then, if we remove characters that are NOT in common subsequence from longer string, we get the number of deletions. If we remove common subsequence from shorter string, we get the number of additions! This is as simple as finding LCS and performing the math we just explained!
+
+### Longest Palindromic Substring
+**Given a string, return longest palindromic substring of the string.**
+
+Example:
+
+```cpp
+given: axybbycdc
+return: ybby
+Explanation: ybby is a palindromic substring and so is cdc BUT ybby has more characters
+```
+
+Ok, so we're to return longest palindromic substring. The first thing we need to do is be able to tell whether a string is a palindrome or not! To do so is quite simple:
+
+```cpp
+bool isPal(string s){
+    int i = 0, j = int(s.size())-1;
+    while(i < j){
+        if (s[i] != s[j])
+            return false;
+        i++;j--;
+    }
+    return true;
+}
+```
+
+Next, we need to think about this problem recursively: 
+(1) **Base case**: This occurs when the string has a single character. This base case is handled by calling the `isPal` function.
+(2) **Recursive case**: To reduce the size of our string, we'll start removing characters from each end of the string like so:
+
+```cpp
+original string:    axybbycdc
+recursive call 1:    xybbycdc (remove first character)
+recursive call 2:   axybbycd  (remove last character)
+```  
+
+(3) We'll store the result from each recursive call and return the longer string at the end.
+
+Converting the above logic to code we'll get:
+
+```cpp
+string longestPalindromicSubstring(string s){
+    if (isPal(s))
+        return s;
+    
+    string auxOne = longestPalindromicSubstring(s.substr(0,s.size()-1));
+    string auxTwo = longestPalindromicSubstring(s.substr(1,s.size()));
+    if (auxOne.size() > auxTwo.size())
+        return auxOne;
+    return auxTwo;
+}
+```
+
+Running time is $O(2^N)$ where $N$ is the length of our string. We can do better by converting this to DP:
+
