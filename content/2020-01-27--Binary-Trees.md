@@ -32,6 +32,7 @@ tags:
     * [Find in-order successor](#find-in-order-successor)
     * [Form list from leaves](#form-list-from-leaves)
     * [Vertical Order Traversal](#vertical-order-traversal)
+    * [Remove leaf nodes with given value]
     
 3. [Conclusion](#conclusion)
 
@@ -944,6 +945,68 @@ vector<vector<int>> verticalOrderTraversal(TreeNode* root){
     return ans;
 }
 ```
+
+### Remove leaf nodes with given value
+
+**Given a binary tree root and an integer target, delete all the leaf nodes with value target. Note that once you delete a leaf node with value target, if it's parent node becomes a leaf node and has the value target, it should also be deleted (you need to continue doing that until you can't).**
+
+This is an interesting problem. We're to keep deleting nodes until leaf nodes do not have target value. Here, we'll use a recursive approach. We'll keep recursing until we get to a leaf node and find that the leaf node has target value. If so, we'll delete it and return null. In the process, we'll automatically update inner nodes' left and right children and then check again to see if the newly created leaf nodes have target value. 
+
+Example:
+
+```cpp
+
+        1
+     /     \
+   3       4 
+  /      /  \   
+ 4     3    3 --> Interesting node
+           /
+          3 --> Child node
+```
+Say we're at the child node and find that it's a leaf (by checking if child->left and child->right is null). If so, we make child node null and return. At this point, our tree looks like this:
+
+```cpp
+
+        1
+     /     \
+   3       4 
+  /      /  \   
+ 4     3    3 --> Interesting node
+           /
+         NULL --> Child node
+```
+
+Now, once we return back to interesting node, we find that the interesting node has both children as null and has the target value as well, so we make interesting node null and return:
+
+```cpp
+
+        1
+     /     \
+   3       4 
+  /      /  \   
+ 4     3    NULL --> Interesting node
+           /
+         NULL --> Child node
+```
+
+Using this approach, we'll recursively make inner nodes null if they match target.
+
+Here's the code for this logic:
+
+```cpp
+TreeNode* removeLeafNodes(TreeNode* root, int target) {
+    if(!root)
+        return nullptr;
+    root->left = removeLeafNodes(root->left, target);
+    root->right = removeLeafNodes(root->right, target);
+
+    if(!root->left && !root->right && root->val == target)
+        return nullptr;
+    return root;
+}
+```
+
 
 ### Conclusion
 
