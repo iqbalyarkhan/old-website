@@ -12,7 +12,7 @@ tags:
 
 1. [Introduction](#introduction)
 2. [Tiling](#tiling)
-3. [Dominoes Board Filling]
+3. [Longest Increasing Subsequence](#longest-increasing-subsequence)
 
 100. [Conclusion](#conclusion)
 
@@ -21,6 +21,8 @@ tags:
 In this post, we'll be dealing with some interesting problems and we'll understand how to use DP to solve them. Before we deep dive let's see what types of problems can be solved using DP:
 
 - Recursive problems with overlapping structures. This means, any problem in the [recursion](/recursion) post that has substructure where we're solving already solved sub-problems (factorial, subset sum, common subsequence, common substring, min insertions and deletions, stair case etc). I've discussed such approaches in the [unbounded knapsack](/unbounded-knapsack) and [0-1 knapsack](/0-1-knapsack) posts.
+
+- Some problems are not recursive in nature but still use DP. These are problems where we need to keep track of previously calculated values and obtain current answer by performing some modification, or comparing those values. 
 
 Let's look at a few techniques on how to solve such problems:
 
@@ -56,6 +58,77 @@ int numWays(int n){
 ```
 
 We can then apply factorial DP technique to reduce the run time of this problem 
+
+### Longest Increasing Subsequence
+**The Longest Increasing Subsequence (LIS) problem is to find the length of the longest subsequence of a given sequence such that all elements of the subsequence are sorted in increasing order. For example, the length of LIS for {10, 22, 9, 33, 21, 50, 41, 60, 80} is 6 and LIS is {10, 22, 33, 50, 60, 80}**
+
+Let's start with an imaginary array, `A`, that is currently being processed at index `i` and we already know the length of LIS from positions A[0....i-1]:
+
+```cpp
+                        i 
+A = {......, 4, 11, 8, 10
+LIS = {...., 3, 5,  2, __ }
+```
+
+Since we're processing `i`, we need to find the longest increasing subsequence length at `i`. Now, how would we go about calculating this value? We'll have to compare value at `A[i]` with every element seen so far. We can add 10 at the end of any sequence where the element is < 10 (since the problem asks for longest increasing subsequence). Let's work our way through the array. We'll use `j` to move back from `i`:
+
+```cpp
+                    j   i 
+A = {......, 4, 11, 8, 10
+LIS = {...., 3, 5,  2, __ }
+
+is A[j] < 10? Yes! We can add 10 to sequence ending at 8. 
+In doing so, our sequence ending at 10 would have length 3:
+
+                    j   i 
+A = {......, 4, 11, 8, 10
+LIS = {...., 3, 5,  2, 3 }
+
+Let's move j back again:
+
+                 j      i 
+A = {......, 4, 11, 8, 10
+LIS = {...., 3, 5,  2, 3 }
+
+is A[j] < 10? No, we cannot add 10 after 11,
+ignore and move on:
+
+             j          i 
+A = {......, 4, 11, 8, 10
+LIS = {...., 3, 5,  2, 3 }
+
+is A[j] < 10? Yes! If I add 10 to 
+sequence ending at 4, would I get a longer
+sequence than what I currently have? 
+I currently have sequence of length 3 at 10,
+if I use sequence ending at 4, I'd have length
+4! So i'll use this sequence:
+
+             j          i 
+A = {......, 4, 11, 8, 10
+LIS = {...., 3, 5,  2, 4 }
+```
+
+That's it! We continue with this logic until there're no more items to be processed. While going through this process, we can also keep track of the newly updated value that can then be returned at the end:
+
+```cpp
+int lis(vector<int>& vals){
+    vector<int> maxVals(int(vals.size()), 1);
+    int ans = 0;
+    for (int i = 1; i < vals.size(); i++){
+        for (int j = i-1; j >= 0; j--){
+            if( (vals[i] > vals[j]) && (maxVals[j] + 1 > maxVals[i]) ){
+                maxVals[i] = maxVals[j] + 1;
+                ans = maxVals[i];
+            }
+        }
+    }
+    
+    return ans;
+}
+```
+
+Running time is $O(N^2)$
 
 
 ### Conclusion
