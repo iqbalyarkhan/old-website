@@ -32,7 +32,8 @@ tags:
     * [Find in-order successor](#find-in-order-successor)
     * [Form list from leaves](#form-list-from-leaves)
     * [Vertical Order Traversal](#vertical-order-traversal)
-    * [Remove leaf nodes with given value]
+    * [Remove leaf nodes with given value](#remove-leaf-nodes-with-given-value)
+    * [Diameter of a tree]
     
 3. [Conclusion](#conclusion)
 
@@ -1006,6 +1007,46 @@ TreeNode* removeLeafNodes(TreeNode* root, int target) {
     return root;
 }
 ```
+
+### Diameter of a tree
+**Given a binary tree, you need to compute the length of the diameter of the tree. The diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root.**
+
+Example:
+
+```cpp
+      1
+    /   \
+  4     11 
+ / \     \
+13  20    7
+   /
+  21
+```
+
+If we have the tree above, our diameter would comprise of the following nodes: 21-2-4-1-11-7 for a length of 5. In order to determine the diameter, what information do we need to store for each node? According to the definition, diameter is the length of the longest path, so for each node we need to keep track of longest path encountered in left subtree and right subtree. When we're returning from a node, we'll then return the max of the two lengths. During the process, we'll also keep track of the longest length encountered so far in a passed-by-reference variable:
+
+```cpp
+int diameterOfBinaryTreeHelper(TreeNode* root, int& maxLen){
+    if (!root)
+        return 0;
+    int left = diameterOfBinaryTreeHelper(root->left, maxLen);
+    int right = diameterOfBinaryTreeHelper(root->right, maxLen);
+    if (left + right > maxLen)
+        maxLen = left+right;
+    return (1 + max(left,right));
+}
+
+int diameterOfBinaryTree(TreeNode* root) {
+    int maxLen = 0;
+    diameterOfBinaryTreeHelper(root, maxLen);
+    return maxLen;
+}
+```
+
+We'll start with calling `diameterOfBinaryTree()` that initializes our reference variable `maxLen` to 0. It then calls the helper function that performs the steps that we discussed earlier. Running time: $O(N)$ where $N$ is the number of nodes and space complexity $O(h)$ where $h$ is the height of the tree.
+
+
+
 
 
 ### Conclusion
