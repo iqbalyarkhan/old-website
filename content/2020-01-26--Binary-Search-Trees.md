@@ -25,6 +25,8 @@ tags:
 
 6. [Traversal](#traversal)
 
+7. [Iterative Traversal ](#iterative-traversal)
+
 7. [Find](#find)
 
 8. [Max](#max)
@@ -230,6 +232,49 @@ To traverse the tree, we've got 2 functions: the one on line 2 is exposed to the
 (Left,curr,right)
 
 Similarly, we can have pre-order traversal (curr,left,right) and post-order traversal (left,right,curr). The only thing that changes for these two methods is the order of the recursive and `cout` calls on lines 11-13.
+
+### Iterative Traversal
+
+We've seen how we can use recursion to traverse a tree. As an exercise, let's see how we can traverse the tree iteratively. 
+
+Before we begin, we need to understand what we need to change to go from recursive to iterative solution. Recursion used implicit stack (recursive call stack) so we need to use an explicit stack for iterative approach. That's it! Other than that, obviously, the order of operations would stay the same for in-, pre- and post- order traversals:
+
+```cpp
+void inOrderIterative(Node* root){
+    stack<Node*> st;
+    while (root || !st.empty()){
+        
+        while (root){
+            st.push(root);
+            root = root->left;
+        }
+        
+        root = st.top();
+        st.pop();
+        cout<< root->val <<" ";
+        root = root->right;
+    }
+}
+```
+
+Here's the same for preOrder:
+
+```cpp
+void preOrderIterative(Node* root){
+    stack<Node*> st;
+    while (root || !st.empty()){
+        while (root){
+            st.push(root);
+            cout<< root->val <<" ";
+            root = root->left;
+        }
+        
+        root = st.top();
+        st.pop();
+        root = root->right;
+    }
+}
+```
 
 ### Find
 
