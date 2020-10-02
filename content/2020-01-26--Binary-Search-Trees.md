@@ -239,7 +239,7 @@ We've seen how we can use recursion to traverse a tree. As an exercise, let's se
 
 Before we begin, we need to understand what we need to change to go from recursive to iterative solution. Recursion used implicit stack (recursive call stack) so we need to use an explicit stack for iterative approach. That's it! Other than that, obviously, the order of operations would stay the same for in-, pre- and post- order traversals:
 
-```cpp
+```cpp{numberLines:true}
 void inOrderIterative(Node* root){
     stack<Node*> st;
     while (root || !st.empty()){
@@ -256,6 +256,56 @@ void inOrderIterative(Node* root){
     }
 }
 ```
+
+How does the logic above work? Let's say we're trying to print this tree:
+```
+    10 - root
+   /  \
+  4   21
+     /  \
+    20  32           ____
+                    stack
+``` 
+Since our root is pointing to 10, we'll push 10 on the stack and move left. We'll keep moving left until root points to null:
+
+```
+    10 
+   /  \
+  4   21
+     /  \            4
+    20  32           10
+                    ____
+                    stack
+``` 
+
+Root is currently at null. Now, we're ready to start popping off the stack. This stack is simulating the recursive call stack. Once we pop off the stack, we can process the node (maybe print it), and then move to the right child of the node: 
+
+```
+    10 
+   /  \
+  4   21
+     /  \            
+    20  32           10
+                    ____
+                    stack
+
+printed: 4 
+``` 
+
+Since, 4's right child is also null, we pop off the stack again, print 10 and continue from 21:
+```
+    10
+   /  \
+  4   21  - root
+     /  \            
+    20  32           
+                    ____
+                    stack
+
+printed: 4  10
+``` 
+
+We then push 21 on stack and continue down the left nodes and the process repeats.
 
 Here's the same for preOrder:
 
