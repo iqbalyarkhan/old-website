@@ -27,6 +27,7 @@ tags:
 - [3Sum](https://leetcode.com/problems/3sum/)
 - [Container With Most Water](https://leetcode.com/problems/container-with-most-water/)
 - [Maximum sum of non-overlapping subarrays](https://leetcode.com/problems/maximum-sum-of-3-non-overlapping-subarrays/)
+- [Missing element in sorted array](https://leetcode.com/problems/missing-element-in-sorted-array/)
 
 ---
 
@@ -139,6 +140,7 @@ tags:
 - [Add and Search Word](https://leetcode.com/problems/add-and-search-word-data-structure-design/)
 - [Word Search II](https://leetcode.com/problems/word-search-ii/)
 - [Convert BST to sorted doubly linked list](https://leetcode.com/problems/convert-binary-search-tree-to-sorted-doubly-linked-list/)
+- [BST Iterator](https://leetcode.com/problems/binary-search-tree-iterator/)
 
 ----
 
