@@ -56,6 +56,8 @@ tags:
 
 14. [Character to upper case](#character-to-upper-case)
 
+15. [Use of Random and related ideas](#use-of-random-and-related-ideas)
+
 13. [Interesting Problems](#interesting-problems)
     * [Single Numbers](#single-numbers)
     * [Reverse an integer](#reverse-an-integer)
@@ -576,6 +578,56 @@ a=toupper(a);
 cout<<a; //Prints A
 
 ```
+
+### Use of Random and related ideas
+
+Some problems might ask us to randomly pick from available choices. For example, to generate random numbers between 1 and 10 you'd do the following:
+```cpp
+  int num = rand() % 10 + 1;
+```
+
+The plus 1 is to define range from 1 to 10 instead of 0 to 9 which is determined via the `rand()` call. 
+
+An interesting problem that asks us to use `rand`:
+
+**Given an array of integers with possible duplicates, randomly output the index of a given target number. You can assume that the given target number must exist in the array.**
+
+Example: A = {1,2,3,3,3,4,4}
+
+If I ask for 3, your algorithm should return 2,3 or 4 (indices where the value 3 is present) with equal probability. Let's see how we can do so. First thing we want to do is create a hashtable to map value with index. We want a representation that looks like this:
+
+```cpp
+1 -> {0}
+2 -> {1}
+3 -> {2,3,4}
+4 -> {5,6}
+``` 
+
+To do so, we'll create a hashtable where the container at each cell is a vector (since there might be duplicates):
+
+```cpp
+unordered_map<int,vector<int>> hashTable;
+for (int i = 0; i < A.size(); i++){
+    hashTable[nums[i]].push_back(i);
+}
+```
+
+Ok, now that we've got our hash table, we can return a random element. To do so, we first need to get the vector of all positions. Say, we're asking for random index for 3:
+
+```cpp
+vector<int> v = hashTabl[3];
+//v now looks like this:
+// {2,3,4}
+```
+
+Next, we need to randomly pick a value, to do so, we'll do this:
+
+```cpp
+v[rand() % v.size()];
+```
+
+This will return a value between 0 and v.size() - 1. 
+
 
 ## Interesting problems 
 
