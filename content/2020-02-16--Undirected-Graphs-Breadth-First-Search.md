@@ -204,6 +204,3 @@ Relationship between objects that can be represented using undirected graphs and
 ### Problems
 - [Problem 1](https://leetcode.com/problems/walls-and-gates/) 
 - [Problem 2](https://leetcode.com/problems/rotting-oranges/)
-- [Problem 3](https://leetcode.com/problems/number-of-islands/)
-- [Problem 4](https://leetcode.com/problems/max-area-of-island/)
-- [Problem 5](https://leetcode.com/problems/battleships-in-a-board/)
