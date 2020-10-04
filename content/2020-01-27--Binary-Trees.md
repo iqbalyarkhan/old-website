@@ -33,7 +33,8 @@ tags:
     * [Form list from leaves](#form-list-from-leaves)
     * [Vertical Order Traversal](#vertical-order-traversal)
     * [Remove leaf nodes with given value](#remove-leaf-nodes-with-given-value)
-    * [Diameter of a tree]
+    * [Diameter of a tree](#diameter-of-a-tree)
+    * [Level order traversal]
     
 3. [Conclusion](#conclusion)
 
@@ -1046,8 +1047,59 @@ int diameterOfBinaryTree(TreeNode* root) {
 We'll start with calling `diameterOfBinaryTree()` that initializes our reference variable `maxLen` to 0. It then calls the helper function that performs the steps that we discussed earlier. Running time: $O(N)$ where $N$ is the number of nodes and space complexity $O(h)$ where $h$ is the height of the tree.
 
 
+### Level order traversal
+**[Problem]:(https://leetcode.com/problems/binary-tree-level-order-traversal/) Given a binary tree, return the level order traversal of its nodes' values. (ie, from left to right, level by level).**
 
+Example: 
+```cpp
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
 
+Would return:
+
+```cpp
+[
+  [3],
+  [9,20],
+  [15,7]
+]
+```
+
+Ok, so we're to start at the root and keep track of the nodes at each level. We must then add all nodes at this level to the final answer. In order to keep track of the level info, we need to pass level number down from parent to child nodes. For example, `3`'s level is 0, and when we go to process `9` and `20`, we'll pass level as `root + 1`. 
+
+Can we use one of our conventional order traversal to solve this? Let's see: we want to process the node first and then its left and right children. That is because we'll have to process the current node's level and transfer that information to the child nodes. It sounds like node, then left, then right. That is nothing but pre-order traversal! That takes care of the levels. At the end of this piece of logic, we'll have the information for each node and its level. Next, all we need to do is push each node and its level to a vector and push that vector to the final answer.
+
+What is the best way to store our levels so that we have it in sorted order AND can iterate over it quickly? A map! A map uses balanced tree behind the scenes so it'll take $O(logN)$ for each lookup. Here's this logic converted to code:
+
+```cpp
+void levelOrderHelper(TreeNode* root, int level, map<int, vector<int>>& m){
+    if(!root)
+        return;
+    //Process current node by pushing
+    //current level and node to the map
+    m[level].push_back(root->val);
+    //Pass current level + 1 to left
+    //and right children
+    levelOrderHelper(root->left, level+1, m);
+    levelOrderHelper(root->right, level+1, m);
+}
+
+vector<vector<int>> levelOrder(TreeNode* root){
+    map<int, vector<int>> m;
+    levelOrderHelper(root, 0, m);
+    vector<vector<int>> ans;
+    //populate the final vector:
+    for (auto i: m){
+        ans.push_back(i.second);
+    }
+    
+    return ans;
+}
+```
 
 ### Conclusion
 
