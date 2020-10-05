@@ -1101,55 +1101,107 @@ vector<vector<int>> levelOrder(TreeNode* root){
 }
 ```
 
-We can also use BFS to get level order traversal. In this approach, we push each node to a queue and while we have nodes to process in the queue, we do the following:
-- Save the level information and the node onto the queue and in a flat 1d vector. Now the vector would have our node and level that node was on
-- Once there're no more items to process in the queue, we convert that 1d vector to a 2d vector based on each level:
+We can also use BFS to get level order traversal. For this section we'll use the problem where we need to return level order in a vector of vectors BUT from bottom up. For example:
 
 ```cpp
-struct nodeInfo{
-    TreeNode* node;
-    int level;
-};
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
 
-vector<vector<int>> levelOrderBFS(TreeNode* root) {
+should return:
+
+```cpp
+[
+  [15,7],
+  [9,20],
+  [3]
+]
+```
+
+In this approach, we push each node to a queue. Why queue? Because we need to process the nodes as we encounter them since the problem wants us to return nodes close together in the same vector. Ok, so we'll start with root: 
+
+```cpp
+queue: [3]
+vector: <>
+deque: [<>]
+```
+
+Now what? We'll process `3` by saving to a deque (double ended queue) of vectors where each vector is a collection of nodes on that level in left to right order (since the question asks for that order). This will help us save time when we need to return at the end in reverse order. We'll save time by placing elements correctly as we process them by using deque's `push_front()` call.
+
+Ok, so we have `3` in the queue, we keep iterating until the current queue is empty (ie 1 iteration). On each iteration we'll push the value to our vector:
+
+```cpp
+queue: []
+vector: <3>
+deque: [<>]
+``` 
+
+Since we have no more elements in the queue, we can push_front the vector to our deque:
+
+```cpp
+queue: []
+vector: <3>
+deque: [<3>]
+```
+
+Before we move on, we'll also push 3's left and right child to the queue:
+
+```cpp
+queue: [9,20]
+vector: <3>
+deque: [<3>]
+```
+
+At the end of this iteration, we'll have the following:
+
+```cpp
+queue: [15,7]
+vector: <9,20>
+deque: [<9,20>,<3>]
+```
+
+Notice how 9,20 is at the front. We'll continue building our deque and at the end we'll just copy over vectors from deque to our vector of vectors and return. The key insight here is that we empty the queue on each level so that we know the correct number of nodes on each level. Here's the logic for this code:
+
+```cpp
+vector<vector<int>> test(TreeNode* root){
     vector<vector<int>> ans;
-    vector<pair<int, int>> levelsFlat;
-    queue<nodeInfo> nodesQ;
+    deque<vector<int>> deck;
+    queue<TreeNode*> q;
     if (!root)
         return ans;
-    nodesQ.push({root,0});
-    levelsFlat.push_back({root->val,0});
-    while (!nodesQ.empty()){
-        TreeNode* curr = nodesQ.front().node;
-        int currLevel = nodesQ.front().level;
-        nodesQ.pop();
-        if (curr->left){
-            nodesQ.push({curr->left,currLevel+1});
-            levelsFlat.push_back({curr->left->val, currLevel+1});
+    q.push(root);
+    while (!q.empty()){
+        int size = int(q.size());
+        vector<int> levelVals;
+        while (size != 0){
+            TreeNode* curr = q.front();
+            q.pop();
+            if (curr->left){
+                q.push(curr->left);
+            }
+            
+            if (curr->right){
+                q.push(curr->right);
+            }
+            levelVals.push_back(curr->val);
+            size--;
         }
-
-        if (curr->right){
-            nodesQ.push({curr->right, currLevel+1});
-            levelsFlat.push_back({curr->right->val, currLevel+1});
-        }
+        
+        deck.push_front(levelVals);
     }
-
-    vector<pair<int,int>>::iterator itr = levelsFlat.begin();
-    while (itr != levelsFlat.end()){
-        int currLevel = itr->second;
-        vector<int> pushing;
-        while (itr != levelsFlat.end() && itr->second == currLevel){
-            pushing.push_back(itr->first);
-            itr++;
-        }
-
-        ans.push_back(pushing);
-        pushing.clear();
+    
+    for (int i = 0; i < deck.size(); i++){
+        ans.push_back(deck[i]);
     }
-
     return ans;
 }
-```
+``` 
+
+`size` keeps track of current level nodes while we continue to push elements to the queue!
+ 
 
 ### Conclusion
 
