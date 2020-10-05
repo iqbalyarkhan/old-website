@@ -34,7 +34,7 @@ tags:
     * [Vertical Order Traversal](#vertical-order-traversal)
     * [Remove leaf nodes with given value](#remove-leaf-nodes-with-given-value)
     * [Diameter of a tree](#diameter-of-a-tree)
-    * [Level order traversal]
+    * [Level order traversal](#level-order-traversal)
     
 3. [Conclusion](#conclusion)
 
@@ -1097,6 +1097,56 @@ vector<vector<int>> levelOrder(TreeNode* root){
         ans.push_back(i.second);
     }
     
+    return ans;
+}
+```
+
+We can also use BFS to get level order traversal. In this approach, we push each node to a queue and while we have nodes to process in the queue, we do the following:
+- Save the level information and the node onto the queue and in a flat 1d vector. Now the vector would have our node and level that node was on
+- Once there're no more items to process in the queue, we convert that 1d vector to a 2d vector based on each level:
+
+```cpp
+struct nodeInfo{
+    TreeNode* node;
+    int level;
+};
+
+vector<vector<int>> levelOrderBFS(TreeNode* root) {
+    vector<vector<int>> ans;
+    vector<pair<int, int>> levelsFlat;
+    queue<nodeInfo> nodesQ;
+    if (!root)
+        return ans;
+    nodesQ.push({root,0});
+    levelsFlat.push_back({root->val,0});
+    while (!nodesQ.empty()){
+        TreeNode* curr = nodesQ.front().node;
+        int currLevel = nodesQ.front().level;
+        nodesQ.pop();
+        if (curr->left){
+            nodesQ.push({curr->left,currLevel+1});
+            levelsFlat.push_back({curr->left->val, currLevel+1});
+        }
+
+        if (curr->right){
+            nodesQ.push({curr->right, currLevel+1});
+            levelsFlat.push_back({curr->right->val, currLevel+1});
+        }
+    }
+
+    vector<pair<int,int>>::iterator itr = levelsFlat.begin();
+    while (itr != levelsFlat.end()){
+        int currLevel = itr->second;
+        vector<int> pushing;
+        while (itr != levelsFlat.end() && itr->second == currLevel){
+            pushing.push_back(itr->first);
+            itr++;
+        }
+
+        ans.push_back(pushing);
+        pushing.clear();
+    }
+
     return ans;
 }
 ```
