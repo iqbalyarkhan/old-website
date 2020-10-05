@@ -19,12 +19,12 @@
 <url> <loc>https://iqbalyarkhan.github.io/weighted-undirected-graphs</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/minimum-spanning-tree</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/topological-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/directed-graphs</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/bipartite-graphs</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/directed-graphs</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/cycle-detection</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/union-find</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/pointers</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/undirected-graphs-breadth-first-search</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/pointers</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/undirected-graphs-depth-first-search</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/undirected-graphs</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/heap</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
@@ -59,8 +59,8 @@
 <url> <loc>https://iqbalyarkhan.github.io/tags/graphs/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/general-algorithms/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/c/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/tags/pointers/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/algorithms/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/tags/pointers/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/heap/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/hash-tables/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/binary-tree/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
