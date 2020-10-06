@@ -12,7 +12,8 @@ tags:
 
 1. [Introduction](#introduction)
 2. [Examples](#examples)
-    * [Max water between vertical lines]
+    * [Max water between vertical lines](#max-water-between-vertical-lines)
+    * [Task Scheduler]
 
 
 ### Introduction
@@ -116,3 +117,39 @@ int main(int argc, const char * argv[]) {
 ```
 
 Running time: $O(N)$
+
+### Task Scheduler
+
+**[This](https://leetcode.com/problems/task-scheduler/) problem is defined as: Given a characters array tasks, representing the tasks a CPU needs to do, where each letter represents a different task. Tasks could be done in any order. Each task is done in one unit of time. For each unit of time, the CPU could complete either one task or just be idle. However, there is a non-negative integer n that represents the cooldown period between two same tasks (the same letter in the array), that is that there must be at least n units of time between any two same tasks. Return the least number of units of times that the CPU will take to finish all the given tasks.**
+
+```cpp
+n=2 and tasks are:
+AAAAA
+BBB
+CC
+```
+n=2 means that between two similar characters, there need to be 2 other characters before we can pick the first character again. Example:
+
+```cpp
+allowed:
+ B  A   C   B 
+not allowed
+ B  A   B   C  
+```
+
+How do we go about arranging our tasks so that we can reduce the total time? Let's pick randomly and process Bs first, then Cs and then As. 
+
+```cpp
+//I represents idle state
+BCIBCIBAIIAIIAIIAIIAIIA
+length = 23
+```
+That took too long! Notice how the As at the end wrecked our running time. That's because there're a lot of As so for each remaining A at the end, we have to count for the cool of period. That should give us a hint. What if we start with A, add some Bs in there and then process Cs?
+
+```cpp
+ABCABCABIAIIA
+length = 13
+```
+Ok, so that was faster than our previous approaches. That's because we minimized the use of `I` by knocking out tasks in decreasing order of frequency: ie A first (since A = 5), B next (since B = 3) and C last (since C = 2) as we cycle through the available characters. And as we process A, we can add next most frequent character for A's cool down period. For example, if we've processed all elements and only As are left, we'd have A LOT of idle states toward the end as shown earlier. This algorithm uses greedy approach since we're always going to process most frequently occurring tasks first.
+
+ 
