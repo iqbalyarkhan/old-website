@@ -13,7 +13,7 @@ tags:
 1. [Introduction](#introduction)
 2. [Examples](#examples)
     * [Max water between vertical lines](#max-water-between-vertical-lines)
-    * [Task Scheduler]
+    * [Task Scheduler](#task-scheduler)
 
 
 ### Introduction
@@ -151,5 +151,57 @@ ABCABCABIAIIA
 length = 13
 ```
 Ok, so that was faster than our previous approaches. That's because we minimized the use of `I` by knocking out tasks in decreasing order of frequency: ie A first (since A = 5), B next (since B = 3) and C last (since C = 2) as we cycle through the available characters. And as we process A, we can add next most frequent character for A's cool down period. For example, if we've processed all elements and only As are left, we'd have A LOT of idle states toward the end as shown earlier. This algorithm uses greedy approach since we're always going to process most frequently occurring tasks first.
+
+How would we go about converting this logic to code? Let's see the steps we have to perform:
+- Create a max heap out of the characters provided. This would help us process characters that occur more frequently first. Every time you choose a character from this heap, decrement its count for future iterations
+- While there're elements on the heap to process:
+    - Start at 0 and go up till cool down period. On each iteration:
+        - Remove a character from max heap, decrement its count and push to a temp storage
+    - Insert characters from temp storage back in the heap if count for that character is not 0
+
+Here's this logic converted to code:
+
+```cpp
+string leastInterval(vector<char>& tasks, int n) {
+    priority_queue<charCountPair, vector<charCountPair>, maxComp> charHeap;
+    
+    charHeap.push({'A',3});
+    charHeap.push({'B',3});
+//    charHeap.push({'D',1});
+    string ans = string();
+    while (!charHeap.empty()){
+        vector<charCountPair> temp;
+        for (int i = 0; i <= n; i++){
+            if (charHeap.empty() || charHeap.top().second == 0)
+                ans += 'I';
+            else{
+                temp.push_back({charHeap.top().first, charHeap.top().second - 1});
+                ans += charHeap.top().first;
+                cout << ans << endl;
+                charHeap.pop();
+            }
+        }
+        
+        for (auto i : temp){
+            if (i.second != 0)
+                charHeap.push(i);
+        }
+        
+    }
+    
+    int lengthAns = int(ans.size());
+    int i = int(ans.size()) - 1;
+    while (ans[i] == 'I'){
+        lengthAns--;
+        i--;
+    }
+
+    
+    cout << lengthAns << endl;
+    return ans;
+    
+    
+}
+```     
 
  

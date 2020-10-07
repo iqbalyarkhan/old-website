@@ -154,6 +154,10 @@ tags:
 
 ---
 
+#### Greedy algorithms
+- [Task Scheduler](https://leetcode.com/problems/task-scheduler/)
+
+---
 - 11.10
 - LCA
 - LCA with parent pointers
@@ -163,3 +167,4 @@ tags:
 - [Num of islands](https://leetcode.com/problems/number-of-islands/)
 - [Max are of island](https://leetcode.com/problems/max-area-of-island/)
 - [battleships on a board](https://leetcode.com/problems/battleships-in-a-board/)
+
