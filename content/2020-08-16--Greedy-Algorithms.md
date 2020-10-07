@@ -14,6 +14,7 @@ tags:
 2. [Examples](#examples)
     * [Max water between vertical lines](#max-water-between-vertical-lines)
     * [Task Scheduler](#task-scheduler)
+    * [Re-arrange string](https://leetcode.com/problems/reorganize-string/)
 
 
 ### Introduction
@@ -204,4 +205,89 @@ string leastInterval(vector<char>& tasks, int n) {
 }
 ```     
 
- 
+### Re-arrange String
+
+**Given a string S, check if the letters can be rearranged so that two characters that are adjacent to each other are not the same. If possible, output any possible result.  If not possible, return the empty string.**
+
+Let's see how we can re-arrange a specific string:
+
+```cpp
+given:       "aaabbb"
+re-arranged: "ababab"
+
+OR
+
+given:       "aaaabcd"
+re-arranged: "abacada"
+in-correct:  "bcadaaa"
+```
+
+The key insight from the above is that we need to somehow insert the more frequently occurring characters first and in-between, add those that occur less frequently. This is a greedy approach since we want to be done with the more frequent ones first. This problem is the same as the task scheduler where the only difference is that the cool down period for this question is 1! That's it!
+
+Therefore, we begin by defining the comparator and struct for our max heap:
+
+```cpp
+typedef pair<char,int> charFreq;
+
+struct maxComp {
+     bool operator()(
+        pair<char, int> const& a,
+        pair<char, int> const& b)
+    {
+        return a.second < b.second;
+    }
+};
+```
+
+Next, we'll create a hashtable with each character and its frequency and populate our maxHeap from the hash table. We'll then use a max heap with the most frequently occurring character at the top of our heap: 
+
+```cpp
+string reorganizeString(string S) {
+    char prevChar = char();
+    string ans = "";
+    unordered_map<char, int> h;
+    for (int i = 0; i < S.size(); i++){
+        if (h.find(S[i]) != h.end())
+            h[S[i]] += 1;
+        else
+            h[S[i]] = 1;
+    }
+    if (h.size() == 1)
+        return ans;
+    priority_queue<charFreq,vector<charFreq>, maxComp> maxHeap;
+    
+    int i = 0;
+    while (!h.empty()){
+        if (h.find(S[i]) != h.end()){
+            maxHeap.push({S[i],h[S[i]]});
+            h.erase(S[i]);
+        }
+        i++;
+    }
+```
+
+Next, we'll start our process of picking the most frequent character, adding to our string, picking the 2nd most frequent character and adding that to the string too. In the process we decrement the count of the two chosen characters and push back to the heap. We continue this process until we either encounter two consecutive characters or when there're no more items to process on the heap:
+```cpp
+    while (!maxHeap.empty()){
+        vector<charFreq> temp;
+        for (int i = 0; i < 2; i++){
+            if (maxHeap.empty())
+                break;
+            auto curr = maxHeap.top();
+            maxHeap.pop();
+            if (curr.first == prevChar)
+                return "";
+            prevChar = curr.first;
+            ans += curr.first;
+            curr.second -= 1;
+            temp.push_back(curr);
+        }
+        
+        for (auto i : temp)
+            if (i.second != 0)
+                maxHeap.push(i);
+        
+    }
+    return ans;
+}
+```
