@@ -164,7 +164,8 @@ tags:
 - Previous chapter (stack and queue) problems related to binary tree
 - Interval problems
 - [Preorder, inorder, postorder without recursion (clean solution)](https://stackoverflow.com/a/31643444/11556612)
-- [Num of islands](https://leetcode.com/problems/number-of-islands/)
+- [Num of islands**](https://leetcode.com/problems/number-of-islands/)
+- [Accounts merge**](https://leetcode.com/problems/accounts-merge/)
 - [Max are of island](https://leetcode.com/problems/max-area-of-island/)
 - [battleships on a board](https://leetcode.com/problems/battleships-in-a-board/)
 
