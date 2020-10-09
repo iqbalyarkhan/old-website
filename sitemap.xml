@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+<url> <loc>https://iqbalyarkhan.github.io/greedy-algorithms</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/dp-discussion</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/strings-and-dp</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/unbounded-knapsack</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
@@ -23,16 +24,16 @@
 <url> <loc>https://iqbalyarkhan.github.io/directed-graphs</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/cycle-detection</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/union-find</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/undirected-graphs-breadth-first-search</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/pointers</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/undirected-graphs-breadth-first-search</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/undirected-graphs-depth-first-search</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/undirected-graphs</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/heap</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/hash-tables</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/binary-trees</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/binary-search-trees</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/practice-notes</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/arrays</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/practice-notes</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/primitive-types</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/react-js-notes</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/gatsby-js-code-block-line-numbers</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
@@ -41,11 +42,12 @@
 <url> <loc>https://iqbalyarkhan.github.io/stack</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/queue</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/linked-lists</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/selection-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/merge-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/selection-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/insertion-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/bubble-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/c-standard-input</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/tags/greedy-algorithms/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/dynamic-programming/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/recursion/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/sorting-problems/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
@@ -59,8 +61,8 @@
 <url> <loc>https://iqbalyarkhan.github.io/tags/graphs/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/general-algorithms/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/c/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/tags/algorithms/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/pointers/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/tags/algorithms/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/heap/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/hash-tables/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/binary-tree/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
@@ -68,15 +70,15 @@
 <url> <loc>https://iqbalyarkhan.github.io/tags/arrays/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/bits/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/blog/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/tags/selection-sort/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/merge-sort/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/tags/selection-sort/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/insertion-sort/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/bubble-sort/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/streams/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/general/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/dynamic-programming/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/algorithms/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/system-design/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/general/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/strings/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/graphs/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/data-structures/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
