@@ -202,5 +202,46 @@ Helps us actually answer the question whether a path exists between the vertices
 Relationship between objects that can be represented using undirected graphs and a lot of questions can be answered about the said objects using the BFS as we've discussed in this section. Happy coding!
 
 ### Problems
-- [Problem 1](https://leetcode.com/problems/walls-and-gates/) 
-- [Problem 2](https://leetcode.com/problems/rotting-oranges/)
+- [Problem 1](https://leetcode.com/problems/number-of-islands/)
+**Given a 2d grid map of '1's (land) and '0's (water), count the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.**
+
+Let's see an example:
+
+```cpp
+    {'1','1','1','1','0'},
+    {'1','1','0','1','0'},
+    {'0','0','0','0','0'},
+    {'1','1','0','1','1'}
+```
+
+In the diagram above, we can see that we have 3 islands. Let's start with the basics: 
+- We can return 0 is the array is empty
+- We'd have to iterate over each cell therefore we'll setup nested for loops
+- Next, if the current character is `0`, we can ignore it and move to next cell
+- If the current character is `1` is where we need to process more:
+    - We can start queuing up all the neighbors that are 1
+    - While our queue is not empty, pop from queue, and proceed to enqueue **unvisited** neighbors
+
+We'll start at 0,0 and have a visited array that is filled with false since we haven't processed any of our elements. Next, we'll enqueue 0,0, mark 0,0 as visited and explore its neighbors (up, down, left, right). If any of the neighbors has a value of `1` and we haven't visited that neighbor, we mark visited[neighbor coordinates] as true and push the neighbor to our queue. 
+
+We'll continue the process until our queue is empty. Why does this work? In our first iteration, we'll increment the islands count from 0 to 1 and then proceed to process all the neighbors 0,0 until our queue is empty. This means we'll process:
+
+```cpp
+0,0 0,1 0,2 0,3 1,0 1,1 1,3
+```
+
+These are all the connected neighbors that have a value of 1. After we've processed them all, we'll have no more elements on the queue so we'll return and continue exploring our 2d grid until we find another `1`. This would be at 3,0. At this point, we'll increment our count from 1 to 2 and start pushing all neighbors that are 1 to the queue:
+
+```cpp
+3,1
+```
+
+Once we're done with this, our queue will be empty and we'll continue processing until we get to 3,3 and we'll increment the count for islands one last time!
+
+Notice in the approach above, we're using an extra visited array. That array can be removed if we're allowed to modify the original array in which case we'll simply change the `1` to a `0`.
+
+- [Problem 2](https://leetcode.com/problems/walls-and-gates/) 
+- [Problem 3](https://leetcode.com/problems/rotting-oranges/)
+
+
+
