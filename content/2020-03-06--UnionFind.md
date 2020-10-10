@@ -17,18 +17,26 @@ tags:
 
 2. [Setup](#setup)
 
-3. [Union](#union)
+3. [Weighted Quick Union](#weighted-quick-union)
 
 4. [Analysis](#analysis)
 
 5. [Code](#code)
+
+6. [Summary](#summary)
 
 6. [Conclusion](#conclusion)
 
 
 ### Introduction
 
-In this post I'll talk about an algorithm called the union find algorithm. Union find can be used to figure out whether two elements belong to the same set. This set could represent a network of connected computers and you want to know whether two components in this network are connected. Or it can be used to detect cycles in a graph. For example, if two vertices are already in the same component and we proceed to connect them, we'd be creating a cycle. Before we dive in, let's define what it means to be connected. 
+In this post I'll talk about a data structure called **union find**. Union find can be used to figure out whether two elements belong to the same set. This set could represent a network of connected computers and you want to know whether two components in this network are connected. Or it can be used to detect cycles in a graph. For example, if two vertices are already in the same component and we proceed to connect them, we'd be creating a cycle.
+
+As the name suggests, union find data structure supports two main operations:
+- Find: This is where we determine whether an element belongs to a set. An element could belong to a set where there're multiple other elements ({1,2,3,4}) or it could belong to a set where the only member of the set is the element itself ({1}).
+- Union: This is where we add an element to a set or in other words, merge two sets.
+
+The union operation, therefore, can be used to create connected components. Before we dive in, let's define what it means to be connected. 
 
 **Connected** can be thought of as an equivalence relation:
 
@@ -39,7 +47,7 @@ In this post I'll talk about an algorithm called the union find algorithm. Union
 
 ### Setup
 
-Before we begin, we need to create a bijection (or a one to one mapping) that translates a computer name to an integer value. This integer will be in the range $[0, N)$ where $N$ is the total number of computers in the network. Once we have this mapping, we can represent these computers using the assigned integer values. Now, we're ready to manipulate these integers. 
+Before we begin, we need to create a mapping that translates say, a computer name to an integer value. This mapping will allow us to easily perform the union and find operations on our elements. The assigned integer will be in the range $[0, N)$ where $N$ is the total number of computers in the network. For example, if we're dealing with 20 computers in our network, then we'll use an array of size 19. Once we have this mapping, we can represent these computers using the assigned integer values. As a convention, our component identifier would always be one of the one of the sites in the component.
 
 Next, we need to store our integers in an array since we need some sort of association among the objects themselves. Remember our aim is to figure out whether two objects are connected. Initially, each of our components is disconnected from every other component. So this is what our array looks like with say 12 components:
 
@@ -58,9 +66,10 @@ We want to manipulate our array in such a way that we'd be able to answer questi
 - Can we tell if two components are `connected()`?
 - Finally, can we get the `count()` of the number of components present? 
 
-### Union
+### Weighted Quick Union
+**(For now, ignore the title of this section and assume we're only talking about union)**
 
-Ok, so we've got our array setup where each element is disconnected fom every other component. Initially, the number of components in our structures equals the number of objects (12 in our example). Let's say we want to union 2 objects by calling: 
+Ok, so we've got our array setup where each element is disconnected fom every other component and is in a set by itself. Initially, the number of components in our structure equals the number of objects (12 in our example). Let's say we want to union 2 objects by calling: 
 ```cpp
 union(int p, int q)
 ``` 
@@ -84,11 +93,11 @@ In doing so, we make one element the child (or parent) of the other. The choice 
 ```cpp
 union(p,q)
 ``` 
-would mean make `q`'s root the child of `p`'s root. So, if we perform $union(4,9)$, we make $4$'s root the child of $9$'s root:
+This would mean make `p`'s root the child of `q`'s root. So, if we perform $union(4,9)$, we make $4$'s root the child of $9$'s root. What do I mean by $4$'s root? It means, which component does $4$ belong to? Initially, each element is in a set by itself therefore, 4's root is 4 and 9's root is 9. As we said earlier, each component would be represented by one of the elements, so as we update the root for `4`, we put `9` in `arr[4]` to show the fact.
 
 ![Union-Find-1](images/unionfind/uf1.png) [Image Credit - Union Find](https://csacademy.com/app/graph_editor/)
 
- To represent this in our array, we'll update `arr[p]`'s root to the value of `q`. This would mean:
+ To represent this in our array, we would:
  - Find root of `p` (in the example above it means find root of 4)
  - And change the value at that root to `q`
  
@@ -96,7 +105,7 @@ would mean make `q`'s root the child of `p`'s root. So, if we perform $union(4,9
  
  ```
 Update p's root to point to q's root 
-                 | 
+                  | 
   0   1   2   3   9   5   6   7   8   9   10  11   
 ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
   0   1   2   3   4   5   6   7   8   9   10  11  
@@ -214,7 +223,7 @@ UF::UF(int num) : numberOfSites(num){
 /// Function that'll be called by the client with parent and child
 /// @param child integer that is to be designated as child
 /// @param parent integer that is to be designated as parent
-void UF::Union(int child, int parent){
+void UF::WeightedQuickUnion(int child, int parent){
     int childRoot = FindRoot(child);
     int parentRoot = FindRoot(parent);
     
@@ -250,18 +259,6 @@ void UF::Unionize(int parent, int child){
     connectionsArray[child] = parent;
     children[parent] += children[child] + 1;
 }
-
-/// Function to print vectors
-void UF::PrintAllVectors(){
-    cout << "Connections Array: " << endl;
-    for (auto i : connectionsArray)
-        cout << i << " ";
-    cout << endl;
-    cout << "Children array: " << endl;
-    for (auto i : children)
-        cout << i << " ";
-    cout << endl;
-}
 ```
 
 On line 16, we define our constructor that takes in the number of objects we're about to specify:
@@ -294,7 +291,7 @@ Here's the function called for performing the union operation:
 /// Function that'll be called by the client with parent and child
 /// @param child integer that is to be designated as child
 /// @param parent integer that is to be designated as parent
-void UF::Union(int child, int parent){
+void UF::WeightedQuickUnion(int child, int parent){
     int childRoot = FindRoot(child);
     int parentRoot = FindRoot(parent);
     
@@ -312,7 +309,7 @@ void UF::Union(int child, int parent){
 }
 ```
 
-The first thing we do in this function is to check whether the `childRoot` and `parentRoot` are the same. Notice, we're not checking whether the chlid and the parent are the same, but the root of the child and root of the parent. To find that root, we call the function called `FindRoot`:
+The first thing we do in this function is to check whether the `childRoot` and `parentRoot` are the same. Notice, we're not checking whether the child and the parent are the same, but the root of the child and root of the parent. To find that root, we use the function called `FindRoot`:
 
 ```cpp{numberLines: 46}
 /// Function to find the root for the items being unioned
@@ -355,6 +352,16 @@ Notice how `children[9]` shows `11` which means every site's root is `9`.
 
 If you notice, we haven't addressed the main reason we wrote this entire `UnionFind` class: to check if two sites are part of the same component. Or if two vertices in a graph are already connected. We don't need a new function for it because we've already got one for it: `FindRoot(int r)`. Our client can call this function for the two sites they're interested in. If `FindRoot(int r)` returns the same root for both, then the sites are connected, otherwise they're not.
 
-### Conclusion
+### Summary
+To summarize, here're the steps we take to create and use our union find data structure:
+- Create a mapping between items and integers so that we can store our items in an array 
+- Start processing pairs by calling `union()` function for 2 sites, namely `p` and `q`.
+- Check if `p` and `q` are already connected - if so, move on. If not, make `p`'s root the child of `q`'s root. At this step you can have various techniques based on whether your find or union operations are more frequent. You can use:
+    - Quick Find
+    - Quick Union
+    - Weighted Quick Union 
+- Continue until no more pairs are left to be processed.
 
+
+### Conclusion
 WQU is an efficient method to determine connectivity among objects. We'll see it in action when we talk about graph algorithms.  
