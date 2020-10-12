@@ -22,6 +22,8 @@ tags:
 
 5. [Analysis](#analysis)
 
+6. [Problems](#problems)
+
 
 
 ### Introduction
@@ -331,4 +333,8 @@ The code above is exactly the same as the logic we discussed. We create a new `p
 
 ### Analysis
 
-So, we precompute the `prefixArr` for each search. This is simply of length $O(M)$ where $M$ is the length of the pattern. Next, we begin our search that would, in the worst case scenario, would run for $O(N)$ where $N$ is the length of the text. Therefore, the total work that we do is $O(M)$ and then we do $O(N)$ amount of work for a total of $O(M + N)$. 
+So, we precompute the `prefixArr` for each search. This is simply of length $O(M)$ where $M$ is the length of the pattern. Next, we begin our search that would, in the worst case scenario, would run for $O(N)$ where $N$ is the length of the text. Therefore, the total work that we do is $O(M)$ and then we do $O(N)$ amount of work for a total of $O(M + N)$.
+
+
+### Problems
+- [All anagrams](https://leetcode.com/problems/find-all-anagrams-in-a-string/) 
