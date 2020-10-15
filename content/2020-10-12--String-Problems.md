@@ -10,8 +10,12 @@ tags:
   - Data Structures
 ---
 
-- [All anagrams](https://leetcode.com/problems/find-all-anagrams-in-a-string/)
+1. [All Anagrams](#all-anagrams)
+2. [Group Anagrams](#group-anagrams)
+3. [Word Break]()
 
+### All Anagrams
+[All anagrams](https://leetcode.com/problems/find-all-anagrams-in-a-string/)
 **Given a string s and a non-empty string p, find all the start indices of p's anagrams in s. Strings consists of lowercase English letters only and the length of both strings s and p will not be larger than 20,100. The order of output does not matter.**
 
 Example:
@@ -83,7 +87,8 @@ This approach takes $O(N)$ time. Here's this logic converted to code:
     }
 ```
 
-- [Group Anagrams](https://leetcode.com/problems/group-anagrams/)
+### Group Anagrams
+[Group Anagrams](https://leetcode.com/problems/group-anagrams/)
 
 **Given an array of strings strs, group the anagrams together. You can return the answer in any order. An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.**
 
@@ -122,5 +127,123 @@ Once we have this hash table constructed, all we need to do is grab the values a
         return ans;
     }
 ``` 
+
+### Word Break
+
+[Word Break](https://leetcode.com/problems/word-break/)
+
+**Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, determine if s can be segmented into a space-separated sequence of one or more dictionary words.**
+
+Example:
+
+```cpp
+Input: s = "leetcode", wordDict = ["leet", "code"]
+Output: true
+Explanation: Return true because "leetcode" can be segmented as "leet code".
+
+Input: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
+Output: false
+```
+
+This is quite an interesting problem! Let's see how we can tackle it. Say we're using the 2nd example:
+
+```cpp
+Input: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
+Output: false
+```
+
+So, for our input string, `catsanddog`, we want to see if there's a substring that is found in the word dict. The idea is to note that yes we can make `cat` and `sand` but not `og` from the dict no matter how we break the string. We could've also broken the string by seeing that we can make `cats` and `and` but again are left with `og`. 
+ 
+ At the end of our algorithm, we'll return true if the last substring can also be formed from the dictionary, if not, we'll return false. To keep track of whether it's possible to break the string or not, we'll use an aux array, called `breakable` where each index will determine whether the word ending at that index is breakable or not. If we get to an index that is indeed breakable, we'll check the dictionary to see if we can find another word from it that would allow us to break our string further. 
+
+The size of this aux array will be 1 + size of `s`. That's because our 0th index will always be true since an empty string is always breakable! 
+
+```cpp
+Initially, aux array is all false, except aux[0]
+            _   c   a   t   s   a   n   d   o   g
+aux arr:    1   0   0   0   0   0   0   0   0   0
+``` 
+
+Now, we'll start at index 1 of aux array and check whether the prev index is true. This will always be the case since we've set aux[0] to true. Now, since the word ending at one prev index IS breakable (represented by 1 in aux array), we'll see if we can break the current word by comparing it one by one against the elements in the dict.
+
+To make the comparison, we'll pull a word from the dict, get its length and compare it against the same number of characters in the string:
+
+```cpp
+curr dict word: cats
+                _____________
+            _   c   a   t   s   a   n   d   o   g
+aux arr:    1   0   0   0   0   0   0   0   0   0
+                            |
+                        end position
+
+dict word == substr()
+Put 1 at end position
+``` 
+
+Since the words match, our updated aux array will look like this:
+
+```cpp
+curr dict word: cats
+                _____________
+            _   c   a   t   s   a   n   d   o   g
+aux arr:    1   0   0   0   1   0   0   0   0   0
+                            |
+                        end position
+
+dict word == substr()
+Put 1 at end position
+``` 
+
+Next, we continue looping until we are at an index where we found that the word was breakable:
+
+```cpp
+                               curr 
+                                |
+            _   c   a   t   s   a   n   d   o   g
+aux arr:    1   0   0   0   1   0   0   0   0   0
+```
+
+Now, we'll again iterate over the word dict to see if any of the words match:
+
+```cpp
+curr dict word: and
+                                _________
+            _   c   a   t   s   a   n   d   o   g
+aux arr:    1   0   0   0   1   0   0   1   0   0
+
+dict word == substr()
+Put 1 at end position
+``` 
+
+Finally, in the final iteration we find that there's no `og` in the dictionary. So, at the end we return `breakable[s.length()]`. 
+
+Here's the code for this logic:
+
+```cpp{numberLines: true}
+bool wordBreak(string s, vector<string>& wordDict) {
+    vector<bool> breakable (s.length()+1, false);
+    breakable[0] = true;
+    for(int i = 1; i < breakable.size(); i++){
+        if (breakable[i-1]){
+            for (auto word : wordDict){
+                string currWord = s.substr(i-1,word.length());
+                if (currWord == word){
+                    breakable[i-1+word.length()] = true;
+                }
+            }
+        }
+    }
+    return breakable[s.length()];
+}
+```
+
+One quick note: we don't break out of the `if` on line 8 as soon as we get a match because maybe the first word does match but if we go with that first we don't get all the way to the end.
+
+Running time:
+- Iterate over the array: $O(S)$ size of the input string
+- Iterate over wordDict: $O(D)$ size of dict
+
+Running time: $O(SD)$ 
+
 
 
