@@ -61,6 +61,7 @@
 <li><a href="#find-arrays-median">Find array's median</a></li>
 <li><a href="#find-first-missing-positive-integer-from-array">First missing positive integer from array</a></li>
 <li><a href="#find-all-numbers-disappeared-in-an-array">Find All Numbers Disappeared in an Array</a></li>
+<li><a href="#find-in-sorted-rotated-array">Find in Sorted Rotated Array</a></li>
 </ul>
 </li>
 <li><a href="#conclusion">Conclusion</a></li>
@@ -955,6 +956,65 @@ The <span class="token number">3</span> is a duplicate <span class="token operat
             ans<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>j<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
     <span class="token keyword">return</span> ans<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="find-in-sorted-rotated-array"><a href="#find-in-sorted-rotated-array" aria-label="find in sorted rotated array permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Find in sorted rotated array</h3>
+<p><strong>You are given an integer array nums sorted in ascending order, and an integer target. Suppose that nums is rotated at some pivot unknown to you beforehand (i.e., [0,1,2,4,5,6,7] might become [4,5,6,7,0,1,2]). If target is found in the array return its index, otherwise, return -1. Solve in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>l</mi><mi>o</mi><mi>g</mi><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(logN)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span> time.</strong></p>
+<p>Since the requirement is to sort in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>l</mi><mi>o</mi><mi>g</mi><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(logN)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span> time, there's no option but to use binary search. Now, usually we apply binary search to sorted arrays where we simply compare target with <code class="language-cpptext">mid</code>. However, this time the array is rotated. As a result, to one side of <code class="language-cpptext">mid</code> we'll have sorted array and to the other we'll have the rotated part. We won't know which part is which since we're not told what the pivot is. For example:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">                            m    _________rotated____
+<span class="token punctuation">[</span>   <span class="token number">4</span>   <span class="token punctuation">,</span>   <span class="token number">5</span>   <span class="token punctuation">,</span>   <span class="token number">6</span>   <span class="token punctuation">,</span>   <span class="token number">7</span>   <span class="token punctuation">,</span>   <span class="token number">0</span>   <span class="token punctuation">,</span>   <span class="token number">1</span>   <span class="token punctuation">,</span>   <span class="token number">2</span><span class="token punctuation">]</span>
+   __________sorted_____     </code></pre></div>
+<p>For the example above we've got sorted to the left but in other cases, we might have sorted to the right. How would we determine which part is sorted? We'll simply compare <code class="language-cpptext">lo</code> (ie 4) with <code class="language-cpptext">mid</code> (ie 7). If mid > lo then we know that the left part is sorted, otherwise the right part is sorted. </p>
+<p>Now why does determining which part is sorted matter? It matters because if we're searching for 5 and lo = 4 and mid = 7, then we know 5 HAS to lie within the sorted region since the array is sorted in ascending order. So we'll look in the sorted section. Otherwise, we need to look in the rotated section.</p>
+<p>So, we have 4 steps:</p>
+<ul>
+<li>
+<p>Check if left is sorted</p>
+<ul>
+<li>
+<p>Left is indeed sorted, check if target lies between lo and mid</p>
+<ul>
+<li>Target indeed lies between the two: make hi = mid - 1</li>
+<li>Target doesn't lie between the two: make lo = mid + 1</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Left is not sorted, then right must be sorted</p>
+<ul>
+<li>
+<p>Right is sorted, check if target lies between mid and hi.</p>
+<ul>
+<li>Target indeed lies between the two: make lo = mid + 1</li>
+<li>Target doesn't lie between the two: make hi = mid - 1</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>That's it!</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">int</span> <span class="token function">search</span><span class="token punctuation">(</span>vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span><span class="token operator">&amp;</span> nums<span class="token punctuation">,</span> <span class="token keyword">int</span> target<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> lo <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> hi <span class="token operator">=</span> <span class="token keyword">int</span><span class="token punctuation">(</span>nums<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>lo <span class="token operator">&lt;=</span> hi<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">int</span> m <span class="token operator">=</span> lo <span class="token operator">+</span> <span class="token punctuation">(</span>hi<span class="token operator">-</span>lo<span class="token punctuation">)</span><span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>nums<span class="token punctuation">[</span>m<span class="token punctuation">]</span> <span class="token operator">==</span> target<span class="token punctuation">)</span>
+            <span class="token keyword">return</span> m<span class="token punctuation">;</span>
+        <span class="token comment">//See if left is sorted:</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>nums<span class="token punctuation">[</span>m<span class="token punctuation">]</span> <span class="token operator">>=</span> nums<span class="token punctuation">[</span>lo<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token comment">//Left is sorted and target lies within the range lo -> m</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>target <span class="token operator">>=</span> nums<span class="token punctuation">[</span>lo<span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> target <span class="token operator">&lt;=</span> nums<span class="token punctuation">[</span>m<span class="token punctuation">]</span><span class="token punctuation">)</span>
+                hi <span class="token operator">=</span> m <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+            <span class="token keyword">else</span>
+                lo <span class="token operator">=</span> m <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span><span class="token comment">//Left is sorted BUT target not in range lo -> m</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment">// Right is sorted</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>target <span class="token operator">></span> nums<span class="token punctuation">[</span>m<span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> target <span class="token operator">&lt;=</span> nums<span class="token punctuation">[</span>hi<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token comment">//target in range: m -> hi</span>
+                lo <span class="token operator">=</span> m <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+            <span class="token keyword">else</span>
+                hi <span class="token operator">=</span> m <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token comment">//Right is sorted BUT target not in range m->hi</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre></div>
 <h3 id="conclusion"><a href="#conclusion" aria-label="conclusion permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Conclusion</h3>
 <ul>
