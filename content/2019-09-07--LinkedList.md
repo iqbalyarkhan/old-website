@@ -33,6 +33,7 @@ tags:
     * [Add numbers in a list](#add-numbers-in-a-list)
     * [Swap pairs in a list](#swap-pairs-in-a-list)
     * [Root to leaf path with specified sum](#root-to-leaf-path-with-specified-sum)
+    * [LRU Cache](https://leetcode.com/problems/lru-cache/)   
 
 2. [Conclusion](#conclusion)
 
