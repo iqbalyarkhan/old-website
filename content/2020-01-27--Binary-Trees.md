@@ -35,6 +35,7 @@ tags:
     * [Remove leaf nodes with given value](#remove-leaf-nodes-with-given-value)
     * [Diameter of a tree](#diameter-of-a-tree)
     * [Level order traversal](#level-order-traversal)
+    * [Max Path Sum](#max-path-sum)
     
 3. [Conclusion](#conclusion)
 
@@ -582,7 +583,7 @@ Running time $O(N)$, space $O(h)$.
 
 Naive approach: Chart the path all the way up to the root for the first node and save in an external data structure (such as a hash table). Then start at the second node and at each node in its path, check if the hash-table has this value. If so, return this node as the LCA. Otherwise, move node2 pointer up one level. This approach requires extra space.
 
-Better approach: Find the height for each node. If they're the same keep moving both in tandem up the tree until either nullpointer is encountered or both point to the same node. If the height for each node is not the same, move the one that is at a greater depth to the other node's depth and then move both pointers in tandem.
+Better approach: Find the height for each node. If they're the same keep moving both in tandem up the tree until either null pointer is encountered or both point to the same node. If the height for each node is not the same, move the one that is at a greater depth to the other node's depth and then move both pointers in tandem.
 
 
 
@@ -1202,6 +1203,83 @@ vector<vector<int>> test(TreeNode* root){
 
 `size` keeps track of current level nodes while we continue to push elements to the queue!
  
+### Max Path Sum
+**Given a non-empty binary tree, find the maximum path sum. For this problem, a path is defined as any node sequence from some starting node to any node in the tree along the parent-child connections. The path must contain at least one node and does not need to go through the root.**
+
+Example:
+```cpp
+    3
+   / \
+  9  20
+    /  \
+   15   7
+return 9 + 3 + 20 + 15 = 47
+
+    3
+   / \
+  9 -20
+    /  \
+   15   7
+return 15
+
+
+    -2
+   /
+  1
+
+return 1
+```
+
+Since this is a binary tree we'll use a recursive approach as usual. We need to first think of the type of traversal we want to perform. It is clear that we first want to compute the left subtree, then the right subtree and THEN process the current node. This leads to post-order traversal.
+
+Next, we need to determine what information needs to be passed back to the parent. For this problem, we need to keep track of 2 things:
+(1) The max value we've seen so far: this will be saved in a passed by reference variable
+(2) The value that we'll be returning from the current node.
+
+Let's look at this example:
+
+```cpp
+    3
+   / \
+  9 -20
+    /  \
+   15   7    
+```
+
+Let's start with node -20. At this node, the max value we would've seen is 15. Now, what should I return from this node? If this node is to be present in the path to max sum, I'd have to either take the left subtree OR the right subtree **BUT NOT BOTH**. Because the parent needs the higher value path. Therefore, I'll return the max of node + leftSum or node + rightSum or just the node value if it is greater than both the leftSum + node and rightSum + node values. That's it! 
+
+Here's this logic converted to code:
+
+```cpp
+int maxPathSum(TreeNode* root, int& maxVal){
+    if (!root)
+        return -1001;
+    if (!root->left && !root->right)
+        return root->val;
+    
+    int leftSum = maxPathSum(root->left, maxVal);
+    int rightSum = maxPathSum(root->right, maxVal);
+    if (leftSum > maxVal)
+        maxVal = leftSum;
+    if (rightSum > maxVal)
+        maxVal = rightSum;
+    int allThree = leftSum + rightSum + root->val;
+    if (allThree > maxVal)
+        maxVal = allThree;
+    int leftPRoot = leftSum + root->val;
+    int rightPRoot = rightSum + root->val;
+    if (leftPRoot > maxVal)
+        maxVal  = leftPRoot;
+    if (rightPRoot > maxVal)
+        maxVal = rightPRoot;
+    int currMax = max(leftPRoot,max(rightPRoot,root->val));
+    if (currMax > maxVal)
+        maxVal = currMax;
+    return currMax;
+}
+```
+
+Running time: $O(N)$ where $N$ is the number of nodes and the implicit space complexity is $O(h)$ where $h$ is the max height of the tree. 
 
 ### Conclusion
 
