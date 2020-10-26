@@ -65,6 +65,7 @@
 <li><a href="#remove-leaf-nodes-with-given-value">Remove leaf nodes with given value</a></li>
 <li><a href="#diameter-of-a-tree">Diameter of a tree</a></li>
 <li><a href="#level-order-traversal">Level order traversal</a></li>
+<li><a href="#max-path-sum">Max Path Sum</a></li>
 </ul>
 </li>
 <li><a href="#conclusion">Conclusion</a></li>
@@ -501,7 +502,7 @@ Node<span class="token operator">&lt;</span><span class="token keyword">int</spa
 <h3 id="lca-with-parent"><a href="#lca-with-parent" aria-label="lca with parent permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>LCA with parent</h3>
 <p><strong>Given a tree with parent pointers for each node, find the LCA for two given nodes</strong>.</p>
 <p>Naive approach: Chart the path all the way up to the root for the first node and save in an external data structure (such as a hash table). Then start at the second node and at each node in its path, check if the hash-table has this value. If so, return this node as the LCA. Otherwise, move node2 pointer up one level. This approach requires extra space.</p>
-<p>Better approach: Find the height for each node. If they're the same keep moving both in tandem up the tree until either nullpointer is encountered or both point to the same node. If the height for each node is not the same, move the one that is at a greater depth to the other node's depth and then move both pointers in tandem.</p>
+<p>Better approach: Find the height for each node. If they're the same keep moving both in tandem up the tree until either null pointer is encountered or both point to the same node. If the height for each node is not the same, move the one that is at a greater depth to the other node's depth and then move both pointers in tandem.</p>
 <h3 id="binary-sum-from-root-to-leaf"><a href="#binary-sum-from-root-to-leaf" aria-label="binary sum from root to leaf permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Binary sum from root to leaf</h3>
 <p><strong>Given a binary tree, each node has value 0 or 1.  Each root-to-leaf path represents a binary number starting with the most significant bit.  For example, if the path is 0 -> 1 -> 1 -> 0 -> 1, then this could represent 01101 in binary, which is 13.For all leaves in the tree, consider the numbers represented by the path from the root to that leaf.Return the sum of these numbers.</strong></p>
 <p>Brute force approach would be to take each path and store it as a string. Then once you have all the paths, convert each string to its integer representation and sum those values. This requires extra space and the string to int conversion might lead to overflow. </p>
@@ -947,6 +948,68 @@ deque<span class="token operator">:</span> <span class="token punctuation">[</sp
     <span class="token keyword">return</span> ans<span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre></div>
 <p><code class="language-cpptext">size</code> keeps track of current level nodes while we continue to push elements to the queue!</p>
+<h3 id="max-path-sum"><a href="#max-path-sum" aria-label="max path sum permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Max Path Sum</h3>
+<p><strong>Given a non-empty binary tree, find the maximum path sum. For this problem, a path is defined as any node sequence from some starting node to any node in the tree along the parent-child connections. The path must contain at least one node and does not need to go through the root.</strong></p>
+<p>Example:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">    <span class="token number">3</span>
+   <span class="token operator">/</span> \
+  <span class="token number">9</span>  <span class="token number">20</span>
+    <span class="token operator">/</span>  \
+   <span class="token number">15</span>   <span class="token number">7</span>
+<span class="token keyword">return</span> <span class="token number">9</span> <span class="token operator">+</span> <span class="token number">3</span> <span class="token operator">+</span> <span class="token number">20</span> <span class="token operator">+</span> <span class="token number">15</span> <span class="token operator">=</span> <span class="token number">47</span>
+
+    <span class="token number">3</span>
+   <span class="token operator">/</span> \
+  <span class="token number">9</span> <span class="token operator">-</span><span class="token number">20</span>
+    <span class="token operator">/</span>  \
+   <span class="token number">15</span>   <span class="token number">7</span>
+<span class="token keyword">return</span> <span class="token number">15</span>
+
+
+    <span class="token operator">-</span><span class="token number">2</span>
+   <span class="token operator">/</span>
+  <span class="token number">1</span>
+
+<span class="token keyword">return</span> <span class="token number">1</span></code></pre></div>
+<p>Since this is a binary tree we'll use a recursive approach as usual. We need to first think of the type of traversal we want to perform. It is clear that we first want to compute the left subtree, then the right subtree and THEN process the current node. This leads to post-order traversal.</p>
+<p>Next, we need to determine what information needs to be passed back to the parent. For this problem, we need to keep track of 2 things:
+(1) The max value we've seen so far: this will be saved in a passed by reference variable
+(2) The value that we'll be returning from the current node.</p>
+<p>Let's look at this example:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp">    <span class="token number">3</span>
+   <span class="token operator">/</span> \
+  <span class="token number">9</span> <span class="token operator">-</span><span class="token number">20</span>
+    <span class="token operator">/</span>  \
+   <span class="token number">15</span>   <span class="token number">7</span>    </code></pre></div>
+<p>Let's start with node -20. At this node, the max value we would've seen is 15. Now, what should I return from this node? If this node is to be present in the path to max sum, I'd have to either take the left subtree OR the right subtree <strong>BUT NOT BOTH</strong>. Because the parent needs the higher value path. Therefore, I'll return the max of node + leftSum or node + rightSum or just the node value if it is greater than both the leftSum + node and rightSum + node values. That's it! </p>
+<p>Here's this logic converted to code:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token keyword">int</span> <span class="token function">maxPathSum</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">,</span> <span class="token keyword">int</span><span class="token operator">&amp;</span> maxVal<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>root<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1001</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>root<span class="token operator">-></span>left <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>root<span class="token operator">-></span>right<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> root<span class="token operator">-></span>val<span class="token punctuation">;</span>
+    
+    <span class="token keyword">int</span> leftSum <span class="token operator">=</span> <span class="token function">maxPathSum</span><span class="token punctuation">(</span>root<span class="token operator">-></span>left<span class="token punctuation">,</span> maxVal<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> rightSum <span class="token operator">=</span> <span class="token function">maxPathSum</span><span class="token punctuation">(</span>root<span class="token operator">-></span>right<span class="token punctuation">,</span> maxVal<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>leftSum <span class="token operator">></span> maxVal<span class="token punctuation">)</span>
+        maxVal <span class="token operator">=</span> leftSum<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>rightSum <span class="token operator">></span> maxVal<span class="token punctuation">)</span>
+        maxVal <span class="token operator">=</span> rightSum<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> allThree <span class="token operator">=</span> leftSum <span class="token operator">+</span> rightSum <span class="token operator">+</span> root<span class="token operator">-></span>val<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>allThree <span class="token operator">></span> maxVal<span class="token punctuation">)</span>
+        maxVal <span class="token operator">=</span> allThree<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> leftPRoot <span class="token operator">=</span> leftSum <span class="token operator">+</span> root<span class="token operator">-></span>val<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> rightPRoot <span class="token operator">=</span> rightSum <span class="token operator">+</span> root<span class="token operator">-></span>val<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>leftPRoot <span class="token operator">></span> maxVal<span class="token punctuation">)</span>
+        maxVal  <span class="token operator">=</span> leftPRoot<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>rightPRoot <span class="token operator">></span> maxVal<span class="token punctuation">)</span>
+        maxVal <span class="token operator">=</span> rightPRoot<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> currMax <span class="token operator">=</span> <span class="token function">max</span><span class="token punctuation">(</span>leftPRoot<span class="token punctuation">,</span><span class="token function">max</span><span class="token punctuation">(</span>rightPRoot<span class="token punctuation">,</span>root<span class="token operator">-></span>val<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>currMax <span class="token operator">></span> maxVal<span class="token punctuation">)</span>
+        maxVal <span class="token operator">=</span> currMax<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> currMax<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>Running time: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span> where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span></span></span></span> is the number of nodes and the implicit space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>h</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(h)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault">h</span><span class="mclose">)</span></span></span></span> where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi></mrow><annotation encoding="application/x-tex">h</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault">h</span></span></span></span> is the max height of the tree. </p>
 <h3 id="conclusion"><a href="#conclusion" aria-label="conclusion permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Conclusion</h3>
 <ul>
 <li>Best solutions have running time <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span> and space complexity as <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>h</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(h)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault">h</span><span class="mclose">)</span></span></span></span> (when using recursion).</li>
