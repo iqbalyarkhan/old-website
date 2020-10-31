@@ -12,7 +12,8 @@ tags:
 
 1. [All Anagrams](#all-anagrams)
 2. [Group Anagrams](#group-anagrams)
-3. [Word Break]()
+3. [Word Break](#word-break)
+4. [Number of Good Ways to Split a String](#number-of-good-ways-to-split-a-string)
 
 ### All Anagrams
 [All anagrams](https://leetcode.com/problems/find-all-anagrams-in-a-string/)
@@ -245,5 +246,105 @@ Running time:
 
 Running time: $O(SD)$ 
 
+### Number of Good Ways to Split a String
+
+**You are given a string s, a split is called good if you can split s into 2 non-empty strings p and q where its concatenation is equal to s and the number of distinct letters in p and q are the same. Return the number of good splits you can make in s.**
+
+Example:
+```cpp
+Input: s = "aacaba"
+Output: 2
+Explanation: There are 5 ways to split "aacaba" and 2 of them are good. 
+("a", "acaba") Left string and right string contains 1 and 3 different letters respectively.
+("aa", "caba") Left string and right string contains 1 and 3 different letters respectively.
+("aac", "aba") Left string and right string contains 2 and 2 different letters respectively (good split).
+("aaca", "ba") Left string and right string contains 2 and 2 different letters respectively (good split).
+("aacab", "a") Left string and right string contains 3 and 1 different letters respectively.
+```
+
+Ok, so the brute force approach that comes to mind is this: 
+(1) Start with breaking down the string into left and right. Initially, left has s[0] and right has s[1:end]. 
+(2) Now, iterate over the characters in left and right and count the number of unique characters. Match the count between left and right. If equal, increment answer counter. 
+(3) Go back to step (1)
+
+This approach is quite inefficient:  
+- Building a string on each iteration takes $O(N)$ time.
+- Iterating over each substring again to count unique characters takes $O(N)$ time. 
+- To store the characters seen so far (to determine whether it's the first time we're seeing it or not) requires use of a set. Takes $O(N)$ space. 
+
+We can improve this approach by observing that we don't need to recreate the left and right strings on each iteration. We can simply pick leftmost character in right and place in left string. Now we need to figure out how to keep track of unique characters efficiently. To do so, we'll use a map. We'll decrement the count of leftmost character in right substring from right map and add it to left map. Then all that's left is to compare the two maps' size and if they're equal, we have found a good split. 
+
+Let's step through the above example again BUT this time with the leftMap and rightMap:
+
+```cpp
+Input: s = "aacaba"
+Output: 2
+("a", "acaba") Left string and right string contains 1 and 3 different letters respectively.
+leftMap: a: 1
+rightMap: a: 3, b: 1, c:1
+leftMap.size() != rightMap.size()
+
+("aa", "caba") Left string and right string contains 1 and 3 different letters respectively.
+leftMap: a: 2
+rightMap: a: 2, b: 1, c:1
+leftMap.size() != rightMap.size()
+
+
+("aac", "aba") Left string and right string contains 2 and 2 different letters respectively (good split).
+leftMap: a: 2, c: 1
+rightMap: a: 2, b: 1
+leftMap.size() == rightMap.size()
+
+("aaca", "ba") Left string and right string contains 2 and 2 different letters respectively (good split).
+leftMap: a: 3, c: 1
+rightMap: a: 1, b: 1
+leftMap.size() == rightMap.size()
+
+("aacab", "a") Left string and right string contains 3 and 1 different letters respectively.
+leftMap: a: 3, b:1, c: 1
+rightMap: a: 1
+leftMap.size() != rightMap.size()
+```
+
+Here's this logic converted to code:
+
+```cpp
+int numSplits(string s) {
+    int ans = 0;
+    unordered_map<char,int> leftMap, rightMap;
+    
+    leftMap[s[0]] = 1;
+    for (int i = 1; i < int(s.size()); i++){
+        if (rightMap.find(s[i]) == rightMap.end())
+            rightMap[s[i]] = 1;
+        else
+            rightMap[s[i]] += 1;
+    }
+    
+    if (rightMap.size() == leftMap.size())
+        ans++;
+    
+    for (int i = 1; i < int(s.size()); i++){
+        char currChar = s[i];
+        rightMap[currChar] -= 1;
+        if (rightMap[currChar] == 0)
+            rightMap.erase(rightMap.find(currChar));
+        if (leftMap.find(currChar) == leftMap.end())
+            leftMap[currChar] = 1;
+        else
+            leftMap[currChar] += 1;
+        
+        if (rightMap.size() == leftMap.size())
+            ans++;
+        
+    }
+    return ans;
+}
+```
+
+Running time: 
+- Create left map: $O(N)$ and right map: $O(N)$
+- Iterate over string: $O(N)$
+- Space for maps: $O(N)$ 
 
 
