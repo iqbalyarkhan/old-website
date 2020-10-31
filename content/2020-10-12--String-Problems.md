@@ -14,6 +14,7 @@ tags:
 2. [Group Anagrams](#group-anagrams)
 3. [Word Break](#word-break)
 4. [Number of Good Ways to Split a String](#number-of-good-ways-to-split-a-string)
+5. [Generate all valid parens](#generate-all-valid-parens)
 
 ### All Anagrams
 [All anagrams](https://leetcode.com/problems/find-all-anagrams-in-a-string/)
@@ -347,4 +348,135 @@ Running time:
 - Iterate over string: $O(N)$
 - Space for maps: $O(N)$ 
 
+### Generate all valid parens
+**Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.**
 
+```cpp
+Input: n = 1
+Output: ["()"]
+
+Input: n = 3
+Output: ["((()))","(()())","(())()","()(())","()()()"]
+```
+
+The most obvious solution is to use recursion: ie start with an open parenthesis and keep going until you've hit the base case. At the base case, check to see if the formed string is valid. If so, push to answer vector, if not, ignore. This would take exponential time! Here's the tree for the case where n = 2. Left branch will pick opening parenthesis and right branch will pick closing:
+
+```cpp
+            (
+         /     \ 
+       ((       ()  
+    /     \   /     \
+   (((   (() ()(    ())
+  
+Finally: ((((   ((()   (()(   (())   ()((   ()()    ())(   ()))
+```
+
+The tree above shows ALL POSSIBLE combinations! It is very easy to determine where we can improve the running time. To do so, we'll set up some obvious rules so that we don't have to go down a path that'll yield an invalid combination. Let's start with `n` where `n` is the number of parens. Let's say again, that our `n` is 2. This means, we can have 2 open and 2 close braces denoted in the diagram below by (open,close). Next to the count, we have the string we've generated so far. We start with 2,2 and an empty string:
+
+```cpp
+
+                    2,2 ""
+
+```
+
+Each time we pick a type of paren, we'll decrement the remaining count. Again, left branch is pick open, right branch is pick close:
+
+```cpp
+
+                    2,2 ""
+                  /       \     
+            1,2 "("       2,1 ")"  
+```
+
+Straight away we can tell that no matter what we do with the remaining characters, the right branch will ALWAYS yield an invalid combo. Therefore, we can conclude that if:
+- Open == close: ALWAYS CHOOSE OPEN. 
+
+With that rule in mind, we edit our diagram to this:
+
+```cpp
+
+                    2,2 ""
+                  /       \     
+            1,2 "("        X
+           /      \
+       0,2 "(("    1,1 "()"
+```
+
+Next, we see we can have valid combos from both branches. One more observation we can make is that if:
+
+- open == 0, append remaining close to the string and return. You're GUARANTEED to have a valid string. Therefore, in our left most branch we see open = 0 and closed = 2 so we append 2 closed to the string so far and get: `(())` which is a valid combo. At this point, we're done with that branch.
+
+ 
+```cpp
+
+                    2,2 ""
+                  /       \     
+            1,2 "("        X
+           /      \
+       0,2 "(("    1,1 "()"
+       /                \
+append close            FOLLOW RULE 1
+and return 
+```
+
+As for the right branch we notice open == close which takes us back to rule 1: always choose open:
+
+```cpp
+
+                    2,2 ""
+                  /       \     
+            1,2 "("        X
+           /      \
+       0,2 "(("    1,1 "()"
+       /                \
+append close            0,1 "()(" FOLLOW RULE 1
+and return 
+```
+
+Now, as you can see above, we have 0 open. Follow rule 2 to append ALL remaining close and return:
+
+
+```cpp
+
+                    2,2 ""
+                  /       \     
+            1,2 "("        X
+           /      \
+       0,2 "(("    1,1 "()"
+       /                \
+append close            0,1 "()(" FOLLOW RULE 1
+and return                  \
+                            append close 
+                            and return: "()()" 
+```
+
+And we're done! Here's this logic converted to code:
+
+
+```cpp
+    void addAllClosing(int close, string soFar, vector<string>& ans){
+        while (close != 0){
+            soFar += ')';
+            close--;
+        }
+        ans.push_back(soFar);
+    }
+
+    void createParens(int open, int close, string soFar, vector<string>& ans){
+        if (open == 0){
+            addAllClosing(close, soFar, ans);
+            return;
+        }
+
+        createParens(open-1, close, soFar + '(', ans);
+        if (open != close)
+            createParens(open, close - 1, soFar + ')', ans);
+
+    }
+
+    vector<string> generateParenthesis(int n) {
+        vector<string> ans;
+        createParens(n, n, "", ans);
+        return ans;
+    }
+```
