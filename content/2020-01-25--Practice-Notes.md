@@ -15,7 +15,8 @@ tags:
 2. [String Streams](#string-streams)
     * [String to int and back](#int-to-string-and-back)
     * [Char to string](#char-to-string)
-
+    
+3. [All Substrings in a string]
 3. [Declaring a generic object](#declaring-a-generic-object)
 
 4. [STL unordered_set](#stl-unordered-set)
@@ -182,6 +183,44 @@ An easier way to convert char to string is using the string constructor that tak
 ```cpp
 char c = 'c';
 string s(1,c);
+```
+
+### All substrings in a string
+**Print all substrings within a string**
+
+This is quite a frequent problem where we're to determine substrings within a string. To do so, there's a simple technique:
+```cpp
+0   1   2
+a   b   c
+
+```
+
+We start with the first character and print it. Next, we move to character 1 and print characters from 0 - 1. We continue until we're out of characters to print.
+
+The example above would print these substrings:
+
+```cpp
+a
+ab
+abc
+b
+bc
+c
+``` 
+
+Now, to convert this logic to code, we can do this: 
+- Have two loops: an outer loop that determines the starting character for our current substring. This outer loop would choose `a`, then `b` and then `c`. 
+- An inner loop to determine the length of the current substring. It'd have to start with 0, then 1 and so on until the last character of our string. To do so, we'll use the `substr()` method provided by C++ STL. `substr()` takes in the starting position of the new substring and the length of substring desired. 
+
+```cpp
+void printSubstrings(string s) {
+    for (int i = 0; i < s.size(); i++){
+        for (int len = 1; len <= s.size() - i; len++){
+            string curr = s.substr(i, len);
+            cout << curr << endl;
+        }
+    }
+}
 ```
 
 ### Declaring a generic object
