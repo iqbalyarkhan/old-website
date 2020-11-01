@@ -22,7 +22,7 @@ tags:
     * [Coin number of ways bottom up](#coin-number-of-ways-bottom-up)
 7. [Coin change minimum number of coins](#coin-change-minimum-number-of-coins)
     * [Min num of coins recursive](#min-num-of-coins-recursive)
-    * [Min num of coins bottom up]
+    * [Min num of coins bottom up](#min-num-of-coins-bottom-up)
 
 ### Introduction
 
