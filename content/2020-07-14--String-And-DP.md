@@ -15,7 +15,7 @@ tags:
     * [LCSubsequence Recursive](#lcsubsequence-recursive)
     * [LCSubsequence Bottom Up](#longest-common-subsequence-bottom-up)
 3. [Min number of insertions and deletions](#minimum-number-of-insertions-and-deletions)
-4. [Longest Palindromic Substring]
+4. [Longest Palindromic Substring](#longest-palindromic-substring)
 
 ### Introduction
 
