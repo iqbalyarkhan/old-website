@@ -11,10 +11,9 @@
 <url> <loc>https://iqbalyarkhan.github.io/sorting-problems</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/data-system-design</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/todo-problems</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/strings-problems</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/quick-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/knuth-morris-pratt-algorithm</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/rabin-karp-algorithm</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/knuth-morris-pratt-algorithm</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/substring-search</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tries</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/shortest-path-algorithms</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
@@ -55,7 +54,6 @@
 <url> <loc>https://iqbalyarkhan.github.io/tags/sorting-problems/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/data-system-design/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/todo-problems/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/tags/strings/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/sorting-algorithms/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/quick-sort/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/tries/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
