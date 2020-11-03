@@ -51,6 +51,7 @@ tags:
     * [Construct tree from post-order](#construct-tree-from-post-order)
     * [Create minimum height tree from sorted array](#create-minimum-height-tree-from-sorted-array)
     * [Range BST](#range-bst)
+    * [Convert BST to sorted doubly linked list](#convert-bst-to-sorted-doubly-linked-list)
 
 14. [Conclusion](#conclusion)
 
@@ -1874,11 +1875,117 @@ void Populate(Node<int>* root, int l, int r){
 }
 ```
 
-Running time is at most $O(N)$ when the range is the entire tree (in the worst case). Space is $O(h)$ for the recursive call stack.  
+Running time is at most $O(N)$ when the range is the entire tree (in the worst case). Space is $O(h)$ for the recursive call stack.
+
+### Convert BST To Sorted Doubly Linked List  
+**Convert a Binary Search Tree to a sorted Circular Doubly-Linked List in place. You can think of the left and right pointers as synonymous to the predecessor and successor pointers in a doubly-linked list. For a circular doubly linked list, the predecessor of the first element is the last element, and the successor of the last element is the first element.**
+
+Example:
+
+```cpp
+    10 ---> root
+   /  \
+  4   21
+     /  \
+    15  32
+     \
+     20
+
+4-10-15-20-21-32
+
+where each '-' represents a doubly linked arrow
+```
+
+Before we begin, we need to figure out the type of traversal that would work. Looking at the problem logically, we see we'd have to set the left node and then the right node for current node. So, in-order should be just fine. Now, we can either use recursive approach or iterative, but I feel since we're to perform a few manipulations on previously visited nodes, iterative approach would be easier. 
+
+Let's see just the iterative version of inorder traversal:
+
+```cpp
+    Node* treeToDoublyList(Node* root) {
+        stack<Node*> st;
+        while (!st.empty() || curr){
+            while (curr){
+                st.push(curr);
+                curr = curr->left;
+            }
+
+            curr = st.top();
+            st.pop();
+            curr = curr->right;
+        }
+    }
+```
+
+Now, if we consider an example tree:
+
+```cpp
+    10 ---> root
+   /  \
+  4   21
+     /  \
+    15  32
+     \
+     20
+```
+
+- we notice that we have to go all the way down to our left-subtree and once there we need to set head if head is not currently set:
+
+```cpp
+   head
+    |
+    4
+```
+
+- Once done, we need to make this last node's next equal to the node we visited prior to the current node:
+```cpp
+   head
+    |
+    4 - 10 
+```
+
+We then continue to make connections as we go:
+
+```cpp
+    Node* treeToDoublyList(Node* root) {
+        if (!root)
+            return nullptr;
+        stack<Node*> st;
+        Node* head = nullptr; Node* prev = nullptr; Node* curr = root;
+        while (!st.empty() || curr){
+            while (curr){
+                st.push(curr);
+                curr = curr->left;
+            }
+
+            curr = st.top();
+            st.pop();
+            if (!head){
+                head = curr;
+                curr->left = nullptr;
+            }
+
+            if (prev){
+                curr->left = prev;
+                prev->right = curr;
+            }
+
+            prev = curr;
+            curr = curr->right;
+        }
+
+        head->left = prev;
+        prev->right = head;
+
+        return head;
+    }
+```
+
+Running time: $O(N)$ where $N$ is the number of nodes and space $O(h)$ where $h$ is the max height of the tree.
 
 ### Conclusion
 
 - When approaching to solve a problem, see if one of the traversal methods, pre,in,post would do.
+- Sometimes it is easier to perform traversal iteratively using stack like in [this](#convert-bst-to-sorted-doubly-linked-list)
 - For certain types of problems, it is beneficial to use ranges to see whether an element must reside in the left or the right subtree. Look at construct tree problems.
 - You can use reverse in-order (RNL) to visit nodes in decreasing order (largest to smallest). Look at [this](#find-k-largest-elements) problem.
 - Make sure you check for edge cases where the node has only a left child or only a right child or no children at all.
