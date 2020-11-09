@@ -1176,7 +1176,7 @@ Running time is $O(N)$ and space complexity is $O(2h)$: for the solutions vector
 
 ### Conclusion
 
-- More often than not, you'd be required to manipulate the array somehow such as the [even odd problem](/linked-list-problems#even-odd-list), make use of new head pointers and temp pointers to make your way through the list and solve the problem in $O(N)$ time. Another problem that makes use of this is the [pivot list problem](/linked-list-problems#pivot-list)
+- More often than not, you'd be required to manipulate the list somehow such as the [even odd problem](/linked-list-problems#even-odd-list), make use of new head pointers and temp pointers to make your way through the list and solve the problem in $O(N)$ time. Another problem that makes use of this is the [pivot list problem](/linked-list-problems#pivot-list)
 
 - Some times it is easier to use a dummy head and then return `dummyHead->next` as your answer to make life easier. Look at [swap pairs problem](/linked-list#swap-pairs-in-a-list). If you're worried about the start of the list and how to handle that first case, use a dummy head.
 
