@@ -16,7 +16,8 @@ tags:
     * [String to int and back](#int-to-string-and-back)
     * [Char to string](#char-to-string)
     
-3. [All Substrings in a string]
+3. [All Substrings in a string](#all-substrings-in-a-string)
+
 3. [Declaring a generic object](#declaring-a-generic-object)
 
 4. [STL unordered_set](#stl-unordered-set)
