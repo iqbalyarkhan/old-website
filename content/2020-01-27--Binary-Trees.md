@@ -35,6 +35,7 @@ tags:
     * [Remove leaf nodes with given value](#remove-leaf-nodes-with-given-value)
     * [Diameter of a tree](#diameter-of-a-tree)
     * [Level order traversal](#level-order-traversal)
+    * [Average for each level](#average-for-each-level)
     * [Max Path Sum](#max-path-sum)
     
 3. [Conclusion](#conclusion)
@@ -1202,6 +1203,115 @@ vector<vector<int>> test(TreeNode* root){
 ``` 
 
 `size` keeps track of current level nodes while we continue to push elements to the queue!
+
+### Average for each level
+Given a non-empty binary tree, return the average value of the nodes on each level in the form of an array.
+
+Example:
+
+```cpp
+Input:
+            12
+           /  \
+         11   10
+        /  \   
+       9    8 
+      / \    \
+     7  3     1
+    / \      /
+   6   4    2
+Output: [12, 10.5, 8.5 ....]
+```
+
+This problem is similar to level order traversal with the only difference being that we need to find average of sums for each level. Let's see how we can do that. Logically, I'd want to do this:
+
+- Keep a track of the number of nodes on the current level and call it `qSize`
+- Keep removing elements from a container until `qSize` is reached while adding up the values for each node processed
+- At the same time, keep adding left and right child (if it exists) for the currently popped node to the queue. This is the meat of the algorithm! We'll grab the size of the queue before we start adding more nodes to the queue that'll allow us to distinguish between different levels.
+- Repeat the process until the queue is empty
+
+Let's step through an example. Say this is our tree:
+
+```cpp
+Input:
+            12
+           /  \
+         11   10
+        /  \   
+       9    8 
+      / \    \
+     7  3     1
+    / \      /
+   6   4    2
+queue: 
+```
+
+On the first level, we have 12, so our queue will look like this:
+
+```cpp
+            12
+           /  \
+         11   10
+        /  \   
+       9    8 
+      / \    \
+     7  3     1
+    / \      /
+   6   4    2
+
+queue: 12
+```
+
+Next, we grab the size which is 1 and iterate over the queue till that size is reached. For each iteration:
+   - we remove an element from the front of the queue (this is achieved by using a deque in C++)
+   - add left and right children to the same deque
+
+At the end of our iterations, we compute the average and push to the answer vector:
+
+```cpp
+            12
+           /  \
+         11   10
+        /  \   
+       9    8 
+      / \    \
+     7  3     1
+    / \      /
+   6   4    2
+
+queue: 11,10
+avg: <12,...>
+```
+
+Here's the code for this logic:
+
+```cpp
+    vector<double> averageOfLevels(TreeNode* root) {
+        deque<TreeNode*> q;
+        vector<double> ans;
+        if (!root)
+            return ans;
+        q.push_back(root);
+        while (!q.empty()){
+            double qSize = double(q.size()), sum = 0;
+            for (int i = 0; i < qSize; i++){
+                TreeNode* currNode = q.front();
+                q.pop_front();
+                sum += double(currNode->val);
+                if (currNode->left)
+                    q.push_back(currNode->left);
+                if (currNode->right)
+                    q.push_back(currNode->right);
+            }
+
+            double avg = sum / qSize;
+            ans.push_back(avg);
+        }
+        return ans;
+    }
+```
+
+
  
 ### Max Path Sum
 **Given a non-empty binary tree, find the maximum path sum. For this problem, a path is defined as any node sequence from some starting node to any node in the tree along the parent-child connections. The path must contain at least one node and does not need to go through the root.**
