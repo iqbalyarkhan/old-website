@@ -1591,7 +1591,7 @@ void kthSmallestHelper(Node<int>* root, int k){
 }
 ```
 
-Running time for this approach: $O(h)$ in worst case and space complexity is $O(1)$.
+Running time for this approach: $O(N)$ where `N` is the number of nodes in worst case and space complexity is $O(h)$.
 
 ### Find LCA
 
