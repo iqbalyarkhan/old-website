@@ -37,6 +37,7 @@ tags:
     * [Level order traversal](#level-order-traversal)
     * [Average for each level](#average-for-each-level)
     * [Max Path Sum](#max-path-sum)
+    * [Max at each level](#max-at-each-level)
     
 3. [Conclusion](#conclusion)
 
@@ -1389,7 +1390,58 @@ int maxPathSum(TreeNode* root, int& maxVal){
 }
 ```
 
-Running time: $O(N)$ where $N$ is the number of nodes and the implicit space complexity is $O(h)$ where $h$ is the max height of the tree. 
+Running time: $O(N)$ where $N$ is the number of nodes and the implicit space complexity is $O(h)$ where $h$ is the max height of the tree.
+
+### Max at Each level 
+**Given the root of a binary tree, return an array of the largest value in each row of the tree (0-indexed).**
+
+Example:
+```cpp
+              12
+             /  \
+           10   11
+          /  \   
+         4    9 
+        / \    \
+       3  7     1
+      / \      /
+     6   4    2
+
+returns: [12,11,9,7,6]
+```
+
+It is clear to see that we need to keep track of the nodes at each level. Similar to earlier questions (level order traversal), you can use a queue to keep track of nodes on each level. As you process the nodes, you keep track of the max value seen so far and simultaneously add children to the queue. We're done when there're no more nodes on the queue. 
+
+```cpp
+vector<int> largestValues(TreeNode* root) {
+    vector<int> ans;
+    if (!root)
+        return ans;
+    queue<TreeNode*> q;
+    q.push(root);
+    while (!q.empty()){
+        //ensures we operate on current level only
+        int size = int(q.size());
+        int maxV = numeric_limits<int>::min();
+        for (int i = 0; i < size; i++){
+            TreeNode* currNode = q.front();
+            q.pop();
+            if (currNode->val > maxV)
+                maxV = currNode->val;
+            if (currNode->left)
+                q.push(currNode->left);
+            if (currNode->right)
+                q.push(currNode->right);
+        }
+
+        ans.push_back(maxV);
+    }
+    
+    return ans;
+}
+```
+
+Running time: $O(N)$ where $N$ is the number of nodes in the tree.
 
 ### Conclusion
 
@@ -1398,3 +1450,4 @@ Running time: $O(N)$ where $N$ is the number of nodes and the implicit space com
 - Always start at the base case when working with trees. For example, what do we do when the node is null? Next, handle the case where the node has no more children. Next choose a middle node and decide what to return based on the problem you're trying to solve, then finally add the missing steps. 
 - Whenever you recurse and go down a subtree, make sure you capture the result and return if there's a return condition that needs to hold. That way you prevent yourself from going through the entire tree when the first subtree already breaks the condition you're trying to check for.
 - If you need to transmit some information to parent from child, return a value AFTER you've processed everything in the recursive call. Look at [lca](#lca) for an example. Notice how we return L if L is not null and R if R is not null, otherwise we return nullptr.
+- At times, you'll have to process information level by level. To do so, the best approach is to maintain a queue, grab its size, pop from queue, perform operations and add to the queue as you perform your operations. How does this guarantee that you'll only operate on current level only? You grabbed the size of the queue up front therefore making sure you only process the current level number of nodes! 
