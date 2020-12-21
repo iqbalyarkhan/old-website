@@ -13,6 +13,7 @@ tags:
 1. [Introduction](#introduction)
 2. [Tiling](#tiling)
 3. [Longest Increasing Subsequence](#longest-increasing-subsequence)
+4. [Minimum Path Sum](#minimum-path-sum)
 
 100. [Conclusion](#conclusion)
 
@@ -130,6 +131,29 @@ int lis(vector<int>& vals){
 
 Running time is $O(N^2)$
 
+### Minimum Path Sum
+**Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right, which minimizes the sum of all numbers along its path. Note: You can only move either down or right at any point in time.**
+
+Example:
+```cpp
+
+[
+    [1,3,1],
+    [1,5,1],
+    [4,2,1]
+]
+
+answer = 7
+1-3-1-1-1:
+
+[
+    [1,3,1],
+    [X,X,1],
+    [X,X,1]
+]
+```
+
+Ok, so how do we know this is a dynamic programming problem? The wording is our clue here: `minimum` path sum. We're asked to minimize the sum. 
 
 ### Conclusion
 

@@ -291,8 +291,8 @@ To print use the `auto` keyword:
 
 ```cpp
 //print the map:
-for (auto i: m){
-    cout << "Key: " << i.first << " Value: " << i.second << endl;
+for (auto it: m){
+    cout << "Key: " << it.first << " Value: " << it.second << endl;
 }
 ```
 
@@ -305,9 +305,35 @@ Key: three Value: 3
 Key: two Value: 2
 ```
 
+If you're using STL map and want to search for an item, you can use the `lower_bound()` function call. The `lower_bound()` call returns the next largest value based on key. Example:
+
+```cpp
+
+    13
+   /  \
+  11  14  
+ / \
+9  12
+```
+
+and if you make this call: 
+```cpp
+auto it = myMap.lower_bound(11);
+```
+
+`it` would be pointing to 12. You can then move the iterator forward or backward as well (using `it++` and `it--`).
+
+To check if your iterator is at the end or the beginning of the map you can do:
+```cpp
+if (it != myMap.begin() && it != myMap.end()){
+    //....
+}
+```
+
+
 ### STL Multi map
 
-Map above does not allow duplicates, it will overwrite existing values if you add a duplicate. To allow for duplicates, use multi-map. multimap doesn't allow fo subscript insertion, you'd have to use the `insert` method:
+Map above does not allow duplicates, it will overwrite existing values if you add a duplicate. To allow for duplicates, use multi-map. multimap doesn't allow for subscript insertion, you'd have to use the `insert` method:
 ```cpp
 multimap<int,int> m;
 m.insert({2,3});
