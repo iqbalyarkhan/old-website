@@ -1179,23 +1179,6 @@ $$$
 (index-1) / 2
 $$$
 
-### Conclusion
-
-Binary search trees work well with randomized data where a node can have both left and right children. However, if our data is partially sorted, our tree may degenerate to a linked list. Think about what would happen if we insert numbers from 0 till 7 in a tree. Each node added would be the right child of its parent node. This would defeat the purpose of a binary search tree. In cases like these, we need to re-balance our tree so that we can take advantage of the $lgN$ properties of a tree. I'll talk more about balanced trees in my AVL tree post and red-black tree post. 
-
-### Problems
-
-BST is a workhorse of data structures and can be used to solve almost any problem efficiently. BSTs allow us to efficiently search for a key as well as find the `min` and `max` elements, find successor or predecessor of a key (where the key itself might be absent from the tree) and enumerate the keys in a range in sorted order.
-
-Key lookup, insertion and deletion take time proportional to $O(h)$ where $h$ is the height of our tree which in the worst case can be $O(N)$ if insertions and deletions are naively implemented. 
-
-**Searching** is the single most fundamental application of BSTs. Unlike hash tables, you can find min, max, next largest, smallest element using BSTs. These operations, along with lookup and delete take $O(logN)$ time for library implementations (due to balanced trees). 
-
-C++ STL offers two BST based containers: `set` and `map`:
-- sets store keys only
-- maps store key value pairs
-
-
 ### Test if a BT satisfies the BST property
 
 **Write a program that takes as input a binary tree and checks if the tree satisfies the BST property.**
@@ -1983,6 +1966,18 @@ We then continue to make connections as we go:
 Running time: $O(N)$ where $N$ is the number of nodes and space $O(h)$ where $h$ is the max height of the tree.
 
 ### Conclusion
+
+Binary search trees work well with randomized data where a node can have both left and right children. However, if our data is partially sorted, our tree may degenerate to a linked list. Think about what would happen if we insert numbers from 0 till 7 in a tree. Each node added would be the right child of its parent node. This would defeat the purpose of a binary search tree. In cases like these, we need to re-balance our tree so that we can take advantage of the $lgN$ properties of a tree. I'll talk more about balanced trees in my AVL tree post and red-black tree post. 
+
+BST is a workhorse of data structures and can be used to solve almost any problem efficiently. BSTs allow us to efficiently search for a key as well as find the `min` and `max` elements, find successor or predecessor of a key (where the key itself might be absent from the tree) and enumerate the keys in a range in sorted order.
+
+Key lookup, insertion and deletion take time proportional to $O(h)$ where $h$ is the height of our tree which in the worst case can be $O(N)$ if insertions and deletions are naively implemented. 
+
+**Searching** is the single most fundamental application of BSTs. Unlike hash tables, you can find min, max, next largest, smallest element using BSTs. These operations, along with lookup and delete take $O(logN)$ time for library implementations (due to balanced trees). 
+
+C++ STL offers two BST based containers: `set` and `map`:
+- sets store keys only
+- maps store key value pairs
 
 - When approaching to solve a problem, see if one of the traversal methods, pre,in,post would do.
 - Sometimes it is easier to perform traversal iteratively using stack like in [this](#convert-bst-to-sorted-doubly-linked-list)
