@@ -17,7 +17,7 @@ tags:
 5. [Replication](#replication)
 6. [Caching](#caching)
 7. [CDN](#content-delivery-network-cdn)
-
+8. [Web Tier and Statelessness](#web-tier-and-statelessness)
 
 ### Introduction
 If you were to setup your website today, from scratch, how would you go about doing it? You'd probably have a single server to serve your website. You'll have something like this:
@@ -161,3 +161,5 @@ In the diagram above we have plenty of improvements over our single server setup
 - A load balancer is able to scale up/down our backend based on demand and is able to route our requests appropriately
 - Database load is lightened by caching data
 - Data stored in the database is replicated across followers so that reads are faster
+
+### Web Tier and Statelessness
