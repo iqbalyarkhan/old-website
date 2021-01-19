@@ -16,6 +16,7 @@ tags:
 4. [Load Balancers](#load-balancers)
 5. [Replication](#replication)
 6. [Caching](#caching)
+7. [CDN](#content-delivery-network-cdn)
 
 
 ### Introduction
@@ -128,3 +129,35 @@ Even if you set an expiration policy, your cache data might be out of date there
 - **Eviction Policy**
 Once the cache is full, we'll have to start removing content from the cache. To do so, we can use something called LRU (least recently used) cache eviction policy where the least recently used data is removed from cache.
 
+### Content delivery network (CDN)
+While we're on the topic of getting content to users fast, it is apt to talk about content delivery networks or CDNs. A CDN is a network of geographically dispersed servers that is used to deliver **static** content. CDN caches static content such as images, CSS, JS and HTML pages that are then delivered to customers close to the server in the CDN. CDNs help improve site load times. Examples of CDNs are Amazon CloudFront, Akamai ImageManager, Fastly IO, PageCDN etc.
+
+Here's how a CDN might work:
+
+![CDN](./images/system-design/cdn.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+- User 1 requests an image that is not found in the CDN. The image is requested from **origin** (or the main server)
+- The image is then stored in the CDN
+- The image is then returned to the user
+- User 2 requests the same image from the same geographical location. The image is found in the CDN and the image is returned to user 2 faster.
+
+CDN content comes with a **TTL** or time to live that describes how long the image can be cached. 
+
+**CDN Drawbacks**
+- **Cost** 
+CDNs are run by third-party providers, and you are charged for data transfers in and out of the CDN. Caching infrequently used assets provides no significant benefits so you should consider moving them out of the CDN.
+
+- Setting an appropriate cache expiry: For time-sensitive content, setting a cache expiry time is important. The cache expiry time should neither be too long nor too short. If it is too long, the content might no longer be fresh. If it is too short, it can cause repeated requests to the origin servers thus making the CDN useless.
+
+- **CDN fallback**
+You should consider how your website/application copes with CDN failure. If there is a temporary CDN outage, clients should be able to detect the problem and request resources from the origin.
+
+Here's the complete diagram with CDN and cache added:
+
+![Complete with CDN and Cache](./images/system-design/complete-with-cdn-and-cache.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+In the diagram above we have plenty of improvements over our single server setup:
+- Static assets are directly fetched from CDNs that are located close to the end user
+- A load balancer is able to scale up/down our backend based on demand and is able to route our requests appropriately
+- Database load is lightened by caching data
+- Data stored in the database is replicated across followers so that reads are faster
