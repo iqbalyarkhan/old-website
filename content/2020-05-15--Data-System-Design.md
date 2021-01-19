@@ -109,3 +109,22 @@ Finally, the flow for this design shown would be:
 - A web server routes any data-modifying operations to the master database. This includes write, update, and delete operations.
 
 ### Caching
+Now, as you can imagine, querying the database for the same information over and over again can be quite expensive. For example, let's say we perform a join on a few tables to render on each user's page the most frequently visited part of the site for a particular day. Getting this information for each and every site visitor is expensive. Since this information does not change frequently, we can look up this information once and then **cache** it for future use. This will improve the performance of our application. 
+
+The **cache tier** is temporary data store layer that lies between the server and the database. If the information we want is present in the cache tier, we'll grab it from there, otherwise we'll query the DB, store this information in cache and return. Retrieving data from the cache tier is faster than querying the database for the same information. In addition, using the cache tier will also reduce database workloads. We can use Memcache, Redis etc based on the data we're caching. 
+
+Here's a possible cache tier setup:
+
+![Cache Tier](./images/system-design/cache-tier.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+Not all types of data can be stored in cache! Let's look at a few pitfalls when using caches:
+
+- **Type of data**
+Since cache data is read once and then stored in cache tier, it is not advisable to cache data that changes frequently. The ideal candidate for cached data is one that is read frequently but updated infrequently. It is a good idea to set an expiration policy where the cache is **invalidated** and the data in cache is refreshed by performing another read of the DB. 
+
+- **Inconsistency**
+Even if you set an expiration policy, your cache data might be out of date therefore it is important to keep cache and data store in sync.
+
+- **Eviction Policy**
+Once the cache is full, we'll have to start removing content from the cache. To do so, we can use something called LRU (least recently used) cache eviction policy where the least recently used data is removed from cache.
+
