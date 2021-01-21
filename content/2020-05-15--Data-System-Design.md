@@ -10,7 +10,7 @@ tags:
     - Data system design
 ---
 
-1. [Intro](#intro)
+1. [Intro](#introduction)
 2. [Scalability](#scalability)
 3. [Reliability](#reliability)
 4. [Load Balancers](#load-balancers)
