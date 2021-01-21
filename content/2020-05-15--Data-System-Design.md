@@ -14,7 +14,14 @@ tags:
 2. [Scalability](#scalability)
 3. [Reliability](#reliability)
 4. [Load Balancers](#load-balancers)
+    * [Load Balancers Deep Dive](#load-balancers-deep-dive)
+    * [Balancing algorithms](#balancing-algorithms)
 5. [Replication](#replication)
+    * [Replication Deep Dive](#replication-deep-dive)
+    * [Single Leader replication](#single-leader-replication)
+        * [Synch vs Asynch replication](#synch-vs-asynch-replication)
+        * [Eventual Consistency](#eventual-consistency)
+    * [Multileader replication](#multi-leader-replication)
 6. [Caching](#caching)
 7. [CDN](#content-delivery-network-cdn)
 8. [Web Tier and Statelessness](#web-tier-and-statelessness)
@@ -72,14 +79,42 @@ Now, if you suddenly start receiving a lot of traffic and have a collection of s
 
 ![Load Balancers](./images/system-design/load-balancers.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
 
-A user connects to the **public IP** of your load balancer (public IP means one that is available over the internet) and we move the web servers to private IP addresses (NOT reachable over the internet). Now, all traffic is directed to the load-balancer. The load balancer will be aware of the status of each of the web servers and if either goes down, traffic can be routed to the correct server. With the addition of a load balancer, we've solved the problem of servers going down. 
+A user connects to the **public IP** of your load balancer (public IP means one that is available over the internet) and we move the web servers to private IP addresses (NOT reachable over the internet). Now, all traffic is directed to the load-balancer. The load balancer will be aware of the status of each of the web servers and if either goes down, traffic can be routed to the correct server. With the addition of a load balancer, we've solved the problem of servers going down.
+
+### Load Balancers Deep Dive
+Now, you might be wondering, what are the different ways I can choose to route which traffic goes to which server? Well, in an OSI model, there are 7 layers: the most abstract layer is the application layer (ie application logic) and the most concrete layer is the physical layer:
+
+![OSI Layers](./images/system-design/osi-layers.jpeg)
+
+Load balancing can be done at:
+
+- **Layer 4 (L4)**: 
+Here, load balancers work at the transport level. That means they can make routing decisions based on the TCP or UDP ports that packets use along with their source and destination IP addresses. L4 load balancers perform Network Address Translation but do not inspect the actual contents of each packet.
+
+- **Layer 7 (L7)**: 
+Here, load balancers act at the application level, the highest in the OSI model. They can evaluate a wider range of data than L4 counterparts, including HTTP headers and SSL session IDs, when deciding how to distribute requests across the server farm.
+
+### Balancing algorithms
+There are a few algorithms that can be used by a balancer to determine which server gets the request from a pool of possible servers. Here're a few common algorithms:
+
+- **Round Robin**
+
+Round robin is a simple technique for making sure that a virtual server forwards each client request to a different server based on a rotating list. It is easy for load balancers to implement, but does don’t take into account the load already on a server. There is a danger that a server may receive a lot of processor-intensive requests and become overloaded.
+
+- **Least Response Time Method**
+
+The least response time method relies on the time taken by a server to respond to a health monitoring request. The speed of the response is an indicator of how loaded the server is and the overall expected user experience. Some load balancers will take into account the number of active connections on each server as well.
+
+- **Hashing Methods**
+
+Methods in this category make decisions based on a hash of various data from the incoming packet. This includes connection or header information, such as source/destination IP address, port number, URL or domain name, from the incoming packet.
 
 **What if our database goes down or is hit with a time consuming request?**
 
 To handle this case, we need to perform database replication:
 
 ### Replication
-In replication, the idea is to **replicate** the same information across multiple databases. To replicate this information, we'll desgnate one server that holds our database as the **leader** and remaining servers as **followers**. The leader will:
+In replication, the idea is to **replicate** the same information across multiple databases. To replicate this information, we'll designate one server that holds our database as the **leader** and remaining servers as **followers**. The leader will:
 
 - Handle all CUD (Create, update and delete) operations
 - Forward any new data to the followers so that the followers have up to date information
@@ -108,6 +143,41 @@ Finally, the flow for this design shown would be:
 - The HTTP request is routed to either Server 1 or Server 2.
 - A web server reads user data from a follower database.
 - A web server routes any data-modifying operations to the master database. This includes write, update, and delete operations.
+
+### Replication Deep Dive
+As we said earlier, replicating data allows us to create available, scalable systems. Replicating data that is not changing (static) is easy, real difficulty lies in replicating data that is changing often. There are 3 main ways to replicate data: **single leader replication** (one we discussed briefly above), **multi-leader replication** and **leaderless replication**. Let's have a look at all 3 in detail:
+
+### Single Leader Replication
+As we said in our intro, this type of replication deals with a single node acting as a leader. This node is responsible for receiving insert/update requests from the user and then propagating any changes made to the data to the followers. We have the remaining nodes acting as followers: followers are used for read operations only. Whenever the leader writes new data to its local storage, it also sends the data change to all of its followers.
+
+The leader can transmit the changes to the followers via 2 methods: **synchronous replication** and **asynchronous replication**:
+
+### Synch vs Asynch Replication
+In **synchronous replication**, the leader waits to get an ok response from **all** followers before sending an ok response back to the client. The advantage here is that all the followers will ALWAYS have up to date information. Disadvantage is that if one follower is down, the entire system will grind to a halt. This defeats the purpose of having a highly available system! Therefore, it is impractical to have completely synchronous replication.
+
+In **asynchronous replication**, the leader will only update its local storage with the updates and send the ok response back to the client, without waiting for ANY of the followers to send back the ok response. Advantage here is response times are low. Disadvantage here is that if the leader goes down, there could be information loss.
+
+**Compromise** here is that replication is usually **semi-asynchronous** where the leader will wait for at-least one follower to respond with an ok before sending the confirmation back to the client. 
+
+### Eventual consistency
+
+In read heavy workloads, the attractive option is to create many followers and distribute read requests across the followers. This removes load from the leader and allows read requests to be served by nearby replicas. As the number of followers increase, the probability that one of the followers has stale data (assuming asynchronous replication) also increases. We call this phenomenon **eventual consistency**: the reality where all followers will eventually have up to date data. This eventual propagation of data to followers is called **replication lag**. 
+
+This replication lag results in poor customer experience! Imagine you posted a comment on facebook and when you refreshed the page your comment disappeared! There are a few solutions to tackle this problem:
+
+- **Read your own writes**
+
+Always read the user's profile from the leader, and any other user's profiles from a follower. In our facebook example, we used user profile, in other systems this information could be something else (that a user updated). BUT, what if the user can edit a lot of items?!
+
+- **Make all reads from leader**
+
+Now what if the user can make edits to a bunch of items, all requests would end up with the leader which defeats the purpose of having a distributed system! In that case read your own writes won't work. Another possible solution is to keep track of the latest update and say for one minute after the last update, direct all read requests to the leader. BUT, what if the users of the system make a lot of edits?!
+
+- **Read from same replica**
+
+Another solution is to read from the same replica for the same user. That way the user is always guaranteed to see up to date, instant changes. 
+
+### Multi-leader Replication 
 
 ### Caching
 Now, as you can imagine, querying the database for the same information over and over again can be quite expensive. For example, let's say we perform a join on a few tables to render on each user's page the most frequently visited part of the site for a particular day. Getting this information for each and every site visitor is expensive. Since this information does not change frequently, we can look up this information once and then **cache** it for future use. This will improve the performance of our application. 
