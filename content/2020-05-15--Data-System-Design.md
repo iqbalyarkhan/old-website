@@ -19,10 +19,14 @@ tags:
 5. [Replication](#replication)
     * [Replication Deep Dive](#replication-deep-dive)
     * [Single Leader replication](#single-leader-replication)
-        * [Synch vs Asynch replication](#synch-vs-asynch-replication)
-        * [Eventual Consistency](#eventual-consistency)
+        * [Single Leader: Synch vs Asynch replication](#single-leader-synch-vs-asynch-replication)
+        * [Single Leader: Eventual Consistency](#single-leader-eventual-consistency)
     * [Multileader replication](#multi-leader-replication)
+        * [MultiLeader: Pros](#multi-leader-pros)
+        * [MultiLeader: Cons](#multi-leader-cons)
+    * [Leaderless replication](#leaderless-replication)
 6. [Caching](#caching)
+    * [Cache Types](#cache-types)
 7. [CDN](#content-delivery-network-cdn)
 8. [Web Tier and Statelessness](#web-tier-and-statelessness)
 
@@ -152,14 +156,14 @@ As we said in our intro, this type of replication deals with a single node actin
 
 The leader can transmit the changes to the followers via 2 methods: **synchronous replication** and **asynchronous replication**:
 
-### Synch vs Asynch Replication
+### Single Leader: Synch vs Asynch Replication
 In **synchronous replication**, the leader waits to get an ok response from **all** followers before sending an ok response back to the client. The advantage here is that all the followers will ALWAYS have up to date information. Disadvantage is that if one follower is down, the entire system will grind to a halt. This defeats the purpose of having a highly available system! Therefore, it is impractical to have completely synchronous replication.
 
 In **asynchronous replication**, the leader will only update its local storage with the updates and send the ok response back to the client, without waiting for ANY of the followers to send back the ok response. Advantage here is response times are low. Disadvantage here is that if the leader goes down, there could be information loss.
 
 **Compromise** here is that replication is usually **semi-asynchronous** where the leader will wait for at-least one follower to respond with an ok before sending the confirmation back to the client. 
 
-### Eventual consistency
+### Single Leader: Eventual consistency
 
 In read heavy workloads, the attractive option is to create many followers and distribute read requests across the followers. This removes load from the leader and allows read requests to be served by nearby replicas. As the number of followers increase, the probability that one of the followers has stale data (assuming asynchronous replication) also increases. We call this phenomenon **eventual consistency**: the reality where all followers will eventually have up to date data. This eventual propagation of data to followers is called **replication lag**. 
 
@@ -177,7 +181,35 @@ Now what if the user can make edits to a bunch of items, all requests would end 
 
 Another solution is to read from the same replica for the same user. That way the user is always guaranteed to see up to date, instant changes. 
 
-### Multi-leader Replication 
+### Multi-leader Replication
+If you have a setup with multiple data-centers located in geographically separated locations, you'd have to use multi-leader replication. That is because each user would be connected to the data center closest to him/her and the leader from that data center would then asynchronously replicate that information to other leaders and data centers.   
+
+### Multi-leader: Pros
+As compared to single leader replication, there're advantages that a multi-leader setup enjoys:
+
+- **Performance**
+
+In single leader, every write must go to the single leader. No matter how far you're located from that leader, every write will go the leader via the internet. In multi-leader, every write can be processed at the local data center and then replicated to other data centers. This results in a better perceived performance.
+
+- **Tolerance**
+
+If single leader goes down, new writes/updates need to be halted and a new leader has to be elected before accepting new writes/updates. With multi-leader, if a leader goes down, other centers can continue to operate and the down leader can catch up once it is back.  
+
+### Multi-Leader: Cons
+In single leader, since all writes go to one leader, there's always just a single source of truth. If 2 clients try to write at the same time, one client would have to wait until the other is done. With multi-leader, that is not the case: there can be write conflicts. 
+
+To resolve for write conflicts, there're a bunch of different techniques: last write wins, merger of writes, ask user to resolve conflicts etc. 
+
+If your setup requires low latency high availability for geographically dispersed users, multi-leader configuration is the way to go. 
+
+### Leaderless replication
+Another method to replicate data across servers is to get rid of leaders entirely: every node is a leader. The client sends its writes to multiple nodes and waits for a specific number of acknowledgements before a write can be considered a success. 
+
+If a node goes down and is unable to receive a write, it'll return stale data. Upon returning stale data, up to date nodes can provide the stale data node with up to date information. This is called **read repair**
+
+Another way to prevent stale data from being returned is to perform periodic scans of all nodes and update any nodes that have fallen behind. This is called **anti-entropy process**.
+
+
 
 ### Caching
 Now, as you can imagine, querying the database for the same information over and over again can be quite expensive. For example, let's say we perform a join on a few tables to render on each user's page the most frequently visited part of the site for a particular day. Getting this information for each and every site visitor is expensive. Since this information does not change frequently, we can look up this information once and then **cache** it for future use. This will improve the performance of our application. 
@@ -194,10 +226,73 @@ Not all types of data can be stored in cache! Let's look at a few pitfalls when 
 Since cache data is read once and then stored in cache tier, it is not advisable to cache data that changes frequently. The ideal candidate for cached data is one that is read frequently but updated infrequently. It is a good idea to set an expiration policy where the cache is **invalidated** and the data in cache is refreshed by performing another read of the DB. 
 
 - **Inconsistency**
-Even if you set an expiration policy, your cache data might be out of date therefore it is important to keep cache and data store in sync.
+Even if you set an expiration policy, your cache data might be out of date therefore it is important to keep cache and data store in sync using TTL.
 
 - **Eviction Policy**
 Once the cache is full, we'll have to start removing content from the cache. To do so, we can use something called LRU (least recently used) cache eviction policy where the least recently used data is removed from cache.
+
+### Cache: Types
+There are several strategies where the choice to pick the correct strategy depends on your **data access patterns**. For example: do you have more writes than reads? (ie time based logs), do you have write once and read multiple times? (ie think user profiles on Facebook), do you have a combination? (update and search data). Depending on your use-case, your caching strategy would evolve. Let's look at the various types of caches available.
+
+- **Side Cache**
+
+![Side cache](./images/system-design/cache-aside.png) [Image Credit](https://codeahoy.com/2017/08/11/caching-strategies-and-how-to-choose-the-right-one/)
+
+This is the simplest of them all: the application, before calling the DB, checks the cache to see if there's a cache hit: if so, application returns the data. In case of a cache miss, the DB is queried, cache is updated and data is then returned to the application. If the cache goes down, application can continue to query the DB.
+
+- **Read Through Cache**
+
+![Read through Cache](./images/system-design/read-through.png) [Image Credit](https://codeahoy.com/2017/08/11/caching-strategies-and-how-to-choose-the-right-one/)
+
+As the name suggests, read through cache is placed between the application and the database. This means that the application ONLY interacts with the cache and NOT the DB. Any cache misses are populated and cache hits are returned. For example:
+
+ (1) Given a key-value pair, the application first tries to read the data from DB. If the cache is populated with the data (cache hit), the value is returned. If not, on to step 2.
+ 
+ (2) Transparent to the application, if there was a cache miss, DAX fetches the key-value pair from DB.
+ 
+ (3) To make the data available for any subsequent reads, the key-value pair is then populated in the cache.
+ 
+ (4) The key-value pair then returns the value back to the application.
+ 
+ If cache goes down, access to DB will also be lost. Disadvantage here is that on the first request, since the cache is empty, you'll have to query the DB so the first request will always be slow. Read through cache is a good use case for **read heavy** work loads.  
+
+- **Write Through Cache**
+
+![Write through Cache](./images/system-design/write-through.png) [Image Credit](https://codeahoy.com/2017/08/11/caching-strategies-and-how-to-choose-the-right-one/)
+
+Similar to read-through cache, write-through cache also sits in line with the DB and the cache is updated as data is written to DB. Here're the data flow for a write through cache:
+
+ (1) For a given key-value pair, the application writes to the DB.
+ 
+ (2) Cache intercepts the write and then writes the key-value pair to DB.
+ 
+ (3) Upon a successful write, the cache is hydrated with the new value so that any subsequent reads for the same key-value pair result in a cache hit. If the write is unsuccessful, the exception is returned to the application.
+ 
+ (4) The acknowledgement of a successful write is then returned to the application.
+ 
+ Write through and read-through caches can be deployed together to simplify the use of caches. Because a write-through cache automatically caches the update, there's a slight amount of latency for writes. However, the advantage here is that data that is written is also immediately available for reads! Think about it: you have a DB that stores title and summary of new books that you publish. Say you've published a new book and on the landing page of your website you have a huge banner advertising this new book. Before you push the banner to your site, you update your DB with the book title and summary. As soon as you write to the DB, your cache is updated (since it is a write through cache). Now when millions of users flock to your website, they request this new book and its summary which is returned from the cache and NOT the DB. 
+ 
+ Therefore, **write-through cache is advantageous for read heavy workloads**. 
+
+- **Write Around Cache**
+
+ ![Write Around Cache](./images/system-design/write-around.png) [Image Credit](https://aws.amazon.com/blogs/database/amazon-dynamodb-accelerator-dax-a-read-throughwrite-through-cache-for-dynamodb/)
+
+Some workloads in the IoT or ad tech space have a considerable amount of data that is written once and read never. In these scenarios, it often doesn’t make sense to use a write-through cache. If the cache is populated with data that is never read, it usually means that the utilization and cache/hit miss ratio is low, reducing the utility of the cache. To work around this issue (pun intended), you can employ a write-around pattern in which writes go directly to DynamoDB. Only the data that is read—and thus has a higher potential to be read again—is cached.
+
+- **Write Back Cache**
+
+ ![Write Back Cache](./images/system-design/write-back.png) [Image Credit](https://aws.amazon.com/blogs/database/amazon-dynamodb-accelerator-dax-a-read-throughwrite-through-cache-for-dynamodb/)
+
+Whereas both read-through and write-through caches address read-heavy workloads, a write-back (or write-behind) cache is designed to address write-heavy workloads. In this scenario, items are written to the cache and then asynchronously written to the underlying data store. The process is as follows:
+
+(1) The item is written to the cache.
+
+(2) The item is acknowledged by the cache, and success is returned to the application.
+
+(3) As a background process, items are de-staged and written to DynamoDB.
+
+(4) The cache acknowledges the write.
 
 ### Content delivery network (CDN)
 While we're on the topic of getting content to users fast, it is apt to talk about content delivery networks or CDNs. A CDN is a network of geographically dispersed servers that is used to deliver **static** content. CDN caches static content such as images, CSS, JS and HTML pages that are then delivered to customers close to the server in the CDN. CDNs help improve site load times. Examples of CDNs are Amazon CloudFront, Akamai ImageManager, Fastly IO, PageCDN etc.
