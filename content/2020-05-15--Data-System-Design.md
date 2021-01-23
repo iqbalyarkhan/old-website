@@ -25,12 +25,15 @@ tags:
         * [MultiLeader: Pros](#multi-leader-pros)
         * [MultiLeader: Cons](#multi-leader-cons)
     * [Leaderless replication](#leaderless-replication)
+6. [Partitioning](#partitioning)
 6. [Caching](#caching)
     * [Cache Types](#cache-types)
 7. [CDN](#content-delivery-network-cdn)
 8. [Web Tier and Statelessness](#web-tier-and-statelessness)
 9. [Data Centers](#data-centers)
     * [Data Centers: Geo-Routing](#data-centers-geo-routing)
+10. [Decoupling](#decoupling)
+    * [Decoupling: Message queues](#decoupling-message-queues)
 
 100. [Useful architectures](#userful-architectures)
 
@@ -213,7 +216,8 @@ If a node goes down and is unable to receive a write, it'll return stale data. U
 
 Another way to prevent stale data from being returned is to perform periodic scans of all nodes and update any nodes that have fallen behind. This is called **anti-entropy process**.
 
-
+### Partitioning
+Replication of your data across multiple servers goes hand in hand with partitioning of data. Say for example, your data set is so large that it is impossible for us to hold it on a single machine. This is where data **sharding** or **partitioning** comes into picture.
 
 ### Caching
 Now, as you can imagine, querying the database for the same information over and over again can be quite expensive. For example, let's say we perform a join on a few tables to render on each user's page the most frequently visited part of the site for a particular day. Getting this information for each and every site visitor is expensive. Since this information does not change frequently, we can look up this information once and then **cache** it for future use. This will improve the performance of our application. 
@@ -353,12 +357,11 @@ After the state data is moved out of web servers, auto-scaling of the web tier i
 ### Data Centers
 Now let's say this is where we are in our journey to build the ultimate fault tolerant website:
 - We have CDN setup to deliver static content to our user FAST
-- Our web tier lies behind a load balancer
+- Our web tier lies behind a load balancer that uses one of the algos listed earlier to route requests
 - Our web tier is configured to auto-scale
 - Our state data is in the data tier
 - Our data tier is replicated 
 - We have cache setup for better response times
-
 
 But what if our servers (both in web and data tier) located in the USA east region and there's a power outage that takes down our server farm? Our website would be down as well! How would we go about making sure that our website is immune to such accidents and is still able to load for users that are farther away from us geographically?
 
@@ -369,6 +372,49 @@ We'd have multiple data centers with the same setup(architecture) BUT located in
 Now, with the introduction of multiple data centers, how do we route our customers' requests? For example, if a user is in Europe, would the request be routed to Oregon data center or London? Obviously London! We'll do that via **geo-routing**
 
 ### Data Centers: Geo routing
+Geolocation routing lets you choose the resources that serve your traffic based on the geographic location of your users, meaning the location that DNS queries originate from. For example, you might want all queries from Europe to be routed to a load balancer in the London region. It allows domain names to be resolved to IP addresses based on the location of a user:
+
+![Geo DNS](./images/system-design/geo-dns.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+Now, if the data center closest to the customer is down (due to a natural disaster), requests can then be routed to the second closest data center. In order to make geo routing possible, there're a few things that need to be figured out:
+
+ - Traffic redirection: Effective tools are needed to direct traffic to the correct data center. GeoDNS can be used to direct traffic to the nearest data center depending on where a user is located.
+ - Data synchronization: Users from different regions could use different local databases or caches. In failover cases, traffic might be routed to a data center where data is unavailable. A common strategy is to replicate data across multiple data centers.
+ - Test and deployment: With multi-data center setup, it is important to test your website/application at different locations. Automated deployment tools are vital to keep services consistent through all the data centers. 
+
+
+### Decoupling
+Let's have another look at the system we've designed so far:
+
+![Overall](./images/system-design/geo-dns.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+In the system above, we've got our servers receiving requests from the client. Let's assume, our client requests are simple: delivering your dynamic website. The architecture as shown would work perfectly. Now imagine if your website offers another service: processing images and returning the classification of objects found in the image: 
+
+![Image classification](./images/system-design/image-classification.png) [Image Credit](https://www.kdnuggets.com/2018/09/object-detection-image-classification-yolo.html)
+
+Now the classification process is more time consuming than simply returning an HTML webpage. Your servers that receive request from your client must wait for the processing servers to finish classification and THEN return back to the client. Your client servers are dependent on processing servers. This makes our system tightly coupled. We want to decouple our system so that we can scale up or down our processing servers. This classification process cannot be performed by any of the services we've seen so far:
+ 
+ - CDN: this is only for static content
+ - Load balancer: Routes your traffic
+ - Cache: Prevents multiple hits to the database
+ 
+ We need something else! Enter: **message queues**
+
+### Decoupling: Message Queues
+A message queue is a durable component, stored in memory, that supports asynchronous communication. It serves as a buffer and distributes asynchronous requests. The basic architecture of a message queue is simple. Input services, called producers/publishers, create messages, and publish them to a message queue. Other services or servers, called consumers/subscribers, connect to the queue, and perform actions defined by the messages. We'll add these queues to the datacenter.
+
+![MQ](./images/system-design/message-queue.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+Decoupling makes the message queue a preferred architecture for building a scalable and reliable application. With the message queue, the producer can post a message to the queue when the consumer is unavailable to process it. The consumer can read messages from the queue even when the producer is unavailable. If the number of messages in our queue reach a certain threshold, we can increase the size of our processing cluster to quickly process the classification requests. Once the requests are no more, we can scale down our processing cluster:
+
+
+![MQ2](./images/system-design/message-queue-2.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+Here's the architecture (with only a single data center shown - in reality you'll have multiple data centers):
+
+![Decoupled](./images/system-design/decoupled.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+
 
 ### Useful architectures
  - [WordPress on AWS](#https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html)
