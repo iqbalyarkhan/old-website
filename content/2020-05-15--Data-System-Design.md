@@ -352,11 +352,13 @@ After the state data is moved out of web servers, auto-scaling of the web tier i
 
 ### Data Centers
 Now let's say this is where we are in our journey to build the ultimate fault tolerant website:
+- We have CDN setup to deliver static content to our user FAST
 - Our web tier lies behind a load balancer
 - Our web tier is configured to auto-scale
 - Our state data is in the data tier
 - Our data tier is replicated 
 - We have cache setup for better response times
+
 
 But what if our servers (both in web and data tier) located in the USA east region and there's a power outage that takes down our server farm? Our website would be down as well! How would we go about making sure that our website is immune to such accidents and is still able to load for users that are farther away from us geographically?
 
