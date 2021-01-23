@@ -29,6 +29,8 @@ tags:
     * [Cache Types](#cache-types)
 7. [CDN](#content-delivery-network-cdn)
 8. [Web Tier and Statelessness](#web-tier-and-statelessness)
+9. [Data Centers](#data-centers)
+    * [Data Centers: Geo-Routing](#data-centers-geo-routing)
 
 100. [Useful architectures](#userful-architectures)
 
@@ -330,7 +332,43 @@ In the diagram above we have plenty of improvements over our single server setup
 - Data stored in the database is replicated across followers so that reads are faster
 
 ### Web Tier and Statelessness
+To understand statelessness we must first understand what stateful means. In a stateful architecture, a user's data is "remembered" between sessions. For example, say a user connects to server A, updates his/her profile, and then disconnects. The next time user A re-connects, he/she needs to be re-directed to server A since that is where user's latest information is. Example:
 
+![Stateful](./images/system-design/stateful.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+Now if user A's login information is stored on server A, then to authenticate user A, all his/her requests need to be routed to server A. The issue here is that the same client must be routed to the same original server. This leaves us at a disadvantage that prevents us from scaling down or up since the server needs to stay up in-case user A logs back in! This also makes it difficult for us to handle server failures. 
+
+A better approach would be to have non-sticky sessions where no user information is stored on ANY server. Instead, user information is kept in shared storage in the **data tier** that allows us to fetch user information whenever he/she logs in. This is called **stateless** architecture:
+
+![Stateless](./images/system-design/stateless.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+   
+As you can see above, our users can be re-directed to ANY server which will then fetch state data from a shared data store. As a result, state data is kept out of web tier which makes our **web tier stateless**. 
+
+Now, our overall picture with a stateless web tier looks like so:
+
+![Overall Stateless](./images/system-design/overall-stateless.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+After the state data is moved out of web servers, auto-scaling of the web tier is easily achieved by adding or removing servers based on traffic load. We no longer have to keep servers around unnecessarily since web tier servers contain no state information and can be added/removed based on traffic. 
+
+### Data Centers
+Now let's say this is where we are in our journey to build the ultimate fault tolerant website:
+- Our web tier lies behind a load balancer
+- Our web tier is configured to auto-scale
+- Our state data is in the data tier
+- Our data tier is replicated 
+- We have cache setup for better response times
+
+But what if our servers (both in web and data tier) located in the USA east region and there's a power outage that takes down our server farm? Our website would be down as well! How would we go about making sure that our website is immune to such accidents and is still able to load for users that are farther away from us geographically?
+
+Enter: **multiple data centers**
+
+We'd have multiple data centers with the same setup(architecture) BUT located in geographically separated regions. For example, we could have one data center in Virginia USA and another in Oregon USA. Thinking globally, we can have another in Shanghai and another in London. 
+
+Now, with the introduction of multiple data centers, how do we route our customers' requests? For example, if a user is in Europe, would the request be routed to Oregon data center or London? Obviously London! We'll do that via **geo-routing**
+
+### Data Centers: Geo routing
 
 ### Useful architectures
  - [WordPress on AWS](#https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html)
+ - [Netflix active-active](https://netflixtechblog.com/active-active-for-multi-regional-resiliency-c47719f6685b)
+ 
