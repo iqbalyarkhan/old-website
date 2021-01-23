@@ -30,6 +30,8 @@ tags:
 7. [CDN](#content-delivery-network-cdn)
 8. [Web Tier and Statelessness](#web-tier-and-statelessness)
 
+100. [Useful architectures](#userful-architectures)
+
 ### Introduction
 If you were to setup your website today, from scratch, how would you go about doing it? You'd probably have a single server to serve your website. You'll have something like this:
 
@@ -328,3 +330,7 @@ In the diagram above we have plenty of improvements over our single server setup
 - Data stored in the database is replicated across followers so that reads are faster
 
 ### Web Tier and Statelessness
+
+
+### Useful architectures
+ - [WordPress on AWS](#https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html)
