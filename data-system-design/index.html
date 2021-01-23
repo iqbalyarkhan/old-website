@@ -72,6 +72,7 @@
 <li><a href="#leaderless-replication">Leaderless replication</a></li>
 </ul>
 </li>
+<li><a href="#partitioning">Partitioning</a></li>
 <li>
 <p><a href="#caching">Caching</a></p>
 <ul>
@@ -84,6 +85,12 @@
 <p><a href="#data-centers">Data Centers</a></p>
 <ul>
 <li><a href="#data-centers-geo-routing">Data Centers: Geo-Routing</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#decoupling">Decoupling</a></p>
+<ul>
+<li><a href="#decoupling-message-queues">Decoupling: Message queues</a></li>
 </ul>
 </li>
 <li><a href="#userful-architectures">Useful architectures</a></li>
@@ -353,6 +360,8 @@ Here, load balancers act at the application level, the highest in the OSI model.
 <p>Another method to replicate data across servers is to get rid of leaders entirely: every node is a leader. The client sends its writes to multiple nodes and waits for a specific number of acknowledgements before a write can be considered a success. </p>
 <p>If a node goes down and is unable to receive a write, it'll return stale data. Upon returning stale data, up to date nodes can provide the stale data node with up to date information. This is called <strong>read repair</strong></p>
 <p>Another way to prevent stale data from being returned is to perform periodic scans of all nodes and update any nodes that have fallen behind. This is called <strong>anti-entropy process</strong>.</p>
+<h3 id="partitioning"><a href="#partitioning" aria-label="partitioning permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Partitioning</h3>
+<p>Replication of your data across multiple servers goes hand in hand with partitioning of data. Say for example, your data set is so large that it is impossible for us to hold it on a single machine. This is where data <strong>sharding</strong> or <strong>partitioning</strong> comes into picture.</p>
 <h3 id="caching"><a href="#caching" aria-label="caching permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Caching</h3>
 <p>Now, as you can imagine, querying the database for the same information over and over again can be quite expensive. For example, let's say we perform a join on a few tables to render on each user's page the most frequently visited part of the site for a particular day. Getting this information for each and every site visitor is expensive. Since this information does not change frequently, we can look up this information once and then <strong>cache</strong> it for future use. This will improve the performance of our application. </p>
 <p>The <strong>cache tier</strong> is temporary data store layer that lies between the server and the database. If the information we want is present in the cache tier, we'll grab it from there, otherwise we'll query the DB, store this information in cache and return. Retrieving data from the cache tier is faster than querying the database for the same information. In addition, using the cache tier will also reduce database workloads. We can use Memcache, Redis etc based on the data we're caching. </p>
@@ -680,7 +689,7 @@ You should consider how your website/application copes with CDN failure. If ther
 <p>Now let's say this is where we are in our journey to build the ultimate fault tolerant website:</p>
 <ul>
 <li>We have CDN setup to deliver static content to our user FAST</li>
-<li>Our web tier lies behind a load balancer</li>
+<li>Our web tier lies behind a load balancer that uses one of the algos listed earlier to route requests</li>
 <li>Our web tier is configured to auto-scale</li>
 <li>Our state data is in the data tier</li>
 <li>Our data tier is replicated </li>
@@ -691,6 +700,158 @@ You should consider how your website/application copes with CDN failure. If ther
 <p>We'd have multiple data centers with the same setup(architecture) BUT located in geographically separated regions. For example, we could have one data center in Virginia USA and another in Oregon USA. Thinking globally, we can have another in Shanghai and another in London. </p>
 <p>Now, with the introduction of multiple data centers, how do we route our customers' requests? For example, if a user is in Europe, would the request be routed to Oregon data center or London? Obviously London! We'll do that via <strong>geo-routing</strong></p>
 <h3 id="data-centers-geo-routing"><a href="#data-centers-geo-routing" aria-label="data centers geo routing permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Data Centers: Geo routing</h3>
+<p>Geolocation routing lets you choose the resources that serve your traffic based on the geographic location of your users, meaning the location that DNS queries originate from. For example, you might want all queries from Europe to be routed to a load balancer in the London region. It allows domain names to be resolved to IP addresses based on the location of a user:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 93.91796322489392%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAATCAYAAACQjC21AAAACXBIWXMAAAsSAAALEgHS3X78AAADpUlEQVQ4y21UTW/jVBTtX2PJGo3EGglY8AtYwGZGfGxAgAbEYjZFCM0gRqAixEdVtQxDm06mTZvGTuLYjr+f7cSfiRPHdg732U2mHeZFL/Z7fj6+95xz7856vcbNwdfRPMN8VSCnR1lR1veb65KurxobnB3+F8cxjo+PEYQh8moNNg0QhhEc10VRVYiTFJphgL8SLZYoyhIVTTEtcZaUSIpqC1oDGnT4u91dSLKCNF+Bx+C5DBedDvLlEhPfw1W3W78UE+CM5jxb4E+2wAMlhTRroq42gBw5SZJmE02aOc1wlmFVVnSdI80y5BTVjNLeplkUSOPoRcoc8GUO0zSFbtvQbAcsCDHLlzBdr56259MHyluc3bxfbzjkG5tZEWdF0UThRRk+/P4ZdBZgMU+RUZQvn69ns9lwuAn1lmL0W+ULKE6Iew/PcDmyYFkGfN/fnniVwltR+LKkxaoswF1hu1Nolo1smW9fiohHi9IO4jl41qua5+IW2NY2jkcqCgIMx8VzuYUL9RKuH9S2WXIPktI9UYBuOuiqAlrS39AdBybxHJDlbtKww6XWLROyNEZbOsJnh3fw7dP3oOgKLNPCfLFAREL1+yJ0w8bu6fv4aP91POnvwXWmYGSpav0i9RqQUYS+F+B89C8end7Dz+dfQDEV2BQBB0xmMzCKyGYufnn+NZ25i9bwAI7tw534/wd0iBvLtiglG72rES47EhTFgHkdYZrNCZyEIdChpKNzNoAsG3AcG95kUhsaN1PmgDZ5zyAhRFlGbyjC0CyMhmNSNoLnh1BGGlFgYzTW0B0IkCQVOn2Uef42urpSSorXJR485mCgaHAZI7JVqIYCs1Z6iWkYg5kmxL6CvqjCHOsQhwIGooKxYiGJs60bdrhpRMPB3gmlYVhQLQf75xJ6ilIrmVLNJosMv7WHOBZUOD5DSxjjrzapTj1AGtuIpgmJyqiS4sY2V5qDO58eXFeFg7e+OsK795/gWX9cA86WGe4+bOMNOnNOHP74j4jXPvgdPxz2oLIm5b2WhnfuP204NEjlg5Muvnx8CpWU7QxUvP35Pj5+dEomXmGSziBKMr55fIKjixEZnOHBr228+ckf6FEwfAx0Dz8dXlLp0UImkJ4oQlYk4s4iD+roCj10JQVZntfd5mooQRoRLZqGMXE7kAbo9ESY/qQpxKrk7adJOaUOzTsLm4bwgwAuNViXGuw0ilHyZkG15tOaBRE9vz7D72mP22pTvnz+B1uoiWdxeZnxAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Geo DNS"
+        title="Geo DNS"
+        src="/static/45860a658018c819ca58dfa9a6463762/1dda8/geo-dns.png"
+        srcset="/static/45860a658018c819ca58dfa9a6463762/27f03/geo-dns.png 173w,
+/static/45860a658018c819ca58dfa9a6463762/376d0/geo-dns.png 345w,
+/static/45860a658018c819ca58dfa9a6463762/1dda8/geo-dns.png 690w,
+/static/45860a658018c819ca58dfa9a6463762/037d4/geo-dns.png 707w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF">Image Credit</a></p>
+<p>Now, if the data center closest to the customer is down (due to a natural disaster), requests can then be routed to the second closest data center. In order to make geo routing possible, there're a few things that need to be figured out:</p>
+<ul>
+<li>Traffic redirection: Effective tools are needed to direct traffic to the correct data center. GeoDNS can be used to direct traffic to the nearest data center depending on where a user is located.</li>
+<li>Data synchronization: Users from different regions could use different local databases or caches. In failover cases, traffic might be routed to a data center where data is unavailable. A common strategy is to replicate data across multiple data centers.</li>
+<li>Test and deployment: With multi-data center setup, it is important to test your website/application at different locations. Automated deployment tools are vital to keep services consistent through all the data centers. </li>
+</ul>
+<h3 id="decoupling"><a href="#decoupling" aria-label="decoupling permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Decoupling</h3>
+<p>Let's have another look at the system we've designed so far:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 93.91796322489392%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAATCAYAAACQjC21AAAACXBIWXMAAAsSAAALEgHS3X78AAADpUlEQVQ4y21UTW/jVBTtX2PJGo3EGglY8AtYwGZGfGxAgAbEYjZFCM0gRqAixEdVtQxDm06mTZvGTuLYjr+f7cSfiRPHdg732U2mHeZFL/Z7fj6+95xz7856vcbNwdfRPMN8VSCnR1lR1veb65KurxobnB3+F8cxjo+PEYQh8moNNg0QhhEc10VRVYiTFJphgL8SLZYoyhIVTTEtcZaUSIpqC1oDGnT4u91dSLKCNF+Bx+C5DBedDvLlEhPfw1W3W78UE+CM5jxb4E+2wAMlhTRroq42gBw5SZJmE02aOc1wlmFVVnSdI80y5BTVjNLeplkUSOPoRcoc8GUO0zSFbtvQbAcsCDHLlzBdr56259MHyluc3bxfbzjkG5tZEWdF0UThRRk+/P4ZdBZgMU+RUZQvn69ns9lwuAn1lmL0W+ULKE6Iew/PcDmyYFkGfN/fnniVwltR+LKkxaoswF1hu1Nolo1smW9fiohHi9IO4jl41qua5+IW2NY2jkcqCgIMx8VzuYUL9RKuH9S2WXIPktI9UYBuOuiqAlrS39AdBybxHJDlbtKww6XWLROyNEZbOsJnh3fw7dP3oOgKLNPCfLFAREL1+yJ0w8bu6fv4aP91POnvwXWmYGSpav0i9RqQUYS+F+B89C8end7Dz+dfQDEV2BQBB0xmMzCKyGYufnn+NZ25i9bwAI7tw534/wd0iBvLtiglG72rES47EhTFgHkdYZrNCZyEIdChpKNzNoAsG3AcG95kUhsaN1PmgDZ5zyAhRFlGbyjC0CyMhmNSNoLnh1BGGlFgYzTW0B0IkCQVOn2Uef42urpSSorXJR485mCgaHAZI7JVqIYCs1Z6iWkYg5kmxL6CvqjCHOsQhwIGooKxYiGJs60bdrhpRMPB3gmlYVhQLQf75xJ6ilIrmVLNJosMv7WHOBZUOD5DSxjjrzapTj1AGtuIpgmJyqiS4sY2V5qDO58eXFeFg7e+OsK795/gWX9cA86WGe4+bOMNOnNOHP74j4jXPvgdPxz2oLIm5b2WhnfuP204NEjlg5Muvnx8CpWU7QxUvP35Pj5+dEomXmGSziBKMr55fIKjixEZnOHBr228+ckf6FEwfAx0Dz8dXlLp0UImkJ4oQlYk4s4iD+roCj10JQVZntfd5mooQRoRLZqGMXE7kAbo9ESY/qQpxKrk7adJOaUOzTsLm4bwgwAuNViXGuw0ilHyZkG15tOaBRE9vz7D72mP22pTvnz+B1uoiWdxeZnxAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Overall"
+        title="Overall"
+        src="/static/45860a658018c819ca58dfa9a6463762/1dda8/geo-dns.png"
+        srcset="/static/45860a658018c819ca58dfa9a6463762/27f03/geo-dns.png 173w,
+/static/45860a658018c819ca58dfa9a6463762/376d0/geo-dns.png 345w,
+/static/45860a658018c819ca58dfa9a6463762/1dda8/geo-dns.png 690w,
+/static/45860a658018c819ca58dfa9a6463762/037d4/geo-dns.png 707w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF">Image Credit</a></p>
+<p>In the system above, we've got our servers receiving requests from the client. Let's assume, our client requests are simple: delivering your dynamic website. The architecture as shown would work perfectly. Now imagine if your website offers another service: processing images and returning the classification of objects found in the image: </p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 640px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 42.1875%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAICAYAAAD5nd/tAAAACXBIWXMAAAsSAAALEgHS3X78AAACHUlEQVQoz1WP+0tTARTH75/TL2FRgT9ERFAEQpkIEytRqIxI0RQqLZvCaKmbSJq4dLp8DGdaPgh1rnyk+WprRs6FztBYljJyN3fv7h6frg96fA+H7znfc+B8j7Do8zDyzs7wtIPRmdd4VxZxuqeZaH+G4+kTHN021jd9fPNN4l914l/zsLb8AUlcZc07xtSojanxPj7ODqL8+oqQUZSCJieBGsNlMh8eJ6s8mXNZhzDlnqJZn0Ze3lEetWjwtB5gwpLEZI+OoeaLWNuuMvbiGHMdiYy/tfGm+x7jz7MRimovcLMkkc/9ZhqbkrlVf5rsuwexFGnw9T6muvQwWmMqfdpMuorTsVdlUGM8S25JFgP6PLzGEgZsFppaK9AariHcN2q4UnCEEasem/k6xdWp3MhPoLYgCWe3AWvZecoqkym7dAZd4QlM1SexVKZTWJ6OLieNitsp1LXc4WVHM3qzFsE1N8aIvYvJ4S6+eN+zsjTPlKOHGWMpbpOBDccrZj8NUm/Kx9T/gMZ+HSbVTedQA+a2YqqshTTYjZg76+h1tCOwj83AT/6FvCUS9K/vNXE1t4KEQipFImzwY1dC3Cayo0kxvuNHVkOQZQlJkoioi6HQNsFgEFEUCUcUlFgUWZZ3U1IUwmEJJazWorS3p14Iq/2OFpGiKit/He4gEAjgcjpZWFggHov955h4/E+57FvC5XIx73YTjcb2n9ib/wZ7nABvP4yVvQAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Image classification"
+        title="Image classification"
+        src="/static/a56a07bbfb940de6c1492366c8cc9d2d/70d1f/image-classification.png"
+        srcset="/static/a56a07bbfb940de6c1492366c8cc9d2d/27f03/image-classification.png 173w,
+/static/a56a07bbfb940de6c1492366c8cc9d2d/376d0/image-classification.png 345w,
+/static/a56a07bbfb940de6c1492366c8cc9d2d/70d1f/image-classification.png 640w"
+        sizes="(max-width: 640px) 100vw, 640px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.kdnuggets.com/2018/09/object-detection-image-classification-yolo.html">Image Credit</a></p>
+<p>Now the classification process is more time consuming than simply returning an HTML webpage. Your servers that receive request from your client must wait for the processing servers to finish classification and THEN return back to the client. Your client servers are dependent on processing servers. This makes our system tightly coupled. We want to decouple our system so that we can scale up or down our processing servers. This classification process cannot be performed by any of the services we've seen so far:</p>
+<ul>
+<li>CDN: this is only for static content</li>
+<li>Load balancer: Routes your traffic</li>
+<li>Cache: Prevents multiple hits to the database</li>
+</ul>
+<p> We need something else! Enter: <strong>message queues</strong></p>
+<h3 id="decoupling-message-queues"><a href="#decoupling-message-queues" aria-label="decoupling message queues permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Decoupling: Message Queues</h3>
+<p>A message queue is a durable component, stored in memory, that supports asynchronous communication. It serves as a buffer and distributes asynchronous requests. The basic architecture of a message queue is simple. Input services, called producers/publishers, create messages, and publish them to a message queue. Other services or servers, called consumers/subscribers, connect to the queue, and perform actions defined by the messages. We'll add these queues to the datacenter.</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 17.1830985915493%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAADCAYAAACTWi8uAAAACXBIWXMAAAsSAAALEgHS3X78AAAA70lEQVQI1x3PT0vCcADG8Z26BdEL6aVEly5BvYeOdSqKiqC6dAi6KJFCTXYIvVhEYZA5y5gOc3OjxbTf3OjvQtT2be25fE4PPI9UbnZZOa6wLT+wmlHJlQyi0YDRcID/2adi9KjZAfeWn+i9hzjuK8IPSBV1ltNl1rIqS6lbSnUXaUfRGJvNMrWYZ2JeZnr9HOF5vHQE13qXw+ITR1dt0pdmomYLbMch8AUzGxdMLuTiboHxuVO25EcktSXYPKmyf6YlK5Ubk//8RhFv332az4JG20W3OphuQO8j5Cv8YRg/yN9Z7Co1Dgp19mKrhuAPHU7FYffI9wUAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="MQ"
+        title="MQ"
+        src="/static/a5618acc88ba077ddae0db18c3b8924f/1dda8/message-queue.png"
+        srcset="/static/a5618acc88ba077ddae0db18c3b8924f/27f03/message-queue.png 173w,
+/static/a5618acc88ba077ddae0db18c3b8924f/376d0/message-queue.png 345w,
+/static/a5618acc88ba077ddae0db18c3b8924f/1dda8/message-queue.png 690w,
+/static/a5618acc88ba077ddae0db18c3b8924f/8551f/message-queue.png 710w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF">Image Credit</a></p>
+<p>Decoupling makes the message queue a preferred architecture for building a scalable and reliable application. With the message queue, the producer can post a message to the queue when the consumer is unavailable to process it. The consumer can read messages from the queue even when the producer is unavailable. If the number of messages in our queue reach a certain threshold, we can increase the size of our processing cluster to quickly process the classification requests. Once the requests are no more, we can scale down our processing cluster:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 23.10984308131241%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAFCAYAAABFA8wzAAAACXBIWXMAAAsSAAALEgHS3X78AAABEElEQVQY03WPy0rDUBiE83Y+hhvfxUeoS1/ArNSNKFhKVOgFLVJKa5u0mzYnNZfmck4u/Tw5pdCNA8P8/PPDzG/NgjFTMULVDQaHw5Eald6pskZVR5725wiygO/NG1GRGNvqOFd0nEuWwYx9XjN3PfxdSJIr7vsud+9L7A+Xh4HHbyoRYaRvVlpDfQ+Pkxuuny9wXNsEWN2JTW9qI1KhGx0opNJas89ynG+Pl9GS10+P3tg1QWVZkmaZbq6QFQzdLk9ft8zFmLa/tdtlCH9Poar2X137+FaR58RxRJIkWmOiSM9azyGlxBfaCyVhnFFWJZYIfLbbDWmamqOmaQz/w8lvg9u26/WKwbDPYvFjAv4AAb94DLb+o7QAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="MQ2"
+        title="MQ2"
+        src="/static/e08f8f7fc639119e97b4b7308384709f/1dda8/message-queue-2.png"
+        srcset="/static/e08f8f7fc639119e97b4b7308384709f/27f03/message-queue-2.png 173w,
+/static/e08f8f7fc639119e97b4b7308384709f/376d0/message-queue-2.png 345w,
+/static/e08f8f7fc639119e97b4b7308384709f/1dda8/message-queue-2.png 690w,
+/static/e08f8f7fc639119e97b4b7308384709f/48606/message-queue-2.png 701w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF">Image Credit</a></p>
+<p>Here's the architecture (with only a single data center shown - in reality you'll have multiple data centers):</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 108.95104895104896%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAWCAYAAADAQbwGAAAACXBIWXMAAAsSAAALEgHS3X78AAADhElEQVQ4y21VS4/bVBTur+M/8AfKDrGBHSzYwY4FEiMWRakQLHgKqa1QowpVpc2MoJkyzaSTlz2JPbav7etHnPj98V13nHiaudKRz334u9855/PxHXDUdY3uUPOKz5JPZUVVoeIRZcpX+61131HjTuuoZxiGqMoSJeeG6yHcbLHOcmzLCm4YwYsiJEWJTVHsgKKiQlZWO4wdoOu66PV6OP3vDHGaI+OLwrbwajhs9i91DfPptPG99QbZNoUebHCk53hg83z1DsMsyzAejxuWOTdTLvtktbJsbMjS9ny4MkDKkGPO1XsFz8yFhBEme4a35XCbphBBAJsAwWbTrFn0PRU2TeVxnzzl14chN4VQCVeA2y0CAm7XEc51gd8HGgIChYHEOo5vFKW+htsVZc/wJst2nEw9fPLdAI7w4AqHl6UHiuj6e4a0NM8by1lEZdtMzTME63WznjV7yorGqk507dgBRkmClWnC8QP8PX2EwewxBH1fSng0yXANx8XSEo0ZtovgOvwbOsR1HoI4QhyusbAv8NXT93H0/C5m5oyhsjjCxerKwU9Px+j1X+N+/wwPjidwWPm2QJ0ctoAxkx7h0l7i8csf8WT4C32DDEN4vg+HQh+OJnjx8jWOhyNczJeQSmJluQOsuwzDeA0p/QZAWzqYzUxcGQK2KeBYLnyyiSgdyxbUqqp2iCAKdwyr66rfAAwpFYfhWUJgRabCUUCS1fVgGQ7BHSwWFsyVaOYWL9tsM9TlXpc7QMmQTYa1dByyJLAvoNmXEErcvCgIaVGM+ZUO3VrC8wII10dKwKnu4ds/3yBJi32VDYb6xc//4o/BlE0gwJe/DfHrszeQ9FXyVX51e4F7g49w7/hjmMJsxK7GzArx4Td/USnZW0AFKcjwfv8cH3z9DDrD7vVHeO+zhzh6dIYkYb4k2VkX+H7wKX44+RxLW2MuY373FXL2gYD5R1fYNm/T9QVOR2No1FkUS/QHZ3h4MkHMAkhq0fUlVoYNy/GbtEimIu/kr+4KO0kzrFTyPQ8eD1oM0/JcFits5OFzrTWPIleCD5N9l6l3Ve6IsiT9gjem/O7yrGD7SgiWIE3zt2vUXNfqd77ng27TnpBOBG1iYEWJNDa3EAebw87R+Q3c+gtofceUOP3nHJORhvNXs8Yi/zC8+rbm0G097YZnB1guTBjaVWMrzeRXsj44d9v4H80RjwPyAdNFAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Decoupled"
+        title="Decoupled"
+        src="/static/1a67f0249b4bc12727b7b34cd7c507cc/1dda8/decoupled.png"
+        srcset="/static/1a67f0249b4bc12727b7b34cd7c507cc/27f03/decoupled.png 173w,
+/static/1a67f0249b4bc12727b7b34cd7c507cc/376d0/decoupled.png 345w,
+/static/1a67f0249b4bc12727b7b34cd7c507cc/1dda8/decoupled.png 690w,
+/static/1a67f0249b4bc12727b7b34cd7c507cc/c79eb/decoupled.png 715w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF">Image Credit</a></p>
 <h3 id="useful-architectures"><a href="#useful-architectures" aria-label="useful architectures permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Useful architectures</h3>
 <ul>
 <li><a href="#https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html">WordPress on AWS</a></li>
