@@ -41,7 +41,7 @@
       }
     })
   </script><link rel="preconnect dns-prefetch" href="https://www.google-analytics.com"/><link rel="sitemap" type="application/xml" href="/sitemap.xml"/><link rel="manifest" href="/manifest.webmanifest"/><meta name="theme-color" content="#c62828"/><link rel="apple-touch-icon" sizes="48x48" href="/logos/logo-48.png"/><link rel="apple-touch-icon" sizes="1024x1024" href="/logos/logo-1024.png"/><link rel="alternate" type="application/rss+xml" title="/rss.xml" href="/rss.xml"/><link as="script" rel="preload" href="/app-de6b62e168f74dfdea49.js"/><link as="script" rel="preload" href="/component---src-templates-post-js-14bb0c0f08d5d2bd2e12.js"/><link as="script" rel="preload" href="/styles-f86521059755ea08c76b.js"/><link as="script" rel="preload" href="/commons-bb131559632fe01fc22f.js"/><link as="script" rel="preload" href="/webpack-runtime-f6bc785c54f3e04ab75c.js"/><link as="fetch" rel="preload" href="/page-data/data-system-design/page-data.json" crossorigin="anonymous"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" role="group" id="gatsby-focus-wrapper"><header><h1><a href="/about">Iqbal Khan</a></h1><nav><ul class="Header-module--main-nav--2C0n8"><li><a href="/">All Posts</a></li><li><a href="/algorithms">Algorithms</a></li><li><a href="/data-structures">Data Structures</a></li><li><a href="/dynamic-programming">Dynamic Programming</a></li><li><a href="/general">General</a></li><li><a href="/graphs">Graphs</a></li><li><a href="/strings">Strings</a></li><li><a href="/system-design">System Design</a></li></ul></nav></header><main><div><h1>Data System Design</h1><h3>Data system design</h3><p class="post-module--post-meta--1ci95">May 14, 2020<!-- --> </p><div><ol>
-<li><a href="#intro">Intro</a></li>
+<li><a href="#introduction">Intro</a></li>
 <li><a href="#scalability">Scalability</a></li>
 <li><a href="#reliability">Reliability</a></li>
 <li>
@@ -58,16 +58,35 @@
 <li>
 <p><a href="#single-leader-replication">Single Leader replication</a></p>
 <ul>
-<li><a href="#synch-vs-asynch-replication">Synch vs Asynch replication</a></li>
-<li><a href="#eventual-consistency">Eventual Consistency</a></li>
+<li><a href="#single-leader-synch-vs-asynch-replication">Single Leader: Synch vs Asynch replication</a></li>
+<li><a href="#single-leader-eventual-consistency">Single Leader: Eventual Consistency</a></li>
 </ul>
 </li>
-<li><a href="#multi-leader-replication">Multileader replication</a></li>
+<li>
+<p><a href="#multi-leader-replication">Multileader replication</a></p>
+<ul>
+<li><a href="#multi-leader-pros">MultiLeader: Pros</a></li>
+<li><a href="#multi-leader-cons">MultiLeader: Cons</a></li>
 </ul>
 </li>
-<li><a href="#caching">Caching</a></li>
+<li><a href="#leaderless-replication">Leaderless replication</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#caching">Caching</a></p>
+<ul>
+<li><a href="#cache-types">Cache Types</a></li>
+</ul>
+</li>
 <li><a href="#content-delivery-network-cdn">CDN</a></li>
 <li><a href="#web-tier-and-statelessness">Web Tier and Statelessness</a></li>
+<li>
+<p><a href="#data-centers">Data Centers</a></p>
+<ul>
+<li><a href="#data-centers-geo-routing">Data Centers: Geo-Routing</a></li>
+</ul>
+</li>
+<li><a href="#userful-architectures">Useful architectures</a></li>
 </ol>
 <h3 id="introduction"><a href="#introduction" aria-label="introduction permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Introduction</h3>
 <p>If you were to setup your website today, from scratch, how would you go about doing it? You'd probably have a single server to serve your website. You'll have something like this:</p>
@@ -295,11 +314,11 @@ Here, load balancers act at the application level, the highest in the OSI model.
 <h3 id="single-leader-replication"><a href="#single-leader-replication" aria-label="single leader replication permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Single Leader Replication</h3>
 <p>As we said in our intro, this type of replication deals with a single node acting as a leader. This node is responsible for receiving insert/update requests from the user and then propagating any changes made to the data to the followers. We have the remaining nodes acting as followers: followers are used for read operations only. Whenever the leader writes new data to its local storage, it also sends the data change to all of its followers.</p>
 <p>The leader can transmit the changes to the followers via 2 methods: <strong>synchronous replication</strong> and <strong>asynchronous replication</strong>:</p>
-<h3 id="synch-vs-asynch-replication"><a href="#synch-vs-asynch-replication" aria-label="synch vs asynch replication permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Synch vs Asynch Replication</h3>
+<h3 id="single-leader-synch-vs-asynch-replication"><a href="#single-leader-synch-vs-asynch-replication" aria-label="single leader synch vs asynch replication permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Single Leader: Synch vs Asynch Replication</h3>
 <p>In <strong>synchronous replication</strong>, the leader waits to get an ok response from <strong>all</strong> followers before sending an ok response back to the client. The advantage here is that all the followers will ALWAYS have up to date information. Disadvantage is that if one follower is down, the entire system will grind to a halt. This defeats the purpose of having a highly available system! Therefore, it is impractical to have completely synchronous replication.</p>
 <p>In <strong>asynchronous replication</strong>, the leader will only update its local storage with the updates and send the ok response back to the client, without waiting for ANY of the followers to send back the ok response. Advantage here is response times are low. Disadvantage here is that if the leader goes down, there could be information loss.</p>
 <p><strong>Compromise</strong> here is that replication is usually <strong>semi-asynchronous</strong> where the leader will wait for at-least one follower to respond with an ok before sending the confirmation back to the client. </p>
-<h3 id="eventual-consistency"><a href="#eventual-consistency" aria-label="eventual consistency permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Eventual consistency</h3>
+<h3 id="single-leader-eventual-consistency"><a href="#single-leader-eventual-consistency" aria-label="single leader eventual consistency permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Single Leader: Eventual consistency</h3>
 <p>In read heavy workloads, the attractive option is to create many followers and distribute read requests across the followers. This removes load from the leader and allows read requests to be served by nearby replicas. As the number of followers increase, the probability that one of the followers has stale data (assuming asynchronous replication) also increases. We call this phenomenon <strong>eventual consistency</strong>: the reality where all followers will eventually have up to date data. This eventual propagation of data to followers is called <strong>replication lag</strong>. </p>
 <p>This replication lag results in poor customer experience! Imagine you posted a comment on facebook and when you refreshed the page your comment disappeared! There are a few solutions to tackle this problem:</p>
 <ul>
@@ -315,6 +334,25 @@ Here, load balancers act at the application level, the highest in the OSI model.
 </ul>
 <p>Another solution is to read from the same replica for the same user. That way the user is always guaranteed to see up to date, instant changes. </p>
 <h3 id="multi-leader-replication"><a href="#multi-leader-replication" aria-label="multi leader replication permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Multi-leader Replication</h3>
+<p>If you have a setup with multiple data-centers located in geographically separated locations, you'd have to use multi-leader replication. That is because each user would be connected to the data center closest to him/her and the leader from that data center would then asynchronously replicate that information to other leaders and data centers.   </p>
+<h3 id="multi-leader-pros"><a href="#multi-leader-pros" aria-label="multi leader pros permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Multi-leader: Pros</h3>
+<p>As compared to single leader replication, there're advantages that a multi-leader setup enjoys:</p>
+<ul>
+<li><strong>Performance</strong></li>
+</ul>
+<p>In single leader, every write must go to the single leader. No matter how far you're located from that leader, every write will go the leader via the internet. In multi-leader, every write can be processed at the local data center and then replicated to other data centers. This results in a better perceived performance.</p>
+<ul>
+<li><strong>Tolerance</strong></li>
+</ul>
+<p>If single leader goes down, new writes/updates need to be halted and a new leader has to be elected before accepting new writes/updates. With multi-leader, if a leader goes down, other centers can continue to operate and the down leader can catch up once it is back.  </p>
+<h3 id="multi-leader-cons"><a href="#multi-leader-cons" aria-label="multi leader cons permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Multi-Leader: Cons</h3>
+<p>In single leader, since all writes go to one leader, there's always just a single source of truth. If 2 clients try to write at the same time, one client would have to wait until the other is done. With multi-leader, that is not the case: there can be write conflicts. </p>
+<p>To resolve for write conflicts, there're a bunch of different techniques: last write wins, merger of writes, ask user to resolve conflicts etc. </p>
+<p>If your setup requires low latency high availability for geographically dispersed users, multi-leader configuration is the way to go. </p>
+<h3 id="leaderless-replication"><a href="#leaderless-replication" aria-label="leaderless replication permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Leaderless replication</h3>
+<p>Another method to replicate data across servers is to get rid of leaders entirely: every node is a leader. The client sends its writes to multiple nodes and waits for a specific number of acknowledgements before a write can be considered a success. </p>
+<p>If a node goes down and is unable to receive a write, it'll return stale data. Upon returning stale data, up to date nodes can provide the stale data node with up to date information. This is called <strong>read repair</strong></p>
+<p>Another way to prevent stale data from being returned is to perform periodic scans of all nodes and update any nodes that have fallen behind. This is called <strong>anti-entropy process</strong>.</p>
 <h3 id="caching"><a href="#caching" aria-label="caching permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Caching</h3>
 <p>Now, as you can imagine, querying the database for the same information over and over again can be quite expensive. For example, let's say we perform a join on a few tables to render on each user's page the most frequently visited part of the site for a particular day. Getting this information for each and every site visitor is expensive. Since this information does not change frequently, we can look up this information once and then <strong>cache</strong> it for future use. This will improve the performance of our application. </p>
 <p>The <strong>cache tier</strong> is temporary data store layer that lies between the server and the database. If the information we want is present in the cache tier, we'll grab it from there, otherwise we'll query the DB, store this information in cache and return. Retrieving data from the cache tier is faster than querying the database for the same information. In addition, using the cache tier will also reduce database workloads. We can use Memcache, Redis etc based on the data we're caching. </p>
@@ -345,10 +383,157 @@ Here, load balancers act at the application level, the highest in the OSI model.
 <li><strong>Type of data</strong>
 Since cache data is read once and then stored in cache tier, it is not advisable to cache data that changes frequently. The ideal candidate for cached data is one that is read frequently but updated infrequently. It is a good idea to set an expiration policy where the cache is <strong>invalidated</strong> and the data in cache is refreshed by performing another read of the DB. </li>
 <li><strong>Inconsistency</strong>
-Even if you set an expiration policy, your cache data might be out of date therefore it is important to keep cache and data store in sync.</li>
+Even if you set an expiration policy, your cache data might be out of date therefore it is important to keep cache and data store in sync using TTL.</li>
 <li><strong>Eviction Policy</strong>
 Once the cache is full, we'll have to start removing content from the cache. To do so, we can use something called LRU (least recently used) cache eviction policy where the least recently used data is removed from cache.</li>
 </ul>
+<h3 id="cache-types"><a href="#cache-types" aria-label="cache types permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Cache: Types</h3>
+<p>There are several strategies where the choice to pick the correct strategy depends on your <strong>data access patterns</strong>. For example: do you have more writes than reads? (ie time based logs), do you have write once and read multiple times? (ie think user profiles on Facebook), do you have a combination? (update and search data). Depending on your use-case, your caching strategy would evolve. Let's look at the various types of caches available.</p>
+<ul>
+<li><strong>Side Cache</strong></li>
+</ul>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 53.34207077326344%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAACXBIWXMAAAsSAAALEgHS3X78AAACcklEQVQoz2NgYGDQAGJDIFYGYh0gNgViViBmCIqIYoCB4/93sMDYSzzfMOADzFADWBn4GUGYjcGOhTH0RCxDgvBWJpCCebLf82fz/r4/R+LHxCP/d4HFFtl8YCALLAm/rz6T48/fOQz//y9j+v9/gd5nd5D4HNGfTFg1MOmzQj3IwMAyV1CcYRaHJMNMJlG1xXqKZhsNdCrmNagtEP55dSXQsNlc/94vtHqvDna1/HdGrAb+XSjJ9GueIPP/2exMAiUMTC4bnDkq92ZI1OzOkGBYZM/6/z8D097cPbatstfrm40PO4D0NDLeBhumXf4EbIZW+WNGrfInLEDMjGK45Nf/bPMO14tt3dPLDuIDQ4njbnCE6WFOBolKQQbhJn4GYZD4iSgpxjdzFjH8X57LUN56FNWlf1YYBPxfLO/zbLVF9uP1Dq7Ici/nzJZ6NmMSO6FwVi1/ZqZd8XgG0IWtDP8X8vz/PxcU4gz//82T2H9l1X/OVzO6xF5On6b7ICND/bq1tfwtHx+Fa+7uitfd3BRv2Nmp3ouNlXy9bDnfmYkLhf7/YWAxrbxfCDTsJdDQSwz/5nD9/j+d4fd/YDT+mSt94OncQ+qvZkzUfjl9qtiDzEyx+4mJcvdTUqTvp6aC8d2oKPlHhYUSr+YvELw2Zb7I/+0hXJZV95I0y5+sARo4j+HffKHf/2ez/f6/kP3/3wVSm8hJWmrlT921K56s1Kp4Mp1hfbWB2/JSXf9lJbpBe1qMtUEKtlelMb6aMZnhYV4ew/2kJMb7aWmMD9LTGYFBwHg3OprxUXExw5v58xmmpKWAI8RclY/PwNpL19DKQxEA213y1G8yMX0AAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Side cache"
+        title="Side cache"
+        src="/static/c6a2425e60d48e817d76a0be14bf785d/1dda8/cache-aside.png"
+        srcset="/static/c6a2425e60d48e817d76a0be14bf785d/27f03/cache-aside.png 173w,
+/static/c6a2425e60d48e817d76a0be14bf785d/376d0/cache-aside.png 345w,
+/static/c6a2425e60d48e817d76a0be14bf785d/1dda8/cache-aside.png 690w,
+/static/c6a2425e60d48e817d76a0be14bf785d/76400/cache-aside.png 763w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://codeahoy.com/2017/08/11/caching-strategies-and-how-to-choose-the-right-one/">Image Credit</a></p>
+<p>This is the simplest of them all: the application, before calling the DB, checks the cache to see if there's a cache hit: if so, application returns the data. In case of a cache miss, the DB is queried, cache is updated and data is then returned to the application. If the cache goes down, application can continue to query the DB.</p>
+<ul>
+<li><strong>Read Through Cache</strong></li>
+</ul>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 31.323722149410223%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAGCAYAAADDl76dAAAACXBIWXMAAAsSAAALEgHS3X78AAABlUlEQVQY02NgYGAwBWI1IFYAYg0gNmZgZBBjAAFxBoaJ4RcZJjP8ZwRxJwHp1X73GP5PYmD4HxXMsDargwEDbGt1411QbM73eV0o14IaRw4GBla2/wzbMNVtu8wG5/z/D2eG3/rPoF3+WE2r4om1VvkTUYb/C8Tu/J/LdfvfHK73/xdJ14AU6U5iYGeoZ2BhSAdiIJgr+bNtNs/vx3MkfzaB+DMY+IEubgS7WqXwgSjQsJtAQ/9qlT9eyPBvDsf/f9OBdi5i+P9lkewyhhcf+X1WGWt7LvfSVL3DLNcTe8h3EdP//3OAShaw/P+/P/p47Ie2JLN7ZQ32H8vzHWbXr7LUKH8yXbv80VygoXUM/5fyAVUy/v+/hvH/n0VS88E+2ubH8n/lf2YQe1XEc+nZ3H8eLAUqmcPz7/a2xCuK/yf6cl8p7RD6XxPKHVt/QVKr8sUKrcrnB4G4geFWv3LD1S659mvdsn3Ppmu4gAzp8GYAe8eC4QQkMqyuaHYoXWiqtlhnjBG4XH6MeqE9Vroxc131gjvUAGNEouFdEErHAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Read through Cache"
+        title="Read through Cache"
+        src="/static/6f6b76685ece0e223e0e8bc719473b2b/1dda8/read-through.png"
+        srcset="/static/6f6b76685ece0e223e0e8bc719473b2b/27f03/read-through.png 173w,
+/static/6f6b76685ece0e223e0e8bc719473b2b/376d0/read-through.png 345w,
+/static/6f6b76685ece0e223e0e8bc719473b2b/1dda8/read-through.png 690w,
+/static/6f6b76685ece0e223e0e8bc719473b2b/76400/read-through.png 763w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://codeahoy.com/2017/08/11/caching-strategies-and-how-to-choose-the-right-one/">Image Credit</a></p>
+<p>As the name suggests, read through cache is placed between the application and the database. This means that the application ONLY interacts with the cache and NOT the DB. Any cache misses are populated and cache hits are returned. For example:</p>
+<p> (1) Given a key-value pair, the application first tries to read the data from DB. If the cache is populated with the data (cache hit), the value is returned. If not, on to step 2.</p>
+<p> (2) Transparent to the application, if there was a cache miss, DAX fetches the key-value pair from DB.</p>
+<p> (3) To make the data available for any subsequent reads, the key-value pair is then populated in the cache.</p>
+<p> (4) The key-value pair then returns the value back to the application.</p>
+<p> If cache goes down, access to DB will also be lost. Disadvantage here is that on the first request, since the cache is empty, you'll have to query the DB so the first request will always be slow. Read through cache is a good use case for <strong>read heavy</strong> work loads.  </p>
+<ul>
+<li><strong>Write Through Cache</strong></li>
+</ul>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 31.323722149410223%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAGCAYAAADDl76dAAAACXBIWXMAAAsSAAALEgHS3X78AAABi0lEQVQY02NgYGDQBWJVIJYBYi0gNgFicQYoWOr3hmESw39GEHsykJ7mcYWBgYmBwUZFjkHfI5sBA9xaEMK9qsqK9858P+5VNY7sQCE2mFyWbR8jjL1lxxk2BizA0CGMUav8sZpWxRNrIC3K8G+B2N3/c7lu/5vD9e7/Etk6sEtiOdkcTV1YYJrmSf5qm83z5/F8yb/NIL6JsDuzqUM82ALN9v9CQMNuapc//qtV/mQhw785HP//TWf4/38xw//PM4TnMjA0iDhZaGpYGtlqMFgzsNeab/Sbz/r//yygkhnsP//XWK7z5TFgkDE3dtAx1pBU1A+o19cuvTcb6Lo5WuWP6hj+L+X7/38+4///a5n+/5kvPgfsvTQG1nSLRmYQu8v9gMJMnl8PlwCVzOT9eXuq7wVpkHiY22KwvG7KRkmtyucrgfggEDcw3OpXbrjaJdd+rVu279kMLVeQov8LGMBh9x8IwUFgdV2zQ+lCU535ZmMQf5XYf3jY6qTvYtQL67XSjZnrqhfSoQYAgeGPOo7MPhQAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Write through Cache"
+        title="Write through Cache"
+        src="/static/e9becdf51ce8828e9cd89bb5a6aae481/1dda8/write-through.png"
+        srcset="/static/e9becdf51ce8828e9cd89bb5a6aae481/27f03/write-through.png 173w,
+/static/e9becdf51ce8828e9cd89bb5a6aae481/376d0/write-through.png 345w,
+/static/e9becdf51ce8828e9cd89bb5a6aae481/1dda8/write-through.png 690w,
+/static/e9becdf51ce8828e9cd89bb5a6aae481/76400/write-through.png 763w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://codeahoy.com/2017/08/11/caching-strategies-and-how-to-choose-the-right-one/">Image Credit</a></p>
+<p>Similar to read-through cache, write-through cache also sits in line with the DB and the cache is updated as data is written to DB. Here're the data flow for a write through cache:</p>
+<p> (1) For a given key-value pair, the application writes to the DB.</p>
+<p> (2) Cache intercepts the write and then writes the key-value pair to DB.</p>
+<p> (3) Upon a successful write, the cache is hydrated with the new value so that any subsequent reads for the same key-value pair result in a cache hit. If the write is unsuccessful, the exception is returned to the application.</p>
+<p> (4) The acknowledgement of a successful write is then returned to the application.</p>
+<p> Write through and read-through caches can be deployed together to simplify the use of caches. Because a write-through cache automatically caches the update, there's a slight amount of latency for writes. However, the advantage here is that data that is written is also immediately available for reads! Think about it: you have a DB that stores title and summary of new books that you publish. Say you've published a new book and on the landing page of your website you have a huge banner advertising this new book. Before you push the banner to your site, you update your DB with the book title and summary. As soon as you write to the DB, your cache is updated (since it is a write through cache). Now when millions of users flock to your website, they request this new book and its summary which is returned from the cache and NOT the DB. </p>
+<p> Therefore, <strong>write-through cache is advantageous for read heavy workloads</strong>. </p>
+<ul>
+<li><strong>Write Around Cache</strong></li>
+</ul>
+<p> <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 30.219146482122262%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAGCAIAAABM9SnKAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAA/0lEQVQY03VQPUsDQRC9wr9la+kv0TKFpBUtBMVWERtRsZVY2KiVQgS7FAcGRE0uMbe3H7d7e7s7s84KXmFweDDMzHszj8niUiAm/BaA4JTkUlQRPCJQDyhhomTx38DQCGeYM9zrMsEIp5m3smP8FfuA4znmRfwSgU7Bj4dpG6cuTQPQZbh7zvunD5+LOtO6ZowppYSklaEQ2DsvN04mZ482tpVWrJHq4mo8uH4DI2o+I/Hm3uXK2vbgKc+MMSTmnJclo8FH5dYPR6s7L/u3RXIevLF+62CyezwnDxA8feF+OOof3by+z7Klb6HQ7UJZ63zXNGAtuo7gWxtcY3T9DRbvT0Fshbo+AAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Write Around Cache"
+        title="Write Around Cache"
+        src="/static/b9b36f9b0fde5521fff302d20eb713fd/1dda8/write-around.png"
+        srcset="/static/b9b36f9b0fde5521fff302d20eb713fd/27f03/write-around.png 173w,
+/static/b9b36f9b0fde5521fff302d20eb713fd/376d0/write-around.png 345w,
+/static/b9b36f9b0fde5521fff302d20eb713fd/1dda8/write-around.png 690w,
+/static/b9b36f9b0fde5521fff302d20eb713fd/0b7a7/write-around.png 867w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://aws.amazon.com/blogs/database/amazon-dynamodb-accelerator-dax-a-read-throughwrite-through-cache-for-dynamodb/">Image Credit</a></p>
+<p>Some workloads in the IoT or ad tech space have a considerable amount of data that is written once and read never. In these scenarios, it often doesn’t make sense to use a write-through cache. If the cache is populated with data that is never read, it usually means that the utilization and cache/hit miss ratio is low, reducing the utility of the cache. To work around this issue (pun intended), you can employ a write-around pattern in which writes go directly to DynamoDB. Only the data that is read—and thus has a higher potential to be read again—is cached.</p>
+<ul>
+<li><strong>Write Back Cache</strong></li>
+</ul>
+<p> <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 17.14898177920686%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAADCAIAAAAcOLh5AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAsUlEQVQI12WMsQrCMBiE+wA+mZubD+Ciiy/g6Ka7U3EQFCfBoWNBEAQFq1BFhRZLaVNtq8QKJumf/AZXj7tvueMM/JOU6kLULkDyVKhASc1yGbESQEKpB84paPTney8xKKVxHBNCsizTVLJ8c2yPbrWeZy4oy30E6mxps+Wej5S/AoRibK0q1e7Edg0A4D8JIRjj+vgjZGd2rQ8O0/UdUWmHOZj2Iy10CTpRkg6tjR8mXy3Pn38bJg+wAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Write Back Cache"
+        title="Write Back Cache"
+        src="/static/5dcd7d3e754504c7c99feafbffd5efb2/1dda8/write-back.png"
+        srcset="/static/5dcd7d3e754504c7c99feafbffd5efb2/27f03/write-back.png 173w,
+/static/5dcd7d3e754504c7c99feafbffd5efb2/376d0/write-back.png 345w,
+/static/5dcd7d3e754504c7c99feafbffd5efb2/1dda8/write-back.png 690w,
+/static/5dcd7d3e754504c7c99feafbffd5efb2/dbb86/write-back.png 933w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://aws.amazon.com/blogs/database/amazon-dynamodb-accelerator-dax-a-read-throughwrite-through-cache-for-dynamodb/">Image Credit</a></p>
+<p>Whereas both read-through and write-through caches address read-heavy workloads, a write-back (or write-behind) cache is designed to address write-heavy workloads. In this scenario, items are written to the cache and then asynchronously written to the underlying data store. The process is as follows:</p>
+<p>(1) The item is written to the cache.</p>
+<p>(2) The item is acknowledged by the cache, and success is returned to the application.</p>
+<p>(3) As a background process, items are de-staged and written to DynamoDB.</p>
+<p>(4) The cache acknowledges the write.</p>
 <h3 id="content-delivery-network-cdn"><a href="#content-delivery-network-cdn" aria-label="content delivery network cdn permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Content delivery network (CDN)</h3>
 <p>While we're on the topic of getting content to users fast, it is apt to talk about content delivery networks or CDNs. A CDN is a network of geographically dispersed servers that is used to deliver <strong>static</strong> content. CDN caches static content such as images, CSS, JS and HTML pages that are then delivered to customers close to the server in the CDN. CDNs help improve site load times. Examples of CDNs are Amazon CloudFront, Akamai ImageManager, Fastly IO, PageCDN etc.</p>
 <p>Here's how a CDN might work:</p>
@@ -418,7 +603,98 @@ You should consider how your website/application copes with CDN failure. If ther
 <li>Database load is lightened by caching data</li>
 <li>Data stored in the database is replicated across followers so that reads are faster</li>
 </ul>
-<h3 id="web-tier-and-statelessness"><a href="#web-tier-and-statelessness" aria-label="web tier and statelessness permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Web Tier and Statelessness</h3></div><div class="post-module--post-meta--1ci95"><div class="PostTags-module--tag-container--ksSgQ"><a href="/tags/data-system-design"><span>Data system design</span></a></div><div class="SocialLinks-module--social-links--1RDpJ"><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--reddit"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--reddit "><g><circle cx="32" cy="32" r="31" fill="#5f99cf"></circle></g><g><path d="m 52.8165,31.942362 c 0,-2.4803 -2.0264,-4.4965 -4.5169,-4.4965 -1.2155,0 -2.3171,0.4862 -3.128,1.2682 -3.077,-2.0247 -7.2403,-3.3133 -11.8507,-3.4782 l 2.5211,-7.9373 6.8272,1.5997 -0.0102,0.0986 c 0,2.0281 1.6575,3.6771 3.6958,3.6771 2.0366,0 3.6924,-1.649 3.6924,-3.6771 0,-2.0281 -1.6575,-3.6788 -3.6924,-3.6788 -1.564,0 -2.8968,0.9758 -3.4357,2.3443 l -7.3593,-1.7255 c -0.3213,-0.0782 -0.6477,0.1071 -0.748,0.4233 L 32,25.212062 c -4.8246,0.0578 -9.1953,1.3566 -12.41,3.4425 -0.8058,-0.7446 -1.8751,-1.2104 -3.0583,-1.2104 -2.4905,0 -4.5152,2.0179 -4.5152,4.4982 0,1.649 0.9061,3.0787 2.2389,3.8607 -0.0884,0.4794 -0.1462,0.9639 -0.1462,1.4569 0,6.6487 8.1736,12.0581 18.2223,12.0581 10.0487,0 18.224,-5.4094 18.224,-12.0581 0,-0.4658 -0.0493,-0.9248 -0.1275,-1.377 1.4144,-0.7599 2.3885,-2.2304 2.3885,-3.9406 z m -29.2808,3.0872 c 0,-1.4756 1.207,-2.6775 2.6894,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 -1.4824,0 -2.6894,-1.2002 -2.6894,-2.6758 z m 15.4037,7.9373 c -1.3549,1.3481 -3.4816,2.0043 -6.5008,2.0043 l -0.0221,-0.0051 -0.0221,0.0051 c -3.0209,0 -5.1476,-0.6562 -6.5008,-2.0043 -0.2465,-0.2448 -0.2465,-0.6443 0,-0.8891 0.2465,-0.2465 0.6477,-0.2465 0.8942,0 1.105,1.0999 2.9393,1.6337 5.6066,1.6337 l 0.0221,0.0051 0.0221,-0.0051 c 2.6673,0 4.5016,-0.5355 5.6066,-1.6354 0.2465,-0.2465 0.6477,-0.2448 0.8942,0 0.2465,0.2465 0.2465,0.6443 0,0.8908 z m -0.3213,-5.2615 c -1.4824,0 -2.6877,-1.2002 -2.6877,-2.6758 0,-1.4756 1.2053,-2.6775 2.6877,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--twitter"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--twitter "><g><circle cx="32" cy="32" r="31" fill="#00aced"></circle></g><g><path d="M48,22.1c-1.2,0.5-2.4,0.9-3.8,1c1.4-0.8,2.4-2.1,2.9-3.6c-1.3,0.8-2.7,1.3-4.2,1.6 C41.7,19.8,40,19,38.2,19c-3.6,0-6.6,2.9-6.6,6.6c0,0.5,0.1,1,0.2,1.5c-5.5-0.3-10.3-2.9-13.5-6.9c-0.6,1-0.9,2.1-0.9,3.3 c0,2.3,1.2,4.3,2.9,5.5c-1.1,0-2.1-0.3-3-0.8c0,0,0,0.1,0,0.1c0,3.2,2.3,5.8,5.3,6.4c-0.6,0.1-1.1,0.2-1.7,0.2c-0.4,0-0.8,0-1.2-0.1 c0.8,2.6,3.3,4.5,6.1,4.6c-2.2,1.8-5.1,2.8-8.2,2.8c-0.5,0-1.1,0-1.6-0.1c2.9,1.9,6.4,2.9,10.1,2.9c12.1,0,18.7-10,18.7-18.7 c0-0.3,0-0.6,0-0.8C46,24.5,47.1,23.4,48,22.1z" fill="white"></path></g></svg></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--facebook"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--facebook "><g><circle cx="32" cy="32" r="31" fill="#3b5998"></circle></g><g><path d="M34.1,47V33.3h4.6l0.7-5.3h-5.3v-3.4c0-1.5,0.4-2.6,2.6-2.6l2.8,0v-4.8c-0.5-0.1-2.2-0.2-4.1-0.2 c-4.1,0-6.9,2.5-6.9,7V28H24v5.3h4.6V47H34.1z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--linkedin"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--linkedin "><g><circle cx="32" cy="32" r="31" fill="#007fb1"></circle></g><g><path d="M20.4,44h5.4V26.6h-5.4V44z M23.1,18c-1.7,0-3.1,1.4-3.1,3.1c0,1.7,1.4,3.1,3.1,3.1 c1.7,0,3.1-1.4,3.1-3.1C26.2,19.4,24.8,18,23.1,18z M39.5,26.2c-2.6,0-4.4,1.4-5.1,2.8h-0.1v-2.4h-5.2V44h5.4v-8.6 c0-2.3,0.4-4.5,3.2-4.5c2.8,0,2.8,2.6,2.8,4.6V44H46v-9.5C46,29.8,45,26.2,39.5,26.2z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div></div></div><hr/></div><nav><ul class="post-module--pagination--1F-V0"><li><a rel="prev" href="/sorting-problems">← <!-- -->Sorting Problems</a></li><li><a rel="next" href="/todo-problems">TODO Problems<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--3Dvn1"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2uglW">Copyright © 2020. All rights reserved.</div></div></footer></div></div><script>
+<h3 id="web-tier-and-statelessness"><a href="#web-tier-and-statelessness" aria-label="web tier and statelessness permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Web Tier and Statelessness</h3>
+<p>To understand statelessness we must first understand what stateful means. In a stateful architecture, a user's data is "remembered" between sessions. For example, say a user connects to server A, updates his/her profile, and then disconnects. The next time user A re-connects, he/she needs to be re-directed to server A since that is where user's latest information is. Example:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 57.53588516746411%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAYAAABiDJ37AAAACXBIWXMAAAsSAAALEgHS3X78AAACAklEQVQoz21TTYvUQBScf+lP8Ow/8b4XwbPgRQ/CigiCLCwzO4Lgyi4sSczHdNKdpPPZScp6rRnJroFHp7tS9eq919mBj9YaQRBgmiYsy+JjnmeBUNc10ixD0zR+L+crVhQFwjDc8HYCyOFhv4dz7gkpVwrH441P+hgTE4fDwfM2gm3XoaSTlfDP4YK+H5CpfHO+Clq6NtWW5wWzk0JR/U+QDguN3NQbdyuWpBl0ZZ8K5uxFUf4hPXZhyhJKl/gLbpJpY86Cgkns7OhgWFZSNmjGCe3ozqSG72U/Ii4t5Ds7uHOy1k0wnfAsORPqYcQsghXF0sygMBY9p6UpMJEwyjs/ynXl8brtPCbnbpphKK5ZVZwUqNoWlgkkKR0u+HL3DsfoCiMrUW3vBYeJzgfgR3rEx9s33r1qBy8oYYYFD8Ud3n9/RXc9SiaoRVDKf339Apc/L3wrKoJOBN3IGQPX4VtcfH3uMSlTxCSZI3ifX+Hl52fs3YSJe+9woK1v0Sfcn244KgqyBWvJli4ifYtDeOnvWu1LXrEZeR1hH3zAQBM98YYJd0ma4hSfcEoYaQLDXomguIx4ndIogWKf4ihEkhd0shBbkGiDX0FETCMKA87AUHDGLuPYY/4FEhmbXLCHiyfNUE2HrKqQmJJrjcy2PplMWXc9lG2Q8lrlXFXTshUzfgPSZJwI19ysDQAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Stateful"
+        title="Stateful"
+        src="/static/25cca893f174729314fa4790311f032e/1dda8/stateful.png"
+        srcset="/static/25cca893f174729314fa4790311f032e/27f03/stateful.png 173w,
+/static/25cca893f174729314fa4790311f032e/376d0/stateful.png 345w,
+/static/25cca893f174729314fa4790311f032e/1dda8/stateful.png 690w,
+/static/25cca893f174729314fa4790311f032e/44348/stateful.png 836w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF">Image Credit</a></p>
+<p>Now if user A's login information is stored on server A, then to authenticate user A, all his/her requests need to be routed to server A. The issue here is that the same client must be routed to the same original server. This leaves us at a disadvantage that prevents us from scaling down or up since the server needs to stay up in-case user A logs back in! This also makes it difficult for us to handle server failures. </p>
+<p>A better approach would be to have non-sticky sessions where no user information is stored on ANY server. Instead, user information is kept in shared storage in the <strong>data tier</strong> that allows us to fetch user information whenever he/she logs in. This is called <strong>stateless</strong> architecture:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 86.33177570093459%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAARCAYAAADdRIy+AAAACXBIWXMAAAsSAAALEgHS3X78AAAB9UlEQVQ4y5WUTY7TMBTHezfEghNwAhasWHCE2XIANkiz4BAjMUJCLKAdzWKKGNKCRjSVmzhJ48n3l+M/tlunSYZqOpYSO37PP//f83MmQgj0m/ke9/+zj22qTdQrSRI4joMoivRk27baWfWq5XkOQgiyLBvYzUMphed5qOt6BwyCAPP5XE5SvYBzrhcZYBiGmE6n8H2/Ax7sAouFBcuyDkDeNCAbF/dxOgjNAKuqwl97jbIsO6BpXI7tDUXI2C7kfi7SoobPYhCHopGbqN1VU6G6AevBhE4PDUKwtEDD2842MUqMI5dGVzraUnFR1TtgmmBFnE7VlkW4W2+Q5IUKpYtG9Z1CAzVqVShxViCIUmQlh8dK1FI0vY/1vDnffj4fAMfgVnDkFbCgt5jZF7gh35DINLaiHaw5qrAP3D2AnxJ8vH6L89kbfJi+xtK/gkqZaPlw82PAA5TrkCzvCmeXz/D++yvZP8fl8nwfanOawm6soDJR29TH9d0FfthfcLP6BDdeoVEKRftEoOzVwaRFBY8yWfQMjKUaVsvCPzmHY5VcjvO6gu36qOR3zZvj/o8pNDeirkrYxN3foId+jwPFsLbKqsEfspWF3uhCHtfeSSHrHO6v1Oy3jxdnnzFb7n4O6qqNfZ8E/GkzvHz3Fb/WbP83Og78BxYKKcHXEJZBAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Stateless"
+        title="Stateless"
+        src="/static/29ff6f7b6691f216093da54a83b4dd87/1dda8/stateless.png"
+        srcset="/static/29ff6f7b6691f216093da54a83b4dd87/27f03/stateless.png 173w,
+/static/29ff6f7b6691f216093da54a83b4dd87/376d0/stateless.png 345w,
+/static/29ff6f7b6691f216093da54a83b4dd87/1dda8/stateless.png 690w,
+/static/29ff6f7b6691f216093da54a83b4dd87/0d271/stateless.png 856w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF">Image Credit</a></p>
+<p>As you can see above, our users can be re-directed to ANY server which will then fetch state data from a shared data store. As a result, state data is kept out of web tier which makes our <strong>web tier stateless</strong>. </p>
+<p>Now, our overall picture with a stateless web tier looks like so:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 95.41511771995043%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAATCAYAAACQjC21AAAACXBIWXMAAAsSAAALEgHS3X78AAADLklEQVQ4y3VUW08TQRTu//MP+AN8Qx+Mf8FnTYzxgQBqjI/GRKPBeMELBFrUaE1FKAW20NLL7G12Z6+z+3nObFsK6Elmd+fMmW+/c61hTsqyRJTlkEmKSBeIco2Q9nFRmsXfidZsaGz5ffF+LcsydLtdZFlqlCPPh+f7CFQEFcdGJxwXNi2+LtMMUxiCxnGkEeTFTFdrt9tYXlrCj2aLGBQIkgw6z7C3uwvLsoxRp9MB27H4dO5HKZI4xXcR4e5RjmcD0tFdAyilRKPRgG07YJ0iV1EWOO71MRqNjFvCtiHGY3YKktxOKRSa7GJd4s/AxpEbVgzZ5fkYaIqPHYRwwwgjqci93MTtxKYwRAkc0vP+nJA3KPRZDPlRFBXdJEkghMDpYAjXddG3JQ4GDlzPw3A0huN6M9tymhjDG7Pv2kx5IWMsK+/auHZ/nX4UI44ipGl6yfYc8JShKYNJDAqirycsNnb6ePpxj9gSS8eBL/0JH+B/RGoTHCPF3GEQ59O7iLO5WptjdZHdGUNUm4Qy93uwCTsaoutYaJ1uQWUx6kfvqZxC7AzrEOEA+YXozLOcAeqSF/Bo+zra4zp2x1/w5NstAvRwb/0qglRgpXEDbbEJbpaxoCRRGJRS/2bI7sZ5ju3OKsbyBH3nAN8O3iJKA2y0nyGIPNQ7r0h/SHUIhCpERIniTrsMOElKQoCCak5RF6g4wVB42LN62PlzSKUTEKMAklryrNFwKUG1f2WK95nOoXhI0PJCH6ejgalDFSTI06pTyjngojjnMkwMWRhEEjsunYCGQ07vnCdNmsBVHoS0iakLJak2A+5p7v3ifNnEuhpTPy0be6fVVOH9WusEPepTbWwKc35kk9tpSKwdWhKxShES+P6hgKShYQAVxY4Z3Vz5iqXVXxj2j9E66OPqnQ283NrHcdeC1RtiYbGO542uYdITAa7cXkXTqgjw2eO1/SmgpiwXWCawz81qZAlX4uGbJtonwlQBZ/PBix/41KwAhR9j4f4HtIg1y+Lrn9ikzjKAPJkjuuB7DmTgm3oMqb58z0YQhmafkhfSd+hHriHAIy6hmPKb8xD6LjQN6b+BA62Ezgtc2AAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Overall Stateless"
+        title="Overall Stateless"
+        src="/static/2f1047f1f06cdb62f273283f639467b5/1dda8/overall-stateless.png"
+        srcset="/static/2f1047f1f06cdb62f273283f639467b5/27f03/overall-stateless.png 173w,
+/static/2f1047f1f06cdb62f273283f639467b5/376d0/overall-stateless.png 345w,
+/static/2f1047f1f06cdb62f273283f639467b5/1dda8/overall-stateless.png 690w,
+/static/2f1047f1f06cdb62f273283f639467b5/a0800/overall-stateless.png 807w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF">Image Credit</a></p>
+<p>After the state data is moved out of web servers, auto-scaling of the web tier is easily achieved by adding or removing servers based on traffic load. We no longer have to keep servers around unnecessarily since web tier servers contain no state information and can be added/removed based on traffic. </p>
+<h3 id="data-centers"><a href="#data-centers" aria-label="data centers permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Data Centers</h3>
+<p>Now let's say this is where we are in our journey to build the ultimate fault tolerant website:</p>
+<ul>
+<li>Our web tier lies behind a load balancer</li>
+<li>Our web tier is configured to auto-scale</li>
+<li>Our state data is in the data tier</li>
+<li>Our data tier is replicated </li>
+<li>We have cache setup for better response times</li>
+</ul>
+<p>But what if our servers (both in web and data tier) located in the USA east region and there's a power outage that takes down our server farm? Our website would be down as well! How would we go about making sure that our website is immune to such accidents and is still able to load for users that are farther away from us geographically?</p>
+<p>Enter: <strong>multiple data centers</strong></p>
+<p>We'd have multiple data centers with the same setup(architecture) BUT located in geographically separated regions. For example, we could have one data center in Virginia USA and another in Oregon USA. Thinking globally, we can have another in Shanghai and another in London. </p>
+<p>Now, with the introduction of multiple data centers, how do we route our customers' requests? For example, if a user is in Europe, would the request be routed to Oregon data center or London? Obviously London! We'll do that via <strong>geo-routing</strong></p>
+<h3 id="data-centers-geo-routing"><a href="#data-centers-geo-routing" aria-label="data centers geo routing permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Data Centers: Geo routing</h3>
+<h3 id="useful-architectures"><a href="#useful-architectures" aria-label="useful architectures permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Useful architectures</h3>
+<ul>
+<li><a href="#https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html">WordPress on AWS</a></li>
+<li><a href="https://netflixtechblog.com/active-active-for-multi-regional-resiliency-c47719f6685b">Netflix active-active</a></li>
+</ul></div><div class="post-module--post-meta--1ci95"><div class="PostTags-module--tag-container--ksSgQ"><a href="/tags/data-system-design"><span>Data system design</span></a></div><div class="SocialLinks-module--social-links--1RDpJ"><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--reddit"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--reddit "><g><circle cx="32" cy="32" r="31" fill="#5f99cf"></circle></g><g><path d="m 52.8165,31.942362 c 0,-2.4803 -2.0264,-4.4965 -4.5169,-4.4965 -1.2155,0 -2.3171,0.4862 -3.128,1.2682 -3.077,-2.0247 -7.2403,-3.3133 -11.8507,-3.4782 l 2.5211,-7.9373 6.8272,1.5997 -0.0102,0.0986 c 0,2.0281 1.6575,3.6771 3.6958,3.6771 2.0366,0 3.6924,-1.649 3.6924,-3.6771 0,-2.0281 -1.6575,-3.6788 -3.6924,-3.6788 -1.564,0 -2.8968,0.9758 -3.4357,2.3443 l -7.3593,-1.7255 c -0.3213,-0.0782 -0.6477,0.1071 -0.748,0.4233 L 32,25.212062 c -4.8246,0.0578 -9.1953,1.3566 -12.41,3.4425 -0.8058,-0.7446 -1.8751,-1.2104 -3.0583,-1.2104 -2.4905,0 -4.5152,2.0179 -4.5152,4.4982 0,1.649 0.9061,3.0787 2.2389,3.8607 -0.0884,0.4794 -0.1462,0.9639 -0.1462,1.4569 0,6.6487 8.1736,12.0581 18.2223,12.0581 10.0487,0 18.224,-5.4094 18.224,-12.0581 0,-0.4658 -0.0493,-0.9248 -0.1275,-1.377 1.4144,-0.7599 2.3885,-2.2304 2.3885,-3.9406 z m -29.2808,3.0872 c 0,-1.4756 1.207,-2.6775 2.6894,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 -1.4824,0 -2.6894,-1.2002 -2.6894,-2.6758 z m 15.4037,7.9373 c -1.3549,1.3481 -3.4816,2.0043 -6.5008,2.0043 l -0.0221,-0.0051 -0.0221,0.0051 c -3.0209,0 -5.1476,-0.6562 -6.5008,-2.0043 -0.2465,-0.2448 -0.2465,-0.6443 0,-0.8891 0.2465,-0.2465 0.6477,-0.2465 0.8942,0 1.105,1.0999 2.9393,1.6337 5.6066,1.6337 l 0.0221,0.0051 0.0221,-0.0051 c 2.6673,0 4.5016,-0.5355 5.6066,-1.6354 0.2465,-0.2465 0.6477,-0.2448 0.8942,0 0.2465,0.2465 0.2465,0.6443 0,0.8908 z m -0.3213,-5.2615 c -1.4824,0 -2.6877,-1.2002 -2.6877,-2.6758 0,-1.4756 1.2053,-2.6775 2.6877,-2.6775 1.4824,0 2.6877,1.2019 2.6877,2.6775 0,1.4756 -1.2053,2.6758 -2.6877,2.6758 z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--twitter"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--twitter "><g><circle cx="32" cy="32" r="31" fill="#00aced"></circle></g><g><path d="M48,22.1c-1.2,0.5-2.4,0.9-3.8,1c1.4-0.8,2.4-2.1,2.9-3.6c-1.3,0.8-2.7,1.3-4.2,1.6 C41.7,19.8,40,19,38.2,19c-3.6,0-6.6,2.9-6.6,6.6c0,0.5,0.1,1,0.2,1.5c-5.5-0.3-10.3-2.9-13.5-6.9c-0.6,1-0.9,2.1-0.9,3.3 c0,2.3,1.2,4.3,2.9,5.5c-1.1,0-2.1-0.3-3-0.8c0,0,0,0.1,0,0.1c0,3.2,2.3,5.8,5.3,6.4c-0.6,0.1-1.1,0.2-1.7,0.2c-0.4,0-0.8,0-1.2-0.1 c0.8,2.6,3.3,4.5,6.1,4.6c-2.2,1.8-5.1,2.8-8.2,2.8c-0.5,0-1.1,0-1.6-0.1c2.9,1.9,6.4,2.9,10.1,2.9c12.1,0,18.7-10,18.7-18.7 c0-0.3,0-0.6,0-0.8C46,24.5,47.1,23.4,48,22.1z" fill="white"></path></g></svg></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--facebook"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--facebook "><g><circle cx="32" cy="32" r="31" fill="#3b5998"></circle></g><g><path d="M34.1,47V33.3h4.6l0.7-5.3h-5.3v-3.4c0-1.5,0.4-2.6,2.6-2.6l2.8,0v-4.8c-0.5-0.1-2.2-0.2-4.1-0.2 c-4.1,0-6.9,2.5-6.9,7V28H24v5.3h4.6V47H34.1z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div><div role="button" tabindex="0" class="SocialMediaShareButton SocialMediaShareButton--linkedin"><div style="width:32px;height:32px"><svg viewBox="0 0 64 64" width="32" height="32" class="social-icon social-icon--linkedin "><g><circle cx="32" cy="32" r="31" fill="#007fb1"></circle></g><g><path d="M20.4,44h5.4V26.6h-5.4V44z M23.1,18c-1.7,0-3.1,1.4-3.1,3.1c0,1.7,1.4,3.1,3.1,3.1 c1.7,0,3.1-1.4,3.1-3.1C26.2,19.4,24.8,18,23.1,18z M39.5,26.2c-2.6,0-4.4,1.4-5.1,2.8h-0.1v-2.4h-5.2V44h5.4v-8.6 c0-2.3,0.4-4.5,3.2-4.5c2.8,0,2.8,2.6,2.8,4.6V44H46v-9.5C46,29.8,45,26.2,39.5,26.2z" fill="white"></path></g></svg></div><div class="SocialMediaShareCount"><div class="SocialLinks-module--share-count--3wXKp"></div></div></div></div></div><hr/></div><nav><ul class="post-module--pagination--1F-V0"><li><a rel="prev" href="/sorting-problems">← <!-- -->Sorting Problems</a></li><li><a rel="next" href="/todo-problems">TODO Problems<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--3Dvn1"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2uglW">Copyright © 2020. All rights reserved.</div></div></footer></div></div><script>
   
   
   if(true) {
