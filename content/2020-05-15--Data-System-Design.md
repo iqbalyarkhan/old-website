@@ -26,6 +26,7 @@ tags:
         * [MultiLeader: Cons](#multi-leader-cons)
     * [Leaderless replication](#leaderless-replication)
 6. [Partitioning](#partitioning)
+    * [Partitioning: Techniques](#partitioning-techniques)
 6. [Caching](#caching)
     * [Cache Types](#cache-types)
 7. [CDN](#content-delivery-network-cdn)
@@ -217,7 +218,14 @@ If a node goes down and is unable to receive a write, it'll return stale data. U
 Another way to prevent stale data from being returned is to perform periodic scans of all nodes and update any nodes that have fallen behind. This is called **anti-entropy process**.
 
 ### Partitioning
-Replication of your data across multiple servers goes hand in hand with partitioning of data. Say for example, your data set is so large that it is impossible for us to hold it on a single machine. This is where data **sharding** or **partitioning** comes into picture.
+Replication of your data across multiple servers goes hand in hand with partitioning of data. Say for example, your data set is so large that it is impossible for us to hold it on a single machine. This is where data **sharding** or **partitioning** comes into picture. The main reason for wanting to partition data is scalability. Different partitions can be placed on different nodes. As a result, a large data set can be distributed across many disks and the query load can be distributed across many processors. The goal is to spread the data and query load evenly across our nodes. 
+
+Unfair partitioning would result in **skewed** queries that result in **hotspots**. There are multiple approaches to distributing or sharding data across partitions:
+
+### Partitioning: Techniques
+The simplest approach to help avoid hotspots is to assign records to nodes randomly. That would distribute the data quite evenly across nodes. HOWEVER, when you go back to read the partitioned data, you'd have no way of knowing where the data is since it was partitioned randomly! 
+
+A better approach is to partition by **key range**: for example, keys between Aa - Bf will be stored on node 1, Bg - Cf will be stored on node 2 and so on. Another approach is to partition using **hash of key** where the hash function produces a uniformly random value.  
 
 ### Caching
 Now, as you can imagine, querying the database for the same information over and over again can be quite expensive. For example, let's say we perform a join on a few tables to render on each user's page the most frequently visited part of the site for a particular day. Getting this information for each and every site visitor is expensive. Since this information does not change frequently, we can look up this information once and then **cache** it for future use. This will improve the performance of our application. 
@@ -414,6 +422,16 @@ Here's the architecture (with only a single data center shown - in reality you'l
 
 ![Decoupled](./images/system-design/decoupled.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
 
+Having said that, here's a summary of techniques we've talked about:
+
+- Keep web tier stateless
+- Build redundancy at every tier
+- Cache data as much as you can
+- Support multiple data centers
+- Host static assets in CDN
+- Scale your data tier by sharding
+- Split tiers into individual services
+- Monitor your system and use automation tools
 
 
 ### Useful architectures
