@@ -72,7 +72,12 @@
 <li><a href="#leaderless-replication">Leaderless replication</a></li>
 </ul>
 </li>
-<li><a href="#partitioning">Partitioning</a></li>
+<li>
+<p><a href="#partitioning">Partitioning</a></p>
+<ul>
+<li><a href="#partitioning-techniques">Partitioning: Techniques</a></li>
+</ul>
+</li>
 <li>
 <p><a href="#caching">Caching</a></p>
 <ul>
@@ -361,7 +366,11 @@ Here, load balancers act at the application level, the highest in the OSI model.
 <p>If a node goes down and is unable to receive a write, it'll return stale data. Upon returning stale data, up to date nodes can provide the stale data node with up to date information. This is called <strong>read repair</strong></p>
 <p>Another way to prevent stale data from being returned is to perform periodic scans of all nodes and update any nodes that have fallen behind. This is called <strong>anti-entropy process</strong>.</p>
 <h3 id="partitioning"><a href="#partitioning" aria-label="partitioning permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Partitioning</h3>
-<p>Replication of your data across multiple servers goes hand in hand with partitioning of data. Say for example, your data set is so large that it is impossible for us to hold it on a single machine. This is where data <strong>sharding</strong> or <strong>partitioning</strong> comes into picture.</p>
+<p>Replication of your data across multiple servers goes hand in hand with partitioning of data. Say for example, your data set is so large that it is impossible for us to hold it on a single machine. This is where data <strong>sharding</strong> or <strong>partitioning</strong> comes into picture. The main reason for wanting to partition data is scalability. Different partitions can be placed on different nodes. As a result, a large data set can be distributed across many disks and the query load can be distributed across many processors. The goal is to spread the data and query load evenly across our nodes. </p>
+<p>Unfair partitioning would result in <strong>skewed</strong> queries that result in <strong>hotspots</strong>. There are multiple approaches to distributing or sharding data across partitions:</p>
+<h3 id="partitioning-techniques"><a href="#partitioning-techniques" aria-label="partitioning techniques permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Partitioning: Techniques</h3>
+<p>The simplest approach to help avoid hotspots is to assign records to nodes randomly. That would distribute the data quite evenly across nodes. HOWEVER, when you go back to read the partitioned data, you'd have no way of knowing where the data is since it was partitioned randomly! </p>
+<p>A better approach is to partition by <strong>key range</strong>: for example, keys between Aa - Bf will be stored on node 1, Bg - Cf will be stored on node 2 and so on. Another approach is to partition using <strong>hash of key</strong> where the hash function produces a uniformly random value.  </p>
 <h3 id="caching"><a href="#caching" aria-label="caching permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Caching</h3>
 <p>Now, as you can imagine, querying the database for the same information over and over again can be quite expensive. For example, let's say we perform a join on a few tables to render on each user's page the most frequently visited part of the site for a particular day. Getting this information for each and every site visitor is expensive. Since this information does not change frequently, we can look up this information once and then <strong>cache</strong> it for future use. This will improve the performance of our application. </p>
 <p>The <strong>cache tier</strong> is temporary data store layer that lies between the server and the database. If the information we want is present in the cache tier, we'll grab it from there, otherwise we'll query the DB, store this information in cache and return. Retrieving data from the cache tier is faster than querying the database for the same information. In addition, using the cache tier will also reduce database workloads. We can use Memcache, Redis etc based on the data we're caching. </p>
@@ -852,6 +861,17 @@ You should consider how your website/application copes with CDN failure. If ther
         loading="lazy"
       />
     </span> <a href="https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF">Image Credit</a></p>
+<p>Having said that, here's a summary of techniques we've talked about:</p>
+<ul>
+<li>Keep web tier stateless</li>
+<li>Build redundancy at every tier</li>
+<li>Cache data as much as you can</li>
+<li>Support multiple data centers</li>
+<li>Host static assets in CDN</li>
+<li>Scale your data tier by sharding</li>
+<li>Split tiers into individual services</li>
+<li>Monitor your system and use automation tools</li>
+</ul>
 <h3 id="useful-architectures"><a href="#useful-architectures" aria-label="useful architectures permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Useful architectures</h3>
 <ul>
 <li><a href="#https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html">WordPress on AWS</a></li>
