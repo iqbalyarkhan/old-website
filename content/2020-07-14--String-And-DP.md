@@ -255,5 +255,5 @@ string longestPalindromicSubstring(string s){
 }
 ```
 
-Running time is $O(2^N)$ where $N$ is the length of our string. We can do better by converting this to DP:
+Running time is $O(2^N)$ where $N$ is the length of our string. We can do better by converting this to DP.
 
