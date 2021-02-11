@@ -17,7 +17,7 @@ tags:
 4. [Inserts](#inserts)
 5. [Reverse Singly Linked List](#reverse-a-singly-linked-list)
 6. [Move to Front Algorithm](#move-to-front-algorithm)
-7. [Problems]
+7. Problems
     * [Merge Two Sorted Lists](#merge-two-sorted-lists)
     * [Reverse a sublist](#reverse-a-sublist)
     * [Reverse a singly linked list](#reverse-a-singly-linked-list)
