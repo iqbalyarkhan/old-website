@@ -17,8 +17,7 @@ tags:
 4. [Inserts](#inserts)
 5. [Reverse Singly Linked List](#reverse-a-singly-linked-list)
 6. [Move to Front Algorithm](#move-to-front-algorithm)
-7. [Intro](#intro)
-    * [Search](#search)
+7. [Problems]
     * [Merge Two Sorted Lists](#merge-two-sorted-lists)
     * [Reverse a sublist](#reverse-a-sublist)
     * [Reverse a singly linked list](#reverse-a-singly-linked-list)
@@ -355,9 +354,6 @@ void LinkedList<T>::MoveToFront(T elem){
 ```
 
 The idea is simple: we use two pointers, `temp` and `prev` to iterate over the list. If the element pointed to by `temp` is what we've been searching for, we sever the links and move `temp` to the front of the list.
-
-### Intro
-Let's have a look at some more interesting problems: 
 
 ### Merge two sorted lists
 
