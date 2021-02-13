@@ -153,7 +153,7 @@ Running time is $O(N)$ where $N$ is the number of nodes in the tree. Space compl
 **Write a program that takes as input the root of a binary tree and checks whether the tree is height-balanced.
 A binary tree is said to be height-balanced if for each node in the tree, the difference in the height of its left and right subtrees is at most one.**
 
-A brute force approach would be to start at root, look at left subtree and then right subtree and compared. Then move to left subtree and then look at its left subtree and right subtree and compare. Continue until you either find imbalance or you're out of nodes to consider. The running time is approximately $O(h^2)$ where $h$ is the height of the tree. This seems complicated and time consuming. 
+A brute force approach would be to start at root, look at left subtree and then right subtree and compare. Then move to left subtree and then look at its left subtree and right subtree and compare. Continue until you either find imbalance or you're out of nodes to consider. The running time is approximately $O(h^2)$ where $h$ is the height of the tree. This seems complicated and time consuming. 
 
 Another approach would be to recursively go down the tree and once at the leaf, start coming back up and storing the heights in a data structure which can be accessed later to compare the heights for each node. This is better time wise than brute force but requires more space for that external data structure. 
 
