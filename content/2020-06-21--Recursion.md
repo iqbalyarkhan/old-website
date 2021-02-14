@@ -54,6 +54,9 @@ tags:
     * [Longest Common Substring Length](#longest-common-substring-length)
     * [Min Insertions Or Deletions](#min-insertions-or-deletions)
     * [Longest Palindromic Subsequence](#longest-palindromic-subsequence)
+    * [Swamp Traversal](#swamp-traversal)
+
+11. [Conclusion](#conclusion)
 
 ### Introduction
 Recursion is a common technique to define a problem or a relation where subsequent "terms" build on calculations for previous terms. Our aim is to make decisions based on the existing choices we have and each time we make a choice, we obviously would reduce the number of problems that we'd have to solve. 
@@ -1985,6 +1988,63 @@ void lps(string soFar, string rest, string& palSS){
     lps(soFar, rest.substr(1), palSS);
 }
 ```
+
+### Swamp Traversal
+Given a 2D vector with swamp information (water and land) and a starting position,determine whether the swamp can be traversed without getting wet. You can move in east, north east or south east directions. 1s represent land and 0s represent swamp.
+
+```cpp
+Example:
+
+vector<vector<int>> A = {
+        {0,1,0},
+        {1,0,0},
+        {1,0,1},
+        {0,1,0}
+    };
+
+and starting position i = 2 and j = 0 
+you should return true
+```
+
+- Problem size:
+
+The size of our problem is dependent on the width of our 2D vector because we've traversed our swamp when `j = A.size() - 1`. 
+
+- Base cases:
+
+This occurs when j equals vector's size - 1 and the value here is 1: ie we've reached the end of the vector. Return true
+Also occurs when i is less than 0 or greater than vector's size: return false
+
+- Iterative cases:
+
+If current `A[i][j]` value in vector is 0, return false since we cannot go any further. If `A[i][j]` is 1, we can move ahead.
+How do we move ahead though? Allowed directions are: east (i, j+1), north east (i-1, j+1) and south east (i+1, j+1).
+
+Once we get the results from these directions, we can return a true if ANY of the above 3 directions return a true.
+
+Here's this logic converted to code:
+
+```cpp
+
+bool canTraverse (int i, int j, vector<vector<int>> A){
+    if (j < 0 || j >= A.size() || i < 0 || i >= A.size() || (A[i][j] == 0)){
+        return false;
+    }
+    
+    if (A[i][j] == 1 && (j == A[0].size() - 1)){
+        return true;
+    }
+    
+    bool northEast = canTraverse(i-1, j+1, A);
+    bool east = canTraverse(i, j+1, A);
+    bool southEast = canTraverse(i+1, j+1, A);
+    
+    return northEast || east || southEast;
+    
+}
+
+```
+
 
 ### Conclusion
 - Use recursion if
