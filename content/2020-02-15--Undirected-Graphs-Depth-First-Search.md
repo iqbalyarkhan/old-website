@@ -154,7 +154,7 @@ void AdjList::RecursiveDFS(int v){
     }
 }
 ```
-Only addition we've made to DFS from earlier is that now, we've got a new array called `edgeTo` which is equal to the size of the vertices in our graph (we initialized it in the constructor). Next, whenever we find an unvisited edge in a vertex's adjacency list, we're going to that index in the `edgeTo` array and populating that index with the value `v`. This helps us keep a note of what vertex we used to get to the current vertex, ie, what is the predecessor vertex to the current vertex that was used to get to the current vertex. Let's walk through an example:
+Only addition we've made to DFS from earlier is that now, we've got a new array called `edgeTo` which is equal to the size of the vertices in our graph (we initialized it in the constructor). Next, whenever we find an unvisited edge in a vertex's adjacency list, we're going to add that index to our `edgeTo` array and populate it with the value `v`. This helps us keep track of what vertex we used to get to the current vertex. Let's walk through an example:
 
 Initially our `edgeTo` list is empty. Assume we've got 6 vertices labelled 0-5 in our graph:
 

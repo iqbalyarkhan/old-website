@@ -265,7 +265,7 @@ void AdjList::AddEdge(int i, int j){
     adjList[j].push_back(i);
 }
 ```
-To create our list, we're using a vector of vectors declared on line 8. This is because using a vector allows us to: 
+To create our list, we're using a vector of vectors declared on line 4. This is because using a vector allows us to: 
 
 - Add edges in constant time by using `push_back()`
 - Given a vertex, we can access its edges in constant time by using `adjList[v]` syntax where `v` is the vertex.
@@ -281,7 +281,7 @@ If you're using the default constructor, the number of vertices default to 5. So
 5 -> <empty vector>
 ```
 
-Where 0-5 is one vector and each element in that vector is also a vector at that position. Note the use of `adjList.resize(vectorSize)` which is used to set the size of a vector after it is declared. We're using a vector because if we're given a vertex, say 4, we can access the adjacent vertices for 4 in $O(1)$ time. 
+Where 0-5 is one vector and each element in that vector is also a vector at that position. Note the use of `adjList.resize(vectorSize)` which is used to set the size of a vector after it is declared. 
 
 Since arrays and vectors start at 0 index, to keep consistent with the graph shown above, we'll add the 0th vector as well but will start adding at index 1. Next, when we call the `AddEdge()` function, we pass in the edge that needs to be created. So, when `AddEdge()` is called with 1 and 4, it performs the following actions:
 ```cpp{numberLines: 39}
