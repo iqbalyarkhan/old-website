@@ -19,7 +19,8 @@ tags:
 
 3. [Conclusion](#conclusion)
 
-4. [Problems](#problems)
+4. [Problems]
+    - [Number of islands](#number-of-islands)
 
 ### Introduction
 Breadth first search, as the name suggests, is concerned with looking at vertices that are closest to the current vertex. It gradually moves away from the starting vertex. BFS, therefore, can help find the shortest path to vertices from a given vertex. BFS does so by first exploring all vertices 1 edge away from the source, then exploring all vertices 2 edges away from the source and so on. 
@@ -199,10 +200,10 @@ Helps us actually answer the question whether a path exists between the vertices
 
 ### Conclusion
 
-Relationship between objects that can be represented using undirected graphs and a lot of questions can be answered about the said objects using the BFS as we've discussed in this section. Happy coding!
+Relationship between objects can be represented using undirected graphs and a lot of questions can be answered about the said objects using the BFS as we've discussed in this section.
 
-### Problems
-- [Problem 1](https://leetcode.com/problems/number-of-islands/)
+### Number of islands
+
 **Given a 2d grid map of '1's (land) and '0's (water), count the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.**
 
 Let's see an example:
