@@ -73,7 +73,10 @@
 <p>Let's write an algorithm that answers the simple question whether the graph is bipartite or not.</p>
 <h3 id="logic"><a href="#logic" aria-label="logic permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Logic</h3>
 <p> To check the bipartite property, we'll use a modified version of <a href="/graphs#depth-first-search">recursive depth first search</a>algorithm. Before we dive into the modified version let's understand logically how we can tackle this problem. Similar to DFS, we'll maintain a visited array and start with vertex 0. In addition, we'll also maintain an array that'll keep track of the color for each vertex we have. Here's the crux of our algorithm:</p>
-<div class="gatsby-highlight" data-language="css"><pre class="language-cppcss"><code class="language-cppcss">Let<span class="token string">'s say we'</span>re on a vertex `v` and have colored it already. If we were to iterate through the adjacency list of this vertex `v` and find a neighbor `u` that has also been colored and `v` and `u` have difference colors<span class="token punctuation">,</span> our graph is bipartite. This property has to hold for each vertex and its neighbor. </code></pre></div>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">Let&#39;s say we&#39;re on a vertex `v` and have colored it already. 
+If we were to iterate through the adjacency list of this vertex `v` and find a neighbor `u` 
+that has also been colored and `v` and `u` have different colorsundefined our graph is bipartite. 
+This property has to hold for each vertex and its neighbor. </code></pre></div>
 <p>Here are 2 graphs where one is bipartite and one that isn't:</p>
 <p><span
       class="gatsby-resp-image-wrapper"
