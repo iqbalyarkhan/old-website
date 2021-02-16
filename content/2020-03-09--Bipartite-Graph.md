@@ -33,8 +33,11 @@ Let's write an algorithm that answers the simple question whether the graph is b
 
  To check the bipartite property, we'll use a modified version of [recursive depth first search](/graphs#depth-first-search)algorithm. Before we dive into the modified version let's understand logically how we can tackle this problem. Similar to DFS, we'll maintain a visited array and start with vertex 0. In addition, we'll also maintain an array that'll keep track of the color for each vertex we have. Here's the crux of our algorithm:
  
-```css
-Let's say we're on a vertex `v` and have colored it already. If we were to iterate through the adjacency list of this vertex `v` and find a neighbor `u` that has also been colored and `v` and `u` have difference colors, our graph is bipartite. This property has to hold for each vertex and its neighbor. 
+```text
+Let's say we're on a vertex `v` and have colored it already. 
+If we were to iterate through the adjacency list of this vertex `v` and find a neighbor `u` 
+that has also been colored and `v` and `u` have different colors, our graph is bipartite. 
+This property has to hold for each vertex and its neighbor. 
 ```
 
 Here are 2 graphs where one is bipartite and one that isn't:
