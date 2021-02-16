@@ -19,7 +19,7 @@ tags:
 
 3. [Conclusion](#conclusion)
 
-4. [Problems]
+4. Problems
     - [Number of islands](#number-of-islands)
 
 ### Introduction
