@@ -21,8 +21,12 @@ tags:
 
 4. [Connected Components](#connected-components)
 
+6. Problems
+    * [Maze Runner](#maze-runner)
+
 5. [Conclusion](#conclusion)
 
+    
 ### Introduction
 
 One of the questions most frequently asked about graphs is some variant of the following:
@@ -443,6 +447,61 @@ void AdjList::FindConnectedComponents(){
 ```
 
 We can now check if `components[v] == components[w]` to see if two components are connected in $O(1)$ time.
+
+### Maze Runner
+**Given a 2D vector representing a maze and a start and end point, return true (and the path taken) if you can get from start to end. The maze has 2 color tiles: white (clear path) and black (blocked path).**
+
+Since the problem asks us to get **a** path and not **shortest** path, we'll go ahead and use DFS. The idea here is to start at the start point and then recursively check the neighbors. Since this a 2D array and we don't have an adjacency list to represent the neighbors, we'll just have to check whether we can get to a neighboring tile. We'll have these checks to see if we can visit our neighbor:
+
+```text
+1 - Neighbor is not out of bound for rows
+2 - Neighbor is not out of bound for columns
+3 - Neighbor is not black
+```
+
+For example:
+
+```cpp
+    start
+    |
+    white,black,white
+    white,black,black
+    white,white,white - end
+``` 
+
+Start coordinates are (0,0) and end coordinates are (2,2).We'll be done once we've reached the `end` tile. As we can see, there's 1 possible path.  
+
+Another aspect of the problem is to keep track of the path we took. To do so, we'll just keep pushing the current tile coordinates to a vector if we can find a possible path from the current position. Let's see the code for this logic:
+
+```cpp{numberLines: true}
+bool helper(vector<vector<Color>>& maze, vector<Coordinate>& path, vector<vector<bool>> visited,Coordinate curr, Coordinate e){
+    if (curr == e)
+        return true;
+    int row = curr.x, col = curr.y;
+    if (row < 0 ||  row >= maze.size() || col < 0 || col >= maze[0].size() || visited[row][col] || maze[curr.x][curr.y] == black)
+        return false;
+    
+    visited[row][col] = true;
+    
+    path.emplace_back(curr);
+    //visit up
+    bool up = helper(maze, path, visited, {curr.x-1, curr.y}, e);
+    //visit down
+    bool down = helper(maze, path, visited, {curr.x+1, curr.y}, e);
+    //visit left
+    bool left = helper(maze, path, visited, {curr.x, curr.y-1}, e);
+    bool right = helper(maze, path, visited, {curr.x, curr.y+1}, e);
+    
+    if (!up && !down && !left && !right){
+        path.pop_back();
+        return false;
+    }
+    
+    return true;
+}
+```
+
+Notice how we're popping off the current tile from our vector on line 20 if we can't find any possible path, otherwise, we keep the tile on the path. Running time for this solution is $O(V + E)$ since we'll have to visit each edge and each vertex in the worst case if all tiles were white. 
 
 ### Conclusion
 
