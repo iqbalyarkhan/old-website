@@ -204,7 +204,7 @@ Helps us actually answer the question whether a path exists between the vertices
 Relationship between objects can be represented using undirected graphs and a lot of questions can be answered about the said objects using the BFS as we've discussed in this section.
 
 ### Paint Boolean Matrix
-**Given a matrix and an index into the matrix, continue flipping all adjacent pixels until no more pixels can be flipped.**
+**Given a matrix and an index into the matrix, continue flipping all adjacent pixels with the same color until no more pixels can be flipped. ie if the indexed pixel is white, flip the pixel and all its white neighbors to black. Neighbors here are pixels above, below, to the left and to the right of the indexed pixel.**
 
 Example:
 Given the following matrix:
