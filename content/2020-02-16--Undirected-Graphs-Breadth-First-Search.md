@@ -20,6 +20,7 @@ tags:
 3. [Conclusion](#conclusion)
 
 4. Problems
+    * [Paint Boolean Matrix](#paint-boolean-matrix)
     - [Number of islands](#number-of-islands)
 
 ### Introduction
@@ -201,6 +202,93 @@ Helps us actually answer the question whether a path exists between the vertices
 ### Conclusion
 
 Relationship between objects can be represented using undirected graphs and a lot of questions can be answered about the said objects using the BFS as we've discussed in this section.
+
+### Paint Boolean Matrix
+**Given a matrix and an index into the matrix, continue flipping all adjacent pixels until no more pixels can be flipped.**
+
+Example:
+Given the following matrix:
+
+|  | 0 | 1 | 2 | 3 |
+| -- | -- | -- | -- | -- |
+| **0** | T | F | F | T | 
+| **1** | F | T | T | F | 
+| **2** | F | T | **T** | T | 
+| **3** | F | F | T | F | 
+| **4** | F | F | F | F | 
+
+and index (2,2) which is a True, we'll continue flipping all its adjacent pixels to False first. Adjacent meaning pixel above, below, to the left and to the right of the given pixel. So, we'll start with (2,2), flip the pixel at 2,2 and then flip any neighbors that have the value true to false: 
+
+
+|  | 0 | 1 | 2 | 3 |
+| -- | -- | -- | -- | -- |
+| **0** | T | F | F | T | 
+| **1** | F | T | **T** | F | 
+| **2** | F | **T** | **T** | **T** | 
+| **3** | F | F | **T** | F | 
+| **4** | F | F | F | F | 
+
+After we're done flipping 2,2 and its neighbors, we'll have this:
+
+|  | 0 | 1 | 2 | 3 |
+| -- | -- | -- | -- | -- |
+| **0** | T | F | F | T | 
+| **1** | F | T | **F** | F | 
+| **2** | F | **F** | **F** | **F** | 
+| **3** | F | F | **F** | F | 
+| **4** | F | F | F | F | 
+
+Now, we'll want to flip the true neighbors of any of the pixels we just flipped. There's only 1 pixel that falls in this category: 1,1. Once, we're done, we'll have this matrix:
+
+|  | 0 | 1 | 2 | 3 |
+| -- | -- | -- | -- | -- |
+| **0** | T | F | F | T | 
+| **1** | F | F | F | F | 
+| **2** | F | F | F | F | 
+| **3** | F | F | F | F | 
+| **4** | F | F | F | F | 
+
+Ok, so which approach should we use here? BFS or DFS? DFS goes depth first. Applied to this problem, it'll pick the given pixel, flip it and then start going to all possible neighbors and will try to go as far as possible from x,y. This doesn't seem the most efficient approach. We'd rather flip x,y and all its neighbors first and then move to the next set of neighbors. This sounds like a job for our BFS algorithm! 
+
+The problem now has translated to this:
+- Start with x,y and push to queue
+- Pop coordinates from queue
+- Flip current coordinates
+- Check to see if up/down/left/right indices are in-bound (ie >= 0 && < vector size etc)
+- If in-bound check if any of these neighbors is a candidate to be flipped
+- If neighbor is eligible for flipping, add to queue
+- Continue until queue is empty
+
+Here's this logic converted to code:
+
+```cpp{numberLines: true}
+void BFS(int x, int y, vector<vector<bool>>& image){
+    int rowLimit = int(image.size()), colLimit = int(image[0].size());
+    queue<pair<int, int>> q;
+    q.push(make_pair(x, y));
+    bool flipIf = image[x][y];
+    while (!q.empty()){
+        int row = q.front().first, col = q.front().second;
+        //Flip image
+        image[row][col] = !flipIf;
+        q.pop();
+        //Check up
+        if (row - 1 >= 0 && row - 1 < rowLimit && col >= 0 && col < colLimit && image[row-1][col] == flipIf)
+            q.push(make_pair(row-1, col));
+        //Check down
+        if (row + 1 >= 0 && row + 1 < rowLimit && col >= 0 && col < colLimit && image[row+1][col] == flipIf)
+            q.push(make_pair(row+1, col));
+        //Check left
+        if (row >= 0 && row < rowLimit && col - 1 >= 0 && col - 1 < colLimit && image[row][col-1] == flipIf)
+            q.push(make_pair(row, col-1));
+        //Check right
+        if (row >= 0 && row < rowLimit && col + 1 >= 0 && col + 1 < colLimit && image[row][col+1] == flipIf)
+            q.push(make_pair(row, col+1));
+    }
+}
+```
+
+Running time: $O(VE)$ ie size of the 2D matrix since the algorithm visits each and every cell in the worst case.
 
 ### Number of islands
 
