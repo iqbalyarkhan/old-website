@@ -297,18 +297,17 @@ Running time: $O(VE)$ ie size of the 2D matrix since the algorithm visits each a
 Let's see an example:
 
 ```cpp
-    {'1','1','1','1','0'},
-    {'1','1','0','1','0'},
-    {'0','0','0','0','0'},
-    {'1','1','0','1','1'}
+        {1,1,1,1,0},
+        {1,1,0,1,0},
+        {0,0,0,0,0},
+        {1,1,0,1,1}
 ```
 
 In the diagram above, we can see that we have 3 islands. Let's start with the basics: 
-- We can return 0 is the array is empty
-- We'd have to iterate over each cell therefore we'll setup nested for loops
-- Next, if the current character is `0`, we can ignore it and move to next cell
-- If the current character is `1` is where we need to process more:
-    - We can start queuing up all the neighbors that are 1
+- We'll have to start somewhere and iterate over each cell therefore we'll setup nested for loops
+- If the current integer is `0`, we can ignore it and move to next cell
+- If the current character is `1`, we need to process more:
+    - We can start queuing up all the neighbors that are 1 and are not yet visited
     - While our queue is not empty, pop from queue, and proceed to enqueue **unvisited** neighbors
 
 We'll start at 0,0 and have a visited array that is filled with false since we haven't processed any of our elements. Next, we'll enqueue 0,0, mark 0,0 as visited and explore its neighbors (up, down, left, right). If any of the neighbors has a value of `1` and we haven't visited that neighbor, we mark visited[neighbor coordinates] as true and push the neighbor to our queue. 
@@ -325,9 +324,59 @@ These are all the connected neighbors that have a value of 1. After we've proces
 3,1
 ```
 
-Once we're done with this, our queue will be empty and we'll continue processing until we get to 3,3 and we'll increment the count for islands one last time!
+Once we're done with this, our queue will be empty and we'll continue processing until we get to 3,3 and we'll increment the count for islands one last time! This question is asking about nothing but the number of [connected components](/undirected-graphs-depth-first-search#connected-components)! 
 
 Notice in the approach above, we're using an extra visited array. That array can be removed if we're allowed to modify the original array in which case we'll simply change the `1` to a `0`.
+
+Here's this logic converted to code:
+
+
+```cpp
+void BFS(vector<vector<int>>& islands,vector<vector<bool>>& visited, int i, int j){
+    int rowLimit = int(islands.size()), colLimit = int(islands[0].size());
+    queue<pair<int, int>> q;
+    q.push({i,j});
+    while (!q.empty()){
+        int row = q.front().first, col = q.front().second;
+        cout << "Current element: " << row << "," << col << endl;
+        q.pop();
+        visited[row][col] = true;
+        //Check up
+        if (row - 1 >= 0 && row - 1 < rowLimit && col >= 0 && col < colLimit && islands[row-1][col] == 1 && !visited[row-1][col]){
+            q.push(make_pair(row-1, col));
+        }
+        //Check down
+        if (row + 1 >= 0 && row + 1 < rowLimit && col >= 0 && col < colLimit && islands[row+1][col] == 1 && !visited[row+1][col]){
+            q.push(make_pair(row+1, col));
+        }
+        //Check left
+        if (row >= 0 && row < rowLimit && col - 1 >= 0 && col - 1 < colLimit && islands[row][col-1] == 1 && !visited[row][col-1]){
+            q.push(make_pair(row, col-1));
+        }
+        //Check right
+        if (row >= 0 && row < rowLimit && col + 1 >= 0 && col + 1 < colLimit && islands[row][col+1] == 1&& !visited[row][col+1]){
+            q.push(make_pair(row, col+1));
+        }
+    }
+}
+
+int numIslands(vector<vector<int>>& islands){
+    vector<vector<bool>> visited (islands.size(), vector<bool>(islands[0].size(), false));
+    int numComps = 0;
+    for (int i = 0; i < visited.size(); i++){
+        for (int j = 0; j < visited[i].size(); j++){
+            if (!visited[i][j] && islands[i][j] == 1){
+                numComps++;
+                BFS(islands, visited, i, j);
+            }
+        }
+    }
+    
+    return numComps;
+}
+```
+
+Running time is $O(mn)$ where `m` is the number of rows and `n` is the number of columns ie the number of cells in the grid. 
 
 - [Problem 2](https://leetcode.com/problems/walls-and-gates/) 
 - [Problem 3](https://leetcode.com/problems/rotting-oranges/)
