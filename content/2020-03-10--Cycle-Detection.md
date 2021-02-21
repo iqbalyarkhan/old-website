@@ -19,15 +19,15 @@ tags:
 
 3. [Code](#code)
 
-4. [Resource](#resources)
+4. [Digraph](#digraph)
 
 ### Motivation
 
-Let's say we have an undirected graph and want to check and see whether the graph has any cycles. A cycle is defined where the vertices are connected in a closed chain. Here is a graph that has a cycle with vertices $4$, $5$ and $6$ forming a closed chain:
+Let's say we have a graph (can be directed or undirected) and want to check and see whether the graph has any cycles. A cycle is defined where the vertices are connected in a closed chain. Here is a graph that has a cycle with vertices $4$, $5$ and $6$ forming a closed chain:
 
 ![Undirected-Graph-1](images/cycledetection/example.png) [Image Credit - Cycle Graph 1](https://graphonline.ru/en/)
 
-Let's write an algorithm that answers the simple question whether the graph contains a  cycle or not. 
+Let's write an algorithm that answers the simple question whether an **undirected** graph contains a  cycle or not. 
 
 ### Logic
 
@@ -124,8 +124,48 @@ void AdjList::CycleDFS(int v, int parent){
 
 We've got a helper function, `CyclePresent`, that calls `CycleDFS()` initially with vertex 0 and parent as -1 since vertex 0 has no parent. We continue calling the function and marking the `visited` array. At one point, we reach the case where we process vertex 6 and it is called by vertex 5 (5 is the parent). At this point, we find 4 in 6's adjacency list which has already been visited (we reached 5 via 4 so 4 has already been visited). We check to see if neighbor, which is 4, is not equal to the parent, which is 5. The neighbor is indeed not equal to the parent and we have a cycle.
 
-### Resources
+### Digraph 
+Now, let's answer the same question for a digraph. You might ask: "Why doesn't the algorithm above work for a digraph?". Let's take an example:
 
-A good explanation on youtube can be found [here](https://www.youtube.com/watch?v=eCG3T1m7rFY).
+![Undirected-Graph-1](images/cycledetection/digraph1.png) [Image Credit - Di Graph 1](https://graphonline.ru/en/)
+
+For the graph above, we'll have this adjacency list:
+
+```css
+0 -> 1 -> 3
+1 -> 2
+2 -> 4
+3 -> 4
+4 
+``` 
+Say we're starting at vertex 0, we'll go through the undirected graph algorithm and find that we'll end up at vertex 4 via 2 paths (as show from the digraph). When we reach `4` from the 0->3->4 path, the undirected graph algo will return true saying that there does exist a cycle while in reality there isn't! We need another approach:
+
+We can keep track of our current path using a boolean array and if at any point we reach a vertex in the graph that is on the current path or call stack, we know there's a **back edge**. As we return our recursive calls, we'll update the `onStack`. Here's this logic converted to code:
 
 
+```cpp{numberLines: true}
+void DFS(vector<vector<int>>& graph, vector<bool>& visited, vector<bool>& onStack, bool& hasCycle, int v){
+    if (hasCycle)
+        return;
+    visited[v] = true;
+    if (onStack[v]){
+        hasCycle = true;
+        return;
+    }
+    
+    onStack[v] = true;
+    for (int i = 0; i < graph[v].size(); i++){
+        int curr = graph[v][i];
+        if (!onStack[curr]){
+            DFS(graph, visited, onStack, hasCycle, curr);
+        } else {
+            hasCycle = true;
+            return;
+        }
+    }
+    
+    onStack[v] = false;
+}
+```
+
+Notice how we're updating the `onStack` variable on line 10 for the current vertex and once we're done processing its neighbors, we change the value in `onStack` back to false. This way, we'll always have correct path present in this array.
