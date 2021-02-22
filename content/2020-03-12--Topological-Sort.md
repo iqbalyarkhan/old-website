@@ -115,6 +115,8 @@ We've already seen PreOrder and PostOrder in the [binary search trees](/binary-s
 - PostOrder: Put the vertex on queue **after** recursive call: **This is the recording of vertices in order based on which vertices are completed first**
 - ReversePostOrder: Put the vertex on stack **after** recursive call: **This generates a topological sort for us from the digraph**
 
+Why is it the case that reverse post order creates topological sort for us? Let's break it down. What is post order? Post order traversal is: visit left child, visit right child and then visit the node ie LRN. Now, if you run post-order on a tree, the last node to be printed is the root node ie the node with NO PARENTS. Now, if we place all the post-order elements on a stack, then the last one to be popped off is the root. Therefore, by placing the elements in **post-order** traversal on a stack, we've reversed the order of visits! Thus creating **reverse post order**. As a result, as we pop elements off the stack, the first element to be popped off would have NO PARENT (ie no dependencies, no pre-reqs, the introductory course!). Therefore, reverse post order allows us to generate a topological sorting for our graph! 
+
 ### Code
 
 The code is exactly the same as what we've seen so far for directed graphs. The only difference is in the `RecursiveDFS()` function and we've also created a helper function to print the depth first search in the order we discussed in the previous section. Here are the functions we updated:
