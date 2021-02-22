@@ -114,7 +114,7 @@ We keep adding edges 1-3 and 0-2:
 
 
 
-that's because 1-2 and 1-3 and we're trying to add the 2-3 connection which would create the 1-2-3 cycle so we ignore 2-3. 0-1 would also create a cycle which is also ignored. We then finally add the last edge, 3-4 and complete the MST:
+that's because edges 1-2 and 1-3 already exist and we're trying to add the 2-3 edge which would create the 1-2-3 cycle so we ignore 2-3. 0-1 would also create a cycle which is also ignored. We then finally add the last edge, 3-4 and complete the MST:
 
 ![Directed-Graph](images/mst/mst-6.png)
 
