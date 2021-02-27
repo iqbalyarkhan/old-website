@@ -264,7 +264,7 @@ As the name suggests, read through cache is placed between the application and t
 
  (1) Given a key-value pair, the application first tries to read the data from DB. If the cache is populated with the data (cache hit), the value is returned. If not, on to step 2.
  
- (2) Transparent to the application, if there was a cache miss, DAX fetches the key-value pair from DB.
+ (2) Transparent to the application, if there was a cache miss, cache fetches the key-value pair from DB.
  
  (3) To make the data available for any subsequent reads, the key-value pair is then populated in the cache.
  
