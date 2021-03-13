@@ -38,6 +38,7 @@ tags:
     * [Average for each level](#average-for-each-level)
     * [Max Path Sum](#max-path-sum)
     * [Max at each level](#max-at-each-level)
+    * [Zig zag level order traversal](#zig-zag-level-order-traversal)
     
 3. [Conclusion](#conclusion)
 
@@ -1442,6 +1443,47 @@ vector<int> largestValues(TreeNode* root) {
 ```
 
 Running time: $O(N)$ where $N$ is the number of nodes in the tree.
+
+### Zig zag level order traversal
+**Given the root of a binary tree, return the zigzag level order traversal of its nodes' values. (i.e., from left to right, then right to left for the next level and alternate between).**
+
+This problem is a twist on the level order traversal problem: we'll alternatively reverse the vector for a level, meaning level 1 is not reversed, level 2 is reversed, level 3 is not reversed, level 4 is and so on. Trying to insert nodes in correct order will get too complicated (switching between stack and queue). Here's this logic converted to code:
+
+```cpp
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        vector<vector<int>> allNodes;
+        if (!root)
+            return allNodes;
+        queue<TreeNode*> q;
+        bool reverseIt = false;
+        q.push(root);
+        while (!q.empty()){
+            int currSize = int(q.size());
+            vector<int> currNodes;
+            for (int i = 0; i < currSize; i++){
+                TreeNode* curr = q.front();
+                q.pop();
+                currNodes.push_back(curr->val);
+                if (curr->left)
+                    q.push(curr->left);
+                if (curr->right)
+                    q.push(curr->right);
+            }
+
+            //Actual reversal of current vector
+            if (reverseIt){
+                reverse(currNodes.begin(), currNodes.end());
+                reverseIt = false;
+            } else {
+                reverseIt = true;
+            }
+
+            allNodes.push_back(currNodes);
+        }
+
+        return allNodes;
+    }
+```
 
 ### Conclusion
 
