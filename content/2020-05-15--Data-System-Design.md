@@ -36,7 +36,7 @@ tags:
 10. [Decoupling](#decoupling)
     * [Decoupling: Message queues](#decoupling-message-queues)
 
-100. [Useful architectures](#userful-architectures)
+100. [Useful architectures](#useful-architectures)
 
 ### Introduction
 If you were to setup your website today, from scratch, how would you go about doing it? You'd probably have a single server to serve your website. You'll have something like this:
@@ -435,6 +435,6 @@ Having said that, here's a summary of techniques we've talked about:
 
 
 ### Useful architectures
- - [WordPress on AWS](#https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html)
+ - [WordPress on AWS](https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html)
  - [Netflix active-active](https://netflixtechblog.com/active-active-for-multi-regional-resiliency-c47719f6685b)
  
