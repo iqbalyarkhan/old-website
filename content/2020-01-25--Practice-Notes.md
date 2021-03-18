@@ -575,6 +575,8 @@ int main(){
     auto t = make_tuple("John", 2, 31000.25);
     cout << get<2>(t) << endl; //prints 31000.25
     cout << get<0>(t) << endl; //prints John
+    //Increment value in tuple:
+    get<1>(t) += 1; // ("John", 3, 31000.25);
 }
 ```
 
