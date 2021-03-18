@@ -20,8 +20,10 @@ tags:
 3. [Conclusion](#conclusion)
 
 4. Problems
+    * [Shortest Path](#shortest-path)
     * [Paint Boolean Matrix](#paint-boolean-matrix)
-    - [Number of islands](#number-of-islands)
+    * [Number of islands](#number-of-islands)
+    
 
 ### Introduction
 Breadth first search, as the name suggests, is concerned with looking at vertices that are closest to the current vertex. It gradually moves away from the starting vertex. BFS, therefore, can help find the shortest path to vertices from a given vertex. BFS does so by first exploring all vertices 1 edge away from the source, then exploring all vertices 2 edges away from the source and so on. 
@@ -202,6 +204,128 @@ Helps us actually answer the question whether a path exists between the vertices
 ### Conclusion
 
 Relationship between objects can be represented using undirected graphs and a lot of questions can be answered about the said objects using the BFS as we've discussed in this section.
+
+### Shortest Path
+**Given a 2D matrix, find the shortest path length to the cell that has the value 2. Return -1 if no such path exists. You can only move up,down, left or right and to those cells that have the value of 1. Assume you start at 0,0**
+
+This a simple BFS problem. To solve it, we'll use the regular BFS algorithm BUT with an added caveat: we'll keep track of how far we've ventured from the origin. We'll do so by incrementing a counter every time we add the neighbors for a current position to queue. Let's look at an example:
+
+```cpp
+        {1,0,1,1,1},
+        {1,1,1,0,2},
+        {1,0,0,0,1},
+        {1,1,1,1,1},
+        {1,1,1,1,1},
+        {0,0,0,0,0}
+```
+
+For the neighbors of 0,0, we'll push the following to queue: 
+
+```cpp
+          x y dist 
+queue: [ (1,0,1) ]
+```
+
+The first two values are the coordinates and the final value in the tuple is the distance we've travelled so far. Next, we'll pop off (1,0,1) from the queue and add its neighbors to the queue and for its neighbors, the value of dist will be 2. We continue doing this until we find the cell with value 2. At this point, we'll simply return the value of `dist`.
+
+Here's this logic converted to code:
+
+```cpp
+int minDist(int numRows, int numColumns, vector<vector<int>>& lot){
+    
+    vector<vector<bool>> visited (numRows, vector<bool>(numColumns, false));
+    queue<tuple<int,int,int>> q;
+    //Tuple to keep track of coordinates and distance
+    q.push({0,0,0});
+    visited[0][0] = true;
+    int ans = -1;
+    bool nineFound = false;
+    
+    while (!q.empty()){
+        tuple<int,int,int> currTuple = q.front();
+        int row = get<0>(currTuple);
+        int col = get<1>(currTuple);
+        int dist = get<2>(currTuple);
+        q.pop();
+        
+        cout << "At: " << "lot[" << row << "][" << col << "]" <<  ". Distance: " << dist << endl;
+        
+        
+        //Check up
+        if (row - 1 >= 0 && row - 1 < numRows && col >= 0 && col < numColumns && !visited[row-1][col] && lot[row-1][col] != 0){
+            if (lot[row-1][col] == 2){
+                //do something!!
+                nineFound = true;
+                ans = dist + 1;
+                break;
+            }
+            
+            q.push({row-1, col, dist+1});
+            visited[row-1][col] = true;
+        }
+        
+        //Check right
+        if (row >= 0 && row < numRows && col + 1 >= 0 && col + 1 < numColumns && !visited[row][col+1] && lot[row][col+1] != 0){
+            if (lot[row][col+1] == 2){
+                //do something!!
+                nineFound = true;
+                ans = dist + 1;
+                break;
+            }
+            q.push({row, col+1, dist+1});
+            visited[row][col+1] = true;
+        }
+        
+        //Check down
+        if (row+1 >= 0 && row+1 < numRows && col >= 0 && col < numColumns && !visited[row+1][col] && lot[row+1][col] != 0){
+            if (lot[row+1][col] == 2){
+                //do something!!
+                nineFound = true;
+                ans = dist + 1;
+                break;
+            }
+            q.push({row+1, col, dist+1});
+            visited[row+1][col] = true;
+        }
+        
+        //Check left
+        if (row >= 0 && row < numRows && col - 1 >= 0 && col - 1 < numColumns && !visited[row][col-1] && lot[row][col-1] != 0){
+            if (lot[row][col-1] == 2){
+                //do something!!
+                nineFound = true;
+                ans = dist + 1;
+                break;
+            }
+            q.push({row, col-1, dist+1});
+            visited[row][col-1] = true;
+        }
+        
+    }
+        
+    return ans;
+}
+```
+
+Here's the output:
+
+```cpp
+At: lot[0][0]. Distance: 0
+At: lot[1][0]. Distance: 1
+At: lot[1][1]. Distance: 2
+At: lot[2][0]. Distance: 2
+At: lot[1][2]. Distance: 3
+At: lot[3][0]. Distance: 3
+At: lot[0][2]. Distance: 4
+At: lot[3][1]. Distance: 4
+At: lot[4][0]. Distance: 4
+At: lot[0][3]. Distance: 5
+At: lot[3][2]. Distance: 5
+At: lot[4][1]. Distance: 5
+At: lot[0][4]. Distance: 6
+Ans is: 7
+```
+
+Running time is $O(V + E)$
 
 ### Paint Boolean Matrix
 **Given a matrix and an index into the matrix, continue flipping all adjacent pixels with the same color until no more pixels can be flipped. ie if the indexed pixel is white, flip the pixel and all its white neighbors to black. Neighbors here are pixels above, below, to the left and to the right of the indexed pixel.**
