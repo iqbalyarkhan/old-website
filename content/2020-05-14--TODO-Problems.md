@@ -170,3 +170,103 @@ tags:
 - [Max are of island](https://leetcode.com/problems/max-area-of-island/)
 - [battleships on a board](https://leetcode.com/problems/battleships-in-a-board/)
 
+### Some fun problems:
+
+ * [Num of pairs divisible by k](#num-of-pairs-divisible-by-k)
+ * [Min difficulty](#min-difficulty)
+ 
+ 
+### Num of pairs divisible by k 
+**Given an array, return the number of pairs that are divisible by k**
+
+Example:
+
+```cpp
+[30,20,150,100,40] k = 60
+return 3:
+30 + 150,
+20 + 100,
+20 + 40
+``` 
+
+The brute force solution is simple to see: create an outer loop to start at 0 and an inner loop to start at 1. Next add element pointed to by the outer loop to the element pointer to by the inner loop. Check to see if the sum % k == 0. If so increment counter, otherwise, move on. This takes $O(N^2)$ time.
+
+A better approach: Let's store the modulo of elements with k. For example, if we're looking to add up to 60, and my current element is 100, I'll add to my hash table the following entry:
+
+```cpp
+ht[40] = 1
+```
+
+I'll keep incrementing this if I find any more modulo that result in 40. Let's see what my hash table will look like if I have the following input:
+
+ ```cpp
+k = 60
+[ 30, 20, 150, 100, 40]
+
+ht [ 30 % 60 = 30 ]   = 1
+ht [ 20 % 60 = 20 ]   = 1
+
+ht [ 150 % 60 =  30], increment earlier count:
+ht [ 30 & 150 % 60 = 30 ]   = 2
+ht [ 20 % 60 = 20 ]   = 1  
+ht [ 100 % 60 = 40] = 1
+
+ht [ 140 % 60 = 20], increment earlier count:
+ht [ 30 & 150 % 60 = 30 ]   = 2
+ht [ 20 & 140 % 60 = 20 ]   = 2
+ht [ 100 % 60 = 40] = 1
+```
+
+Ok, now our hash table has the information above. Now, all we need to do is go through the list and see if we can find the complement of the mod of value we're looking for. For example, if we're at 20, we know we'll need 40 more to add up to 60. So, the question we'll ask is, is there another element that can give us the 40 to add up to 60? Yes! We have 1 other element. A special case: what if we have 60 and 30? Well, in that case, we'll have to see how many 30s and 60s we have. If the number > 1, then we can add to 60. Here's this logic converted to code:
+
+```cpp
+int numPairsDivisibleByK(vector<int>& time, int k) {
+    unordered_map<int,int> hash;
+    int ans = 0;
+    for(int  i : time){
+        i %= k;
+        cout << "Incrementing: " << i << endl;
+        hash[i]++;
+        if(i == 0 || i == k/2){
+            cout << hash[i] << endl;
+            ans += hash[i]-1;
+        }
+        else if(hash.count(60-i)){
+            cout << "Found: " << hash[k-i] << " for: " << i << endl;
+            ans += hash[k-i];
+        }
+
+    }
+    return ans;
+}
+```
+
+
+
+### Min Difficulty
+**You want to schedule a list of jobs in d days. Jobs are dependent (i.e To work on the i-th job, you have to finish all the jobs j where 0 <= j < i). You have to finish at least one task every day. The difficulty of a job schedule is the sum of difficulties of each day of the d days. The difficulty of a day is the maximum difficulty of a job done in that day.**
+
+Worded differently, this problem asks you to cut the array into `d` pieces such that the sum of max of each piece is as small as possible. Example:
+
+```cpp
+Input: jobDifficulty = [6,5,4,3,2,1], d = 2
+Output: 7
+
+This cut returns the minimum sum:
+
+[6 5 4 3 2] [1] 6 + 1 = 7
+
+Other cuts would be larger:
+[6 5 3 3] [2 1] 6 + 2 = 8 
+```
+
+Brute force approach would be to try a cut at every position and getting the min of all max sums. Since this implies finding all combinations, we can use DP! 
+
+We can have a DP table with rows = `d + 1` and columns = `number of jobs`:
+
+|  | 0 | 1 | 2 | 3 | 4 |
+| -- | -- | -- | -- | -- | -- |
+| **0** | 0 | 0 | 0 | 0 | 0 | 
+| **1** | 0 | 0 | 0 | 0 | 0 | 
+| **2** | 0 | 0 | 0 | 0 | 0 | 
+
