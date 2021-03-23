@@ -173,7 +173,10 @@ tags:
 ### Some fun problems:
 
  * [Num of pairs divisible by k](#num-of-pairs-divisible-by-k)
+ * [Connected components in graph](#connected-components-in-graph)
+ * [Critical connections in a graph](#critical-connections-in-a-graph)
  * [Min difficulty](#min-difficulty)
+ 
  
  
 ### Num of pairs divisible by k 
@@ -241,7 +244,191 @@ int numPairsDivisibleByK(vector<int>& time, int k) {
 }
 ```
 
+### Connected components in graph
 
+**There are n cities. Some of them are connected, while some are not. If city a is connected directly with city b, and city b is connected directly with city c, then city a is connected indirectly with city c.
+A province is a group of directly or indirectly connected cities and no other cities outside of the group.**
+
+The only difference here is that we're using an adjacency matrix. This is our vanilla DFS connected components question:
+
+```cpp{numberLines: true}
+
+void DFS (vector<vector<int>>& mat, vector<bool>& visited, int v){
+    visited[v] = true;
+    for (int i = 0; i < mat[v].size(); i++){
+        if (i != v && mat[v][i] == 1){
+            int currVertex = i;
+            if (!visited[currVertex]){
+                DFS(mat, visited, currVertex);
+            }
+        }
+    }
+}
+
+int findCircleNum(vector<vector<int>>& isConnected) {
+    vector<bool> visited (isConnected.size(), false);
+    int provinces = 0;
+    for (int i = 0; i < visited.size(); i++){
+        if (!visited[i]){
+            provinces++;
+            DFS(isConnected, visited, i);
+        }
+    }
+    
+    return provinces;
+}
+```
+
+One thing to note here is that on line 5, we're going to set current vertex as `i` and NOT value of `mat[v][i]` because this is not an adj list but an adj matrix. Running time is the same as always for DFS: $O(V+E)$.
+
+  
+
+
+### Critical connections in a graph
+**There are n servers numbered from 0 to n-1 connected by undirected server-to-server connections forming a network where connections[i] = [a, b] represents a connection between servers a and b. Any server can reach any other server directly or indirectly through the network.**
+
+Example:
+
+![Critical-Connections-Graph](images/todo/critical-connections.png) [Image Credit - Graph](https://graphonline.ru/en/)
+
+In the graph above, critical connections are edges 0-1 and 0-4. That is because if either one of those edges are disconnected, all nodes will not be reachable from every node. 
+
+#### Brute Force
+A brute force solution that comes to mind is to iterate over your connections array and assume, one by one, that the current connection is not present. For example, if for the graph above we have this adjacency matrix given:
+
+```cpp
+[
+    [0,1],
+    [1,2],
+    [2,3],
+    [3,1],
+    [4,0]
+]
+```
+
+what we can do is assume that connection 0,1 does not exist and then check and see if ALL nodes are reachable (ie connected components). Keep doing this for the next pair and so on. Now to check connected components, we use DFS as I've explained [here](/undirected-graphs-depth-first-search#connected-components). Running time for DFS connected components is $O(V+E)$. Now if you're running DFS for each edge, you get running time of $O(E^2 + EV)$. This is quite horrible! There should be a better way to do this. Enter, Tarjan's algorithm.
+
+#### Tarjan's Algorithm
+
+Before we dive into the algorithm, let's understand what a strongly connected component is: a strongly connected component is a part of the graph (or the entire graph) where if you pick a pair of nodes, you can reach from node a to node b and from node b to node a. Components that comprise our SCC within a graph are **self-contained** meaning they're all connected to each other. The definition implies that Tarjan's can also be used for directed graphs. 
+
+Here's an example with 2 SCCs:
+
+![SCC-Graph1](images/todo/scc1.png) [Image Credit - Graph](https://graphonline.ru/en/)
+
+and an example with 3 SCCs:
+
+![SCC-Graph2](images/todo/scc2.png) [Image Credit - Graph](https://graphonline.ru/en/)
+
+Remember, we're trying to get the critical connections ie a connection which, if broken, will prevent us from getting from one node to every other node. Looking at the SCCs above, what do you notice about them based on the problem we're trying to solve? It should be obvious that the critical connections are the ones that connect one SCC to another. For example, in the two graphs below, I've highlighted the critical connections in green:
+
+
+Graph A             |  Graph B
+:-------------------------:|:-------------------------:
+![SCC-Graph3](images/todo/scc3.png) [Image Credit - Graph](https://graphonline.ru/en/)  | ![SCC-Graph4](images/todo/scc4.png) [Image Credit - Graph](https://graphonline.ru/en/)
+
+
+Therefore, any connection between 2 SCCs is a critical connection. How do we go about finding each such connection? At a high level, we need to first find all SCCs and then the edges that connect 2 SCCs. This is where Trajan's algorithm will help! It'll first determine which vertices belong to a SCC and then at the same time determine which edge will be a critical connection using DFS. Formally, the two steps are: 
+(1) Determine SCC for each vertex using DFS
+(2) While running DFS, determine which edge is critical.
+
+In order to determine which vertices belong to a SCC, we'll have to keep track of 2 things: the id of each vertex and the lowest value id a particular vertex is connected to as we run DFS. In the graphs below, I'll denote id and lowest value as a pair: id,low. Let's step through an example to determine each of the two for our graph:
+
+![SCC-Graph5](images/todo/scc5.png) [Image Credit - Graph](https://graphonline.ru/en/)
+
+Let's say this is our adjacency list for the graph above:
+
+```cpp
+0 - 1 - 4 - 5
+1 - 0 - 2 - 3
+2 - 1 - 3
+3 - 1 - 2
+4 - 0 - 5
+5 - 0 - 4
+```
+
+Let's run DFS starting with vertex 0. As a refresher, here's what DFS looks like:
+
+```cpp
+void AdjList::RecursiveDFS(){
+    for (int i = 0; i < visited.size(); i++){
+        if (!visited[i]){
+            RecursiveDFS(i);
+        }
+    }
+}
+
+void AdjList::RecursiveDFS(int v){
+    visited[v] = true;
+    cout << v << " ";
+    for (int i = 0; i < adjList[v].size(); i++){
+        int curr = adjList[v][i];
+        if (!visited[curr]){
+            RecursiveDFS(curr);
+        }
+    }
+}
+```
+
+Now remember, we're trying to assign IDs to our vertices. So, we'll pass a reference to an ID to each recursive call. Initially, low value will be equal to the id. That's because when we visit a vertex for the first time, the lowest value vertex it is connected to is itself.
+
+```cpp
+visited = [f,f,f,f,f,f]
+curr = 0
+id = 0
+low = 0 
+```
+
+We visit 0, mark it as true and assign node 0 an id of 0 and low of 0:
+```cpp
+visited = [T,f,f,f,f,f]
+curr = 0
+id = 0
+low = 0 
+```
+
+![SCC-Graph6](images/todo/tarjan6.png) [Image Credit - Graph](https://graphonline.ru/en/)
+
+Next, we increment our id and visit the next unvisited neighbor in adj list for 0 which is 1:
+```cpp
+visited = [T,T,f,f,f,f]
+curr = 1
+id = 1
+low = 1 
+```
+
+![SCC-Graph7](images/todo/tarjan7.png) [Image Credit - Graph](https://graphonline.ru/en/)
+
+
+Next, we increment our id and visit the next unvisited neighbor in adj list for 1 which is 2:
+```cpp
+visited = [T,T,T,f,f,f]
+curr = 2
+id = 2
+low = 2 
+```
+
+![SCC-Graph8](images/todo/tarjan8.png) [Image Credit - Graph](https://graphonline.ru/en/)
+
+Next, we increment our id and visit the next unvisited neighbor in adj list for 2 which is 3:
+```cpp
+visited = [T,T,T,T,f,f]
+curr = 3
+id = 3
+low = 3 
+```
+
+![SCC-Graph9](images/todo/tarjan9.png) [Image Credit - Graph](https://graphonline.ru/en/)
+
+Now, 3 has no neighbors that are currently unvisited. Therefore, it's now time for us to return from the recursive call for 3. BUT, before we do so, we need to update the lowest id vertex 3 is connected to. To do so, we simply look at the adjacency list for 3 and find the lowest value vertex which is 1. At this point, we update 3's low as 1 and return back to our caller with the lowest value we just set:
+
+```cpp
+visited = [T,T,T,T,f,f]
+curr: 3
+low: 1
+```
+
+**TO BE COMPLETED: https://www.youtube.com/watch?v=wUgWX0nc4NY**
 
 ### Min Difficulty
 **You want to schedule a list of jobs in d days. Jobs are dependent (i.e To work on the i-th job, you have to finish all the jobs j where 0 <= j < i). You have to finish at least one task every day. The difficulty of a job schedule is the sum of difficulties of each day of the d days. The difficulty of a day is the maximum difficulty of a job done in that day.**
