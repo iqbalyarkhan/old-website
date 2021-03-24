@@ -11,6 +11,12 @@ tags:
 ---
 
 1. [Intro](#introduction)
+    * [DNS](#dns)
+    * [Types of data](#types-of-data)
+        * [Relational Model](#relational-model)
+        * [Document Model](#document-model)
+        * [Relation vs Document Model](#relation-vs-document-model)
+        * [Graph model]
 2. [Scalability](#scalability)
 3. [Reliability](#reliability)
 4. [Load Balancers](#load-balancers)
@@ -39,11 +45,17 @@ tags:
 100. [Useful architectures](#useful-architectures)
 
 ### Introduction
-If you were to setup your website today, from scratch, how would you go about doing it? You'd probably have a single server to serve your website. You'll have something like this:
+If you were to setup your website today, from scratch, how would you go about doing it? You'd probably have a single server to serve your website. In this single server setup, everything is running on one server: your web application, maybe a database, your cache etc. You'll have something like this:
 
 ![Basic-Simple-Setup-Flow](./images/system-design/basic-setup.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
 
-A user would hit your website by either going to his/her browser or the mobile app, and enter the URL to your website. Next, this request will be routed to a domain name server that translates the address to an IP address and returns back to you. Next, you visit that IP address and the server returns the HTML page stored at the server.  
+A user would hit your website by either going to his/her browser or the mobile app, and enter the URL to your website. Next, this request will be routed to a domain name server that translates the address to an IP address and returns back to you. Let's talk a little more about the DNS:
+ 
+### DNS
+ 
+ Anything connected to the internet - laptops, phones etc has an IP address. A DNS's job is to convert the IP address to something more recognizable (from 64.202.189.170 to yourwebsite.com). So, when you type yourwebsite.com into your browser, your browser sends a query over the internet to find the website for yourwebsite.com. The query, in simplified terms, would be "What is the IP address of yourwebsite.com". The request is first sent to the **recursive resolver (RR)** (usually operated by your ISP). RR knows which other DNS servers might know the answer to your question. 
+ 
+The first server RR talks to is called the **Root Server**. These servers are running all over the world and each one knows DNS information about top level domains. These root servers are placed strategically around the world to handle user traffic appropriately. The root server then returns the IP address to the recursive resolver. Since the internet supports IPv4 and IPv6, the recursive resolver returns both ip addresses. Finally, now that the recursive resolver has the answer for "What is the IP address of yourwebsite.com", it can go ahead and visit the IP address and the server at that address responds to your request.  
 
 Now, say as your website grows, you want to show a personalized page for each visitor. To store each visitor's information, you need a data-store: ie database. This is what our flow would look like with a database:
 
@@ -53,7 +65,66 @@ Now, your website server would hit the database, get the user information/prefer
 
 A few questions you should ask:
 
+### Types of Data
+
 **(1) What type of database should I use?**
+
+In order to answer this question, you need to understand the data model that you'll use to represent your data! The data model will determine how you THINK about the problem. You can use JSON or XML documents, tables in a relational database or a graph model. The representation that you choose for your data would determine how your data is queried, searched, manipulated and processed in various ways. Let's look at some common data models:
+
+### Relational Model
+This is by far the best known model: the SQL model. Here, data is organized into relations (tables in SQL) where each relation is an unordered collection of tuples (rows in SQL). Common use cases for the SQL model constitute transaction processing such as entering sales or banking transactions, airline reservations etc and batch processing: customer invoicing, payroll, reporting  etc. 
+
+In the relational model, the data is laid out in the open: a table is simply a collection of rows and that's it! There are no nested structures or complicated access paths to follow if you want to look at the data. You can read any or all rows in a table, selecting those that match a condition. In relational DBs, the **query optimizer** automatically decides which parts of the query to execute in which order, and which indexes to use. Those choices, when compared to document model, are effectively the access path BUT they're made automatically by the optimizer and not the app developer. 
+
+The key insight of the relational model is this: you only need to build a query optimizer once and all applications that use the DB can benefit from it.  
+
+Sometimes, there's an awkward transitional layer required between the objects in application code (POJOs for example) and the database model of tables, rows and columns. In order to remedy this, object-relational mapping frameworks can be used such as Hibernate, Spring DAO etc. 
+
+### Document Model
+In this category, the pre-dominant force is the family of NoSQL DBs. These came into existence to solve for:
+
+- A need for greater scalability than relational databases: ie handling very large datasets and very high throughput
+- Specialized query operations that are not well supported by relational model
+
+In the document model, records are saved as a single document. For example, a resume that can be represented using JSON. Databases such as MongoDB, RethinkDB, CouchDB and Espresso support document model. Document model reverted back to the hierarchical model by storing nested records within the parent record rather than in a separate table:
+
+```js
+[
+    {
+        "year" : 2013,
+        "title" : "Turn It Down, Or Else!",
+        "info" : {
+            "directors" : [ "Alice Smith", "Bob Jones"],
+            "release_date" : "2013-01-18T00:00:00Z",
+            "rating" : 6.2,
+            "genres" : ["Comedy", "Drama"],
+            "image_url" : "http://ia.media-imdb.com/images/N/O9ERWAU7FS797AJ7LU8HN09AMUP908RLlo5JF90EWR7LJKQ7@@._V1_SX400_.jpg",
+            "plot" : "A rock band plays their music at high volumes, annoying the neighbors.",
+            "actors" : ["David Matthewman", "Jonathan G. Neff"]
+        }
+    },
+    {
+        "year": 2015,
+        "title": "The Big New Movie",
+        "info": {
+            "plot": "Nothing happens at all.",
+            "rating": 0
+        }
+    }
+]
+```
+
+### Relation vs Document Model
+There are many differences to consider when deciding whether to use relational DBs or document DBs. Let's create a quick table to compare and contrast the two:
+
+|  | Relation Model | Document Model |
+| -- | -- | -- |
+| **Schema Flexibility** | If you want to add a new field to your existing schema, you'd have to update the tables. There needs to be a middle layer to translate your code objects to data in DB. | Schema changes are easier in the document model where all you need to do is add a field to the schema and expect the clients to handle that new field. Plus, your application code would have the same data objects that the DB uses.| 
+| **Performance** | In order to get all the data that you need, you'd have to customize your query. | In document model, the performance is better due to locality. If your application needs to access the entire document (to render on a web page for example), then reading entire data in one go would be better than having to join across tables to get all relevant information|
+| **Relations in data** | There's better support for joins, many-to-one and many-to-many relationships | For joins and multiple relations, you'd have to have references that can get complicated pretty fast! | 
+
+### Graph model
+
 
 Relation databases (MySQL, Oracle, PostgreSQL) are preferred where the data has relationships: ie a user has an address, etc. Non-relational databases can be used if:
  - your data is unstructured,
