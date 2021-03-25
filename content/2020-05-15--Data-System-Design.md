@@ -23,6 +23,7 @@ tags:
         * [Data Encoding - AVRO](#data-encoding---avro)
     * [DataFlow](#data-flow)
         * [Data Flow - REST](#data-flow---rest)
+2. [Distributed](#distributed)
 2. [Scalability](#scalability)
 3. [Reliability](#reliability)
 4. [Load Balancers](#load-balancers)
@@ -161,8 +162,15 @@ So far, we've looked at the REST philosophy of interacting with web-services whi
 
 The general flow of data to MQs is as follows: One process sends a message to a queue or a topic, and the broker ensures that the message is delivered to one or more consumers of or subscribers to the that queue or topic.  
 
-**(2) What if there are a lot of users connecting to your site at the same time?**
-By asking this question, you're looking to make your website **scalable** and **reliable**:
+### Distributed
+So far, we've looked at a simple single server architecture. We've talked about how our data can be encoded and transmitted to services. In summary this is what we have as of now:
+
+![Basic-Simple-Setup-Flow](./images/system-design/basic-setup.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+We've talked about data that's stored on a single machine but ask this question:
+
+**What if there are a lot of users connecting to your site at the same time?**
+By asking this question, you're looking to make your website **scalable, available and reliable**. (With this type of architecture, your data storage and retrieval would occur between multiple databases):
 
 ### Scalability
 
