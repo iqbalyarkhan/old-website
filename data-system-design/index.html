@@ -73,6 +73,7 @@
 <li><a href="#distributed">Distributed</a></li>
 <li><a href="#scalability">Scalability</a></li>
 <li><a href="#reliability">Reliability</a></li>
+<li><a href="#vertical-vs-horizontal-scaling">Vertival vs Horizontal Scaling</a></li>
 <li>
 <p><a href="#load-balancers">Load Balancers</a></p>
 <ul>
@@ -312,8 +313,11 @@ By asking this question, you're looking to make your website <strong>scalable, a
 <li>Scale vertically: Add more compute power to a single machine</li>
 <li>Scale horizontally: Add more servers to your backend</li>
 </ul>
+<h3 id="vertical-vs-horizontal-scaling"><a href="#vertical-vs-horizontal-scaling" aria-label="vertical vs horizontal scaling permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Vertical vs Horizontal Scaling</h3>
+<p>Vertical scaling is when you join many CPUs, RAMs and disks together under one OS where a fast interconnect allows any CPU to access any part of the memory or disk. In this kind of <strong>shared memory</strong> architecture, all components can be treated as a single machine. Therefore, when the number of users increase, the only thing you can do is add more CPU, RAM and disk to that single machine.</p>
+<p>Horizontal scaling is when you have multiple machines running the same software connected via a network. Each machine running the software or holding our DB is called a node. Each node uses its CPUs, RAM and disks independently. Any coordination between nodes is done at the software level, using a conventional network. From this point on, in this post, we'll assume that we've chosen to use horizontal scaling and have multiple cheap machines connected together over the network. </p>
 <h3 id="load-balancers"><a href="#load-balancers" aria-label="load balancers permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Load Balancers</h3>
-<p>Now, if you suddenly start receiving a lot of traffic and have a collection of servers in your backend, how do you direct traffic to each of the servers? You want to utilize the servers to a point where the work-load is evenly distributed among all available servers. Enter <strong>load balancers</strong>:</p>
+<p>Now that our backend is setup with a horizontally scaled system, we can go ahead and improve our system's availability, reliability and scalability. To test our system so far, consider this: say you suddenly start receiving a lot of traffic and have a collection of servers in your backend, how do you direct traffic to each of the servers? You want to utilize the servers to a point where the work-load is evenly distributed among all available servers. Enter <strong>load balancers</strong>:</p>
 <p><span
       class="gatsby-resp-image-wrapper"
       style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 659px;"
@@ -387,8 +391,30 @@ Here, load balancers act at the application level, the highest in the OSI model.
 <li><strong>Hashing Methods</strong></li>
 </ul>
 <p>Methods in this category make decisions based on a hash of various data from the incoming packet. This includes connection or header information, such as source/destination IP address, port number, URL or domain name, from the incoming packet.</p>
-<p><strong>What if our database goes down or is hit with a time consuming request?</strong></p>
-<p>To handle this case, we need to perform database replication:</p>
+<p>With the help of load-balancers, we've managed to break our web-service so that user requests for the home page are forwarded to only those nodes that are healthy and are not under heavy load. To do so, we'll be using one of the load balancing algorithms described above. Having said that, this is what our architecture looks like as of now:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 83.47338935574228%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAARCAYAAADdRIy+AAAACXBIWXMAAAsSAAALEgHS3X78AAACwUlEQVQ4y3VU227TQBD1b/LIV1QCPgEJ3nlAKEIF+kApfYNSkArlkgAqBNGStEkcx4njxPF9vV7nMLO+kBYYaZy1Z+fMnLOzMdbrNWqvbfNbXhQIsxwRuyw9zKT2RBWIpUIgJMWl3m/wo6AktiRJked5A0pPDTAaW1gFAVIGEQJSKe2WbcPzfRS0lwFjKWHUYOPxGDs7Ozg8fE1JEoKCgjYt47KIpPezs1MMBwPdAHu324U9meh8wd3TfkNRJbZer4dWq4W95/tY+BFCAvKjBE4Q6XgUhvjc6eDbyQkxSZBlGTrtNvr9PtYEzh1rwE39+hcD+ERh0wLalFL1lDvO82bNnlAsIpmYjaZcd8h0JFV0vACyosc0uRBXDkWm9eGkNFdYUOd+miGhdVxRjSiftTQcx4FlWZqGadkYmSamUxLb8/6cfuVMzZ07GFsTmKS5t1xWB1iUcQacTqeYkLCsyWKx0OA2nZ7ruqgnoHZVlIlJmkKp/JI0Zc2qQwZg0MFwCJM6nM/nWFJ1BrkKynZn9wu235xCSUGaB1itVhA0TmwacDQaacAhAfL48Jq7rcE2hz7JFK7ffYlbrfckyxKz2UyzCmkKNCD+Y5tgfHCcEMcRAvrtWS76Y0e/p0Sfu1tXOcYljVTpm9/K70rT8mk+bcelTIVMpDAnM4RBrGN1ceNftK6aZFAKD+YkjTenUaJBLtawaT1wTOQ8XjRCTYd8Z/m6PTj4gWfHv6iiB5c05INhjbxKn4dHW+ic7zeFPvV38ejtTU7XA89YzV2ORY5rt19g6/4R4tCvKPr6cPw41nu2322hfb7XALbPn+Lx8Q29/gswJWHv7bfx5NVXuM5MzyGPD3tEMf6j+Pj9ABfWT9Tq9EZdfDg5QEyXQpDODSBz55OKVi4if4mrcrJmUUozF6YIE1Hdab7HGYJI6BhfUcb5Df4GFTBaJFy4AAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="load-balancer-single-db"
+        title="load-balancer-single-db"
+        src="/static/d5c20f28908b218f1177e8ca5003e4bb/1dda8/load-balancer-single-db.png"
+        srcset="/static/d5c20f28908b218f1177e8ca5003e4bb/27f03/load-balancer-single-db.png 173w,
+/static/d5c20f28908b218f1177e8ca5003e4bb/376d0/load-balancer-single-db.png 345w,
+/static/d5c20f28908b218f1177e8ca5003e4bb/1dda8/load-balancer-single-db.png 690w,
+/static/d5c20f28908b218f1177e8ca5003e4bb/3298e/load-balancer-single-db.png 714w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF">Image Credit</a></p>
+<p>Now the web tier looks good but what about the data tier? The current design has one database, so it does not support failover and redundancy. Meaning, what if our DB is hit with a time consuming query or what if the database node is down? Database replication is a common technique to address those problems. Let us take a look.</p>
 <h3 id="replication"><a href="#replication" aria-label="replication permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Replication</h3>
 <p>In replication, the idea is to <strong>replicate</strong> the same information across multiple databases. To replicate this information, we'll designate one server that holds our database as the <strong>leader</strong> and remaining servers as <strong>followers</strong>. The leader will:</p>
 <ul>
@@ -508,9 +534,38 @@ Here, load balancers act at the application level, the highest in the OSI model.
 <p>Unfair partitioning would result in <strong>skewed</strong> queries that result in <strong>hotspots</strong>. There are multiple approaches to distributing or sharding data across partitions:</p>
 <h3 id="partitioning-techniques"><a href="#partitioning-techniques" aria-label="partitioning techniques permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Partitioning: Techniques</h3>
 <p>The simplest approach to help avoid hotspots is to assign records to nodes randomly. That would distribute the data quite evenly across nodes. HOWEVER, when you go back to read the partitioned data, you'd have no way of knowing where the data is since it was partitioned randomly! </p>
-<p>A better approach is to partition by <strong>key range</strong>: for example, keys between Aa - Bf will be stored on node 1, Bg - Cf will be stored on node 2 and so on. Another approach is to partition using <strong>hash of key</strong> where the hash function produces a uniformly random value.  </p>
+<p>A better approach is to partition by <strong>key range</strong>: for example, keys between Aa - Bf will be stored on node 1, Bg - Cf will be stored on node 2 and so on. Another approach is to partition using <strong>hash of key</strong> where the hash function produces a uniformly random value. </p>
+<p>Another approach is to use <strong>dynamic partitioning</strong>: when a partition grows to exceed a configured size, it is split into two partitions so that each partition handles approximately half of the data. This is similar to how a B-Tree handles node splitting. </p>
+<p>Now as you can imagine, the data is partitioned on different nodes and is usually moved between nodes as data is added or deleted, we need to be able to know at all times, the location of each piece of data. This process is called <strong>service discovery</strong>. To solve this problem, there're 3 approaches:</p>
+<p>(1) Send request to all nodes and the node that has the data will respond
+(2) Send request to the one node that has information about all nodes and have it forward your request to the correct node
+(3) Have client maintain this information on its end.</p>
+<p>Many systems rely on a separate coordination service such as Zookeeper to keep track of cluster metadata. Each node registers itself in Zookeeper and Zookeeper maintains the mapping of partitions to nodes. So, whenever any mapping information is updated, Zookeeper informs the routing tier that can then update its records:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 42.51336898395722%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAIAAAC9o5sfAAAACXBIWXMAABcSAAAXEgFnn9JSAAABTUlEQVQoz1WSWY6DMBBEuf99coPJz+Qry0iJIrGYxRgwJGxmUcI8sCbStCzA3VXl7jLOsix1XT8ej/f7vfxFVVXFFq/Xi23XdTJJjDG6KPq+J58pNU2TAy2V8vl8WlrTNGiFIoyiyPd9cCTLsrxer9CEH3RtGwSB67rjODqUz6fzz+WCBLiv/X6324Emjy4tkGzbNk3TeZ611uMwUMqzbIJMypgBdFVWdH48Hg/fB8qcrFIlhJjmGRXPdQdjbPNSyiSOVzI0hCkrpT6Ty0Te73exBRJFoW+3m6HtQDA/Sc/zhmFwkLH2lFrX2+TwIas0ZSVxYh2FADrLFE9GoIV1ZqyyJ2MVlljb4BR5jqXMwhZMGIa96TOVQaZHjlzJzMCLJ1nct2S0Ph3ZK4ijGACKgFfD8ny9qlCIagvrIR+lxocSwubiulZfmnb5H/wCv2/x+LIOrUOMAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Zookeeper"
+        title="Zookeeper"
+        src="/static/6392fa910da02d696843c97728c91667/1dda8/zookeeper.png"
+        srcset="/static/6392fa910da02d696843c97728c91667/27f03/zookeeper.png 173w,
+/static/6392fa910da02d696843c97728c91667/376d0/zookeeper.png 345w,
+/static/6392fa910da02d696843c97728c91667/1dda8/zookeeper.png 690w,
+/static/6392fa910da02d696843c97728c91667/3a850/zookeeper.png 748w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF">Image Credit</a></p>
+<p>Cassandra and Riak use a different approach called the <strong>gossip protocol</strong> to disseminate any changes in cluster state. Requests can be sent to any node and that node forwards them to the appropriate node for the requested partition. This comes at a cost of added complexity but removes dependency on external coordination services like Zookeeper. </p>
 <h3 id="caching"><a href="#caching" aria-label="caching permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Caching</h3>
-<p>Now, as you can imagine, querying the database for the same information over and over again can be quite expensive. For example, let's say we perform a join on a few tables to render on each user's page the most frequently visited part of the site for a particular day. Getting this information for each and every site visitor is expensive. Since this information does not change frequently, we can look up this information once and then <strong>cache</strong> it for future use. This will improve the performance of our application. </p>
+<p>So far, we've improved the availability and reliability of our system. We can now concentrate on speeding up our architecture by improving latency by improving response and load times for our web-page. Now, as you can imagine, querying the database for the same information over and over again can be quite expensive. For example, let's say we perform a join on a few tables to render on each user's page the most frequently visited part of the site for a particular day. Getting this information for each and every site visitor is expensive. Since this information does not change frequently, we can look up this information once and then <strong>cache</strong> it for future use. This will improve the performance of our application. </p>
 <p>The <strong>cache tier</strong> is temporary data store layer that lies between the server and the database. If the information we want is present in the cache tier, we'll grab it from there, otherwise we'll query the DB, store this information in cache and return. Retrieving data from the cache tier is faster than querying the database for the same information. In addition, using the cache tier will also reduce database workloads. We can use Memcache, Redis etc based on the data we're caching. </p>
 <p>Here's a possible cache tier setup:</p>
 <p><span
