@@ -13,10 +13,16 @@ tags:
 1. [Intro](#introduction)
     * [DNS](#dns)
     * [Types of data](#types-of-data)
-        * [Relational Model](#relational-model)
-        * [Document Model](#document-model)
-        * [Relation vs Document Model](#relation-vs-document-model)
-        * [Graph model]
+        * [Types of data - Relational Model](#types-of-data---relational-model)
+        * [Types of data - Document Model](#types-of-data---document-model)
+        * [Types of data - Relation vs Document Model](#types-of-data---relation-vs-document-model)
+        * [Types of data - Graph model](#types-of-data---graph-model)
+    * [Data Encoding](#data-encoding)
+        * [Data Encoding - Language Specific Encoders](#data-encoding---language-specific-encoders)
+        * [Data Encoding - JSON and XML](#data-encoding---json-and-xml)
+        * [Data Encoding - AVRO](#data-encoding---avro)
+    * [DataFlow](#data-flow)
+        * [Data Flow - REST](#data-flow---rest)
 2. [Scalability](#scalability)
 3. [Reliability](#reliability)
 4. [Load Balancers](#load-balancers)
@@ -71,7 +77,7 @@ A few questions you should ask:
 
 In order to answer this question, you need to understand the data model that you'll use to represent your data! The data model will determine how you THINK about the problem. You can use JSON or XML documents, tables in a relational database or a graph model. The representation that you choose for your data would determine how your data is queried, searched, manipulated and processed in various ways. Let's look at some common data models:
 
-### Relational Model
+### Types of data - Relational Model
 This is by far the best known model: the SQL model. Here, data is organized into relations (tables in SQL) where each relation is an unordered collection of tuples (rows in SQL). Common use cases for the SQL model constitute transaction processing such as entering sales or banking transactions, airline reservations etc and batch processing: customer invoicing, payroll, reporting  etc. 
 
 In the relational model, the data is laid out in the open: a table is simply a collection of rows and that's it! There are no nested structures or complicated access paths to follow if you want to look at the data. You can read any or all rows in a table, selecting those that match a condition. In relational DBs, the **query optimizer** automatically decides which parts of the query to execute in which order, and which indexes to use. Those choices, when compared to document model, are effectively the access path BUT they're made automatically by the optimizer and not the app developer. 
@@ -80,7 +86,7 @@ The key insight of the relational model is this: you only need to build a query 
 
 Sometimes, there's an awkward transitional layer required between the objects in application code (POJOs for example) and the database model of tables, rows and columns. In order to remedy this, object-relational mapping frameworks can be used such as Hibernate, Spring DAO etc. 
 
-### Document Model
+### Types of data - Document Model
 In this category, the pre-dominant force is the family of NoSQL DBs. These came into existence to solve for:
 
 - A need for greater scalability than relational databases: ie handling very large datasets and very high throughput
@@ -114,7 +120,7 @@ In the document model, records are saved as a single document. For example, a re
 ]
 ```
 
-### Relation vs Document Model
+### Types of data - Relation vs Document Model
 There are many differences to consider when deciding whether to use relational DBs or document DBs. Let's create a quick table to compare and contrast the two:
 
 |  | Relation Model | Document Model |
@@ -123,14 +129,37 @@ There are many differences to consider when deciding whether to use relational D
 | **Performance** | In order to get all the data that you need, you'd have to customize your query. | In document model, the performance is better due to locality. If your application needs to access the entire document (to render on a web page for example), then reading entire data in one go would be better than having to join across tables to get all relevant information|
 | **Relations in data** | There's better support for joins, many-to-one and many-to-many relationships | For joins and multiple relations, you'd have to have references that can get complicated pretty fast! | 
 
-### Graph model
+### Types of data - Graph model
 
+We've seen that many-to-many relationships can cause relational and document models to break. If your data consists of numerous many to many relations, then the graph model would be best suited. As with our vanilla graph data structure, a graph model comprises of vertices and edges. Well known graph algorithms can then operate on these structures. 
 
+### Data Encoding
+Since we're on the topic of data, let's talk about another common action performed with (on?!) data: data encoding. Usually, applications keep data in in-memory data structures such as arrays, hash tables, trees etc. where it is easy to access and modify. When want to send that same data over a network to another process or save that data in a file, you need to encode it. The translation of data from in-memory representation to a byte sequence is called **encoding** and when you receive that same information over a network and want to use it locally in your application you perform the reverse process: aka **decoding**. There are a myriad different libraries and encoding formats to choose from. 
 
-Relation databases (MySQL, Oracle, PostgreSQL) are preferred where the data has relationships: ie a user has an address, etc. Non-relational databases can be used if:
- - your data is unstructured,
- - you only need to serialize/deserialize data
- - you need low latency 
+### Data Encoding - Language specific encoders
+Most OOP languages come built-in with encoders. For example, Java has java.io.Serializable, Ruby has Marshal etc. The advantage of using these libraries is they're convenient and easy to use. However, disadvantage here is that you're now tied to that language. If you're sending over data serialized using java's serializable, you expect your recipient to deserialize it using the same. Plus, this encoding/decoding process is notorious for its poor performance and bloated encoding. 
+
+### Data Encoding - JSON and XML
+Moving on from language specific encoders, we can use JSON, XML and CSV as encoding options. These are widely known and are language agnostic. However, using these formats, it is hard to distinguish between a string and an integer. You're also limited by the precision of your floating point integers. In addition, JSON and XML, although popular, are not the most memory/space efficient encoding methods.
+
+### Data Encoding - AVRO
+Apache AVRO, is a binary encoding format that uses a schema (in .avsc files) to specify the structure of the data being encoded. The resulting encoded data is in binary format and is compact as compared to JSON and XML. In addition, AVRO allows forward and backward compatibility semantics. To parse avro data, you go through the fields in the order that they appear in the schema and use the schema to tell you the datatype of each field. This means binary data can be decoded correctly if the code is reading the data using the exact same schema as the code that wrote the data.
+
+### Data Flow
+So far we've discussed how data is stored, retrieved and encoded but have avoided how it is transferred. For example, how would a service, running on a server receive our data and how would it respond back to our request? Let's look at a few basic modes of data flow:
+
+### Data Flow - REST
+When HTTP is used as the underlying protocol for talking to a service running on a server, it is called a web-service. One approach to speak with a web-service is to use the REST. REST is not a protocol but a design philosophy that models its principles after HTTP. It uses verbs to interact with the web-service by utilizing GET to retrieve information and POST to update it on a web-service. With REST APIs you can expect the response from a running service instantaneously. 
+
+### Data Flow - Message Passing
+So far, we've looked at the REST philosophy of interacting with web-services which is a synchronous request-response model. We can also pass data to services using asynchronous message passing systems that deliver messages to another process with low latency via an intermediary called the **message broker or message queue**. The message queue stores the message temporarily and acts as a buffer between the sender and the web-service. There are several advantages if MQs are used: 
+
+- They can act as a buffer if the recipient is unavailable or overloaded thus improving system reliability
+- It can automatically redeliver messages to a process that crashed, thus improving system durability
+- It allows one sender to send messages to multiple recipients
+- It **decouples** the sender from the recipient: the sender will send the message out into the abyss and won't care what services consume those messages
+
+The general flow of data to MQs is as follows: One process sends a message to a queue or a topic, and the broker ensures that the message is delivered to one or more consumers of or subscribers to the that queue or topic.  
 
 **(2) What if there are a lot of users connecting to your site at the same time?**
 By asking this question, you're looking to make your website **scalable** and **reliable**:
