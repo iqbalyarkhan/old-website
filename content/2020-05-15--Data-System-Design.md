@@ -126,6 +126,7 @@ There are many differences to consider when deciding whether to use relational D
 ### Graph model
 
 
+
 Relation databases (MySQL, Oracle, PostgreSQL) are preferred where the data has relationships: ie a user has an address, etc. Non-relational databases can be used if:
  - your data is unstructured,
  - you only need to serialize/deserialize data
