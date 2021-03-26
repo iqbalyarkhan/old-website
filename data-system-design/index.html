@@ -564,9 +564,32 @@ Here, load balancers act at the application level, the highest in the OSI model.
       />
     </span> <a href="https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF">Image Credit</a></p>
 <p>Cassandra and Riak use a different approach called the <strong>gossip protocol</strong> to disseminate any changes in cluster state. Requests can be sent to any node and that node forwards them to the appropriate node for the requested partition. This comes at a cost of added complexity but removes dependency on external coordination services like Zookeeper. </p>
+<p>Before we move forward, let's recap what we've seen so far:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 643px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 103.42146189735615%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAVCAYAAABG1c6oAAAACXBIWXMAAAsSAAALEgHS3X78AAADJElEQVQ4y41Vy44bRRSdL2TNVyDlD9iyQIIFC8QCISFWrJCSsEBAomGBmFGiMInHmXjsdrfdj+qH+91d1e3DueXMaDydiSjpqq+r6p665758st/vIavseiR1g8oMKClFb6xUZrQiek5pePaxdQIC6nEPL0kRRhGKqkZWFBj4zsgLoVJQPBNdEyzrNPdieNstVus11q6LONvhn7NzXFxcEJCrFa/4uqzlYoH55Qy66/hrj6v5HMvrxa0HTlLg4trFq7cL/Hu1xMpXWAYJHj95ir9OTw+APQHTtkPda3hhBNcPEKUZiqbFehtgwz3RG22QtD0KMgiCAHGsMI6jfUi+Iic3MdT8dBRNPWk0mmFELRRbjfb9fkfbfhiPYib2AiRfEeuhvBgzVkkcI6VEScZLh+CH1CPGVs7l2zEUYjgMw61Xd0EtYF3XSNPUyi7LUDcNnCjHWpUIkh3yfIeEZyKdjS2OwI4AbyjfX1/+8hqffPEHPJUjSxR830cYhjDGTGhOAG9eExEqkt0X1wpPzh0mo4PRHVomTby7T/FBwMPBIeBlrdHr3upZ2Qj+7br7+F3bI0ARTc96VrOXbfHGX1i9Y0b9PMaZc4aW560xD2Z3Alj1B4+eLX/E0/k3760AL7/E9+ePMDDrNeswz3MrEpqPetgYbQFerv7ES+e3W0+CxMHz2c/QfWcLW9oziqbJmQD2fLGi0cL18c6N2DU9el5y/AiXyy12VcUQDP+Psm0fOeDFXLLKYaHyGn5acHAAFSdRZw4Je6igJx4aUnZdDxWLWpFWGKfYKgqnSk9vHU6Vhg1wv6jHDxf2Hi2N3pGuykukeWFBhsEgZnfEeYXlJuB+OSmdiYeGSq013ngxroKMFAcOir0tE4mrDA2SxNxPMdukjOtA+sexnPSyE1f49KtTPHsdWG8bDtEV6c/mb7EJQlvwXz+e4dEP5xZESkz6/0Odc8Jqghum+Ozb5/j9xTWnskbJxBRVg7ysqbcYSf27X1/h85/+FsJsxwZrTmul1BRQ5pvHpl+5a3iBz3o0nIPGloj8fwj1kp6stxuO/Q1UUdq9hyj/B1uHU58foicdAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Entire System"
+        title="Entire System"
+        src="/static/adb3c3e6a671253016e8be82ce18f337/6ab6c/entire-system.png"
+        srcset="/static/adb3c3e6a671253016e8be82ce18f337/27f03/entire-system.png 173w,
+/static/adb3c3e6a671253016e8be82ce18f337/376d0/entire-system.png 345w,
+/static/adb3c3e6a671253016e8be82ce18f337/6ab6c/entire-system.png 643w"
+        sizes="(max-width: 643px) 100vw, 643px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF">Image Credit</a></p>
+<p>Diagram above shows that the user gets the IP address of the load balancer from DNS. User connects to the load balancer with this IP address. The HTTP request is routed to either Server 1 or Server 2. A web server reads user data from a follower database. A web server routes any data-modifying operations to the leader database. This includes write, update, and delete operations.</p>
 <h3 id="caching"><a href="#caching" aria-label="caching permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Caching</h3>
 <p>So far, we've improved the availability and reliability of our system. We can now concentrate on speeding up our architecture by improving latency by improving response and load times for our web-page. Now, as you can imagine, querying the database for the same information over and over again can be quite expensive. For example, let's say we perform a join on a few tables to render on each user's page the most frequently visited part of the site for a particular day. Getting this information for each and every site visitor is expensive. Since this information does not change frequently, we can look up this information once and then <strong>cache</strong> it for future use. This will improve the performance of our application. </p>
-<p>The <strong>cache tier</strong> is temporary data store layer that lies between the server and the database. If the information we want is present in the cache tier, we'll grab it from there, otherwise we'll query the DB, store this information in cache and return. Retrieving data from the cache tier is faster than querying the database for the same information. In addition, using the cache tier will also reduce database workloads. We can use Memcache, Redis etc based on the data we're caching. </p>
+<p>The <strong>cache tier</strong> is temporary data store layer that lies between the server and the database. If the information we want is present in the cache tier, we'll grab it from there, otherwise we'll query the DB, store this information in cache and return. Retrieving data from the cache tier is faster than querying the database for the same information. In addition, using the cache tier will also reduce database workloads. We can use Memcache, Redis etc based on the data we're caching. Interacting with cache servers is simple because most cache servers provide APIs for common programming languages.</p>
 <p>Here's a possible cache tier setup:</p>
 <p><span
       class="gatsby-resp-image-wrapper"
