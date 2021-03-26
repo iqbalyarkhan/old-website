@@ -468,6 +468,8 @@ CDNs are run by third-party providers, and you are charged for data transfers in
 
 - Setting an appropriate cache expiry: For time-sensitive content, setting a cache expiry time is important. The cache expiry time should neither be too long nor too short. If it is too long, the content might no longer be fresh. If it is too short, it can cause repeated requests to the origin servers thus making the CDN useless.
 
+- If all your users are located within the same geographical region, say Europe, you don't need a CDN in US for your customers.
+
 - **CDN fallback**
 You should consider how your website/application copes with CDN failure. If there is a temporary CDN outage, clients should be able to detect the problem and request resources from the origin.
 
