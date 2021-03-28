@@ -172,12 +172,60 @@ tags:
 
 ### Some fun problems:
 
+ * [Largest square with all Ones](#largest-square-with-all-ones)
  * [Num of pairs divisible by k](#num-of-pairs-divisible-by-k)
  * [Connected components in graph](#connected-components-in-graph)
  * [Critical connections in a graph](#critical-connections-in-a-graph)
  * [Min difficulty](#min-difficulty)
  
  
+### Largest Square with all Ones 
+**Given an m x n binary matrix filled with 0's and 1's, find the largest square containing only 1's and return its area.**
+
+Let's see how we can tackle this problem. Say this is what our square looks like:
+
+```cpp
+    {'1','0','1','0','0'},
+    {'1','0','1','1','1'},
+    {'1','1','1','1','1'},
+    {'1','0','0','1','0'}
+```
+
+The largest square is 4. There are 2 such squares. This seems like a problem that builds upon itself. For example, if I start at index 0,0, the largest square I've seen ending at index 0,0 is 1 (because 0,0 equals 1). Next, if I keep going across row 0, the largest values are the values of the original matrix themselves (other unvisited indices are initialized to 0):
+
+|  | 0 | 1 | 2 | 3 | 4 |
+| -- | -- | -- | -- | -- | -- |
+| **0** | 1 | 0 | 1 | 0 | 0 | 
+| **1** | 1 | 0 | 0 | 0 | 0 | 
+| **2** | 1 | 0 | 0 | 0 | 0 | 
+| **3** | 1 | 0 | 0 | 0 | 0 | 
+
+So far so good. Now, let's start at index 1,1. What's the largest square so far? It's still 1. That's because the value at 0,1 is 0 AND value at 1,1 is also 0. Now, if values at 0,1 would've been 1 AND at 1,1 would've been 1, the largest square would've been 2! Therefore, seems like for index (i,j) we need to find the minimum of 3 indices: (i-1,j), (i,j-1) and (i-1,j-1) and add the minimum to the value at index (i,j). This'll get us the largest square at index (i,j)! Converted to code, this is what we'll get:
+
+```cpp
+int maximalSquare(vector<vector<char>>& matrix) {
+    
+    vector<vector<int>> dp(matrix.size(), vector<int>(matrix[0].size(), 0));
+    for (int i = 0; i < matrix[0].size(); i++){
+        dp[0][i] = matrix[0][i] - '0';
+    }
+    
+    for (int i = 0; i < matrix.size(); i++){
+        dp[i][0] = matrix[i][0] - '0';
+    }
+    
+    int maxSoFar = numeric_limits<int>::min();
+    for (int i = 1; i < matrix.size(); i++){
+        for (int j = 1; j < matrix[i].size(); j++){
+            dp[i][j] = matrix[i][j] - '0' + min(matrix[i-1][j] - '0', min(matrix[i][j-1] - '0', matrix[i-1][j-1] - '0'));
+            if (dp[i][j] > maxSoFar)
+                maxSoFar = dp[i][j];
+        }
+    }
+    return maxSoFar*maxSoFar;
+}
+``` 
+
  
 ### Num of pairs divisible by k 
 **Given an array, return the number of pairs that are divisible by k**
