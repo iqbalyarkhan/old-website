@@ -21,13 +21,14 @@ tags:
         * [Relational Database](#relational-database)
         * [When to pick RDBs](#when-to-pick-rdbs)
         * [NoSQL Database](#nosql-dbs)
-        * [NoSQL vs RDBs]
+        * [NoSQL vs RDBs](#nosql-vs-rdbs)
     * [Data Encoding](#data-encoding)
         * [Data Encoding - Language Specific Encoders](#data-encoding---language-specific-encoders)
         * [Data Encoding - JSON and XML](#data-encoding---json-and-xml)
         * [Data Encoding - AVRO](#data-encoding---avro)
     * [DataFlow](#data-flow)
         * [Data Flow - REST](#data-flow---rest)
+    * [Communication Between Services]
 2. [Distributed](#distributed)
 2. [Scalability](#scalability)
 3. [Reliability](#reliability)
@@ -214,6 +215,38 @@ So far, we've looked at the REST philosophy of interacting with web-services whi
 - It **decouples** the sender from the recipient: the sender will send the message out into the abyss and won't care what services consume those messages
 
 The general flow of data to MQs is as follows: One process sends a message to a queue or a topic, and the broker ensures that the message is delivered to one or more consumers of or subscribers to the that queue or topic.  
+
+### Communication Between Services
+Long-Polling, WebSockets, and Server-Sent Events are popular communication protocols between a client like a web browser and a web server in addition to HTTP pull and push mechanisms. Let's look at these protocols in detail:
+
+### Ajax Polling
+
+Polling is a standard technique used by the vast majority of AJAX applications. The basic idea is that the client repeatedly polls (or requests) a server for data. The client makes a request and waits for the server to respond with data. If no data is available, an empty response is returned.
+
+ - The client opens a connection and requests data from the server using regular HTTP.
+ - The requested webpage sends requests to the server at regular intervals (e.g., 0.5 seconds).
+ - The server calculates the response and sends it back, just like regular HTTP traffic.
+ - The client repeats the above three steps periodically to get updates from the server.
+
+The problem with Polling is that the client has to keep asking the server for any new data. As a result, a lot of responses are empty, creating HTTP overhead. 
+
+### HTTP Long-Polling
+This is a variation of the traditional polling technique that allows the server to push information to a client whenever the data is available. With Long-Polling, the client requests information from the server exactly as in normal polling, but with the expectation that the server may not respond immediately. That’s why this technique is sometimes referred to as a “Hanging GET”.
+
+If the server does not have any data available for the client, instead of sending an empty response, the server holds the request and waits until some data becomes available.
+Once the data becomes available, a full response is sent to the client. The client then immediately re-request information from the server so that the server will almost always have an available waiting request that it can use to deliver data in response to an event.
+
+### Web Sockets
+WebSocket provides [Full duplex](https://en.wikipedia.org/wiki/Duplex_(telecommunications)#Full_duplex) communication channels over a single TCP connection. It provides a persistent connection between a client and a server that both parties can use to start sending data at any time. The client establishes a WebSocket connection through a process known as the WebSocket handshake. If the process succeeds, then the server and client can exchange data in both directions at any time. The WebSocket protocol enables communication between a client and a server with lower overheads, facilitating real-time data transfer from and to the server. This is made possible by providing a standardized way for the server to send content to the browser without being asked by the client and allowing for messages to be passed back and forth while keeping the connection open. In this way, a two-way (bi-directional) ongoing conversation can take place between a client and a server.
+
+### Server Sent Events
+Under SSEs the client establishes a persistent and long-term connection with the server. The server uses this connection to send data to a client. If the client wants to send data to the server, it would require the use of another technology/protocol to do so.
+
+ - Client requests data from a server using regular HTTP.
+ - The requested webpage opens a connection to the server.
+ - The server sends the data to the client whenever there’s new information available.
+ 
+SSEs are best when we need real-time traffic from the server to the client or if the server is generating data in a loop and will be sending multiple events to the client.
 
 ### Distributed
 So far, we've looked at a simple single server architecture. We've talked about how our data can be encoded and transmitted to services. In summary this is what we have as of now:
@@ -490,6 +523,20 @@ The data distribution is not uniform, e.g., there are a lot of places for a part
 There is a lot of load on a partition, e.g., there are too many requests being handled by the DB partition dedicated to user photos.
 In such cases, either we have to create more DB partitions or have to rebalance existing partitions, which means the partitioning scheme changed and all existing data moved to new locations. Doing this without incurring downtime is extremely difficult. Using a scheme like directory based partitioning does make rebalancing a more palatable experience at the cost of increasing the complexity of the system and creating a new single point of failure (i.e. the lookup service/database).
 
+When we're re-balancing our partitions, there're a few issues that can crop up. Say, for example, that you initially had 12 servers and your data is partitioned across these servers. In order to assign data to a server, you used the mod technique: 
+
+```cpp
+index = key % num_of_servers
+``` 
+
+Now, as your load grows, you add more servers. This would change our `num_of_servers` variable and we'd have to move most of the keys from one node to another based on the new number of servers. The same applies if your load decreases and you reduce the number of servers in your cluster. Such frequent moves make re-balancing expensive. We need an approach that doesn't move data around more than necessary. Enter **consistent hashing**.
+
+**Consistent Hashing**
+Consistent hashing was designed to avoid the problem of having to change the server assignment of every object when a server is added or removed. The main idea is to use a hash function to randomly map both the objects and the servers to a unit circle, e.g. at an angle of **hash(object) mod 360** degrees w.r.t. the horizontal axis. Each object is then assigned to the next server that appears on the circle in clockwise order. This provides an even distribution of objects to servers. But, more importantly, if a server fails and is removed from the circle, only the objects that were mapped to the failed server need to be reassigned to the next server in clockwise order. Likewise, if a new server is added, it is added to the unit circle, and only the objects mapped to that server need to be reassigned. Importantly, when a server is added or removed, the vast majority of the objects maintain their prior server assignments.
+
+![Consistent Hashing](./images/system-design/consistent-hashing.png) [Image Credit](https://blog.hltbra.net/2019/02/18/consistent-hashing.html)
+
+
 Before we move forward, let's recap what we've seen so far:
 
 ![Entire System](./images/system-design/entire-system.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
@@ -730,6 +777,21 @@ Before we can design a system, we need to be able to understand the key characte
 
 ### Reliable vs Available
 If a system is reliable, it is available. However, if it is available, it is not necessarily reliable. In other words, high reliability contributes to high availability, but it is possible to achieve a high availability even with an unreliable product by minimizing repair time and ensuring that spares are always available when they are needed. 
+
+### Back of the envelope Estimation
+Below is a table explaining the data volume unit 
+
+![Power of Two](./images/system-design/power-of-two.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+Some common facts: 
+
+                   • Memory is fast but the disk is slow.
+                   • Avoid disk seeks if possible.
+                   • Simple compression algorithms are fast.
+                   • Compress data before sending it over the internet if possible.
+                   • Data centers are usually in different regions, and it takes time to send data between them.
+                   
+
 
 ### Useful architectures
  - [WordPress on AWS](https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html)
