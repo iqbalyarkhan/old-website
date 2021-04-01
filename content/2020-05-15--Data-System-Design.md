@@ -21,7 +21,11 @@ tags:
     *[Messaging](#messaging)
         * [Brokerless Messaging](#brokerless-messaging)
         * [Broker Based Messaging](#broker-based-messaging)
-    * [Sagas]
+    * [Sagas](#sagas)
+    * [API Gateway](#api-gateway)
+        * [Edge Functions](#edge-functions)
+        * [Secure Services](#secure-services)
+    * [Summary](#summary)
 1. [Intro](#introduction)
     * [DNS](#dns)
     * [Types of data](#types-of-data)
@@ -243,6 +247,79 @@ Sagas are mechanisms to maintain data consistency in a microservice architecture
 
 ![Saga](./images/system-design/saga.png) [Image Credit](https://microservices.io/book)
 
+### API Gateway
+Now that you've created your service, you'd usually have clients connecting to your services. These clients could be connecting via mobile applications, via JS running in the browser, or other applications. Now, since our services are broken down into multiple microservices, each service would have its own API. Plus, different clients typically require different data. A desktop browser-based UI usually displays far more information than a mobile application. Also, different clients access the services over different kinds of networks. Four kinds of clients consume the services’ APIs:
+
+- Web applications
+- JavaScript applications running in the browser
+- Mobile applications, one for consumers and the other for couriers
+- Applications written by third-party developers
+
+The diagram below shows the initial state of our design:
+
+![Gateway-1](./images/system-design/gateway1.png) [Image Credit](https://microservices.io/book)
+
+We can't have clients directly calling our services. As we discussed earlier ideas relating to circuit-breaker, clients making multiple calls to services etc, we need an additional coordination layer between our backend services and clients. This coordination layer can be represented by a service called the **API Gateway Service**. An API gateway is a service that’s the entry point into the application from the outside world. It’s responsible for request routing, API composition, and other functions, such as authentication. Clients to make a single request to an API gateway, a service that serves as the single entry point for API requests into an application from outside the firewall. API gateway encapsulates the application’s internal architecture and provides an API to its clients. It may also have other responsibilities, such as authentication, monitoring and rate limiting. Here's what our structure would look like with the API gateway added:
+
+![Gateway-2](./images/system-design/gateway2.png) [Image Credit](https://microservices.io/book)
+
+The API gateway is responsible for request routing, API composition, and protocol translation. All API requests from external clients first go to the API gateway, which routes some requests to the appropriate service. The API gateway handles other requests using the API composition pattern and by invoking multiple services and aggregating the results. It may also translate between client-friendly protocols such as HTTP and WebSockets and client-unfriendly protocols used by the services. 
+
+### Edge Functions
+Although an API gateway’s primary responsibilities are API routing and composition, it may also implement what are known as edge functions. An edge function is, as the name suggests, a request-processing function implemented at the edge of an application. Examples of edge functions that an application might implement include the following:
+
+- Authentication—Verifying the identity of the client making the request.
+- Authorization—Verifying that the client is authorized to perform that particular operation.
+- Rate limiting —Limiting how many requests per second from either a specific client and/or from all clients.
+- Caching—Cache responses to reduce the number of requests made to the services.
+- Metrics collection—Collect metrics on API usage for billing analytics purposes.
+- Request logging—Log requests.
+
+It’s often convenient to implement these edge functions, especially authorization, in the API gateway itself. There’s one less network hop, which improves latency. There are also fewer moving parts, which reduces complexity. Usually, to increase availability, we have the API gateway behind a load balancer.
+
+**BENEFITS OF AN API GATEWAY**
+A major benefit of using an API gateway is that it encapsulates internal structure of the application. Rather than having to invoke specific services, clients talk to the gateway. The API gateway provides each client with a client-specific API, which reduces the number of round-trips between the client and application. It also simplifies the client code.
+
+**DRAWBACKS OF AN API GATEWAY**
+The API gateway pattern also has some drawbacks. It is yet another highly available component that must be developed, deployed, and managed. There’s also a risk that the API gateway becomes a development bottleneck. Developers must update the API gateway in order to expose their services’s API. It’s important that the process for updating the API gateway be as lightweight as possible. Otherwise, developers will be forced to wait in line in order to update the gateway. Despite these drawbacks, though, for most real-world applications, it makes sense to use an API gateway. If necessary, you can use the Backends for frontends pattern to enable the teams to develop and deploy their APIs independently.
+
+### Secure Services
+An application developer is primarily responsible for implementing four different
+aspects of security:
+- Authentication: Verifying the identity of the application or human (a.k.a. the principal) that’s attempting to access the application. For example, an application typically verifies a principal’s credentials, such as a user ID and password or an application’s API key and secret.
+- Authorization: Verifying that the principal is allowed to perform the requested operation on the specified data. Applications often use a combination of role- based security and access control lists (ACLs). Role-based security assigns each user one or more roles that grant them permission to invoke particular opera- tions. ACLs grant users or roles permission to perform an operation on a particular business object, or aggregate.
+- Auditing: Tracking the operations that a principal performs in order to detect security issues, help customer support, and enforce compliance.
+- Secure interprocess communication: Ideally, all communication in and out of ser- vices should be over Transport Layer Security (TLS). Interservice communication may even need to use authentication.
+
+There are a couple of different ways to handle authentication. One option is for the individual services to authenticate the user. The problem with this approach is that it permits unauthenticated requests to enter the internal network. It relies on every development team correctly implementing security in all of their services. As a result, there’s a significant risk of an application containing security vulnerabilities.
+
+A better approach is for the API gateway to authenticate a request before forward- ing it to the services. Centralizing API authentication in the API gateway has the advantage that there’s only one place to get right. As a result, there’s a much smaller chance of a security vulnerability. Another benefit is that only the API gateway has to deal with the various different authentication mechanisms. It hides this complexity from the services. Two types of clients are possible when authenticating: API Client and Login-based client:
+
+![Authentication](./images/system-design/authentication.png) [Image Credit](https://microservices.io/book)
+
+The sequence of events for API clients is as follows:
+
+1. A client makes a request containing credentials.
+2. The API gateway authenticates the credentials, creates a security token, and passes that to the service or services.
+
+The sequence of events for login-based clients is as follows:
+
+1. A client makes a login request containing credentials.
+2. The API gateway returns a security token.
+3. The client includes the security token in requests that invoke operations.
+4. The API gateway validates the security token and forwards it to the service or services.
+
+Authenticating a client’s credentials is important but insufficient. An application must also implement an authorization mechanism that verifies that the client is allowed to perform the requested operation. You can use an off-the-shelf service or framework that implements a standard called OAuth 2.0.
+
+The key concepts in OAuth 2.0 are the following:
+- Authorization Server: Provides an API for authenticating users and obtain- ing an access token and a refresh token. Spring OAuth is a great example of a framework for building an OAuth 2.0 authorization server.
+- Access Token: A token that grants access to a Resource Server. The format of the access token is implementation dependent. But some implementations, such as Spring OAuth, use JWTs.
+- Refresh Token: A long-lived yet revocable token that a Client uses to obtain a new AccessToken.
+- Resource Server: A service that uses an access token to authorize access. In a microservice architecture, the services are resource servers.
+- Client: A client that wants to access a Resource Server. In a microservice architecture, API Gateway is the OAuth 2.0 client.
+
+### Summary
+We talked about the best practices when designing microservices and the trade-offs between different approaches. We can use the ideas discussed in the section above to setup a system from scratch using the microservice approach.
 
 ### Introduction
 If you were to setup your website today, from scratch, how would you go about doing it? You'd probably have a single server to serve your website. In this single server setup, everything is running on one server: your web application, maybe a database, your cache etc. You'll have something like this:
