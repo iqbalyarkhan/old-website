@@ -9,7 +9,19 @@ categories:
 tags:
     - Data system design
 ---
-
+0. [Microservice Architecture](#microservice-architecture)
+    * [Pros vs Cons](#advantages)
+    * [IPC](#ipc)
+    * [Message Formats](#message-formats)
+    * [Communication Using RPI](#communication-using-rpi)
+        * [REST: Pros vs Cons](#rest-pros-vs-cons)
+        * [gRPC](#grpc)
+    * [Circuit Breaker Pattern](#circuit-breaker-pattern)
+    * [Service discovery](#service-discovery)
+    *[Messaging](#messaging)
+        * [Brokerless Messaging](#brokerless-messaging)
+        * [Broker Based Messaging](#broker-based-messaging)
+    * [Sagas]
 1. [Intro](#introduction)
     * [DNS](#dns)
     * [Types of data](#types-of-data)
@@ -64,9 +76,173 @@ tags:
 10. [Decoupling](#decoupling)
     * [Decoupling: Message queues](#decoupling-message-queues)
 11. [System Design](#system-design)
-    * [Reliable vs Available]
-
+    * [Reliable vs Available](#reliable-vs-available)
+    * [Back of the envelope Estimation](#back-of-the-envelope-estimation)
+    * [Storing Images](#storing-images)
+    * [User authentication](#user-authentication)
+    * [Allowing users to chat](#allowing-users-to-chat)
 100. [Useful architectures](#useful-architectures)
+
+### Microservice Architecture
+Before we begin designing distributed architectures, let's first understand what the microservice architecture is:
+As modern systems grow in size, it is recommended to break monolithic systems down into microservices. The idea is to have modularity in our application where each part of the application does one job and does it well. Each modular part is called a service. A key characteristic of microservice architecture is that services are responsible for performing one function. Each service is independent of other services, meaning services are **loosely coupled**: a service can run in isolation from other services. 
+
+One way to achieve loose coupling is to have each service's own datastore. A customer service component would have its own db, same for sessions service etc. A fully built microservice architecture would entail numerous frontend and backend services. If, for example, we have a food delivery application, our frontend services would include an API gateway and the Restaurant Web UI. The API gateway, which plays the role of a facade, provides the REST APIs that are used by the consumers’ and couriers’ mobile applications. The Restaurant Web UI implements the web interface that’s used by the restaurants to man- age menus and process orders. There would be backend services where each backend service has a REST API and its own private DB. Back end services could include: 
+
+- OrderService — Manages orders
+- DeliveryService — Manages delivery of orders from restaurants to consumers
+- RestaurantService — Maintains information about restaurants  KitchenService—Manages the preparation of orders
+- AccountingService — Handles billing and payments
+
+Putting it all together, this is what our service would look like:
+
+![Intro Design](./images/system-design/intro-design.png) [Image Credit](https://microservices.io/book)
+
+But why should we use microservice architecture?
+
+### Pros vs Cons
+
+The microservice architecture has the following benefits:
+- It enables the continuous delivery and deployment of large, complex applications.  Services are small and easily maintained.
+- Services are independently deployable.
+- Services are independently scalable.
+- The microservice architecture enables teams to be autonomous.  It allows easy experimenting and adoption of new technologies.  It has better fault isolation.
+
+Here are the major drawbacks and issues of the microservice architecture:
+- Finding the right set of services is challenging.
+- Distributed systems are complex, which makes development, testing, and deployment difficult.
+- Deploying features that span multiple services requires careful coordination.
+- Deciding when to adopt the microservice architecture is difficult.
+
+### IPC
+Now that our services are defined as loosely coupled components, what if we need 2 services to talk to each other? Enter inter-process communication mechanisms. Before we begin describing the types of IPC technologies, let's see the various scenarios that we might need to account for when deciding which tech to use. We can have:
+
+- One-to-one : Each client request is processed by exactly one service
+- One-to-many: Each request is processed by multiple services
+- Synchronous: The client expects a timely response from the service and might event block while it waits.
+- Asynchronous: The client doesn’t block, and the response, if any, isn’t necessarily sent immediately.
+
+Breaking it down, these are the interaction styles:
+
+![IPC](./images/system-design/ipc.png) [Image Credit](https://microservices.io/book)
+
+As summed above, these are the types of one-to-one interactions:
+- Request/response: A service client makes a request to a service and waits for a response. The client expects the response to arrive in a timely fashion. It might event block while waiting. This is an interaction style that generally results in services being tightly coupled.
+- Asynchronous request/response: A service client sends a request to a service, which replies asynchronously. The client doesn’t block while waiting, because the ser- vice might not send the response for a long time.
+- One-way notifications: A service client sends a request to a service, but no reply is expected or sent.
+
+The following are the different types of one-to-many interactions:
+- Publish/subscribe: A client publishes a notification message, which is consumed by zero or more interested services.
+- Publish/async responses: A client publishes a request message and then waits for a certain amount of time for responses from interested services.
+
+Your choice of IPC mechanism impacts availability of your application. Synchronous communication with other services as part of request handling reduces application availability. As a result, you should design your services to use asynchronous messaging whenever possible. Let’s first look at the problem with synchronous communication and how it impacts availability.
+
+REST is an extremely popular IPC mechanism. You may be tempted to use it for inter- service communication. The problem with REST, though, is that it’s a synchronous protocol: an HTTP client must wait for the service to send a response. Whenever services communicate using a synchronous protocol, the availability of the application is reduced.To see why, consider this scenario:
+
+![Problem With REST](./images/system-design/problem-with-rest.png) [Image Credit](https://microservices.io/book)
+
+If either one of the consumer service or the restaurant service is slow/unavailable, we'll be impacting the response time to our client.  All services must be available in order for the order to be processed. The best way to handle issues here is to use an asynch request/asynch reponse style of interaction to create orders:
+  
+![Asynch-Requests](./images/system-design/asynch-requests.png) [Image Credit](https://microservices.io/book)
+  
+The client and the services communicate asynchronously by sending messages via messaging channels. No participant in this interaction is ever blocked waiting for a response.
+Such an architecture would be extremely resilient, because the message broker buffers messages until they can be consumed. The problem, however, is that services often have an external API that uses a synchronous protocol such as REST, so it must respond to requests immediately.
+If a service has a synchronous API, one way to improve availability is to replicate data. Let’s see how that works:
+
+One way to minimize synchronous requests during request processing is to replicate data. A service maintains a replica of the data that it needs when processing requests.
+
+![Replicate-Data](./images/system-design/replicate-data.png) [Image Credit](https://microservices.io/book)
+
+### Messaging
+When using messaging, services communicate by asynchronously exchanging mes- sages. A messaging-based application typically uses a message broker, which acts as an intermediary between the services, although another option is to use a brokerless architecture, where the services communicate directly with each other. A service client makes a request to a service by sending it a message. If the service instance is expected to reply, it will do so by sending a separate message back to the client. Because the communication is asynchronous, the client doesn’t block waiting for a reply. Messages are exchanged over channels. The business logic in the sender invokes a sending port interface, which encapsulates the underlying communication mechanism. The sending port is implemented by a message sender adapter class, which sends a mes- sage to a receiver via a message channel. A message channel is an abstraction of the messaging infrastructure. A message handler adapter class in the receiver is invoked to handle the message. It invokes a receiving port interface implemented by the consumer’s business logic. Any number of senders can send messages to a channel. Similarly, any number of receivers can receive messages from a channel.
+
+There are two kinds of channels: point-to-point and pub-sub:
+- A point-to-point channel delivers a message to exactly one of the consumers that is reading from the channel. Services use point-to-point channels for the one- to-one interaction styles described earlier. For example, a command message is often sent over a point-to-point channel.
+- A publish-subscribe channel delivers each message to all of the attached consumers. Services use publish-subscribe channels for the one-to-many interaction styles described earlier. For example, an event message is usually sent over a publish-subscribe channel.
+
+A messaging-based application typically uses a message broker, an infrastructure service through which the service communicates. But a broker-based architecture isn’t the only messaging architecture. You can also use a brokerless based messaging architecture, in which the services communicate with one another directly. The two approaches, shown below, have different trade-offs, but usually a broker-based architecture is a better approach.
+
+![Broker](./images/system-design/broker.png) [Image Credit](https://microservices.io/book)
+
+
+### Brokerless Messaging
+
+In a brokerless architecture, services can exchange messages directly. ZeroMQ (http:// zeromq.org) is a popular brokerless messaging technology. It’s both a specification and a set of libraries for different languages. It supports a variety of transports, includ- ing TCP, UNIX-style domain sockets, and multicast.
+The brokerless architecture has some benefits:
+- Allows lighter network traffic and better latency, because messages go directly from the sender to the receiver, instead of having to go from the sender to the message broker and from there to the receiver
+- Eliminates the possibility of the message broker being a performance bottle- neck or a single point of failure
+- Features less operational complexity, because there is no message broker to set up and maintain
+
+As appealing as these benefits may seem, brokerless messaging has significant drawbacks:
+- Services need to know about each other’s locations and must therefore use one of the discovery mechanisms describer earlier in section 3.2.4.
+- It offers reduced availability, because both the sender and receiver of a message must be available while the message is being exchanged.
+- Implementing mechanisms, such as guaranteed delivery, is more challenging.
+
+### Broker Based Messaging
+A message broker is an intermediary through which all messages flow. A sender writes the message to the message broker, and the message broker delivers it to the receiver. An important benefit of using a message broker is that the sender doesn’t need to know the network location of the consumer. Another benefit is that a message broker buffers messages until the consumer is able to process them.
+There are many message brokers to chose from. Examples of popular open source message brokers include [ActiveMQ](http://activemq.apache.org), [RabbitMQ](https://www.rabbitmq.com), [Apache Kafka](http://kafka.apache.org) etc.
+
+### Message formats
+The choice of message format can impact the efficiency of IPC, the usability of the API, and its evolvability. If you’re using a messaging system or protocols such as HTTP, you get to pick your message for- mat. Some IPC mechanisms—such as gRPC, which you’ll learn about shortly—might dictate the message format. There are two main categories of message formats: text and binary. Text based are JSON and XML. Binary are AVRO, Thrift and Protocol Buffers. 
+
+### Communication Using RPI
+When using a remote procedure invocation-based IPC mechanism, a client sends a request to a service, and the service processes the request and sends back a response. Some clients may block waiting for a response, and others might have a reactive, non-blocking architecture. There're 2 main types of RPI methods: REST and gRPC. REST is quite well understood, so let's just understand the benefits/drawbacks of REST and then we'll see how gRPC works:
+
+### REST: Pros vs Cons
+**There are numerous benefits to using REST:**
+- It’s simple and familiar.
+- You can test an HTTP API from within a browser using, for example, the Postman plugin, or from the command line using curl (assuming JSON or some other text format is used).
+- It directly supports request/response style communication.
+- HTTP is, of course, firewall friendly.
+- It doesn’t require an intermediate broker, which simplifies the system’s architecture.
+
+**There are some drawbacks to using REST:**
+- It only supports the request/response style of communication.
+- Reduced availability. Because the client and service communicate directly with- out an intermediary to buffer messages, they must both be running for the duration of the exchange.
+- Clients must know the locations (URLs) of the service instances(s). As described in section 3.2.4, this is a nontrivial problem in a modern application. Clients must use what is known as a service discovery mechanism to locate service instances.
+- Fetching multiple resources in a single request is challenging.
+- It’s sometimes difficult to map multiple update operations to HTTP verbs.
+
+### gRPC
+As mentioned in the preceding section, one challenge with using REST is that because HTTP only provides a limited number of verbs, it’s not always straightforward to design a REST API that supports multiple update operations. An IPC technology that avoids this issue is [gRPC](www.grpc.io), a framework for writing [cross-language clients and servers](https://en.wikipedia.org/wiki/Remote_procedure_call for more). gRPC is a binary message-based protocol, and this means—as mentioned earlier in the discussion of binary message formats—you’re forced to take an API-first approach to service design. You define your gRPC APIs using a Protocol Buffers-based IDL, which is Google’s language-neutral mechanism for serializing structured data. You use the Protocol Buffer compiler to generate client-side stubs and server-side skeletons. The compiler can generate code for a variety of languages, including Java, C#, NodeJS, and GoLang. Clients and servers exchange binary messages in the Protocol Buffers format using HTTP/2. 
+
+gRPC uses Protocol Buffers as the message format. Protocol Buffers is, as men- tioned earlier, an efficient, compact, binary format. It’s a tagged format. Each field of a Protocol Buffers message is numbered and has a type code. A message recipient can extract the fields that it needs and skip over the fields that it doesn’t recognize. As a result, gRPC enables APIs to evolve while remaining backward-compatible.
+
+gRPC has several benefits:
+- It’s straightforward to design an API that has a rich set of update operations.
+- It has an efficient, compact IPC mechanism, especially when exchanging large messages.
+- Bidirectional streaming enables both RPI and messaging styles of communication.
+- It enables interoperability between clients and services written in a wide range of languages.
+
+gRPC also has several drawbacks:
+- It takes more work for JavaScript clients to consume gRPC-based API than REST/JSON-based APIs.
+- Older firewalls might not support HTTP/2.
+
+### Circuit Breaker Pattern
+In a distributed system, whenever a service makes a synchronous request to another service, there is an ever-present risk of partial failure. Because the client and the ser- vice are separate processes, a service may not be able to respond in a timely way to a client’s request. The service could be down because of a failure or for maintenance. Or the service might be overloaded and responding extremely slowly to requests. Because the client is blocked waiting for a response, the danger is that the failure could cascade to the client’s clients and so on and cause an outage.
+
+![Circuit Breaker](./images/system-design/circuit-breaker.png) [Image Credit](https://microservices.io/book)
+
+In the example above, say our Order service is unresponsive, our first call from the order service proxy to the order service would return a 503 (Service not found). Each subsequent call would return the same because obviously the service is down. The circuit breaker pattern allows us to provide a threshold where we can specify the duration and the number of retries after which any further calls to the unresponsive service would be blocked at the proxy level. 
+
+### Service Discovery
+Service instances have dynamically assigned network locations. Moreover, the set of service instances changes dynamically because of autoscaling, failures, and upgrades. Consequently, your client code must use a service discovery. 
+
+![Service Discovery](./images/system-design/service-discovery.png) [Image Credit](https://microservices.io/book)
+
+An application must use a dynamic service discovery mechanism. Service discovery is conceptually quite simple: its key component is a service registry, which is a database of the network locations of an application’s service instances. The service discovery mechanism updates the service registry when service instances start and stop. When a client invokes a service, the service discovery mechanism queries the service registry to obtain a list of available service instances and routes the request to one of them. Let's see how the service registry works:
+
+![Client Side Discovery](./images/system-design/client-side-discovery.png) [Image Credit](https://microservices.io/book)
+
+
+This approach to service discovery is a combination of two patterns. The first pattern is the Self registration pattern. A service instance invokes the service registry’s registration API to register its network location. It may also supply a health check URL: The health check URL is an API end- point that the service registry invokes periodically to verify that the service instance is healthy and available to handle requests. A service registry may require a service instance to periodically invoke a “heartbeat” API in order to prevent its registration from expiring. 
+The second pattern is the Client-side discovery pattern. When a service client wants to invoke a service, it queries the service registry to obtain a list of the service’s instances. To improve performance, a client might cache the service instances. The service client then uses a load-balancing algorithm, such as a round-robin or random, to select a service instance. It then makes a request to a select service instance.
+
+### Sagas
+Sagas are mechanisms to maintain data consistency in a microservice architecture without having to use distributed transactions. You define a saga for each system com- mand that needs to update data in multiple services. A saga is a sequence of local transactions. Each local transaction updates data within a single service using the familiar ACID transaction frameworks and libraries mentioned earlier. 
+
+![Saga](./images/system-design/saga.png) [Image Credit](https://microservices.io/book)
+
 
 ### Introduction
 If you were to setup your website today, from scratch, how would you go about doing it? You'd probably have a single server to serve your website. In this single server setup, everything is running on one server: your web application, maybe a database, your cache etc. You'll have something like this:
@@ -247,6 +423,9 @@ Under SSEs the client establishes a persistent and long-term connection with the
  - The server sends the data to the client whenever there’s new information available.
  
 SSEs are best when we need real-time traffic from the server to the client or if the server is generating data in a loop and will be sending multiple events to the client.
+
+### XMPP
+XMPP stands for Extensible Messaging and Presence Protocol. This is a protocol that works as a P2P connection. XMPP is mainly used for chat based applications. See [chat](#allowing-users-to-chat) for more details on how XMPP works.
 
 ### Distributed
 So far, we've looked at a simple single server architecture. We've talked about how our data can be encoded and transmitted to services. In summary this is what we have as of now:
@@ -791,6 +970,39 @@ Some common facts:
                    • Compress data before sending it over the internet if possible.
                    • Data centers are usually in different regions, and it takes time to send data between them.
                    
+
+### Storing Images
+Say, for example, that you're creating an image sharing system (instagram like service) and need to store images for your service. How/where would you store them? You have 2 options: use a DB and store images as blob (binary large object) or use a distributed file system and have a DB store location of images for each user. Let's have a look at the pros and cons for each:
+
+**Why DB**
+- DB is ACID (Atomicity, Consistency, Isolation, Durability) compliant
+- DB provides data integrity between the file and its metadata (Files can be deleted from FS causing database integrity to be compromised.)
+- Much easier to perform backups as the entire process is built-in
+- Database indexes perform better than file system trees when more number of items are to be stored
+- File deletion and updates becomes simpler as opposed to a File System.( In the case of FS, we first delete the mapping from DB and then delete the image from FS as well. There’s this extra overhead to make sure that the file in FS is deleted. In DB this operation is atomic)
+
+**Why DFS**
+- If your application uploads a large number of high-quality images, your DB backups become huge, which can have a significant impact on the makes replication speed
+- FS can be accessed via a CDN without allowing the user’s request to go through your Application and Database layers
+- Needless to say, this will be cost-effective as compared to DB
+- Easier in cases where files has to be shared with third-party providers
+- Storing/retrieving BLOB in DB is a heavy process
+- For the application in which the images will be used requires streaming performance, such as real-time video playback
+
+The case against DB is that for images, we aren't ever going to use ACID properties (those are for financial transactions etc). DFS is cheaper as compared to a DB, it is faster and a DFS can make use of a CDN to render our images for us. 
+
+### User authentication
+
+### Allowing users to Chat
+XMPP, an Extensible Messaging and Presence Protocol, helps to build a real time chat application. XMPP provides an open and decentralized instant messaging services. As the name indicates, it is a highly extendable protocol formerly known as Jabber protocol. To exchange the information, XMPP uses Extensible Markup language (XML) as the base format. XMPP uses the TCP protocol to maintain connections between 2 clients.
+
+A simple XMPP architecture consists of a server and two clients. Every client acts as the part of a common domain where the servers can also communicate for the purpose of routing between domains.
+
+![XMPP](./images/system-design/xmpp.png) [Image Credit](https://blog.mirrorfly.com/xmpp-use-cases-for-scalable-chat-platform/)
+
+XMPP protocol is a great fit for Real-Time Web applications like Live News, Interactive web page, web games and web chat. It provides an inbuilt security with multiple layers. Moreover, here the users need to authenticate both host servers as well as messages to prevent the risk of spoofing. Eventually, it eradicates the fear of spamming. Now, when you use XMPP in a chat service, you need to able to keep track of the user ids and connection ids that are being used by each user. To do so, you can have a **connection service** that maintains this information for you:
+
+![Chat](./images/system-design/chat.png)
 
 
 ### Useful architectures
