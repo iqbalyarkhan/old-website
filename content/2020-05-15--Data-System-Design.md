@@ -38,13 +38,14 @@ tags:
         * [When to pick RDBs](#when-to-pick-rdbs)
         * [NoSQL Database](#nosql-dbs)
         * [NoSQL vs RDBs](#nosql-vs-rdbs)
+        * [Redis](#redis)
     * [Data Encoding](#data-encoding)
         * [Data Encoding - Language Specific Encoders](#data-encoding---language-specific-encoders)
         * [Data Encoding - JSON and XML](#data-encoding---json-and-xml)
         * [Data Encoding - AVRO](#data-encoding---avro)
     * [DataFlow](#data-flow)
         * [Data Flow - REST](#data-flow---rest)
-    * [Communication Between Services]
+    * [Communication Between Services](#communication-between-services)
 2. [Distributed](#distributed)
 2. [Scalability](#scalability)
 3. [Reliability](#reliability)
@@ -228,6 +229,16 @@ In a distributed system, whenever a service makes a synchronous request to anoth
 ![Circuit Breaker](./images/system-design/circuit-breaker.png) [Image Credit](https://microservices.io/book)
 
 In the example above, say our Order service is unresponsive, our first call from the order service proxy to the order service would return a 503 (Service not found). Each subsequent call would return the same because obviously the service is down. The circuit breaker pattern allows us to provide a threshold where we can specify the duration and the number of retries after which any further calls to the unresponsive service would be blocked at the proxy level. 
+
+### Rate Limiter
+API limiting, which is also known as rate limiting, is an essential component of Internet security, as DoS attacks can tank a server with unlimited API requests. Rate limiting also helps make your API scalable. If your API blows up in popularity, there can be unexpected spikes in traffic, causing severe lag time.
+
+API owners typically measure processing limits in Transactions Per Second (TPS). Some systems may have physical limitations on data transference. Both are part of the Backend Rate Limiting. To prevent an API from being overwhelmed, API owners often enforce a limit on the number of requests, or the quantity of data clients can consume. This is called Application Rate Limiting. If a user sends too many requests, API rate limiting can throttle client connections instead of disconnecting them immediately. Throttling lets clients still use your services while still protecting your API.
+
+Some APIs feature soft limits, which allow users to exceed the limits for a short period. Others have a more hardline approach, immediately returning an HTTP 429 error and timing out, forcing the user to send a brand new query. There are various algorithms for rate limiting, each with its benefits and drawbacks. Let’s review each of them so you can pick the best one for your needs.
+
+**Sliding Window**
+We track a counter for each fixed window. Next, we account for a weighted value of the previous window’s request rate based on the current timestamp to smooth out bursts of traffic. For example, if the current window is 25% through, we weigh the previous window’s count by 75%. The relatively small number of data points needed to track per key allows us to scale and distribute across large clusters.Sliding window approach is recommended because it gives the flexibility to scale rate limiting with good performance. The rate windows are an intuitive way to present rate limit data to API consumers. It also avoids the starvation problem of the leaky bucket and the bursting problems of fixed window implementations.
 
 ### Service Discovery
 Service instances have dynamically assigned network locations. Moreover, the set of service instances changes dynamically because of autoscaling, failures, and upgrades. Consequently, your client code must use a service discovery. 
@@ -440,6 +451,10 @@ Your data is structured and unchanging. If your business is not experiencing mas
 Here are a few reasons to use NoSQL database: When all the other components of our application are fast and seamless, NoSQL databases prevent data from being the bottleneck. Big data is contributing to a large success for NoSQL databases, mainly because it handles data differently than the traditional relational databases. A few popular examples of NoSQL databases are MongoDB, CouchDB, Cassandra, and HBase.
 Storing large volumes of data that often have little to no structure. A NoSQL database sets no limits on the types of data we can store together and allows us to add new types as the need changes. With document-based databases, you can store data in one place without having to define what “types” of data those are in advance. Making the most of cloud computing and storage. Cloud-based storage is an excellent cost-saving solution but requires data to be easily spread across multiple servers to scale up. Using commodity (affordable, smaller) hardware on-site or in the cloud saves you the hassle of additional software and NoSQL databases like Cassandra are designed to be scaled across multiple data centers out of the box, without a lot of headaches. Rapid development. NoSQL is extremely useful for rapid development as it doesn’t need to be prepped ahead of time. If you’re working on quick iterations of your system which require making frequent updates to the data structure without a lot of downtime between versions, a relational database will slow you down.
 
+### Redis
+Let's talk about another type of DB called Redis. Redis is an open source, **in-memory data structure store**, used as a database, cache, and message broker. Redis provides data structures such as strings, hashes, lists, sets, sorted sets with range queries, bitmaps, hyperloglogs, geospatial indexes, and streams. Redis has built-in replication, Lua scripting, LRU eviction, transactions, and different levels of on-disk persistence, and provides high availability via Redis Sentinel and automatic partitioning with Redis Cluster. You can run atomic operations on these types, like appending to a string; incrementing the value in a hash; pushing an element to a list; computing set intersection, union and difference; or getting the member with highest ranking in a sorted set. To achieve top performance, Redis works with an in-memory dataset. Depending on your use case, you can persist your data either by periodically dumping the dataset to disk or by appending each command to a disk-based log. You can also disable persistence if you just need a feature-rich, networked, in-memory cache. Redis also supports asynchronous replication, with very fast non-blocking first synchronization, auto-reconnection with partial resynchronization on net split.
+
+Of the NoSQL databases Redis’ various data structures take it closest to the native data structures programmers most commonly use inside applications and algorithms. This ease of use makes it ideal for rapid development and fast applications, as core data structures are easily shared between processes and services.
 
 ### Data Encoding
 Since we're on the topic of data, let's talk about another common action performed with (on?!) data: data encoding. Usually, applications keep data in in-memory data structures such as arrays, hash tables, trees etc. where it is easy to access and modify. When want to send that same data over a network to another process or save that data in a file, you need to encode it. The translation of data from in-memory representation to a byte sequence is called **encoding** and when you receive that same information over a network and want to use it locally in your application you perform the reverse process: aka **decoding**. There are a myriad different libraries and encoding formats to choose from. 
@@ -1048,8 +1063,19 @@ Some common facts:
                    • Data centers are usually in different regions, and it takes time to send data between them.
                    
 
-![Power of Ten](./images/system-design/powers_of_10.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+![Power of Ten](./images/system-design/powers_of_10.jpeg) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
              
+- Single Character requires 1 byte
+- Integer requires 4 bytes 
+- Media requires 1 MB 
+
+For variable length strings, we need this calculation to determine the number of bytes needed:
+$$$
+\textrm{Total size (in Bytes)} = ((\textrm{Number of bits used to encode a single character}) * (\textrm{Number of characters}))/8
+$$$
+
+If we are using ASCII encoding, we need 8 bits to encode each character, so Number of bits used to encode a single character = 8
+If we are using UNICODE encoding, we need 16 bits to encode each character, so Number of bits used to encode a single character = 16.
 
 ### Storing Images
 Say, for example, that you're creating an image sharing system (instagram like service) and need to store images for your service. How/where would you store them? You have 2 options: use a DB and store images as blob (binary large object) or use a distributed file system and have a DB store location of images for each user. Let's have a look at the pros and cons for each:
