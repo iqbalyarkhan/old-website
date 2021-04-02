@@ -1048,6 +1048,9 @@ Some common facts:
                    • Data centers are usually in different regions, and it takes time to send data between them.
                    
 
+![Power of Ten](./images/system-design/powers_of_10.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+             
+
 ### Storing Images
 Say, for example, that you're creating an image sharing system (instagram like service) and need to store images for your service. How/where would you store them? You have 2 options: use a DB and store images as blob (binary large object) or use a distributed file system and have a DB store location of images for each user. Let's have a look at the pros and cons for each:
 
