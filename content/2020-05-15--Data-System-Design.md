@@ -10,7 +10,8 @@ tags:
     - Data system design
 ---
 0. [Microservice Architecture](#microservice-architecture)
-    * [Pros vs Cons](#advantages)
+    * [Service](#service)
+    * [Pros vs Cons](#pros-vs-cons)
     * [IPC](#ipc)
     * [Message Formats](#message-formats)
     * [Communication Using RPI](#communication-using-rpi)
@@ -22,6 +23,8 @@ tags:
         * [Brokerless Messaging](#brokerless-messaging)
         * [Broker Based Messaging](#broker-based-messaging)
     * [Sagas](#sagas)
+    * [Queries](#queries)
+        * [API Composition Pattern]()
     * [API Gateway](#api-gateway)
         * [Edge Functions](#edge-functions)
         * [Secure Services](#secure-services)
@@ -92,26 +95,40 @@ tags:
 Before we begin designing distributed architectures, let's first understand what the microservice architecture is:
 As modern systems grow in size, it is recommended to break monolithic systems down into microservices. The idea is to have modularity in our application where each part of the application does one job and does it well. Each modular part is called a service. A key characteristic of microservice architecture is that services are responsible for performing one function. Each service is independent of other services, meaning services are **loosely coupled**: a service can run in isolation from other services. 
 
-One way to achieve loose coupling is to have each service's own datastore. A customer service component would have its own db, same for sessions service etc. A fully built microservice architecture would entail numerous frontend and backend services. If, for example, we have a food delivery application, our frontend services would include an API gateway and the Restaurant Web UI. The API gateway, which plays the role of a facade, provides the REST APIs that are used by the consumers’ and couriers’ mobile applications. The Restaurant Web UI implements the web interface that’s used by the restaurants to man- age menus and process orders. There would be backend services where each backend service has a REST API and its own private DB. Back end services could include: 
+According to the book, The Art of Scalability, a microservice is also scalable. It can be scaled using the scalability cube:
 
-- OrderService — Manages orders
-- DeliveryService — Manages delivery of orders from restaurants to consumers
-- RestaurantService — Maintains information about restaurants  KitchenService—Manages the preparation of orders
-- AccountingService — Handles billing and payments
+![Cube](./images/system-design/cube.png) [Image Credit](https://microservices.io/book)
 
-Putting it all together, this is what our service would look like:
+X-axis scaling is a common way to scale a monolithic application. Figure above shows how X-axis scaling works. You run multiple instances of the application behind a load balancer. The load balancer distributes requests among the N identical instances of the application. This is a great way of improving the capacity and availability of an application.
+
+Z-axis scaling also runs multiple instances of the monolith application, but unlike X-axis scaling, each instance is responsible for only a subset of the data.
+
+
+X- and Z-axis scaling improve the application’s capacity and availability. But neither approach solves the problem of increasing development and application complexity. To solve those, you need to apply Y-axis scaling, or functional decomposition. A service is a mini application that implements narrowly focused functionality, such as order management, customer management, and so on
+
+Applying the rules of scalability cube, this is what a microservice could look like:
 
 ![Intro Design](./images/system-design/intro-design.png) [Image Credit](https://microservices.io/book)
+
+A key characteristic of the microservice architecture is that the services are loosely coupled and communicate only via APIs. One way to achieve loose coupling is by each service having its own datastore. At development time, developers can change a service’s schema without having to coordinate with developers working on other services. At runtime, the services are isolated from each other—for example, one service will never be blocked because another service holds a database lock.
+ 
+Another benefit of the microservice architecture is that each service is relatively small. The code is easier for a developer to understand. The small code base doesn’t slow down the IDE, making developers more productive. And each service typically starts a lot faster than a large monolith does, which also makes developers more productive and speeds up deployments.
+
+### Service
+A service is a standalone, independently deployable software component that implements some useful functionality. A service’s API encapsulates its internal implementation. Unlike in a monolith, a developer can’t write code that bypasses its API. As a result, the microservice architecture enforces the application’s modularity. Each service in a microservice architecture has its own architecture and, potentially, technology stack. An important characteristic of the microservice architecture is that the services are loosely coupled. All interaction with a service happens via its API, which encapsulates its implementation details. This enables the implementation of the service to change without impacting its clients. Loosely coupled services are key to improving an application’s development time attributes, including its maintainability and testability. They are much easier to understand, change, and test.
 
 But why should we use microservice architecture?
 
 ### Pros vs Cons
 
 The microservice architecture has the following benefits:
-- It enables the continuous delivery and deployment of large, complex applications.  Services are small and easily maintained.
+- It enables the continuous delivery and deployment of large, complex applications. 
+- Services are small and easily maintained.
 - Services are independently deployable.
 - Services are independently scalable.
-- The microservice architecture enables teams to be autonomous.  It allows easy experimenting and adoption of new technologies.  It has better fault isolation.
+- The microservice architecture enables teams to be autonomous. 
+- It allows easy experimenting and adoption of new technologies. 
+- It has better fault isolation.
 
 Here are the major drawbacks and issues of the microservice architecture:
 - Finding the right set of services is challenging.
@@ -119,30 +136,31 @@ Here are the major drawbacks and issues of the microservice architecture:
 - Deploying features that span multiple services requires careful coordination.
 - Deciding when to adopt the microservice architecture is difficult.
 
+Let's discuss some major challenges when working with distributed microservices:
+
+**Network latency** is an ever-present concern in a distributed system. You might discover that a particular decomposition into services results in a large number of round-trips between two services. Sometimes, you can reduce the latency to an acceptable amount by implementing a batch API for fetching multiple objects in a single round trip. But in other situations, the solution is to combine services, replacing expensive IPC with language-level method or function calls.
+
+Another problem is how to implement inter-service communication in a way that doesn’t reduce **availability**. Meaning, if one service is dependent on another service and that other service is down. This would have a cascading affect whereby the unavailability of one service makes the whole system grind to a halt. A solution could be to have asynchronous calls between services.
+
+Another challenge is maintaining **data consistency** across services. Some system operations need to update data in multiple services. For example, when a restaurant accepts an order, updates must occur in both the Kitchen Service and the Delivery Service. The traditional solution is to use a two-phase, commit-based, distributed transaction management mechanism which doesn't work for distributed systems. We'd have to use a very different approach to transaction management, a saga. A saga is a sequence of local transactions that are coordinated using messaging. Sagas are more complex than traditional ACID transactions but they work well in many situations. One limitation of sagas is that they are eventually consistent. If you need to update some data atomically, then it must reside within a single service, which can be an obstacle to decomposition.
+
 ### IPC
-Now that our services are defined as loosely coupled components, what if we need 2 services to talk to each other? Enter inter-process communication mechanisms. Before we begin describing the types of IPC technologies, let's see the various scenarios that we might need to account for when deciding which tech to use. We can have:
+Now that our services are defined as loosely coupled components, what if we need 2 services to talk to each other? Enter **interprocess communication or IPC** mechanisms. Services must often collaborate in order to handle a request. Because service instances are typically processes running on multiple machines, they must interact using IPC. It plays a much more important role in a microservice architecture than it does in a monolithic application. There’s no shortage of IPC mechanisms to chose from. Today, the fashionable choice is REST (with JSON). It’s important, though, to remember that there are no silver bullets. You must carefully consider the options.  
 
-- One-to-one : Each client request is processed by exactly one service
-- One-to-many: Each request is processed by multiple services
-- Synchronous: The client expects a timely response from the service and might event block while it waits.
-- Asynchronous: The client doesn’t block, and the response, if any, isn’t necessarily sent immediately.
-
-Breaking it down, these are the interaction styles:
+Before we begin describing the types of IPC technologies, let's see the various interaction styles that are available that allow IPC. We can have:
 
 ![IPC](./images/system-design/ipc.png) [Image Credit](https://microservices.io/book)
 
-As summed above, these are the types of one-to-one interactions:
+As summed above, these are the types of one-to-one requests that we can have:
 - Request/response: A service client makes a request to a service and waits for a response. The client expects the response to arrive in a timely fashion. It might event block while waiting. This is an interaction style that generally results in services being tightly coupled.
-- Asynchronous request/response: A service client sends a request to a service, which replies asynchronously. The client doesn’t block while waiting, because the ser- vice might not send the response for a long time.
+- Asynchronous request/response: A service client sends a request to a service, which replies asynchronously. The client doesn’t block while waiting, because the service might not send the response for a long time.
 - One-way notifications: A service client sends a request to a service, but no reply is expected or sent.
 
-The following are the different types of one-to-many interactions:
+The following are the different types of one-to-many requests:
 - Publish/subscribe: A client publishes a notification message, which is consumed by zero or more interested services.
 - Publish/async responses: A client publishes a request message and then waits for a certain amount of time for responses from interested services.
 
-Your choice of IPC mechanism impacts availability of your application. Synchronous communication with other services as part of request handling reduces application availability. As a result, you should design your services to use asynchronous messaging whenever possible. Let’s first look at the problem with synchronous communication and how it impacts availability.
-
-REST is an extremely popular IPC mechanism. You may be tempted to use it for inter- service communication. The problem with REST, though, is that it’s a synchronous protocol: an HTTP client must wait for the service to send a response. Whenever services communicate using a synchronous protocol, the availability of the application is reduced.To see why, consider this scenario:
+Your choice of IPC mechanism impacts availability of your application. Synchronous communication with other services as part of request handling reduces application availability. As a result, you should design your services to use asynchronous messaging whenever possible. REST is an extremely popular IPC mechanism. You may be tempted to use it for interservice communication. The problem with REST, though, is that it’s a synchronous protocol: an HTTP client must wait for the service to send a response. Whenever services communicate using a synchronous protocol, the availability of the application is reduced. To see why, consider this scenario:
 
 ![Problem With REST](./images/system-design/problem-with-rest.png) [Image Credit](https://microservices.io/book)
 
@@ -159,7 +177,10 @@ One way to minimize synchronous requests during request processing is to replica
 ![Replicate-Data](./images/system-design/replicate-data.png) [Image Credit](https://microservices.io/book)
 
 ### Messaging
-When using messaging, services communicate by asynchronously exchanging mes- sages. A messaging-based application typically uses a message broker, which acts as an intermediary between the services, although another option is to use a brokerless architecture, where the services communicate directly with each other. A service client makes a request to a service by sending it a message. If the service instance is expected to reply, it will do so by sending a separate message back to the client. Because the communication is asynchronous, the client doesn’t block waiting for a reply. Messages are exchanged over channels. The business logic in the sender invokes a sending port interface, which encapsulates the underlying communication mechanism. The sending port is implemented by a message sender adapter class, which sends a mes- sage to a receiver via a message channel. A message channel is an abstraction of the messaging infrastructure. A message handler adapter class in the receiver is invoked to handle the message. It invokes a receiving port interface implemented by the consumer’s business logic. Any number of senders can send messages to a channel. Similarly, any number of receivers can receive messages from a channel.
+When using messaging, services communicate by asynchronously exchanging messages. A messaging-based application typically uses a message broker, which acts as an intermediary between the services, although another option is to use a brokerless architecture, where the services communicate directly with each other. A service client makes a request to a service by sending it a message. If the service instance is expected to reply, it will do so by sending a separate message back to the client. Because the communication is asynchronous, the client doesn’t block waiting for a reply. Messages are exchanged over channels. The business logic in the sender invokes a sending port interface, which encapsulates the underlying communication mechanism. The sending port is implemented by a message sender adapter class, which sends a mes- sage to a receiver via a message channel. A message channel is an abstraction of the messaging infrastructure. A message handler adapter class in the receiver is invoked to handle the message. It invokes a receiving port interface implemented by the consumer’s business logic. Any number of senders can send messages to a channel. Similarly, any number of receivers can receive messages from a channel.
+
+![Message-Channels](./images/system-design/message-channels.png) [Image Credit](https://microservices.io/book)
+
 
 There are two kinds of channels: point-to-point and pub-sub:
 - A point-to-point channel delivers a message to exactly one of the consumers that is reading from the channel. Services use point-to-point channels for the one- to-one interaction styles described earlier. For example, a command message is often sent over a point-to-point channel.
@@ -172,7 +193,7 @@ A messaging-based application typically uses a message broker, an infrastructure
 
 ### Brokerless Messaging
 
-In a brokerless architecture, services can exchange messages directly. ZeroMQ (http:// zeromq.org) is a popular brokerless messaging technology. It’s both a specification and a set of libraries for different languages. It supports a variety of transports, includ- ing TCP, UNIX-style domain sockets, and multicast.
+In a brokerless architecture, services can exchange messages directly. [ZeroMQ](http:// zeromq.org) is a popular brokerless messaging technology. It’s both a specification and a set of libraries for different languages. It supports a variety of transports, including TCP, UNIX-style domain sockets, and multicast.
 The brokerless architecture has some benefits:
 - Allows lighter network traffic and better latency, because messages go directly from the sender to the receiver, instead of having to go from the sender to the message broker and from there to the receiver
 - Eliminates the possibility of the message broker being a performance bottle- neck or a single point of failure
@@ -187,8 +208,21 @@ As appealing as these benefits may seem, brokerless messaging has significant dr
 A message broker is an intermediary through which all messages flow. A sender writes the message to the message broker, and the message broker delivers it to the receiver. An important benefit of using a message broker is that the sender doesn’t need to know the network location of the consumer. Another benefit is that a message broker buffers messages until the consumer is able to process them.
 There are many message brokers to chose from. Examples of popular open source message brokers include [ActiveMQ](http://activemq.apache.org), [RabbitMQ](https://www.rabbitmq.com), [Apache Kafka](http://kafka.apache.org) etc.
 
+**There are many advantages to using broker-based messaging:**
+- Loose coupling: A client makes a request by simply sending a message to the appropriate channel. The client is completely unaware of the service instances. It doesn’t need to use a discovery mechanism to determine the location of a ser- vice instance.
+- Message buffering: The message broker buffers messages until they can be processed. With a synchronous request/response protocol such as HTTP, both the client and service must be available for the duration of the exchange. With messaging, though, messages will queue up until they can be processed by the consumer. This means, for example, that an online store can accept orders from customers even when the order-fulfillment system is slow or unavailable. The messages will simply queue up until they can be processed.
+- Flexible communication: Messaging supports all the interaction styles described earlier.
+- Explicit interprocess communication: RPC-based mechanism attempts to make invoking a remote service look the same as calling a local service. But due to the laws of physics and the possibility of partial failure, they’re in fact quite different.
+
+**There are some downsides to using messaging:**
+- Potential performance bottleneck: There is a risk that the message broker could be a performance bottleneck. Fortunately, many modern message brokers are designed to be highly scalable.
+- Potential single point of failure: It’s essential that the message broker is highly available—otherwise, system reliability will be impacted. Fortunately, most modern brokers have been designed to be highly available.
+- Additional operational complexity: The messaging system is yet another system component that must be installed, configured, and operated.
+
+A challenge you must tackle when using messaging is dealing with duplicate messages. A message broker should ideally deliver each message only once, but guaranteeing exactly-once messaging is usually too costly. Instead, most message brokers promise to deliver a message at least once. Best way to handle duplicate messages is to write idempotent message handlers. Another method is to track messages and discard duplicates (more costly than idempotency). 
+
 ### Message formats
-The choice of message format can impact the efficiency of IPC, the usability of the API, and its evolvability. If you’re using a messaging system or protocols such as HTTP, you get to pick your message for- mat. Some IPC mechanisms—such as gRPC, which you’ll learn about shortly—might dictate the message format. There are two main categories of message formats: text and binary. Text based are JSON and XML. Binary are AVRO, Thrift and Protocol Buffers. 
+The choice of message format can impact the efficiency of IPC, the usability of the API, and its evolvability. If you’re using a messaging system or protocols such as HTTP, you get to pick your message format. Some IPC mechanisms—such as gRPC, which you’ll learn about shortly—might dictate the message format. There are two main categories of message formats: text and binary. Text based are JSON and XML. Binary are AVRO, Thrift and Protocol Buffers. 
 
 ### Communication Using RPI
 When using a remote procedure invocation-based IPC mechanism, a client sends a request to a service, and the service processes the request and sends back a response. Some clients may block waiting for a response, and others might have a reactive, non-blocking architecture. There're 2 main types of RPI methods: REST and gRPC. REST is quite well understood, so let's just understand the benefits/drawbacks of REST and then we'll see how gRPC works:
@@ -203,15 +237,15 @@ When using a remote procedure invocation-based IPC mechanism, a client sends a r
 
 **There are some drawbacks to using REST:**
 - It only supports the request/response style of communication.
-- Reduced availability. Because the client and service communicate directly with- out an intermediary to buffer messages, they must both be running for the duration of the exchange.
-- Clients must know the locations (URLs) of the service instances(s). As described in section 3.2.4, this is a nontrivial problem in a modern application. Clients must use what is known as a service discovery mechanism to locate service instances.
+- Reduced availability. Because the client and service communicate directly without an intermediary to buffer messages, they must both be running for the duration of the exchange.
+- Clients must know the locations (URLs) of the service instances(s). This is a nontrivial problem in a modern application. Clients must use what is known as a service discovery mechanism to locate service instances.
 - Fetching multiple resources in a single request is challenging.
 - It’s sometimes difficult to map multiple update operations to HTTP verbs.
 
 ### gRPC
 As mentioned in the preceding section, one challenge with using REST is that because HTTP only provides a limited number of verbs, it’s not always straightforward to design a REST API that supports multiple update operations. An IPC technology that avoids this issue is [gRPC](www.grpc.io), a framework for writing [cross-language clients and servers](https://en.wikipedia.org/wiki/Remote_procedure_call for more). gRPC is a binary message-based protocol, and this means—as mentioned earlier in the discussion of binary message formats—you’re forced to take an API-first approach to service design. You define your gRPC APIs using a Protocol Buffers-based IDL, which is Google’s language-neutral mechanism for serializing structured data. You use the Protocol Buffer compiler to generate client-side stubs and server-side skeletons. The compiler can generate code for a variety of languages, including Java, C#, NodeJS, and GoLang. Clients and servers exchange binary messages in the Protocol Buffers format using HTTP/2. 
 
-gRPC uses Protocol Buffers as the message format. Protocol Buffers is, as men- tioned earlier, an efficient, compact, binary format. It’s a tagged format. Each field of a Protocol Buffers message is numbered and has a type code. A message recipient can extract the fields that it needs and skip over the fields that it doesn’t recognize. As a result, gRPC enables APIs to evolve while remaining backward-compatible.
+gRPC uses Protocol Buffers as the message format. Protocol Buffers is, as menioned earlier, an efficient, compact, binary format. It’s a tagged format. Each field of a Protocol Buffers message is numbered and has a type code. A message recipient can extract the fields that it needs and skip over the fields that it doesn’t recognize. As a result, gRPC enables APIs to evolve while remaining backward-compatible.
 
 gRPC has several benefits:
 - It’s straightforward to design an API that has a rich set of update operations.
@@ -257,6 +291,23 @@ The second pattern is the Client-side discovery pattern. When a service client w
 Sagas are mechanisms to maintain data consistency in a microservice architecture without having to use distributed transactions. You define a saga for each system com- mand that needs to update data in multiple services. A saga is a sequence of local transactions. Each local transaction updates data within a single service using the familiar ACID transaction frameworks and libraries mentioned earlier. 
 
 ![Saga](./images/system-design/saga.png) [Image Credit](https://microservices.io/book)
+
+One challenge with sagas is that they are ACD (Atomicity, Consistency, Durability). They lack the isolation feature of traditional ACID transactions. As a result, an application must use what are known as countermeasures, design techniques that prevent or reduce the impact of concurrency anomalies caused by the lack of isolation.
+
+### Queries
+Now that you've created a distributed service architecture, you want to gather data residing in different services' DBs to say, for example, create a master view for monitoring. How would you go about doing so? There are two different patterns for implementing query operations in a microservice architecture:
+
+- **The API composition pattern**: This is the simplest approach and should be used whenever possible. It works by making clients of the services that own the data responsible for invoking the services and combining the results.
+- **The Command query responsibility segregation (CQRS) pattern**: This is more powerful than the API composition pattern, but it’s also more complex. It maintains one or more view databases whose sole purpose is to support queries.
+
+
+### API Composition Pattern
+One way to implement query operations, that retrieve data owned by multiple services is to use the API composition pattern. This pattern implements a query operation by invoking the services that own the data and combining the results. 
+
+![API Composition Pattern](./images/system-design/api-composition-pattern.png) [Image Credit](https://microservices.io/book)
+
+
+Figure above shows three provider services. The API composer implements the query by retrieving data from the provider services and combining the results. 
 
 ### API Gateway
 Now that you've created your service, you'd usually have clients connecting to your services. These clients could be connecting via mobile applications, via JS running in the browser, or other applications. Now, since our services are broken down into multiple microservices, each service would have its own API. Plus, different clients typically require different data. A desktop browser-based UI usually displays far more information than a mobile application. Also, different clients access the services over different kinds of networks. Four kinds of clients consume the services’ APIs:
