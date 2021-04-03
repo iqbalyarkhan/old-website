@@ -87,6 +87,7 @@ tags:
 10. [Decoupling](#decoupling)
     * [Decoupling: Message queues](#decoupling-message-queues)
 11. [System Design](#system-design)
+    * [Generating Unique IDs in a distributed Env](#generating-unique-ids-in-a-distributed-env)
     * [Reliable vs Available](#reliable-vs-available)
     * [Back of the envelope Estimation](#back-of-the-envelope-estimation)
     * [Storing Images](#storing-images)
@@ -709,7 +710,9 @@ A better solution is to use decentralized failure detection methods like **gossi
 After failures have been detected through the gossip protocol, the system needs to deploy certain mechanisms to ensure availability. In the strict quorum approach, read and write operations could be blocked as illustrated in the quorum consensus section. A technique called “sloppy quorum” is used to improve availability. Instead of enforcing the quorum requirement, the system chooses the first W healthy servers for writes and first R healthy servers for reads on the hash ring. Offline servers are ignored.
 If a server is unavailable due to network or server failures, another server will process requests temporarily. When the down server is up, changes will be pushed back to achieve data consistency. This process is called hinted handoff. Since s2 is unavailable in diagram above, reads and writes will be handled by s3 temporarily. When s2 comes back online, s3 will hand the data back to s2.
 
-Hinted handoff is used to handle temporary failures. What if a replica is permanently unavailable? To handle such a situation, we implement an anti-entropy protocol to keep replicas in sync. Anti-entropy involves comparing each piece of data on replicas and updating each replica to the newest version. 
+Hinted handoff is used to handle temporary failures. What if a replica is permanently unavailable? To handle such a situation, we implement an anti-entropy protocol to keep replicas in sync. Anti-entropy involves comparing each piece of data on replicas and updating each replica to the newest version.
+
+Refer to Cassandra's [architecture](https://cassandra.apache.org/doc/latest/architecture/dynamo.html) for a better understanding. 
 
 ### Vertical vs Horizontal Scaling
 Vertical scaling is when you join many CPUs, RAMs and disks together under one OS where a fast interconnect allows any CPU to access any part of the memory or disk. In this kind of **shared memory** architecture, all components can be treated as a single machine. Therefore, when the number of users increase, the only thing you can do is add more CPU, RAM and disk to that single machine.
@@ -1192,6 +1195,9 @@ Having said that, here's a summary of techniques we've talked about:
 
 ### System Design
 Before we can design a system, we need to be able to understand the key characteristics of a distributed, robust system. These characteristics include Scalability, Reliability, Availability, Efficiency, and Manageability. We've already seen what scalability means (vertical vs horizontal), reliability (where even with system failures, the service remains functional with no impact on services) and availability (system is up - not necessarily reliable though).
+
+### Generating Unique IDs in a distributed Env
+Check Twitter blog [here](https://blog.twitter.com/engineering/en_us/a/2010/announcing-snowflake.html)
 
 ### Reliable vs Available
 If a system is reliable, it is available. However, if it is available, it is not necessarily reliable. In other words, high reliability contributes to high availability, but it is possible to achieve a high availability even with an unreliable product by minimizing repair time and ensuring that spares are always available when they are needed. 
