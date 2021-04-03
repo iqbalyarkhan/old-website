@@ -88,7 +88,6 @@ tags:
     * [Reliable vs Available](#reliable-vs-available)
     * [Back of the envelope Estimation](#back-of-the-envelope-estimation)
     * [Storing Images](#storing-images)
-    * [User authentication](#user-authentication)
     * [Allowing users to chat](#allowing-users-to-chat)
 100. [Useful architectures](#useful-architectures)
 
