@@ -11,13 +11,12 @@ tags:
 ---
 0. [Microservice Architecture](#microservice-architecture)
     * [Service](#service)
-    * [Pros vs Cons](#pros-vs-cons)
+    * [Challenges](#challenges)
     * [IPC](#ipc)
     * [Message Formats](#message-formats)
     * [Communication Using RPI](#communication-using-rpi)
         * [REST: Pros vs Cons](#rest-pros-vs-cons)
         * [gRPC](#grpc)
-    * [Circuit Breaker Pattern](#circuit-breaker-pattern)
     * [Service discovery](#service-discovery)
     * [Messaging](#messaging)
         * [Brokerless Messaging](#brokerless-messaging)
@@ -44,9 +43,7 @@ tags:
         * [NoSQL vs RDBs](#nosql-vs-rdbs)
         * [Redis](#redis)
     * [Data Encoding](#data-encoding)
-        * [Data Encoding - Language Specific Encoders](#data-encoding---language-specific-encoders)
-        * [Data Encoding - JSON and XML](#data-encoding---json-and-xml)
-        * [Data Encoding - AVRO](#data-encoding---avro)
+        * [Data Encoding - JSON, XML and AVRO](#data-encoding---json-xml-and-avro)
     * [DataFlow](#data-flow)
         * [Data Flow - REST](#data-flow---rest)
     * [Communication Between Services](#communication-between-services)
@@ -72,9 +69,8 @@ tags:
         * [MultiLeader: Cons](#multi-leader-cons)
     * [Leaderless replication](#leaderless-replication)
 6. [Partitioning](#partitioning)
-    * [Partitioning: Techniques](#partitioning-techniques)
-    * [Partitioning: Criteria](#partitioning-criteria)
-    * [Partitioning: Issues](#partitioning-issues)
+    * [Partitioning: Consistent Hashing](#partitioning-consistent-hashing)
+    * [Service Discovery](#service-discovery)
 6. [Indexes](#indexes)
     * [Indexing Example](#indexing-example)
     * [Index: Write Performance](#index-write-performance)
@@ -122,22 +118,7 @@ A service is a standalone, independently deployable software component that impl
 
 But why should we use microservice architecture?
 
-### Pros vs Cons
-
-The microservice architecture has the following benefits:
-- It enables the continuous delivery and deployment of large, complex applications. 
-- Services are small and easily maintained.
-- Services are independently deployable.
-- Services are independently scalable.
-- The microservice architecture enables teams to be autonomous. 
-- It allows easy experimenting and adoption of new technologies. 
-- It has better fault isolation.
-
-Here are the major drawbacks and issues of the microservice architecture:
-- Finding the right set of services is challenging.
-- Distributed systems are complex, which makes development, testing, and deployment difficult.
-- Deploying features that span multiple services requires careful coordination.
-- Deciding when to adopt the microservice architecture is difficult.
+### Challenges
 
 Let's discuss some major challenges when working with distributed microservices:
 
@@ -248,7 +229,9 @@ When using a remote procedure invocation-based IPC mechanism, a client sends a r
 ### gRPC
 As mentioned in the preceding section, one challenge with using REST is that because HTTP only provides a limited number of verbs, it’s not always straightforward to design a REST API that supports multiple update operations. An IPC technology that avoids this issue is [gRPC](www.grpc.io), a framework for writing [cross-language clients and servers](https://en.wikipedia.org/wiki/Remote_procedure_call for more). gRPC is a binary message-based protocol, and this means—as mentioned earlier in the discussion of binary message formats—you’re forced to take an API-first approach to service design. You define your gRPC APIs using a Protocol Buffers-based IDL, which is Google’s language-neutral mechanism for serializing structured data. You use the Protocol Buffer compiler to generate client-side stubs and server-side skeletons. The compiler can generate code for a variety of languages, including Java, C#, NodeJS, and GoLang. Clients and servers exchange binary messages in the Protocol Buffers format using HTTP/2. 
 
-gRPC uses Protocol Buffers as the message format. Protocol Buffers is, as menioned earlier, an efficient, compact, binary format. It’s a tagged format. Each field of a Protocol Buffers message is numbered and has a type code. A message recipient can extract the fields that it needs and skip over the fields that it doesn’t recognize. As a result, gRPC enables APIs to evolve while remaining backward-compatible.
+With the gRPC framework, you create a .proto file and define your service in that file. Finally, methods in the file can be invoked after you've provided your implementations for the methods and calls can then be made over the network.
+
+gRPC uses Protocol Buffers as the message format. Protocol Buffers is, as mentioned earlier, an efficient, compact, binary format. It’s a tagged format. Each field of a Protocol Buffers message is numbered and has a type code. A message recipient can extract the fields that it needs and skip over the fields that it doesn’t recognize. As a result, gRPC enables APIs to evolve while remaining backward-compatible.
 
 gRPC has several benefits:
 - It’s straightforward to design an API that has a rich set of update operations.
@@ -259,13 +242,6 @@ gRPC has several benefits:
 gRPC also has several drawbacks:
 - It takes more work for JavaScript clients to consume gRPC-based API than REST/JSON-based APIs.
 - Older firewalls might not support HTTP/2.
-
-### Circuit Breaker Pattern
-In a distributed system, whenever a service makes a synchronous request to another service, there is an ever-present risk of partial failure. Because the client and the service are separate processes, a service may not be able to respond in a timely way to a client’s request. The service could be down because of a failure or for maintenance. Or the service might be overloaded and responding extremely slowly to requests. Because the client is blocked waiting for a response, the danger is that the failure could cascade to the client’s clients and so on and cause an outage.
-
-![Circuit Breaker](./images/system-design/circuit-breaker.png) [Image Credit](https://microservices.io/book)
-
-In the example above, say our Order service is unresponsive, our first call from the order service proxy to the order service would return a 503 (Service not found). Each subsequent call would return the same because obviously the service is down. The circuit breaker pattern allows us to provide a threshold where we can specify the duration and the number of retries after which any further calls to the unresponsive service would be blocked at the proxy level. 
 
 ### Service Discovery
 Service instances have dynamically assigned network locations. Moreover, the set of service instances changes dynamically because of autoscaling, failures, and upgrades. Consequently, your client code must use a service discovery. 
@@ -391,6 +367,7 @@ Let's have a look at a detailed design for a rate limiter:
 Once a client makes a request to our API gateway, we first check and see whether the user is on the rate-limited list! To do so, we route the request to the rate limiter middleware. The middleware hits the cache that has the rules stored for determining when to limit API calls. Based on the rules, the middleware sets the constraints. On a high level, we need a counter to keep track of how many requests are sent from the same user, IP address etc. If the counter is > limit, request is denied. Where shall we store the counters? Using the database is not a good idea due to slowness of disk access. In-memory cache is chosen because it is fast and supports time-based expiration strategy. For instance, Redis is a popular option to implement rate limiting. It is an in-memory store that offers two commands: INCR and EXPIRE.
 
 • INCR: It increases the stored counter by 1.
+
 • EXPIRE: It sets a timeout for the counter. If the timeout expires, the counter is automatically deleted.
 
 Rate limiter middleware loads rules from the cache. It fetches counters and last request timestamp from Redis cache. Based on the response, the rate limiter decides if the request is not rate limited, it is forwarded to API servers. If the request is rate limited, the rate limiter returns 429 too many requests error to the client. In the meantime, the request is either dropped or forwarded to the queue depending on how you want to handle blocked requests.
@@ -404,8 +381,9 @@ Synchronization issues arise when we have multiple rate limiter servers and cons
 ![Synchronization](./images/system-design/rate-limiter2.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
 
 [Interesting read on rate limiting by Cloudflare](https://blog.cloudflare.com/counting-things-a-lot-of-different-things/)
+
 ### Summary
-We talked about the best practices when designing microservices and the trade-offs between different approaches. We can use the ideas discussed in the section above to setup a system from scratch using the microservice approach.
+We talked about the best practices when designing microservices and the trade-offs between different approaches. We can use the ideas discussed in the section above to setup a system from scratch using the microservice approach. The section below deals with coming up with a system from scratch. The idea is to use the concepts above to come up with a system architecture on the fly.
 
 ### Introduction
 If you were to setup your website today, from scratch, how would you go about doing it? You'd probably have a single server to serve your website. In this single server setup, everything is running on one server: your web application, maybe a database, your cache etc. You'll have something like this:
@@ -531,17 +509,10 @@ Let's talk about another type of DB called Redis. Redis is an open source, **in-
 
 Of the NoSQL databases Redis’ various data structures take it closest to the native data structures programmers most commonly use inside applications and algorithms. This ease of use makes it ideal for rapid development and fast applications, as core data structures are easily shared between processes and services.
 
-### Data Encoding
-Since we're on the topic of data, let's talk about another common action performed with (on?!) data: data encoding. Usually, applications keep data in in-memory data structures such as arrays, hash tables, trees etc. where it is easy to access and modify. When want to send that same data over a network to another process or save that data in a file, you need to encode it. The translation of data from in-memory representation to a byte sequence is called **encoding** and when you receive that same information over a network and want to use it locally in your application you perform the reverse process: aka **decoding**. There are a myriad different libraries and encoding formats to choose from. 
+### Data Encoding - JSON, XML and AVRO
+We can use JSON, XML and CSV as encoding options. These are widely known and are language agnostic. However, using these formats, it is hard to distinguish between a string and an integer. You're also limited by the precision of your floating point integers. In addition, JSON and XML, although popular, are not the most memory/space efficient encoding methods.
 
-### Data Encoding - Language specific encoders
-Most OOP languages come built-in with encoders. For example, Java has java.io.Serializable, Ruby has Marshal etc. The advantage of using these libraries is they're convenient and easy to use. However, disadvantage here is that you're now tied to that language. If you're sending over data serialized using java's serializable, you expect your recipient to deserialize it using the same. Plus, this encoding/decoding process is notorious for its poor performance and bloated encoding. 
-
-### Data Encoding - JSON and XML
-Moving on from language specific encoders, we can use JSON, XML and CSV as encoding options. These are widely known and are language agnostic. However, using these formats, it is hard to distinguish between a string and an integer. You're also limited by the precision of your floating point integers. In addition, JSON and XML, although popular, are not the most memory/space efficient encoding methods.
-
-### Data Encoding - AVRO
-Apache AVRO, is a binary encoding format that uses a schema (in .avsc files) to specify the structure of the data being encoded. The resulting encoded data is in binary format and is compact as compared to JSON and XML. In addition, AVRO allows forward and backward compatibility semantics. To parse avro data, you go through the fields in the order that they appear in the schema and use the schema to tell you the datatype of each field. This means binary data can be decoded correctly if the code is reading the data using the exact same schema as the code that wrote the data.
+Apache AVRO, is a another option that can be used. AVRO is a binary encoding format that uses a schema (in .avsc files) to specify the structure of the data being encoded. The resulting encoded data is in binary format and is compact as compared to JSON and XML. In addition, AVRO allows forward and backward compatibility semantics. To parse avro data, you go through the fields in the order that they appear in the schema and use the schema to tell you the datatype of each field. This means binary data can be decoded correctly if the code is reading the data using the exact same schema as the code that wrote the data.
 
 ### Data Flow
 So far we've discussed how data is stored, retrieved and encoded but have avoided how it is transferred. For example, how would a service, running on a server receive our data and how would it respond back to our request? The most common arrangement for communication over a network is to have two roles: clients and servers. The servers expose an API over the network and the client connect to the servers to make requests to that API. The API exposed by the service is also known as service. Let's look at a few basic modes of data flow:
@@ -628,7 +599,7 @@ In the example where you have a single server, your server might grind to a halt
 - Scale horizontally: Add more servers to your backend
 
 ### CAP Theorem
-CAP theorem states that it is impossible for a distributed software system to simultaneously provide more than two out of three of the following guarantees (CAP): Consistency, Availability, and Partition tolerance. When we design a distributed system, trading off among CAP is almost the first thing we want to consider. CAP theorem says while designing a distributed system, we can pick only two of the following three options:
+With distributed systems, we can store information on multiple nodes where each node is then partitioned for scalability and reliability. In such scenarios, we need to talk about CAP theorem. CAP theorem states that it is impossible for a distributed software system to simultaneously provide more than two out of three of the following guarantees (CAP): Consistency, Availability, and Partition tolerance. When we design a distributed system, trading off among CAP is almost the first thing we want to consider. CAP theorem says while designing a distributed system, we can pick only two of the following three options:
 
 Consistency: All nodes see the same data at the same time. Consistency is achieved by updating several nodes before allowing further reads.
 
@@ -638,26 +609,51 @@ Partition tolerance: The system continues to work despite message loss or partia
 
 ![CAP-Theorem](./images/system-design/cap-theorem.png) [Image Credit](https://www.educative.io/module/lesson/grokking-system-design-interview/3w8r0BNQLwn)
 
-Nowadays, DBs stores are classified based on the two CAP characteristics they support:
-CP (consistency and partition tolerance) systems: a CP key-value store supports consistency and partition tolerance while sacrificing availability.
-AP (availability and partition tolerance) systems: an AP key-value store supports availability and partition tolerance while sacrificing consistency.
-CA (consistency and availability) systems: a CA key-value store supports consistency and availability while sacrificing partition tolerance. Since network failure is unavoidable, a distributed system must tolerate network partition. Thus, a CA system cannot exist in real- world applications.
-
 In an ideal world, our data either resides on a single node and we don't worry about any of the compromises listed above or data written to one node is instantaneously written to other nodes present in the system. In a distributed system, partitions cannot be avoided, and when a partition occurs, we must choose between consistency and availability. Say for example we have this setup with 3 nodes:
 
 
 ![3-Nodes](./images/system-design/three-nodes.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
 
+Our data is going to be replicated across the 3 nodes. Assuming that these nodes are deployed in different geographical locations, these 3 nodes would have to be in constant communication with each other to stay in-sync. Therefore, we'd have to:
+- **replicate** the data: any updates to one node need to be propagated to the other 2 nodes,
+- **partition** the data: as our data grows in size, we'll break it among partitions for faster retrieval
 
-If node 3 were to go down, and we choose consistency over availability (CP system), we must block all write operations to n1 and n2 to avoid data inconsistency among these three servers, which makes the system unavailable. However, if we choose availability over consistency (AP system), the system keeps accepting reads, even though it might return stale data. For writes, n1 and n2 will keep accepting writes, and data will be synced to n3 when the network partition is resolved.
+### Replication Deep Dive
+As we said earlier, replicating data allows us to create available, scalable systems. Replicating data that is not changing (static) is easy, real difficulty lies in replicating data that is changing often. There are 3 main ways to replicate data: **single leader replication** (one we discussed briefly above), **multi-leader replication** and **leaderless replication**. Single leader replication can be done where we're sure our setup would require just a single data center (which is never the case!). Therefore, it's better to use multi-leader or leaderless replication for availability. Let's have a look at the 2 in detail:
 
-For large applications, it is infeasible to fit the complete data set in a single server. The simplest way to accomplish this is to split the data into smaller partitions and store them in multiple servers. There are two challenges while partitioning the data:
+### Multi-leader Replication
+If you have a setup with multiple data-centers located in geographically separated locations, you'd have to use multi-leader replication. That is because each user would be connected to the data center closest to him/her and the leader from that data center would then asynchronously replicate that information to other leaders and data centers.   
 
-• Distribute data across multiple servers evenly.
+### Multi-leader: Pros
+As compared to single leader replication, there're advantages that a multi-leader setup enjoys:
 
-• Minimize data movement when nodes are added or removed.
+- **Performance**
 
-For the problems above, we use [consistent hashing](#partitioning). To achieve high availability and reliability, data must be replicated asynchronously over N servers, where N is a configurable parameter. Nodes in the same data center often fail at the same time due to power outages, network issues, natural disasters, etc. For better reliability, replicas are placed in distinct data centers, and data centers are connected through high-speed networks.
+In single leader, every write must go to the single leader. No matter how far you're located from that leader, every write will go the leader via the internet. In multi-leader, every write can be processed at the local data center and then replicated to other data centers. This results in a better perceived performance.
+
+- **Tolerance**
+
+If single leader goes down, new writes/updates need to be halted and a new leader has to be elected before accepting new writes/updates. With multi-leader, if a leader goes down, other centers can continue to operate and the down leader can catch up once it is back.  
+
+### Multi-Leader: Cons
+In single leader, since all writes go to one leader, there's always just a single source of truth. If 2 clients try to write at the same time, one client would have to wait until the other is done. With multi-leader, that is not the case: there can be write conflicts. 
+
+To resolve for write conflicts, there're a bunch of different techniques: last write wins, merger of writes, ask user to resolve conflicts etc. 
+
+**If your setup requires low latency high availability for geographically dispersed users, multi-leader configuration is the way to go.** 
+
+### Leaderless replication
+Another method to replicate data across servers is to get rid of leaders entirely: every node is a leader. The client sends its writes to multiple nodes and waits for a specific number of acknowledgements before a write can be considered a success. In leaderless replication, if one of the nodes goes down, we can still have other nodes accept writes from the user. Let's say for our quorum, we've decided that if 2 out of 3 replicas acknowledge the write, the write is successful. The client simply ignores the fact that one of the replicas missed the write. 
+
+When the unavailable node comes back online, and clients start reading from it, any writes that happened while the node was down will be missing from the previously dead node. Thus, if you read from that node, you may get stale data. To solve that problem, when the client reads from a leaderless DB setup, the request isn't just routed to a single node but **requests are sent to multiple nodes in parallel**. The client may get different responses from different nodes. To remedy this, we have 2 approaches: **Read repair** and **anti-entropy**. 
+
+- **Read Repair**
+In this mechanism, when a client makes a read request from several nodes, the system should be able to detect any stale responses. The system sees that replica 3 for example, has stale value and writes newer value back to that replica. This approach works well for values that are frequently read.
+
+- **Anti-Entropy process**
+In some datastores, we can have background processes that constantly scan for stale data between replicas and copies missing data from one replica to another.  
+
+Another way to prevent stale data from being returned is to perform periodic scans of all nodes and update any nodes that have fallen behind. This is called **anti-entropy process**.
 
 Since data is replicated at multiple nodes, it must be synchronized across replicas. Quorum consensus can guarantee consistency for both read and write operations. Let us establish a few definitions first.
 - N = The number of replicas
@@ -671,7 +667,9 @@ How to configure N, W, and R to fit our use cases? Here are some of the possible
 - If W + R > N, strong consistency is guaranteed (Usually N = 3, W = R = 2).
 - If W + R <= N, strong consistency is not guaranteed.
 
-Depending on the requirement, we can tune the values of W, R, N to achieve the desired level of consistency. 
+Depending on the requirement, we can tune the values of W, R, N to achieve the desired level of consistency. Read and writes that obey the rules we've defined are called quorum reads and writes. You can think of *r* and *w* as the minimum number of votes required for read or write to be valid. 
+
+Databases with appropriately configured quorums can tolerate the failure of individual nodes without need for failover. They can also tolerate individual nodes going slow (due to overload), becausre requests don't have to wait for all n nodes to respond. **These characteristics make DBs with leaderless replication appealing for use cases that require high availability and low latency, and that can tolerate occasional stale reads.**  
 
 Replication gives high availability but causes inconsistencies among replicas. Versioning and vector locks are used to solve inconsistency problems. Versioning means treating each data modification as a new immutable version of data. Before we talk about versioning, let us use an example to explain how inconsistency happens: Inconsistency occurs when the same data is updated on two different nodes by two different clients. In order to reach a stable state, conflict resolution is required.
 
@@ -686,6 +684,63 @@ Assume a vector clock is represented by D([S1, v1], [S2, v2], ..., [Sn, vn]), wh
 • Otherwise, create a new entry [Si, 1].
 
 ![Vector-clocks](./images/system-design/vector-clock.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+
+1. A client writes a data item D1 to the system, and the write is handled by server Sx, which now has the vector clock D1[(Sx, 1)].
+2. Another client reads the latest D1, updates it to D2, and writes it back. D2 descends from D1 so it overwrites D1. Assume the write is handled by the same server Sx, which now has vector clock D2([Sx, 2]).
+3. Another client reads the latest D2, updates it to D3, and writes it back. Assume the write is handled by server Sy, which now has vector clock D3([Sx, 2], [Sy, 1])).
+4. Another client reads the latest D2, updates it to D4, and writes it back. Assume the write is handled by server Sz, which now has D4([Sx, 2], [Sz, 1])).
+5. When another client reads D3 and D4, it discovers a conflict, which is caused by data item D2 being modified by both Sy and Sz. The conflict is resolved by the client and updated data is sent to the server. Assume the write is handled by Sx, which now has D5([Sx, 3], [Sy, 1], [Sz, 1]). 
+
+### Partitioning
+Replication of your data across multiple servers goes hand in hand with partitioning of data. Data partitioning is a technique to break up a big database (DB) into many smaller parts. It is the process of splitting up a DB/table across multiple machines to improve the manageability, performance, availability, and load balancing of an application.
+
+### Partitioning: Consistent hashing 
+
+Consistent hashing was designed to avoid the problem of having to change the server assignment of every object when a server is added or removed. Let's examine how consistent hashing works: quoted from Wikipedia: "Consistent hashing is a special kind of hashing such that when a hash table is re-sized and consistent hashing is used, only k/n keys need to be remapped on average, where k is the number of keys, and n is the number of slots. In contrast, in most traditional hash tables, a change in the number of array slots causes nearly all keys to be remapped."
+
+Now we understand the definition of consistent hashing, let us find out how it works. Assume SHA-1 is used as the hash function f, and the output range of the hash function is: x0, x1, x2, x3, ..., xn. In cryptography, SHA-1’s hash space goes from 0 to $2^160 - 1$. That means x0 corresponds to 0, xn corresponds to $2^160 – 1$, and all the other hash values in the middle fall between 0 and $2^160 - 1$. Thus, our hash space would look like:
+
+![Hash-Space](./images/system-design/hash-space.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+By collecting both ends, we get a hash ring as shown:
+
+![Hash-Ring](./images/system-design/hash-ring.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+
+Using the same hash function f, we map servers based on their IP addresses or name onto the ring:
+
+![Server-Map](./images/system-design/server-map.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+Now that we've placed our servers onto the ring, it's time for us to start placing data partitions on the said ring:
+
+![Keys](./images/system-design/keys.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+To determine which server a key is stored on, we go clockwise from the key position on the ring until a server is found. Figure below explains this process. Going clockwise, key0 is stored on server 0; key1 is stored on server 1; key2 is stored on server 2 and key3 is stored on server 3.
+
+
+![Assign](./images/system-design/assign.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+
+Adding or removing a server would only affect the keys that it were assigned (in case of removing) or those directly behind the new server (in case of adding).
+
+One issue with the approach above is that the distribution might not be uniform (ie some servers getting more keys than others thus resulting in skewed partitioning). Enter, **virtual nodes**. We can have more than one **representative** for nodes on the ring to evenly space out keys among servers. We can keep track of what ring positions map to which physical servers. For example, in the following figure we can represent an eight node cluster using only four physical nodes by assigning two tokens to every node:
+
+![Virtual-Nodes](./images/system-design/virtual-nodes.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+### Service Discovery
+
+Now as you can imagine, the data is partitioned on different nodes and is usually moved between nodes as data is added or deleted, we need to be able to know at all times, the location of each piece of data. This process is called **service discovery**. To solve this problem, there're 3 approaches:
+
+(1) Send request to all nodes and the node that has the data will respond
+(2) Send request to the one node that has information about all nodes and have it forward your request to the correct node
+(3) Have client maintain this information on its end.
+
+Many systems rely on a separate coordination service such as Zookeeper to keep track of cluster metadata. Each node registers itself in Zookeeper and Zookeeper maintains the mapping of partitions to nodes. So, whenever any mapping information is updated, Zookeeper informs the routing tier that can then update its records:
+
+![Zookeeper](./images/system-design/zookeeper.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+Cassandra and Riak use a different approach called the **gossip protocol** to disseminate any changes in cluster state. Requests can be sent to any node and that node forwards them to the appropriate node for the requested partition. This comes at a cost of added complexity but removes dependency on external coordination services like Zookeeper. 
 
 
 ### Handling Failures
@@ -713,11 +768,6 @@ If a server is unavailable due to network or server failures, another server wil
 Hinted handoff is used to handle temporary failures. What if a replica is permanently unavailable? To handle such a situation, we implement an anti-entropy protocol to keep replicas in sync. Anti-entropy involves comparing each piece of data on replicas and updating each replica to the newest version.
 
 Refer to Cassandra's [architecture](https://cassandra.apache.org/doc/latest/architecture/dynamo.html) for a better understanding. 
-
-### Vertical vs Horizontal Scaling
-Vertical scaling is when you join many CPUs, RAMs and disks together under one OS where a fast interconnect allows any CPU to access any part of the memory or disk. In this kind of **shared memory** architecture, all components can be treated as a single machine. Therefore, when the number of users increase, the only thing you can do is add more CPU, RAM and disk to that single machine.
-
-Horizontal scaling is when you have multiple machines running the same software connected via a network. Each machine running the software or holding our DB is called a node. Each node uses its CPUs, RAM and disks independently. Any coordination between nodes is done at the software level, using a conventional network. From this point on, in this post, we'll assume that we've chosen to use horizontal scaling and have multiple cheap machines connected together over the network. 
 
 ### Load Balancers
 Now that our backend is setup with a horizontally scaled system, we can go ahead and improve our system's availability, reliability and scalability. To test our system so far, consider this: say you suddenly start receiving a lot of traffic and have a collection of servers in your backend, how do you direct traffic to each of the servers? You want to utilize the servers to a point where the work-load is evenly distributed among all available servers. Enter **load balancers**:
@@ -793,18 +843,7 @@ With the help of load-balancers, we've managed to break our web-service so that 
 Now the web tier looks good but what about the data tier? The current design has one database, so it does not support failover and redundancy. Meaning, what if our DB is hit with a time consuming query or what if the database node is down? Database replication is a common technique to address those problems. Let us take a look.
 
 ### Replication
-In replication, the idea is to **replicate** the same information across multiple databases. To replicate this information, we'll designate one server that holds our database as the **leader** and remaining servers as **followers**. The leader will:
-
-- Handle all CUD (Create, update and delete) operations
-- Forward any new data to the followers so that the followers have up to date information
-
-The followers will:
-- Handle all read operations
-
-A setup with multiple DBs (along with leader/follower) setup might look like this: 
-
-
-![Leader Follower](./images/system-design/leader-follower.png) [Image Credit](https://www.amazon.com/Designing-Data-Intensive-Applications-Reliable-Maintainable/dp/1449373321)
+In replication, as stated earlier, the idea is to **replicate** the same information across multiple databases.
 
 Advantages of replicating our databases:
 - Improved performance
@@ -822,141 +861,6 @@ Finally, the flow for this design shown would be:
 - The HTTP request is routed to either Server 1 or Server 2.
 - A web server reads user data from a follower database.
 - A web server routes any data-modifying operations to the master database. This includes write, update, and delete operations.
-
-### Replication Deep Dive
-As we said earlier, replicating data allows us to create available, scalable systems. Replicating data that is not changing (static) is easy, real difficulty lies in replicating data that is changing often. There are 3 main ways to replicate data: **single leader replication** (one we discussed briefly above), **multi-leader replication** and **leaderless replication**. Let's have a look at all 3 in detail:
-
-### Single Leader Replication
-As we said in our intro, this type of replication deals with a single node acting as a leader. This node is responsible for receiving insert/update requests from the user and then propagating any changes made to the data to the followers. We have the remaining nodes acting as followers: followers are used for read operations only. Whenever the leader writes new data to its local storage, it also sends the data change to all of its followers.
-
-The leader can transmit the changes to the followers via 2 methods: **synchronous replication** and **asynchronous replication**:
-
-### Single Leader: Synch vs Asynch Replication
-In **synchronous replication**, the leader waits to get an ok response from **all** followers before sending an ok response back to the client. The advantage here is that all the followers will ALWAYS have up to date information. Disadvantage is that if one follower is down, the entire system will grind to a halt. This defeats the purpose of having a highly available system! Therefore, it is impractical to have completely synchronous replication.
-
-In **asynchronous replication**, the leader will only update its local storage with the updates and send the ok response back to the client, without waiting for ANY of the followers to send back the ok response. Advantage here is response times are low. Disadvantage here is that if the leader goes down, there could be information loss.
-
-**Compromise** here is that replication is usually **semi-asynchronous** where the leader will wait for at-least one follower to respond with an ok before sending the confirmation back to the client. 
-
-### Single Leader: Eventual consistency
-
-In read heavy workloads, the attractive option is to create many followers and distribute read requests across the followers. This removes load from the leader and allows read requests to be served by nearby replicas. As the number of followers increase, the probability that one of the followers has stale data (assuming asynchronous replication) also increases. We call this phenomenon **eventual consistency**: the reality where all followers will eventually have up to date data. This eventual propagation of data to followers is called **replication lag**. 
-
-This replication lag results in poor customer experience! Imagine you posted a comment on facebook and when you refreshed the page your comment disappeared! There are a few solutions to tackle this problem:
-
-- **Read your own writes**
-
-Always read the user's profile from the leader, and any other user's profiles from a follower. In our facebook example, we used user profile, in other systems this information could be something else (that a user updated). BUT, what if the user can edit a lot of items?!
-
-- **Make all reads from leader**
-
-Now what if the user can make edits to a bunch of items, all requests would end up with the leader which defeats the purpose of having a distributed system! In that case read your own writes won't work. Another possible solution is to keep track of the latest update and say for one minute after the last update, direct all read requests to the leader. BUT, what if the users of the system make a lot of edits?!
-
-- **Read from same replica**
-
-Another solution is to read from the same replica for the same user. That way the user is always guaranteed to see up to date, instant changes. 
-
-### Multi-leader Replication
-If you have a setup with multiple data-centers located in geographically separated locations, you'd have to use multi-leader replication. That is because each user would be connected to the data center closest to him/her and the leader from that data center would then asynchronously replicate that information to other leaders and data centers.   
-
-### Multi-leader: Pros
-As compared to single leader replication, there're advantages that a multi-leader setup enjoys:
-
-- **Performance**
-
-In single leader, every write must go to the single leader. No matter how far you're located from that leader, every write will go the leader via the internet. In multi-leader, every write can be processed at the local data center and then replicated to other data centers. This results in a better perceived performance.
-
-- **Tolerance**
-
-If single leader goes down, new writes/updates need to be halted and a new leader has to be elected before accepting new writes/updates. With multi-leader, if a leader goes down, other centers can continue to operate and the down leader can catch up once it is back.  
-
-### Multi-Leader: Cons
-In single leader, since all writes go to one leader, there's always just a single source of truth. If 2 clients try to write at the same time, one client would have to wait until the other is done. With multi-leader, that is not the case: there can be write conflicts. 
-
-To resolve for write conflicts, there're a bunch of different techniques: last write wins, merger of writes, ask user to resolve conflicts etc. 
-
-If your setup requires low latency high availability for geographically dispersed users, multi-leader configuration is the way to go. 
-
-### Leaderless replication
-Another method to replicate data across servers is to get rid of leaders entirely: every node is a leader. The client sends its writes to multiple nodes and waits for a specific number of acknowledgements before a write can be considered a success. 
-
-If a node goes down and is unable to receive a write, it'll return stale data. Upon returning stale data, up to date nodes can provide the stale data node with up to date information. This is called **read repair**
-
-Another way to prevent stale data from being returned is to perform periodic scans of all nodes and update any nodes that have fallen behind. This is called **anti-entropy process**.
-
-### Partitioning
-Replication of your data across multiple servers goes hand in hand with partitioning of data. Data partitioning is a technique to break up a big database (DB) into many smaller parts. It is the process of splitting up a DB/table across multiple machines to improve the manageability, performance, availability, and load balancing of an application. The justification for data partitioning is that, after a certain scale point, it is cheaper and more feasible to scale horizontally by adding more machines than to grow it vertically by adding beefier servers. Say for example, your data set is so large that it is impossible for us to hold it on a single machine. This is where data **sharding** or **partitioning** comes into picture. The main reason for wanting to partition data is scalability. Different partitions can be placed on different nodes. As a result, a large data set can be distributed across many disks and the query load can be distributed across many processors. The goal is to spread the data and query load evenly across our nodes. 
-
-Unfair partitioning would result in **skewed** queries that result in **hotspots**. There are multiple approaches to distributing or sharding data across partitions:
-
-### Partitioning: Techniques
-The simplest approach to help avoid hotspots is to assign records to nodes randomly. That would distribute the data quite evenly across nodes. HOWEVER, when you go back to read the partitioned data, you'd have no way of knowing where the data is since it was partitioned randomly! 
-
-A better approach is to partition by **key range**: for example, keys between Aa - Bf will be stored on node 1, Bg - Cf will be stored on node 2 and so on. Another approach is to partition using **hash of key** where the hash function produces a uniformly random value. 
-
-Another approach is to use **dynamic partitioning**: when a partition grows to exceed a configured size, it is split into two partitions so that each partition handles approximately half of the data. This is similar to how a B-Tree handles node splitting. 
-
-Now as you can imagine, the data is partitioned on different nodes and is usually moved between nodes as data is added or deleted, we need to be able to know at all times, the location of each piece of data. This process is called **service discovery**. To solve this problem, there're 3 approaches:
-
-(1) Send request to all nodes and the node that has the data will respond
-(2) Send request to the one node that has information about all nodes and have it forward your request to the correct node
-(3) Have client maintain this information on its end.
-
-Many systems rely on a separate coordination service such as Zookeeper to keep track of cluster metadata. Each node registers itself in Zookeeper and Zookeeper maintains the mapping of partitions to nodes. So, whenever any mapping information is updated, Zookeeper informs the routing tier that can then update its records:
-
-![Zookeeper](./images/system-design/zookeeper.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
-
-Cassandra and Riak use a different approach called the **gossip protocol** to disseminate any changes in cluster state. Requests can be sent to any node and that node forwards them to the appropriate node for the requested partition. This comes at a cost of added complexity but removes dependency on external coordination services like Zookeeper. 
-
-Below are three of the most popular schemes used by various large scale applications.
-
-a. Horizontal partitioning: In this scheme, we put different rows into different tables. For example, if we are storing different places in a table, we can decide that locations with ZIP codes less than 10000 are stored in one table and places with ZIP codes greater than 10000 are stored in a separate table. This is also called a range based partitioning as we are storing different ranges of data in separate tables. Horizontal partitioning is also called as Data Sharding.
-
-The key problem with this approach is that if the value whose range is used for partitioning isn’t chosen carefully, then the partitioning scheme will lead to unbalanced servers. In the previous example, splitting location based on their zip codes assumes that places will be evenly distributed across the different zip codes. This assumption is not valid as there will be a lot of places in a thickly populated area like Manhattan as compared to its suburb cities.
-
-b. Vertical Partitioning: In this scheme, we divide our data to store tables related to a specific feature in their own server. For example, if we are building Instagram like application - where we need to store data related to users, photos they upload, and people they follow - we can decide to place user profile information on one DB server, friend lists on another, and photos on a third server.
-
-Vertical partitioning is straightforward to implement and has a low impact on the application. The main problem with this approach is that if our application experiences additional growth, then it may be necessary to further partition a feature specific DB across various servers (e.g. it would not be possible for a single server to handle all the metadata queries for 10 billion photos by 140 million users).
-
-c. Directory Based Partitioning: A loosely coupled approach to work around issues mentioned in the above schemes is to create a lookup service which knows your current partitioning scheme and abstracts it away from the DB access code. So, to find out where a particular data entity resides, we query the directory server that holds the mapping between each tuple key to its DB server. This loosely coupled approach means we can perform tasks like adding servers to the DB pool or changing our partitioning scheme without having an impact on the application.
-
-### Partitioning Criteria
-a. Key or Hash-based partitioning: Under this scheme, we apply a hash function to some key attributes of the entity we are storing; that yields the partition number. For example, if we have 100 DB servers and our ID is a numeric value that gets incremented by one each time a new record is inserted. In this example, the hash function could be ‘ID % 100’, which will give us the server number where we can store/read that record. This approach should ensure a uniform allocation of data among servers. The fundamental problem with this approach is that it effectively fixes the total number of DB servers, since adding new servers means changing the hash function which would require redistribution of data and downtime for the service. A workaround for this problem is to use Consistent Hashing.
-
-b. List partitioning: In this scheme, each partition is assigned a list of values, so whenever we want to insert a new record, we will see which partition contains our key and then store it there. For example, we can decide all users living in Iceland, Norway, Sweden, Finland, or Denmark will be stored in a partition for the Nordic countries.
-
-c. Round-robin partitioning: This is a very simple strategy that ensures uniform data distribution. With ‘n’ partitions, the ‘i’ tuple is assigned to partition (i mod n).
-
-d. Composite partitioning: Under this scheme, we combine any of the above partitioning schemes to devise a new scheme. For example, first applying a list partitioning scheme and then a hash based partitioning. Consistent hashing could be considered a composite of hash and list partitioning where the hash reduces the key space to a size that can be listed.
-
-### Partitioning Issues
-On a partitioned database, there are certain extra constraints on the different operations that can be performed. Most of these constraints are due to the fact that operations across multiple tables or multiple rows in the same table will no longer run on the same server. Below are some of the constraints and additional complexities introduced by partitioning:
-
-a. Joins and Denormalization: Performing joins on a database which is running on one server is straightforward, but once a database is partitioned and spread across multiple machines it is often not feasible to perform joins that span database partitions. Such joins will not be performance efficient since data has to be compiled from multiple servers. A common workaround for this problem is to denormalize the database so that queries that previously required joins can be performed from a single table. Of course, the service now has to deal with all the perils of denormalization such as data inconsistency.
-
-b. Referential integrity: As we saw that performing a cross-partition query on a partitioned database is not feasible, similarly, trying to enforce data integrity constraints such as foreign keys in a partitioned database can be extremely difficult.
-
-Most of RDBMS do not support foreign keys constraints across databases on different database servers. Which means that applications that require referential integrity on partitioned databases often have to enforce it in application code. Often in such cases, applications have to run regular SQL jobs to clean up dangling references.
-
-c. Rebalancing: There could be many reasons we have to change our partitioning scheme:
-
-The data distribution is not uniform, e.g., there are a lot of places for a particular ZIP code that cannot fit into one database partition.
-There is a lot of load on a partition, e.g., there are too many requests being handled by the DB partition dedicated to user photos.
-In such cases, either we have to create more DB partitions or have to rebalance existing partitions, which means the partitioning scheme changed and all existing data moved to new locations. Doing this without incurring downtime is extremely difficult. Using a scheme like directory based partitioning does make rebalancing a more palatable experience at the cost of increasing the complexity of the system and creating a new single point of failure (i.e. the lookup service/database).
-
-When we're re-balancing our partitions, there're a few issues that can crop up. Say, for example, that you initially had 12 servers and your data is partitioned across these servers. In order to assign data to a server, you used the mod technique: 
-
-```cpp
-index = key % num_of_servers
-``` 
-
-Now, as your load grows, you add more servers. This would change our `num_of_servers` variable and we'd have to move most of the keys from one node to another based on the new number of servers. The same applies if your load decreases and you reduce the number of servers in your cluster. Such frequent moves make re-balancing expensive. We need an approach that doesn't move data around more than necessary. Enter **consistent hashing**.
-
-**Consistent Hashing**
-Consistent hashing was designed to avoid the problem of having to change the server assignment of every object when a server is added or removed. The main idea is to use a hash function to randomly map both the objects and the servers to a unit circle, e.g. at an angle of **hash(object) mod 360** degrees w.r.t. the horizontal axis. Each object is then assigned to the next server that appears on the circle in clockwise order. This provides an even distribution of objects to servers. But, more importantly, if a server fails and is removed from the circle, only the objects that were mapped to the failed server need to be reassigned to the next server in clockwise order. Likewise, if a new server is added, it is added to the unit circle, and only the objects mapped to that server need to be reassigned. Importantly, when a server is added or removed, the vast majority of the objects maintain their prior server assignments.
-
-![Consistent Hashing](./images/system-design/consistent-hashing.png) [Image Credit](https://blog.hltbra.net/2019/02/18/consistent-hashing.html)
-
 
 Before we move forward, let's recap what we've seen so far:
 
