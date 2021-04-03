@@ -209,7 +209,7 @@ A message broker is an intermediary through which all messages flow. A sender wr
 There are many message brokers to chose from. Examples of popular open source message brokers include [ActiveMQ](http://activemq.apache.org), [RabbitMQ](https://www.rabbitmq.com), [Apache Kafka](http://kafka.apache.org) etc.
 
 **There are many advantages to using broker-based messaging:**
-- Loose coupling: A client makes a request by simply sending a message to the appropriate channel. The client is completely unaware of the service instances. It doesn’t need to use a discovery mechanism to determine the location of a ser- vice instance.
+- Loose coupling: A client makes a request by simply sending a message to the appropriate channel. The client is completely unaware of the service instances. It doesn’t need to use a discovery mechanism to determine the location of a service instance.
 - Message buffering: The message broker buffers messages until they can be processed. With a synchronous request/response protocol such as HTTP, both the client and service must be available for the duration of the exchange. With messaging, though, messages will queue up until they can be processed by the consumer. This means, for example, that an online store can accept orders from customers even when the order-fulfillment system is slow or unavailable. The messages will simply queue up until they can be processed.
 - Flexible communication: Messaging supports all the interaction styles described earlier.
 - Explicit interprocess communication: RPC-based mechanism attempts to make invoking a remote service look the same as calling a local service. But due to the laws of physics and the possibility of partial failure, they’re in fact quite different.
@@ -258,7 +258,7 @@ gRPC also has several drawbacks:
 - Older firewalls might not support HTTP/2.
 
 ### Circuit Breaker Pattern
-In a distributed system, whenever a service makes a synchronous request to another service, there is an ever-present risk of partial failure. Because the client and the ser- vice are separate processes, a service may not be able to respond in a timely way to a client’s request. The service could be down because of a failure or for maintenance. Or the service might be overloaded and responding extremely slowly to requests. Because the client is blocked waiting for a response, the danger is that the failure could cascade to the client’s clients and so on and cause an outage.
+In a distributed system, whenever a service makes a synchronous request to another service, there is an ever-present risk of partial failure. Because the client and the service are separate processes, a service may not be able to respond in a timely way to a client’s request. The service could be down because of a failure or for maintenance. Or the service might be overloaded and responding extremely slowly to requests. Because the client is blocked waiting for a response, the danger is that the failure could cascade to the client’s clients and so on and cause an outage.
 
 ![Circuit Breaker](./images/system-design/circuit-breaker.png) [Image Credit](https://microservices.io/book)
 
@@ -284,11 +284,11 @@ An application must use a dynamic service discovery mechanism. Service discovery
 ![Client Side Discovery](./images/system-design/client-side-discovery.png) [Image Credit](https://microservices.io/book)
 
 
-This approach to service discovery is a combination of two patterns. The first pattern is the Self registration pattern. A service instance invokes the service registry’s registration API to register its network location. It may also supply a health check URL: The health check URL is an API end- point that the service registry invokes periodically to verify that the service instance is healthy and available to handle requests. A service registry may require a service instance to periodically invoke a “heartbeat” API in order to prevent its registration from expiring. 
+This approach to service discovery is a combination of two patterns. The first pattern is the Self registration pattern. A service instance invokes the service registry’s registration API to register its network location. It may also supply a health check URL: The health check URL is an API endpoint that the service registry invokes periodically to verify that the service instance is healthy and available to handle requests. A service registry may require a service instance to periodically invoke a “heartbeat” API in order to prevent its registration from expiring. 
 The second pattern is the Client-side discovery pattern. When a service client wants to invoke a service, it queries the service registry to obtain a list of the service’s instances. To improve performance, a client might cache the service instances. The service client then uses a load-balancing algorithm, such as a round-robin or random, to select a service instance. It then makes a request to a select service instance.
 
 ### Sagas
-Sagas are mechanisms to maintain data consistency in a microservice architecture without having to use distributed transactions. You define a saga for each system com- mand that needs to update data in multiple services. A saga is a sequence of local transactions. Each local transaction updates data within a single service using the familiar ACID transaction frameworks and libraries mentioned earlier. 
+Sagas are mechanisms to maintain data consistency in a microservice architecture without having to use distributed transactions. You define a saga for each system command that needs to update data in multiple services. A saga is a sequence of local transactions. Each local transaction updates data within a single service using the familiar ACID transaction frameworks and libraries mentioned earlier. 
 
 ![Saga](./images/system-design/saga.png) [Image Credit](https://microservices.io/book)
 
@@ -349,13 +349,13 @@ The API gateway pattern also has some drawbacks. It is yet another highly availa
 An application developer is primarily responsible for implementing four different
 aspects of security:
 - Authentication: Verifying the identity of the application or human (a.k.a. the principal) that’s attempting to access the application. For example, an application typically verifies a principal’s credentials, such as a user ID and password or an application’s API key and secret.
-- Authorization: Verifying that the principal is allowed to perform the requested operation on the specified data. Applications often use a combination of role- based security and access control lists (ACLs). Role-based security assigns each user one or more roles that grant them permission to invoke particular opera- tions. ACLs grant users or roles permission to perform an operation on a particular business object, or aggregate.
+- Authorization: Verifying that the principal is allowed to perform the requested operation on the specified data. Applications often use a combination of role-based security and access control lists (ACLs). Role-based security assigns each user one or more roles that grant them permission to invoke particular operations. ACLs grant users or roles permission to perform an operation on a particular business object, or aggregate.
 - Auditing: Tracking the operations that a principal performs in order to detect security issues, help customer support, and enforce compliance.
-- Secure interprocess communication: Ideally, all communication in and out of ser- vices should be over Transport Layer Security (TLS). Interservice communication may even need to use authentication.
+- Secure interprocess communication: Ideally, all communication in and out of services should be over Transport Layer Security (TLS). Interservice communication may even need to use authentication.
 
 There are a couple of different ways to handle authentication. One option is for the individual services to authenticate the user. The problem with this approach is that it permits unauthenticated requests to enter the internal network. It relies on every development team correctly implementing security in all of their services. As a result, there’s a significant risk of an application containing security vulnerabilities.
 
-A better approach is for the API gateway to authenticate a request before forward- ing it to the services. Centralizing API authentication in the API gateway has the advantage that there’s only one place to get right. As a result, there’s a much smaller chance of a security vulnerability. Another benefit is that only the API gateway has to deal with the various different authentication mechanisms. It hides this complexity from the services. Two types of clients are possible when authenticating: API Client and Login-based client:
+A better approach is for the API gateway to authenticate a request before forwarding it to the services. Centralizing API authentication in the API gateway has the advantage that there’s only one place to get right. As a result, there’s a much smaller chance of a security vulnerability. Another benefit is that only the API gateway has to deal with the various different authentication mechanisms. It hides this complexity from the services. Two types of clients are possible when authenticating: API Client and Login-based client:
 
 ![Authentication](./images/system-design/authentication.png) [Image Credit](https://microservices.io/book)
 
@@ -374,7 +374,7 @@ The sequence of events for login-based clients is as follows:
 Authenticating a client’s credentials is important but insufficient. An application must also implement an authorization mechanism that verifies that the client is allowed to perform the requested operation. You can use an off-the-shelf service or framework that implements a standard called OAuth 2.0.
 
 The key concepts in OAuth 2.0 are the following:
-- Authorization Server: Provides an API for authenticating users and obtain- ing an access token and a refresh token. Spring OAuth is a great example of a framework for building an OAuth 2.0 authorization server.
+- Authorization Server: Provides an API for authenticating users and obtaining an access token and a refresh token. Spring OAuth is a great example of a framework for building an OAuth 2.0 authorization server.
 - Access Token: A token that grants access to a Resource Server. The format of the access token is implementation dependent. But some implementations, such as Spring OAuth, use JWTs.
 - Refresh Token: A long-lived yet revocable token that a Client uses to obtain a new AccessToken.
 - Resource Server: A service that uses an access token to authorize access. In a microservice architecture, the services are resource servers.
