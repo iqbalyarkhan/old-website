@@ -28,6 +28,7 @@ tags:
     * [API Gateway](#api-gateway)
         * [Edge Functions](#edge-functions)
         * [Secure Services](#secure-services)
+        * [Rate Limiter](#rate-limiter)
     * [Summary](#summary)
 1. [Intro](#introduction)
     * [DNS](#dns)
@@ -264,16 +265,6 @@ In a distributed system, whenever a service makes a synchronous request to anoth
 
 In the example above, say our Order service is unresponsive, our first call from the order service proxy to the order service would return a 503 (Service not found). Each subsequent call would return the same because obviously the service is down. The circuit breaker pattern allows us to provide a threshold where we can specify the duration and the number of retries after which any further calls to the unresponsive service would be blocked at the proxy level. 
 
-### Rate Limiter
-API limiting, which is also known as rate limiting, is an essential component of Internet security, as DoS attacks can tank a server with unlimited API requests. Rate limiting also helps make your API scalable. If your API blows up in popularity, there can be unexpected spikes in traffic, causing severe lag time.
-
-API owners typically measure processing limits in Transactions Per Second (TPS). Some systems may have physical limitations on data transference. Both are part of the Backend Rate Limiting. To prevent an API from being overwhelmed, API owners often enforce a limit on the number of requests, or the quantity of data clients can consume. This is called Application Rate Limiting. If a user sends too many requests, API rate limiting can throttle client connections instead of disconnecting them immediately. Throttling lets clients still use your services while still protecting your API.
-
-Some APIs feature soft limits, which allow users to exceed the limits for a short period. Others have a more hardline approach, immediately returning an HTTP 429 error and timing out, forcing the user to send a brand new query. There are various algorithms for rate limiting, each with its benefits and drawbacks. Let’s review each of them so you can pick the best one for your needs.
-
-**Sliding Window**
-We track a counter for each fixed window. Next, we account for a weighted value of the previous window’s request rate based on the current timestamp to smooth out bursts of traffic. For example, if the current window is 25% through, we weigh the previous window’s count by 75%. The relatively small number of data points needed to track per key allows us to scale and distribute across large clusters.Sliding window approach is recommended because it gives the flexibility to scale rate limiting with good performance. The rate windows are an intuitive way to present rate limit data to API consumers. It also avoids the starvation problem of the leaky bucket and the bursting problems of fixed window implementations.
-
 ### Service Discovery
 Service instances have dynamically assigned network locations. Moreover, the set of service instances changes dynamically because of autoscaling, failures, and upgrades. Consequently, your client code must use a service discovery. 
 
@@ -380,6 +371,37 @@ The key concepts in OAuth 2.0 are the following:
 - Resource Server: A service that uses an access token to authorize access. In a microservice architecture, the services are resource servers.
 - Client: A client that wants to access a Resource Server. In a microservice architecture, API Gateway is the OAuth 2.0 client.
 
+### Rate Limiter
+One of the most important edge functions provided by an API gateway is the rate limiter. API limiting, which is also known as rate limiting, is an essential component of Internet security, as DoS attacks can tank a server with unlimited API requests. Rate limiting also helps make your API scalable. If your API blows up in popularity, there can be unexpected spikes in traffic, causing severe lag time. 
+
+API owners typically measure processing limits in Transactions Per Second (TPS). Some systems may have physical limitations on data transference. Both are part of the Backend Rate Limiting. To prevent an API from being overwhelmed, API owners often enforce a limit on the number of requests, or the quantity of data clients can consume. This is called Application Rate Limiting. If a user sends too many requests, API rate limiting can throttle client connections instead of disconnecting them immediately. Throttling lets clients still use your services while still protecting your API.
+
+Some APIs feature soft limits, which allow users to exceed the limits for a short period. Others have a more hardline approach, immediately returning an HTTP 429 error and timing out, forcing the user to send a brand new query. There are various algorithms for rate limiting, each with its benefits and drawbacks. Let’s review each of them so you can pick the best one for your needs.
+
+**Sliding Window**
+We track a counter for each fixed window. Next, we account for a weighted value of the previous window’s request rate based on the current timestamp to smooth out bursts of traffic. For example, if the current window is 25% through, we weigh the previous window’s count by 75%. The relatively small number of data points needed to track per key allows us to scale and distribute across large clusters.Sliding window approach is recommended because it gives the flexibility to scale rate limiting with good performance. The rate windows are an intuitive way to present rate limit data to API consumers. It also avoids the starvation problem of the leaky bucket and the bursting problems of fixed window implementations.
+
+Let's have a look at a detailed design for a rate limiter:
+
+![Rate-Limiter](./images/system-design/rate-limiter.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+
+Once a client makes a request to our API gateway, we first check and see whether the user is on the rate-limited list! To do so, we route the request to the rate limiter middleware. The middleware hits the cache that has the rules stored for determining when to limit API calls. Based on the rules, the middleware sets the constraints. On a high level, we need a counter to keep track of how many requests are sent from the same user, IP address etc. If the counter is > limit, request is denied. Where shall we store the counters? Using the database is not a good idea due to slowness of disk access. In-memory cache is chosen because it is fast and supports time-based expiration strategy. For instance, Redis is a popular option to implement rate limiting. It is an in-memory store that offers two commands: INCR and EXPIRE.
+
+• INCR: It increases the stored counter by 1.
+• EXPIRE: It sets a timeout for the counter. If the timeout expires, the counter is automatically deleted.
+
+Rate limiter middleware loads rules from the cache. It fetches counters and last request timestamp from Redis cache. Based on the response, the rate limiter decides if the request is not rate limited, it is forwarded to API servers. If the request is rate limited, the rate limiter returns 429 too many requests error to the client. In the meantime, the request is either dropped or forwarded to the queue depending on how you want to handle blocked requests.
+
+Building a rate limiter that works in a single server environment is not difficult. However, scaling the system to support multiple servers and concurrent threads is a different story. There are two challenges: **Race condition** and **Synchronization issue**. 
+
+Race condition occurs when two clients read the value from Redis cache and try to update the value concurrently. A possible solution is to use locks however locks are not scalable and will slow down our system. A simple solution is to use a lua script that, when executing, prevents concurrent updates. We can also use Redis' built-in sorted sets.
+
+Synchronization issues arise when we have multiple rate limiter servers and consecutive user requests hit different servers. For the first request, user's counter is updated in server 1 but for the second request, since the request is routed to server 2,  the counter is updated there. Even though the number of requests from the user are 2, our systems show that we've only received 1 request. To handle this, we need to synchronize our Redis instances. We can try and use sticky sessions that routes user requests to the same server BUT it is not scalable. A better approach is to use centralized Redis data stores. This is done via eventual consistency model:
+
+![Synchronization](./images/system-design/rate-limiter2.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+[Interesting read on rate limiting by Cloudflare](https://blog.cloudflare.com/counting-things-a-lot-of-different-things/)
 ### Summary
 We talked about the best practices when designing microservices and the trade-offs between different approaches. We can use the ideas discussed in the section above to setup a system from scratch using the microservice approach.
 
