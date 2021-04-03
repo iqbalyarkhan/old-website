@@ -54,6 +54,8 @@ tags:
 2. [Scalability](#scalability)
 3. [Reliability](#reliability)
 4. [CAP Theorem](#cap-theorem)
+    * [Vector Clock](#vector-clock)
+    * [Handling Failures](#handling-failures)
 3. [Vertival vs Horizontal Scaling](#vertical-vs-horizontal-scaling)
 4. [Load Balancers](#load-balancers)
     * [Why load balance](#why-load-balance)
@@ -635,6 +637,79 @@ Partition tolerance: The system continues to work despite message loss or partia
 
 ![CAP-Theorem](./images/system-design/cap-theorem.png) [Image Credit](https://www.educative.io/module/lesson/grokking-system-design-interview/3w8r0BNQLwn)
 
+Nowadays, DBs stores are classified based on the two CAP characteristics they support:
+CP (consistency and partition tolerance) systems: a CP key-value store supports consistency and partition tolerance while sacrificing availability.
+AP (availability and partition tolerance) systems: an AP key-value store supports availability and partition tolerance while sacrificing consistency.
+CA (consistency and availability) systems: a CA key-value store supports consistency and availability while sacrificing partition tolerance. Since network failure is unavoidable, a distributed system must tolerate network partition. Thus, a CA system cannot exist in real- world applications.
+
+In an ideal world, our data either resides on a single node and we don't worry about any of the compromises listed above or data written to one node is instantaneously written to other nodes present in the system. In a distributed system, partitions cannot be avoided, and when a partition occurs, we must choose between consistency and availability. Say for example we have this setup with 3 nodes:
+
+
+![3-Nodes](./images/system-design/three-nodes.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+
+If node 3 were to go down, and we choose consistency over availability (CP system), we must block all write operations to n1 and n2 to avoid data inconsistency among these three servers, which makes the system unavailable. However, if we choose availability over consistency (AP system), the system keeps accepting reads, even though it might return stale data. For writes, n1 and n2 will keep accepting writes, and data will be synced to n3 when the network partition is resolved.
+
+For large applications, it is infeasible to fit the complete data set in a single server. The simplest way to accomplish this is to split the data into smaller partitions and store them in multiple servers. There are two challenges while partitioning the data:
+
+• Distribute data across multiple servers evenly.
+
+• Minimize data movement when nodes are added or removed.
+
+For the problems above, we use [consistent hashing](#partitioning). To achieve high availability and reliability, data must be replicated asynchronously over N servers, where N is a configurable parameter. Nodes in the same data center often fail at the same time due to power outages, network issues, natural disasters, etc. For better reliability, replicas are placed in distinct data centers, and data centers are connected through high-speed networks.
+
+Since data is replicated at multiple nodes, it must be synchronized across replicas. Quorum consensus can guarantee consistency for both read and write operations. Let us establish a few definitions first.
+- N = The number of replicas
+- W = A write quorum of size W. For a write operation to be considered as successful, write operation must be acknowledged from W replicas.
+- R = A read quorum of size R. For a read operation to be considered as successful, read operation must wait for responses from at least R replicas.
+
+How to configure N, W, and R to fit our use cases? Here are some of the possible setups:
+
+- If R = 1 and W = N, the system is optimized for a fast read.
+- If W = 1 and R = N, the system is optimized for fast write.
+- If W + R > N, strong consistency is guaranteed (Usually N = 3, W = R = 2).
+- If W + R <= N, strong consistency is not guaranteed.
+
+Depending on the requirement, we can tune the values of W, R, N to achieve the desired level of consistency. 
+
+Replication gives high availability but causes inconsistencies among replicas. Versioning and vector locks are used to solve inconsistency problems. Versioning means treating each data modification as a new immutable version of data. Before we talk about versioning, let us use an example to explain how inconsistency happens: Inconsistency occurs when the same data is updated on two different nodes by two different clients. In order to reach a stable state, conflict resolution is required.
+
+To resolve this issue, we need a versioning system that can detect conflicts and reconcile conflicts. A vector clock is a common technique to solve this problem. Let us examine how vector clocks work.
+
+### Vector Clock
+A vector clock is a [server, version] pair associated with a data item. It can be used to check if one version precedes, succeeds, or in conflict with others.
+Assume a vector clock is represented by D([S1, v1], [S2, v2], ..., [Sn, vn]), where D is a data item, v1 is a version counter, and s1 is a server number, etc. If data item D is written to server Si, the system must perform one of the following tasks:
+
+• Increment vi if [Si, vi] exists.
+
+• Otherwise, create a new entry [Si, 1].
+
+![Vector-clocks](./images/system-design/vector-clock.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+
+### Handling Failures
+As with any large system at scale, failures are not only inevitable but common. Handling failure scenarios is very important. In this section, we first introduce techniques to detect failures. Then, we go over common failure resolution strategies.
+
+In a distributed system, it is insufficient to believe that a server is down because another server says so. Usually, it requires at least two independent sources of information to mark a server down. One solution is to use an all-to-all broadcast where each node "pings" every other node in the system to determine which node is down. This can be inefficient if there're a lot of nodes in the system.
+
+A better solution is to use decentralized failure detection methods like **gossip protocol**. Gossip protocol works as follows:
+
+• Each node maintains a node membership list, which contains member IDs and heartbeat counters.
+
+• Each node periodically increments its heartbeat counter.
+
+• Each node periodically sends heartbeats to a set of random nodes, which in turn propagate to another set of nodes.
+
+• Once nodes receive heartbeats, membership list is updated to the latest info.
+
+• If the heartbeat has not increased for more than predefined periods, the member is considered as offline.
+
+![Gossip-Protocol](./images/system-design/gossip-protocol.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+
+After failures have been detected through the gossip protocol, the system needs to deploy certain mechanisms to ensure availability. In the strict quorum approach, read and write operations could be blocked as illustrated in the quorum consensus section. A technique called “sloppy quorum” is used to improve availability. Instead of enforcing the quorum requirement, the system chooses the first W healthy servers for writes and first R healthy servers for reads on the hash ring. Offline servers are ignored.
+If a server is unavailable due to network or server failures, another server will process requests temporarily. When the down server is up, changes will be pushed back to achieve data consistency. This process is called hinted handoff. Since s2 is unavailable in diagram above, reads and writes will be handled by s3 temporarily. When s2 comes back online, s3 will hand the data back to s2.
+
+Hinted handoff is used to handle temporary failures. What if a replica is permanently unavailable? To handle such a situation, we implement an anti-entropy protocol to keep replicas in sync. Anti-entropy involves comparing each piece of data on replicas and updating each replica to the newest version. 
 
 ### Vertical vs Horizontal Scaling
 Vertical scaling is when you join many CPUs, RAMs and disks together under one OS where a fast interconnect allows any CPU to access any part of the memory or disk. In this kind of **shared memory** architecture, all components can be treated as a single machine. Therefore, when the number of users increase, the only thing you can do is add more CPU, RAM and disk to that single machine.
