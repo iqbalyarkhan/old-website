@@ -17,7 +17,7 @@ tags:
     * [Communication Using RPI](#communication-using-rpi)
         * [REST: Pros vs Cons](#rest-pros-vs-cons)
         * [gRPC](#grpc)
-    * [Service discovery](#service-discovery)
+    * [Services: Service discovery](#services-service-discovery)
     * [Messaging](#messaging)
         * [Brokerless Messaging](#brokerless-messaging)
         * [Broker Based Messaging](#broker-based-messaging)
@@ -46,6 +46,7 @@ tags:
         * [Data Encoding - JSON, XML and AVRO](#data-encoding---json-xml-and-avro)
     * [DataFlow](#data-flow)
         * [Data Flow - REST](#data-flow---rest)
+        * [Data Flow - Message Queues](#data-flow---message-queues)
     * [Communication Between Services](#communication-between-services)
 2. [Distributed](#distributed)
 2. [Scalability](#scalability)
@@ -53,7 +54,6 @@ tags:
 4. [CAP Theorem](#cap-theorem)
     * [Vector Clock](#vector-clock)
     * [Handling Failures](#handling-failures)
-3. [Vertival vs Horizontal Scaling](#vertical-vs-horizontal-scaling)
 4. [Load Balancers](#load-balancers)
     * [Why load balance](#why-load-balance)
     * [Load Balancers Deep Dive](#load-balancers-deep-dive)
@@ -61,16 +61,13 @@ tags:
     * [Redundant Load Balancers](#redundant-load-balancers)
 5. [Replication](#replication)
     * [Replication Deep Dive](#replication-deep-dive)
-    * [Single Leader replication](#single-leader-replication)
-        * [Single Leader: Synch vs Asynch replication](#single-leader-synch-vs-asynch-replication)
-        * [Single Leader: Eventual Consistency](#single-leader-eventual-consistency)
     * [Multileader replication](#multi-leader-replication)
         * [MultiLeader: Pros](#multi-leader-pros)
         * [MultiLeader: Cons](#multi-leader-cons)
     * [Leaderless replication](#leaderless-replication)
 6. [Partitioning](#partitioning)
     * [Partitioning: Consistent Hashing](#partitioning-consistent-hashing)
-    * [Service Discovery](#service-discovery)
+    * [Partitioning: Service Discovery](#partitioning-service-discovery)
 6. [Indexes](#indexes)
     * [Indexing Example](#indexing-example)
     * [Index: Write Performance](#index-write-performance)
@@ -84,7 +81,6 @@ tags:
     * [Decoupling: Message queues](#decoupling-message-queues)
 11. [System Design](#system-design)
     * [Generating Unique IDs in a distributed Env](#generating-unique-ids-in-a-distributed-env)
-    * [Reliable vs Available](#reliable-vs-available)
     * [Back of the envelope Estimation](#back-of-the-envelope-estimation)
     * [Storing Images](#storing-images)
     * [Allowing users to chat](#allowing-users-to-chat)
@@ -109,14 +105,8 @@ Applying the rules of scalability cube, this is what a microservice could look l
 
 ![Intro Design](./images/system-design/intro-design.png) [Image Credit](https://microservices.io/book)
 
-A key characteristic of the microservice architecture is that the services are loosely coupled and communicate only via APIs. One way to achieve loose coupling is by each service having its own datastore. At development time, developers can change a service’s schema without having to coordinate with developers working on other services. At runtime, the services are isolated from each other—for example, one service will never be blocked because another service holds a database lock.
- 
-Another benefit of the microservice architecture is that each service is relatively small. The code is easier for a developer to understand. The small code base doesn’t slow down the IDE, making developers more productive. And each service typically starts a lot faster than a large monolith does, which also makes developers more productive and speeds up deployments.
-
 ### Service
-A service is a standalone, independently deployable software component that implements some useful functionality. A service’s API encapsulates its internal implementation. Unlike in a monolith, a developer can’t write code that bypasses its API. As a result, the microservice architecture enforces the application’s modularity. Each service in a microservice architecture has its own architecture and, potentially, technology stack. An important characteristic of the microservice architecture is that the services are loosely coupled. All interaction with a service happens via its API, which encapsulates its implementation details. This enables the implementation of the service to change without impacting its clients. Loosely coupled services are key to improving an application’s development time attributes, including its maintainability and testability. They are much easier to understand, change, and test.
-
-But why should we use microservice architecture?
+A service is a standalone, independently deployable software component that implements some useful functionality. A service’s API encapsulates its internal implementation. Unlike in a monolith, a developer can’t write code that bypasses its API. As a result, the microservice architecture enforces the application’s modularity. Each service in a microservice architecture has its own architecture and, potentially, technology stack.
 
 ### Challenges
 
@@ -124,12 +114,12 @@ Let's discuss some major challenges when working with distributed microservices:
 
 **Network latency** is an ever-present concern in a distributed system. You might discover that a particular decomposition into services results in a large number of round-trips between two services. Sometimes, you can reduce the latency to an acceptable amount by implementing a batch API for fetching multiple objects in a single round trip. But in other situations, the solution is to combine services, replacing expensive IPC with language-level method or function calls.
 
-Another problem is how to implement inter-service communication in a way that doesn’t reduce **availability**. Meaning, if one service is dependent on another service and that other service is down. This would have a cascading affect whereby the unavailability of one service makes the whole system grind to a halt. A solution could be to have asynchronous calls between services.
+Another problem is how to implement inter-service communication in a way that doesn’t reduce **availability**. Meaning, if one service is dependent on another service and that other service is down, this would have a cascading affect whereby the unavailability of one service makes the whole system grind to a halt. A solution could be to have asynchronous calls between services.
 
 Another challenge is maintaining **data consistency** across services. Some system operations need to update data in multiple services. For example, when a restaurant accepts an order, updates must occur in both the Kitchen Service and the Delivery Service. The traditional solution is to use a two-phase, commit-based, distributed transaction management mechanism which doesn't work for distributed systems. We'd have to use a very different approach to transaction management, a saga. A saga is a sequence of local transactions that are coordinated using messaging. Sagas are more complex than traditional ACID transactions but they work well in many situations. One limitation of sagas is that they are eventually consistent. If you need to update some data atomically, then it must reside within a single service, which can be an obstacle to decomposition.
 
 ### IPC
-Now that our services are defined as loosely coupled components, what if we need 2 services to talk to each other? Enter **interprocess communication or IPC** mechanisms. Services must often collaborate in order to handle a request. Because service instances are typically processes running on multiple machines, they must interact using IPC. It plays a much more important role in a microservice architecture than it does in a monolithic application. There’s no shortage of IPC mechanisms to chose from. Today, the fashionable choice is REST (with JSON). It’s important, though, to remember that there are no silver bullets. You must carefully consider the options.  
+Now that our services are defined as loosely coupled components, what if we need 2 services to talk to each other? Enter **interprocess communication or IPC** mechanisms. Services must often collaborate in order to handle a request. Because service instances are typically processes running on multiple machines, they must interact using IPC.
 
 Before we begin describing the types of IPC technologies, let's see the various interaction styles that are available that allow IPC. We can have:
 
@@ -144,7 +134,7 @@ The following are the different types of one-to-many requests:
 - Publish/subscribe: A client publishes a notification message, which is consumed by zero or more interested services.
 - Publish/async responses: A client publishes a request message and then waits for a certain amount of time for responses from interested services.
 
-Your choice of IPC mechanism impacts availability of your application. Synchronous communication with other services as part of request handling reduces application availability. As a result, you should design your services to use asynchronous messaging whenever possible. REST is an extremely popular IPC mechanism. You may be tempted to use it for interservice communication. The problem with REST, though, is that it’s a synchronous protocol: an HTTP client must wait for the service to send a response. Whenever services communicate using a synchronous protocol, the availability of the application is reduced. To see why, consider this scenario:
+Synchronous communication with other services as part of request handling reduces application availability. As a result, you should design your services to use asynchronous messaging whenever possible. REST is an extremely popular IPC mechanism. The problem with REST, though, is that it’s a synchronous protocol: an HTTP client must wait for the service to send a response. Whenever services communicate using a synchronous protocol, the availability of the application is reduced. To see why, consider this scenario:
 
 ![Problem With REST](./images/system-design/problem-with-rest.png) [Image Credit](https://microservices.io/book)
 
@@ -161,7 +151,7 @@ One way to minimize synchronous requests during request processing is to replica
 ![Replicate-Data](./images/system-design/replicate-data.png) [Image Credit](https://microservices.io/book)
 
 ### Messaging
-When using messaging, services communicate by asynchronously exchanging messages. A messaging-based application typically uses a message broker, which acts as an intermediary between the services, although another option is to use a brokerless architecture, where the services communicate directly with each other. A service client makes a request to a service by sending it a message. If the service instance is expected to reply, it will do so by sending a separate message back to the client. Because the communication is asynchronous, the client doesn’t block waiting for a reply. Messages are exchanged over channels. The business logic in the sender invokes a sending port interface, which encapsulates the underlying communication mechanism. The sending port is implemented by a message sender adapter class, which sends a mes- sage to a receiver via a message channel. A message channel is an abstraction of the messaging infrastructure. A message handler adapter class in the receiver is invoked to handle the message. It invokes a receiving port interface implemented by the consumer’s business logic. Any number of senders can send messages to a channel. Similarly, any number of receivers can receive messages from a channel.
+When using messaging, services communicate by asynchronously exchanging messages. A messaging-based application typically uses a message broker, which acts as an intermediary between the services, although another option is to use a brokerless architecture, where the services communicate directly with each other. A service client makes a request to a service by sending it a message. If the service instance is expected to reply, it will do so by sending a separate message back to the client. Because the communication is asynchronous, the client doesn’t block waiting for a reply. Messages are exchanged over channels.
 
 ![Message-Channels](./images/system-design/message-channels.png) [Image Credit](https://microservices.io/book)
 
@@ -177,8 +167,8 @@ A messaging-based application typically uses a message broker, an infrastructure
 
 ### Brokerless Messaging
 
-In a brokerless architecture, services can exchange messages directly. [ZeroMQ](http:// zeromq.org) is a popular brokerless messaging technology. It’s both a specification and a set of libraries for different languages. It supports a variety of transports, including TCP, UNIX-style domain sockets, and multicast.
-The brokerless architecture has some benefits:
+In a brokerless architecture, services can exchange messages directly. [ZeroMQ](http:// zeromq.org) is a popular brokerless messaging technology.
+Brokerless architecture has some benefits:
 - Allows lighter network traffic and better latency, because messages go directly from the sender to the receiver, instead of having to go from the sender to the message broker and from there to the receiver
 - Eliminates the possibility of the message broker being a performance bottle- neck or a single point of failure
 - Features less operational complexity, because there is no message broker to set up and maintain
@@ -227,7 +217,7 @@ When using a remote procedure invocation-based IPC mechanism, a client sends a r
 - It’s sometimes difficult to map multiple update operations to HTTP verbs.
 
 ### gRPC
-As mentioned in the preceding section, one challenge with using REST is that because HTTP only provides a limited number of verbs, it’s not always straightforward to design a REST API that supports multiple update operations. An IPC technology that avoids this issue is [gRPC](www.grpc.io), a framework for writing [cross-language clients and servers](https://en.wikipedia.org/wiki/Remote_procedure_call for more). gRPC is a binary message-based protocol, and this means—as mentioned earlier in the discussion of binary message formats—you’re forced to take an API-first approach to service design. You define your gRPC APIs using a Protocol Buffers-based IDL, which is Google’s language-neutral mechanism for serializing structured data. You use the Protocol Buffer compiler to generate client-side stubs and server-side skeletons. The compiler can generate code for a variety of languages, including Java, C#, NodeJS, and GoLang. Clients and servers exchange binary messages in the Protocol Buffers format using HTTP/2. 
+As mentioned in the preceding section, one challenge with using REST is that because HTTP only provides a limited number of verbs, it’s not always straightforward to design a REST API that supports multiple update operations. An IPC technology that avoids this issue is [gRPC](www.grpc.io), a framework for writing [cross-language clients and servers](https://en.wikipedia.org/wiki/Remote_procedure_call for more).
 
 With the gRPC framework, you create a .proto file and define your service in that file. Finally, methods in the file can be invoked after you've provided your implementations for the methods and calls can then be made over the network.
 
@@ -243,8 +233,8 @@ gRPC also has several drawbacks:
 - It takes more work for JavaScript clients to consume gRPC-based API than REST/JSON-based APIs.
 - Older firewalls might not support HTTP/2.
 
-### Service Discovery
-Service instances have dynamically assigned network locations. Moreover, the set of service instances changes dynamically because of autoscaling, failures, and upgrades. Consequently, your client code must use a service discovery. 
+### Services: Service Discovery
+Service instances have dynamically assigned network locations. Moreover, the set of service instances changes dynamically because of auto-scaling, failures, and upgrades. Consequently, your client code must use a service discovery. 
 
 ![Service Discovery](./images/system-design/service-discovery.png) [Image Credit](https://microservices.io/book)
 
@@ -252,9 +242,8 @@ An application must use a dynamic service discovery mechanism. Service discovery
 
 ![Client Side Discovery](./images/system-design/client-side-discovery.png) [Image Credit](https://microservices.io/book)
 
-
-This approach to service discovery is a combination of two patterns. The first pattern is the Self registration pattern. A service instance invokes the service registry’s registration API to register its network location. It may also supply a health check URL: The health check URL is an API endpoint that the service registry invokes periodically to verify that the service instance is healthy and available to handle requests. A service registry may require a service instance to periodically invoke a “heartbeat” API in order to prevent its registration from expiring. 
-The second pattern is the Client-side discovery pattern. When a service client wants to invoke a service, it queries the service registry to obtain a list of the service’s instances. To improve performance, a client might cache the service instances. The service client then uses a load-balancing algorithm, such as a round-robin or random, to select a service instance. It then makes a request to a select service instance.
+This approach to service discovery is a combination of two patterns. The first pattern is the **self registration** pattern. A service instance invokes the service registry’s registration API to register its network location. It may also supply a health check URL: The health check URL is an API endpoint that the service registry invokes periodically to verify that the service instance is healthy and available to handle requests. A service registry may require a service instance to periodically invoke a “heartbeat” API in order to prevent its registration from expiring. 
+The second pattern is the **client-side discovery** pattern. When a service client wants to invoke a service, it queries the service registry to obtain a list of the service’s instances. To improve performance, a client might cache the service instances. The service client then uses a load-balancing algorithm, such as a round-robin or random, to select a service instance. It then makes a request to a select service instance.
 
 ### Sagas
 Sagas are mechanisms to maintain data consistency in a microservice architecture without having to use distributed transactions. You define a saga for each system command that needs to update data in multiple services. A saga is a sequence of local transactions. Each local transaction updates data within a single service using the familiar ACID transaction frameworks and libraries mentioned earlier. 
@@ -294,7 +283,7 @@ We can't have clients directly calling our services. As we discussed earlier ide
 
 ![Gateway-2](./images/system-design/gateway2.png) [Image Credit](https://microservices.io/book)
 
-The API gateway is responsible for request routing, API composition, and protocol translation. All API requests from external clients first go to the API gateway, which routes some requests to the appropriate service. The API gateway handles other requests using the API composition pattern and by invoking multiple services and aggregating the results. It may also translate between client-friendly protocols such as HTTP and WebSockets and client-unfriendly protocols used by the services. 
+The API gateway is responsible for request routing, API composition, and protocol translation. All API requests from external clients first go to the API gateway, which routes some requests to the appropriate service. 
 
 ### Edge Functions
 Although an API gateway’s primary responsibilities are API routing and composition, it may also implement what are known as edge functions. An edge function is, as the name suggests, a request-processing function implemented at the edge of an application. Examples of edge functions that an application might implement include the following:
@@ -370,7 +359,7 @@ Once a client makes a request to our API gateway, we first check and see whether
 
 • EXPIRE: It sets a timeout for the counter. If the timeout expires, the counter is automatically deleted.
 
-Rate limiter middleware loads rules from the cache. It fetches counters and last request timestamp from Redis cache. Based on the response, the rate limiter decides if the request is not rate limited, it is forwarded to API servers. If the request is rate limited, the rate limiter returns 429 too many requests error to the client. In the meantime, the request is either dropped or forwarded to the queue depending on how you want to handle blocked requests.
+Rate limiter middleware loads rules from the cache. It fetches counters and last request timestamp from Redis cache. Based on the response, if the rate limiter decides that request is not rate limited, it is forwarded to API servers. If request is rate limited, rate limiter returns 429 too many requests error to the client. In the meantime, the request is either dropped or forwarded to the queue depending on how you want to handle blocked requests.
 
 Building a rate limiter that works in a single server environment is not difficult. However, scaling the system to support multiple servers and concurrent threads is a different story. There are two challenges: **Race condition** and **Synchronization issue**. 
 
@@ -505,9 +494,9 @@ Here are a few reasons to use NoSQL database: When all the other components of o
 Storing large volumes of data that often have little to no structure. A NoSQL database sets no limits on the types of data we can store together and allows us to add new types as the need changes. With document-based databases, you can store data in one place without having to define what “types” of data those are in advance. Making the most of cloud computing and storage. Cloud-based storage is an excellent cost-saving solution but requires data to be easily spread across multiple servers to scale up. Using commodity (affordable, smaller) hardware on-site or in the cloud saves you the hassle of additional software and NoSQL databases like Cassandra are designed to be scaled across multiple data centers out of the box, without a lot of headaches. Rapid development. NoSQL is extremely useful for rapid development as it doesn’t need to be prepped ahead of time. If you’re working on quick iterations of your system which require making frequent updates to the data structure without a lot of downtime between versions, a relational database will slow you down.
 
 ### Redis
-Let's talk about another type of DB called Redis. Redis is an open source, **in-memory data structure store**, used as a database, cache, and message broker. Redis provides data structures such as strings, hashes, lists, sets, sorted sets with range queries, bitmaps, hyperloglogs, geospatial indexes, and streams. Redis has built-in replication, Lua scripting, LRU eviction, transactions, and different levels of on-disk persistence, and provides high availability via Redis Sentinel and automatic partitioning with Redis Cluster. You can run atomic operations on these types, like appending to a string; incrementing the value in a hash; pushing an element to a list; computing set intersection, union and difference; or getting the member with highest ranking in a sorted set. To achieve top performance, Redis works with an in-memory dataset. Depending on your use case, you can persist your data either by periodically dumping the dataset to disk or by appending each command to a disk-based log. You can also disable persistence if you just need a feature-rich, networked, in-memory cache. Redis also supports asynchronous replication, with very fast non-blocking first synchronization, auto-reconnection with partial resynchronization on net split.
+Let's talk about another type of DB called Redis. Redis is an open source, **in-memory data structure store**, used as a database, cache, and message broker. Redis provides data structures such as strings, hashes, lists, sets, sorted sets with range queries, bitmaps, hyperloglogs, geospatial indexes, and streams. A great example of Redis is its use in the rate limiter example earlier. Redis has built-in replication, Lua scripting, LRU eviction, transactions, and different levels of on-disk persistence, and provides high availability via Redis Sentinel and automatic partitioning with Redis Cluster. You can run atomic operations on these types, like appending to a string; incrementing the value in a hash; pushing an element to a list; computing set intersection, union and difference; or getting the member with highest ranking in a sorted set. To achieve top performance, Redis works with an in-memory dataset. Depending on your use case, you can persist your data either by periodically dumping the dataset to disk or by appending each command to a disk-based log. You can also disable persistence if you just need a feature-rich, networked, in-memory cache. Redis also supports asynchronous replication, with very fast non-blocking first synchronization, auto-reconnection with partial resynchronization on net split.
 
-Of the NoSQL databases Redis’ various data structures take it closest to the native data structures programmers most commonly use inside applications and algorithms. This ease of use makes it ideal for rapid development and fast applications, as core data structures are easily shared between processes and services.
+Of the NoSQL databases Redis’ various data structures take it closest to the native data structures programmers most commonly use inside applications and algorithms. This ease of use makes it ideal for rapid development and fast applications, as core data structures are easily shared between processes and services. 
 
 ### Data Encoding - JSON, XML and AVRO
 We can use JSON, XML and CSV as encoding options. These are widely known and are language agnostic. However, using these formats, it is hard to distinguish between a string and an integer. You're also limited by the precision of your floating point integers. In addition, JSON and XML, although popular, are not the most memory/space efficient encoding methods.
@@ -520,7 +509,7 @@ So far we've discussed how data is stored, retrieved and encoded but have avoide
 ### Data Flow - REST
 When HTTP is used as the underlying protocol for talking to a service running on a server, it is called a web-service. One approach to speak with a web-service is to use  REST. REST is not a protocol but a design philosophy that models its principles after HTTP. It uses verbs to interact with the web-service by utilizing GET to retrieve information and POST to update it on a web-service. With REST APIs you can expect the response from a running service instantaneously. 
 
-### Data Flow - Message Passing
+### Data Flow - Message Queues
 So far, we've looked at the REST philosophy of interacting with web-services which is a synchronous request-response model. We can also pass data to services using asynchronous message passing systems that deliver messages to another process with low latency via an intermediary called the **message broker or message queue**. The message queue stores the message temporarily and acts as a buffer between the sender and the web-service. There are several advantages if MQs are used: 
 
 - They can act as a buffer if the recipient is unavailable or overloaded thus improving system reliability
@@ -531,7 +520,7 @@ So far, we've looked at the REST philosophy of interacting with web-services whi
 The general flow of data to MQs is as follows: One process sends a message to a queue or a topic, and the broker ensures that the message is delivered to one or more consumers of or subscribers to the that queue or topic.  
 
 ### Communication Between Services
-Long-Polling, WebSockets, and Server-Sent Events are popular communication protocols between a client like a web browser and a web server in addition to HTTP pull and push mechanisms. Let's look at these protocols in detail:
+In addition to REST and gRPC that we discussed earlier, long-polling, webSockets, and server-sent events are popular communication protocols between a client like a web browser and a web server in addition to HTTP pull and push mechanisms. Let's look at these protocols in detail:
 
 ### Ajax Polling
 
@@ -636,9 +625,7 @@ In single leader, every write must go to the single leader. No matter how far yo
 If single leader goes down, new writes/updates need to be halted and a new leader has to be elected before accepting new writes/updates. With multi-leader, if a leader goes down, other centers can continue to operate and the down leader can catch up once it is back.  
 
 ### Multi-Leader: Cons
-In single leader, since all writes go to one leader, there's always just a single source of truth. If 2 clients try to write at the same time, one client would have to wait until the other is done. With multi-leader, that is not the case: there can be write conflicts. 
-
-To resolve for write conflicts, there're a bunch of different techniques: last write wins, merger of writes, ask user to resolve conflicts etc. 
+In single leader, since all writes go to one leader, there's always just a single source of truth. If 2 clients try to write at the same time, one client would have to wait until the other is done. With multi-leader, that is not the case: there can be write conflicts. To resolve for write conflicts, there're a few different techniques: last write wins, merger of writes, ask user to resolve conflicts etc. 
 
 **If your setup requires low latency high availability for geographically dispersed users, multi-leader configuration is the way to go.** 
 
@@ -669,7 +656,7 @@ How to configure N, W, and R to fit our use cases? Here are some of the possible
 
 Depending on the requirement, we can tune the values of W, R, N to achieve the desired level of consistency. Read and writes that obey the rules we've defined are called quorum reads and writes. You can think of *r* and *w* as the minimum number of votes required for read or write to be valid. 
 
-Databases with appropriately configured quorums can tolerate the failure of individual nodes without need for failover. They can also tolerate individual nodes going slow (due to overload), becausre requests don't have to wait for all n nodes to respond. **These characteristics make DBs with leaderless replication appealing for use cases that require high availability and low latency, and that can tolerate occasional stale reads.**  
+Databases with appropriately configured quorums can tolerate the failure of individual nodes without need for failover. They can also tolerate individual nodes going slow (due to overload), because requests don't have to wait for all n nodes to respond. **These characteristics make DBs with leaderless replication appealing for use cases that require high availability and low latency, and that can tolerate occasional stale reads.**  
 
 Replication gives high availability but causes inconsistencies among replicas. Versioning and vector locks are used to solve inconsistency problems. Versioning means treating each data modification as a new immutable version of data. Before we talk about versioning, let us use an example to explain how inconsistency happens: Inconsistency occurs when the same data is updated on two different nodes by two different clients. In order to reach a stable state, conflict resolution is required.
 
@@ -693,7 +680,11 @@ Assume a vector clock is represented by D([S1, v1], [S2, v2], ..., [Sn, vn]), wh
 5. When another client reads D3 and D4, it discovers a conflict, which is caused by data item D2 being modified by both Sy and Sz. The conflict is resolved by the client and updated data is sent to the server. Assume the write is handled by Sx, which now has D5([Sx, 3], [Sy, 1], [Sz, 1]). 
 
 ### Partitioning
-Replication of your data across multiple servers goes hand in hand with partitioning of data. Data partitioning is a technique to break up a big database (DB) into many smaller parts. It is the process of splitting up a DB/table across multiple machines to improve the manageability, performance, availability, and load balancing of an application.
+Replication of your data across multiple servers goes hand in hand with partitioning of data. Data partitioning is a technique to break up a big database (DB) into many smaller parts. It is the process of splitting up a DB/table across multiple machines to improve the manageability, performance, availability, and load balancing of an application. There are multiple different ways to partition data across nodes:
+- Key based partitioning
+- Hash based partitioning
+
+The techniques listed above are quite self-explanatory. The issue with these approaches is that if you have to re-balance your partitions in the case of node additions and/or removals, almost all keys need to be re-assigned. This requires us to re-map partitions which is in-efficient. To deal with this, we have **consistent hashing**: 
 
 ### Partitioning: Consistent hashing 
 
@@ -726,9 +717,9 @@ Adding or removing a server would only affect the keys that it were assigned (in
 
 One issue with the approach above is that the distribution might not be uniform (ie some servers getting more keys than others thus resulting in skewed partitioning). Enter, **virtual nodes**. We can have more than one **representative** for nodes on the ring to evenly space out keys among servers. We can keep track of what ring positions map to which physical servers. For example, in the following figure we can represent an eight node cluster using only four physical nodes by assigning two tokens to every node:
 
-![Virtual-Nodes](./images/system-design/virtual-nodes.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+![Virtual-Nodes](./images/system-design/virtual-nodes.png) [Image Credit](https://cassandra.apache.org/doc/latest/architecture/dynamo.html#dataset-partitioning-consistent-hashing)/
 
-### Service Discovery
+### Partitioning: Service Discovery
 
 Now as you can imagine, the data is partitioned on different nodes and is usually moved between nodes as data is added or deleted, we need to be able to know at all times, the location of each piece of data. This process is called **service discovery**. To solve this problem, there're 3 approaches:
 
@@ -758,12 +749,12 @@ A better solution is to use decentralized failure detection methods like **gossi
 
 • Once nodes receive heartbeats, membership list is updated to the latest info.
 
-• If the heartbeat has not increased for more than predefined periods, the member is considered as offline.
+• If the heartbeat has not increased for more than predefined periods that act as timeouts, the member is considered as offline.
 
 ![Gossip-Protocol](./images/system-design/gossip-protocol.png) [Image Credit](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
 
 After failures have been detected through the gossip protocol, the system needs to deploy certain mechanisms to ensure availability. In the strict quorum approach, read and write operations could be blocked as illustrated in the quorum consensus section. A technique called “sloppy quorum” is used to improve availability. Instead of enforcing the quorum requirement, the system chooses the first W healthy servers for writes and first R healthy servers for reads on the hash ring. Offline servers are ignored.
-If a server is unavailable due to network or server failures, another server will process requests temporarily. When the down server is up, changes will be pushed back to achieve data consistency. This process is called hinted handoff. Since s2 is unavailable in diagram above, reads and writes will be handled by s3 temporarily. When s2 comes back online, s3 will hand the data back to s2.
+If a server is unavailable due to network or server failures, another server will process requests temporarily. When the down server is up, changes will be pushed back to achieve data consistency. This process is called **hinted handoff**. Since s2 is unavailable in diagram above, reads and writes will be handled by s3 temporarily. When s2 comes back online, s3 will hand the data back to s2.
 
 Hinted handoff is used to handle temporary failures. What if a replica is permanently unavailable? To handle such a situation, we implement an anti-entropy protocol to keep replicas in sync. Anti-entropy involves comparing each piece of data on replicas and updating each replica to the newest version.
 
@@ -1097,14 +1088,9 @@ Having said that, here's a summary of techniques we've talked about:
 - Split tiers into individual services
 - Monitor your system and use automation tools
 
-### System Design
-Before we can design a system, we need to be able to understand the key characteristics of a distributed, robust system. These characteristics include Scalability, Reliability, Availability, Efficiency, and Manageability. We've already seen what scalability means (vertical vs horizontal), reliability (where even with system failures, the service remains functional with no impact on services) and availability (system is up - not necessarily reliable though).
 
 ### Generating Unique IDs in a distributed Env
 Check Twitter blog [here](https://blog.twitter.com/engineering/en_us/a/2010/announcing-snowflake.html)
-
-### Reliable vs Available
-If a system is reliable, it is available. However, if it is available, it is not necessarily reliable. In other words, high reliability contributes to high availability, but it is possible to achieve a high availability even with an unreliable product by minimizing repair time and ensuring that spares are always available when they are needed. 
 
 ### Back of the envelope Estimation
 Below is a table explaining the data volume unit 
@@ -1153,8 +1139,6 @@ Say, for example, that you're creating an image sharing system (instagram like s
 - For the application in which the images will be used requires streaming performance, such as real-time video playback
 
 The case against DB is that for images, we aren't ever going to use ACID properties (those are for financial transactions etc). DFS is cheaper as compared to a DB, it is faster and a DFS can make use of a CDN to render our images for us. 
-
-### User authentication
 
 ### Allowing users to Chat
 XMPP, an Extensible Messaging and Presence Protocol, helps to build a real time chat application. XMPP provides an open and decentralized instant messaging services. As the name indicates, it is a highly extendable protocol formerly known as Jabber protocol. To exchange the information, XMPP uses Extensible Markup language (XML) as the base format. XMPP uses the TCP protocol to maintain connections between 2 clients.
