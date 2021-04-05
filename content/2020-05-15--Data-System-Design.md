@@ -1090,6 +1090,59 @@ Having said that, here's a summary of techniques we've talked about:
 
 
 ### Generating Unique IDs in a distributed Env
+Say you're given a distributed system and are asked to come up with a function to generate a globally unique ID for this system. On a single machine, this is simple, you just auto-increment an ID in your DB and you have a unique ID on each call. However, this isn't possible if you have a distributed system with multiple machines and multiple partitions.
+
+- **Requirements**
+- The ID should be unique across EVERY call and EVERY machine.
+- It should consist of numerical values only
+- It should fit into 64-bit
+- Should be able to generate over 10,000 unique IDs/sec
+
+First thing that comes to mind is to use UUID that can be generated independently without coordination between servers. However, UUIDs are 128 bits long and are non-numeric: Example: 09c93e62-50b4-468d-bf8a-c07e1040bfb2. 
+
+Another thing that can be done is to have a centralized generator. Every time you need to generate a new ID, this centralized generator is called. The issue here is that this is a single point of failure and is not scalable. It definitely won't be able to handle 10,000 unique IDs/sec. 
+
+How about we just use time as the id? Hmm, ok so if I have distributed environment, it is possible that two different nodes are called at the same time to generate the id. Even if they're not, different nodes might have different clocks that might result in collisions. 
+
+But the idea of using time does look promising ie using epoch time. Now to make it unique, we can add in the IP address of the server. So, we might be able to concatenate the IP address of the server with the epoch time and get a unique id right? Well, what if we invoke this function in the same microsecond on the same server? That would cause a collision!  Maybe we can use a counter that gets incremented every time this function is called. So something like: `epochTime_serverID_counter`. Hmm, this would work!
+
+But wait a second, what if the machine reboots? What if it crashes, has to re-boot and then start generating unique ids again. Since the machine crashed, our counter would reset to 0. Maybe we can store this counter somewhere and have the server read it from there on restart. And every time it is incremented, we can push the counter value to this store! This sounds like a job for Redis! Yup, that would work. So, our unique ID would be: `epochTime_serverID_counter`
+
+- **Approach**
+Ok, so we've deiced to have the unique ID like so: `epochTime_serverID_counter`. Now, we can have up to 64 bits in the id. Epoch time takes 41 bits. How do I know that? Convert an epoch time value to binary and count the number of bits. For example,  epoch time 1288834974657 converted to binary is:
+
+```cpp
+0       epoch time                      40
+10010110000010100100011010000001111000001
+```
+We're still left with 23 bits. For the sake of having a more robust id, we can add the datacenter id to the unique ID as well! So our unique ID would be:
+
+`epochTime_dataCenterID_serverID_counter`
+
+Alright, so we've got 41 bits for epoch time. Next up, we can use 5 bits for our dataCenterID. This would result in a total of 32 data centers because $2^5 = 32$. Our ID now is:
+
+```cpp
+0       epoch time                     40   44 
+1001011000001010010001101000000111100000100001
+                                        dcID
+``` 
+
+Next, we add serverId which we can have a bit longer, say 6 bits meaning we can have 64 servers in a datacenter:
+
+```cpp
+0       epoch time                     40   44    45 
+1001011000001010010001101000000111100000100001000001
+                                        dcID serverID
+``` 
+
+and finally the remaining bits can be the counter value meaning $2^19$ giving us a total of 524288 per machine:
+
+```cpp
+0       epoch time                     40   44    45   counter       64
+10010110000010100100011010000001111000001000010000010000000000000000001
+                                        dcID serverID
+``` 
+
 Check Twitter blog [here](https://blog.twitter.com/engineering/en_us/a/2010/announcing-snowflake.html)
 
 ### Back of the envelope Estimation
