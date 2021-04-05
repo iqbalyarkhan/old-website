@@ -1143,7 +1143,8 @@ and finally the remaining bits can be the counter value meaning $2^19$ giving us
                                         dcID serverID
 ``` 
 
-Check Twitter blog [here](https://blog.twitter.com/engineering/en_us/a/2010/announcing-snowflake.html)
+### Types of Encoding
+Encodings could be base36 ([a-z ,0-9]) or base62 ([A-Z, a-z, 0-9]) 
 
 ### Back of the envelope Estimation
 Below is a table explaining the data volume unit 
