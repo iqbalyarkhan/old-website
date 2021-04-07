@@ -1144,7 +1144,7 @@ and finally the remaining bits can be the counter value meaning $2^19$ giving us
 ``` 
 
 ### Types of Encoding
-Encodings could be base36 ([a-z ,0-9]) or base62 ([A-Z, a-z, 0-9]) 
+Encodings could be base36 ([a-z ,0-9]) or base62 ([A-Z, a-z, 0-9]). If you use base 36 encoding and have a 4 character string, possible number of strings would be: $36^4$. For 62 base encoding and 7 character string: $62^7$.
 
 ### Back of the envelope Estimation
 Below is a table explaining the data volume unit 
