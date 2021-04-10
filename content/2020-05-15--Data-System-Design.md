@@ -84,6 +84,7 @@ tags:
     * [Back of the envelope Estimation](#back-of-the-envelope-estimation)
     * [Storing Images](#storing-images)
     * [Allowing users to chat](#allowing-users-to-chat)
+    * [Design Pastebin](#design-pastebin)
 100. [Useful architectures](#useful-architectures)
 
 ### Microservice Architecture
@@ -1204,6 +1205,46 @@ A simple XMPP architecture consists of a server and two clients. Every client ac
 XMPP protocol is a great fit for Real-Time Web applications like Live News, Interactive web page, web games and web chat. It provides an inbuilt security with multiple layers. Moreover, here the users need to authenticate both host servers as well as messages to prevent the risk of spoofing. Eventually, it eradicates the fear of spamming. Now, when you use XMPP in a chat service, you need to able to keep track of the user ids and connection ids that are being used by each user. To do so, you can have a **connection service** that maintains this information for you:
 
 ![Chat](./images/system-design/chat.png)
+
+
+### Design Pastebin
+**Pastebin like services enable users to store plain text or images over the network (typically the Internet) and generate unique URLs to access the uploaded data. Such services are also used to share data over the network quickly, as users would just need to pass the URL to let other users see it.**
+
+Let's start by getting storage, read and write requirements:
+
+**What are the allowed data types that can be shared?**
+Text
+
+**Number of new links generated daily?**
+1 million
+
+**Can the users specify their own custom URL?**
+Yes
+
+**Max text size that users can paste?**
+10MB
+
+Ok, so we need a service where users can paste their text, have a custom URL generated and then that generated URL can be shared with other who can then visit the URL to see the original text.
+
+
+**Back of envelope estimation**
+
+Let's assume 5:1 read to write ratio. Therefore 5 million daily reads and 1 million daily writes
+
+$1 * 10^6$ daily new links = $1 * 10^6 / (24 * 60 * 60)$ =  $12$ new creations per second
+
+$5 * 10^6$ daily reads = $5 * 10^6 / (24 * 60 * 60)$ =  $60$ reads per second
+
+10MB per write and million daily new URLs and we decide to store this data for 10 years
+
+$10MB * 1 * 10^6 * 365 * 10$ would approx equal 36TB of storage
+
+Now, generating new URLs for each new paste: 
+$1 * 10^6 * 365 * 10$ = 3.7 billion unique URLs for the life span of our service. If we use base 64 encoding that means we need at-least 6 character strings because $64^6	= 69 billion$ which is more than what we'd need for our 10 years. 
+
+Now, to store each of these unique strings, we'd need storage as well. So if we're creating 3.7 billion URLs and each is approx 6 characters long then we need $6 * 3.7 Billion* then we need 22 billion which is 22 GB of storage for our 10 year life span.
+
+     
 
 
 ### Useful architectures
