@@ -340,6 +340,12 @@ The key concepts in OAuth 2.0 are the following:
 - Resource Server: A service that uses an access token to authorize access. In a microservice architecture, the services are resource servers.
 - Client: A client that wants to access a Resource Server. In a microservice architecture, API Gateway is the OAuth 2.0 client.
 
+Here's the flow for authorization when working with OAuth2.0:
+- A user grants access to our application to get authorization from an existing service (such as Facebook API etc).
+- Facebook API is then called with permissions granted by the user
+- Facebook will check passed credentials and return an OAuth Token from its authorization server.
+- This token then can be used to access services in our application.
+
 ### Rate Limiter
 One of the most important edge functions provided by an API gateway is the rate limiter. API limiting, which is also known as rate limiting, is an essential component of Internet security, as DoS attacks can tank a server with unlimited API requests. Rate limiting also helps make your API scalable. If your API blows up in popularity, there can be unexpected spikes in traffic, causing severe lag time. 
 
@@ -1292,8 +1298,12 @@ Ok, so let's start with our user's profile:
 - **ALL THIS INFORMATION WILL BE STORED/MANIPULATED VIA A PROFILE SERVICE**
 
 Let's think about the chat feature:
-- We can either use XMPP or Websockets to allow a user chat with matched users. 
+- We can either use XMPP or Websockets to allow a user chat with matched users. As discussed in [chat](#allowing-users-to-chat) section, we'll use XMPP since it has better security and allows us to show when users are online! 
+- Before we allow chat to open up between 2 users, we'll have to determine whether the 2 users have been matched. For that, we'll call our user service to get a list of matched users. We can cache this information using a write-through cache so that we don't have to hit user DB for each chat session. 
 
+Let's think about the overall architecture
+- We'll have to authenticate our users. We'll do so using login based mechanisms and OAuth 2.0 as specified in the [secure services](#secure-services) section. Authentication will be implemented as an edge function in our API gateway. The user hits our API GW that calls our authentication service. Our auth service sits inside servers behind a load balancer. We can use **weighted round robin** to route our requests. Once we get our user authorized, the user's authorization is returned back to the API Gateway. Next, we need to populate our user's info and return this to our user.
+- To populate our user's info, we'll use a profile service that pulls our profile for us, checks for matches and returns those as well. The information is gathered for us from the profile servers and matchService. 
 
 
 ### Useful architectures
