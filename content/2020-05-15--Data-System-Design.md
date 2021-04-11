@@ -85,6 +85,7 @@ tags:
     * [Storing Images](#storing-images)
     * [Allowing users to chat](#allowing-users-to-chat)
     * [Design Pastebin](#design-pastebin)
+    * [Design Tinder](#design-tinder)
 100. [Useful architectures](#useful-architectures)
 
 ### Microservice Architecture
@@ -1091,6 +1092,8 @@ Having said that, here's a summary of techniques we've talked about:
 - Split tiers into individual services
 - Monitor your system and use automation tools
 
+### System Design
+Let's look at some example system designs:
 
 ### Generating Unique IDs in a distributed Env
 Say you're given a distributed system and are asked to come up with a function to generate a globally unique ID for this system. On a single machine, this is simple, you just auto-increment an ID in your DB and you have a unique ID on each call. However, this isn't possible if you have a distributed system with multiple machines and multiple partitions.
@@ -1204,10 +1207,32 @@ A simple XMPP architecture consists of a server and two clients. Every client ac
 
 ![XMPP](./images/system-design/xmpp.png) [Image Credit](https://blog.mirrorfly.com/xmpp-use-cases-for-scalable-chat-platform/)
 
-XMPP protocol is a great fit for Real-Time Web applications like Live News, Interactive web page, web games and web chat. It provides an inbuilt security with multiple layers. Moreover, here the users need to authenticate both host servers as well as messages to prevent the risk of spoofing. Eventually, it eradicates the fear of spamming. Now, when you use XMPP in a chat service, you need to able to keep track of the user ids and connection ids that are being used by each user. To do so, you can have a **connection service** that maintains this information for you:
+XMPP protocol is a great fit for Real-Time Web applications like Live News, Interactive web page, web games and web chat. It provides inbuilt security with multiple layers. Moreover, here the users need to authenticate both host servers as well as messages to prevent the risk of spoofing. Eventually, it eradicates the fear of spamming. Now, when you use XMPP in a chat service, you need to able to keep track of the user ids and connection ids that are being used by each user. To do so, you can have a **connection service** that maintains this information for you:
 
 ![Chat](./images/system-design/chat.png)
 
+XMPP uses XML to exchange data between client and server. Whenever a client connects to an XMPP server using a chat application, they transmit information with each other which is also known as an XML “Stanza”. Stanza is a basic unit of communication in XMPP. In XMPP based communication, there are 3 types of stanzas:
+
+- Message: Used to exchange messages.
+- Presence: Used to exchange online and subscription status.
+- IQ (Info/Query): Used to control dynamic settings of the communication that is controlled over the server.
+
+Advantages of XMPP:
+- **Extensible**: XMPP can be used to send different message types including text, pictures, videos, and audios
+- **Decentralized architecture**: Which means anyone can set up an XMPP server
+- **Security**: XMPP allows developers to set up a separate storage server which can have its own encryption and security standards
+- **Flexibility**: Can connect to non-Jabber programs as well using special gateway services
+
+Disadvantages of XMPP:
+- **No default way to assure message delivery**: XMPP doesn’t provide the ability to request message delivered confirmation by default. The developers need to set up message receipts manually.
+- **Slow speed**: The decentralized architecture of XMPP allows anyone to run his/her own server, however, it does eat up on the speed of the connection.
+
+We've already talked about websockets and WS can also be used to implement chat based applications. Let's see its advantages and disadvantages:
+- **Speed**: With a centralized and persistent communication connection, WebSockets are the fastest online communication method.
+- **Unlimited open sessions**: There can be an unlimited number of user sessions on a single app.
+
+Disadvantages:
+- **Low Security**: Although WebSockets utilize WSS(Websockets of SSL), the technology is still new and prone to attacks like XSS and DDOS.
 
 ### Design Pastebin
 **Pastebin like services enable users to store plain text or images over the network (typically the Internet) and generate unique URLs to access the uploaded data. Such services are also used to share data over the network quickly, as users would just need to pass the URL to let other users see it.**
@@ -1246,7 +1271,29 @@ $1 * 10^6 * 365 * 10$ = 3.7 billion unique URLs for the life span of our service
 
 Now, to store each of these unique strings, we'd need storage as well. So if we're creating 3.7 billion URLs and each is approx 6 characters long then we need $6 * 3.7 Billion* then we need 22 billion which is 22 GB of storage for our 10 year life span.
 
-     
+### Design Tinder
+Let's start with our features: 
+- Have a profile for each user
+- Ability to swipe left or right
+- Ability to match with other users
+- Ability to chat with matched users
+
+Let's talk about our data/volume reqs:
+- 100 million total users
+- 1 million DAU
+
+Ok, so let's start with our user's profile:
+- 5 total pictures per user
+- Information such as name, age, location, preferences etc.
+- Total data per user: 1MB per pic = 5MB + another 1 KB for info. Approx 6 MB of data per profile
+- $6MB \times 100 \times 10^6$ means $6GB$ of overall data. Assuming we save data for 10 years, this comes out to 60GB of data for the life of our app.
+- We can store images in a DB or DFS. As discussed in [storing images](#storing-images) section, we'll use DFS. Next, we'll use a SQL DB to keep track of userID, profileID and the URL to our user images.
+- We'll also need to store user info for which we'll use another SQL table with a uniquely generated userID used as a primary key. The table would have columns such as name, age, location, preferences and matches. 
+- **ALL THIS INFORMATION WILL BE STORED/MANIPULATED VIA A PROFILE SERVICE**
+
+Let's think about the chat feature:
+- We can either use XMPP or Websockets to allow a user chat with matched users. 
+
 
 
 ### Useful architectures
