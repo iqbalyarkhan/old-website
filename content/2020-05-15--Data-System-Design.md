@@ -86,6 +86,7 @@ tags:
     * [Allowing users to chat](#allowing-users-to-chat)
     * [Design Pastebin](#design-pastebin)
     * [Design Tinder](#design-tinder)
+    * [Design Chat Messaging]()
 100. [Useful architectures](#useful-architectures)
 
 ### Microservice Architecture
@@ -1304,6 +1305,40 @@ Let's think about the chat feature:
 Let's think about the overall architecture
 - We'll have to authenticate our users. We'll do so using login based mechanisms and OAuth 2.0 as specified in the [secure services](#secure-services) section. Authentication will be implemented as an edge function in our API gateway. The user hits our API GW that calls our authentication service. Our auth service sits inside servers behind a load balancer. We can use **weighted round robin** to route our requests. Once we get our user authorized, the user's authorization is returned back to the API Gateway. Next, we need to populate our user's info and return this to our user.
 - To populate our user's info, we'll use a profile service that pulls our profile for us, checks for matches and returns those as well. The information is gathered for us from the profile servers and matchService. 
+
+### Design Chat Messaging
+
+Requirements:
+- Users should be able to chat in a group
+- Sent + Delivered + Read Receipts
+- Person online/last seen
+- Chat history (permanent vs temporary)
+
+Ok, let's start with the basic setup of how we want our users to interact. We'll use an API gateway which'll capture requests from client:
+
+![Messaging](./images/system-design/messaging1.png)
+
+Ok, to allow your users to chat, you'd have to keep track of connection information (port etc). This information can be stored in API GW. However, the downside is that our system would not be loosely coupled. We want a separate microservice that handles all sessions for us, leaving the gateway to concentrate on the edge functions. So, the flow would now be that the user connects to our API gateway, and API gateway calls the **sessions** service. 
+
+Our sessions service would reside behind a load balancer and we'll have multiple servers working as sessions service. The service would also need access to a DB where it'll be able to update/retrieve user session information. For that, we'll create a table with userID, connectionInfo etc. The type of data store I'm thinking here is a MySQL DB since we'll be able to quickly access user info by creating an index n userId. So, our architecture will look like so:
+
+![Messaging2](./images/system-design/messaging2.png)
+
+Now, when userA wants to connect to userB, userA will send a **sendMessage(B)** request to our API GW. API GW will forward that request to sessions service. Sessions service will determine which port userB is connected to (using information from the DB) and will forward request to the appropriate connection and thus sending the message to userB. Now, to actually send message to userB (client) from server, we can use multiple techniques as discussed earlier such as long polling, ajax, websockets or xmpp etc. Now in the [chat](#allowing-users-to-chat) section, we compared XMPP and websockets. One advantage of using websocket is that it allows for unlimited open sessions over TCP. Since we're looking for group chat as well, we'll go ahead and use websockets that communicate via TCP. 
+
+One requirement for our chat app is that the sender should be able to see sent + delivered + read receipts. In order for us to be able to show to userA that the message was **sent**, we can send a response back from session service to gateway and back to userA that the message will be sent when possible. In order to store this information, we'll need another DB for our sessions service. This new DB will hold our message statuses. This flow is shown with red arrows in the diagram below:
+
+![Messaging4](./images/system-design/messaging4.png)
+
+When userB opens the app on his/her end, the message gets sent to userB's phone. Upon receipt of the message, userB's phone should respond with a message saying that he/she received the message from userA. At that point, the **delivered** confirmation flows from userB to API GW to sessions service and back to userA. This done via a TCP acknowledgement. userB will send back the info that it received message from userA and sessions service will deliver the delivered receipt by looking up the box where userA's connection resides and will send the confirmation back to userA. This flow is shown via blue arrows in the diagram below:
+
+![Messaging5](./images/system-design/messaging5.png)
+
+The flow above is also relevant for read receipt. UserB would send another message back to our API GW once the app is opened and message is read on userB's phone. This will result in a **read** receipt being sent back to userA. 
+
+
+
+
 
 
 ### Useful architectures
