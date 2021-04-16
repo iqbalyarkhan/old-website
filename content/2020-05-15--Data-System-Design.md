@@ -86,7 +86,7 @@ tags:
     * [Allowing users to chat](#allowing-users-to-chat)
     * [Design Pastebin](#design-pastebin)
     * [Design Tinder](#design-tinder)
-    * [Design Chat Messaging]()
+    * [Design Chat Messaging](#design-chat-messaging)
 100. [Useful architectures](#useful-architectures)
 
 ### Microservice Architecture
@@ -1336,9 +1336,24 @@ When userB opens the app on his/her end, the message gets sent to userB's phone.
 
 The flow above is also relevant for read receipt. UserB would send another message back to our API GW once the app is opened and message is read on userB's phone. This will result in a **read** receipt being sent back to userA. 
 
+**Let's tackle our third requirement: last seen/online**
 
+Let's say userB is online and is chatting with others. UserB will send requests to our API GW via websocket connection. Remember, we've already stored userB's connection information in our sessionsDB. We can look at the sessionsDB to see whether connectionInfo related to userB is actually showing an active connection or that the connection has been closed. If it is active, we can show to userA and userC that userB is online. If connection is inactive, we need another method to determine last-seen. For last-seen, as userB exits the app, we can send a message from userB's phone to API GW and to session service saying that userB has terminated the connection. We can store this information in a Redis cache data store with userB's uniqueID and time-stamp. So, any time userA or userC clicks on userB's profile, we can display the last time userB was online: which would be the time-stamp when userB exited the app. 
 
+**Group messaging**
 
+Let's focus now on group messaging. Earlier we talked about two users chatting; what if we have multiple users who're part of different groups. In the diagram below, users are grouped as shown and each user can be connected to a different API GW (remember, API gateway is also a service which needs to be highly available and resilient):
+
+![Messaging6](./images/system-design/messaging6.png)
+
+Now, here's the requirement: we want to determine if the user we just received a message from is present in a group and if the user is sending a message to a group or a single individual. If it is a single individual, the API GW call would be **sendMessage(B)** as we discussed earlier. If it is a group message, message received on the API GW would be **sendGroupMessage(userA)**, meaning userA is trying to send a group message to his/her group. Now, we need to determine what group userA is trying to send message to. If we ask session service to determine that for us, we'd be coupling our functionality so instead, let's have a separate service that handles our group information. Let' call this group service. What will now happen is that if sessionService receives a group message request, it'll call groupService to determine all the users in that group. GroupService will return that information, which'll be connectionID (remember webSockets allow us to have multiple chat sessions), where we'll be able to send message to the entire group. Group service needs to have a data-store where it converts groupId to connectionIds since different users can be on different connections:
+
+![Messaging7](./images/system-design/messaging7.png)
+
+There're multiple things to consider: 
+- We can have consistent hashing for db partitioning 
+- We can have MQs between services to handle failures
+- We can have retry mechanisms between services 
 
 
 ### Useful architectures
