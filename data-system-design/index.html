@@ -196,6 +196,7 @@
 <li><a href="#allowing-users-to-chat">Allowing users to chat</a></li>
 <li><a href="#design-pastebin">Design Pastebin</a></li>
 <li><a href="#design-tinder">Design Tinder</a></li>
+<li><a href="#design-chat-messaging">Design Chat Messaging</a></li>
 </ul>
 </li>
 <li><a href="#useful-architectures">Useful architectures</a></li>
@@ -2368,6 +2369,211 @@ Yes</p>
 <ul>
 <li>We'll have to authenticate our users. We'll do so using login based mechanisms and OAuth 2.0 as specified in the <a href="#secure-services">secure services</a> section. Authentication will be implemented as an edge function in our API gateway. The user hits our API GW that calls our authentication service. Our auth service sits inside servers behind a load balancer. We can use <strong>weighted round robin</strong> to route our requests. Once we get our user authorized, the user's authorization is returned back to the API Gateway. Next, we need to populate our user's info and return this to our user.</li>
 <li>To populate our user's info, we'll use a profile service that pulls our profile for us, checks for matches and returns those as well. The information is gathered for us from the profile servers and matchService. </li>
+</ul>
+<h3 id="design-chat-messaging"><a href="#design-chat-messaging" aria-label="design chat messaging permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Design Chat Messaging</h3>
+<p>Requirements:</p>
+<ul>
+<li>Users should be able to chat in a group</li>
+<li>Sent + Delivered + Read Receipts</li>
+<li>Person online/last seen</li>
+<li>Chat history (permanent vs temporary)</li>
+</ul>
+<p>Ok, let's start with the basic setup of how we want our users to interact. We'll use an API gateway which'll capture requests from client:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 373px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/1818904cadfe32d89e5945a6b8d92e94/2878e/messaging1.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 112.6005361930295%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAXCAYAAAALHW+jAAAACXBIWXMAAAsSAAALEgHS3X78AAABzUlEQVQ4y52ViY7CMAxE+f+P5Co3RZzlBqPn1QSTDazYSFbS1B4fY7ety+Vit9vNrterxXMu8R37/X73PQrvWlJkRyJACfB4PFrTNLbf7110ln4ClOBZ3nNA7ofDoc3nc1ssFlbXtS2XS6uqylarlbFaMsDL4XDwCDiz5+AsQPJFlOv1+gcQA7xNp1ObTCYeAWd2HJxOJxccIOjEGrI2m80TkEtSIILBYOBChNwRDYqkw97v963b7bqhoo+APHuEGIzH45fa8KwIYjToxHsBIh5hZPl8Pqf9XdvMZrMiYIpQALvdLhGjVohgOeDHlEmRVEiTGlJ4zoDJUCyjJyCt7Xb7TFmkEAHM0lN44w7hTK+x867X6zk4dwCpZQD0CAEUKUQaSYk1RWgbUqY8nU7HHcA89glQtcGAfpOxRinOOQvAUsovpEghKqpucQS5i6TExk41RJFU8CCWSQmv/2obXjJqENBut11Go5ETRAnyT9ufgGob6oYyZ4xxUho9yCiN3kvKpAirMIwArFZ619gfJ0UEaORKX27plWb5F8vROH7O82cMKEXOMmDp8/XNPwUQxhIhUpWGcSXKFGGs06d/SuzLUhbofJVyfh8d6vkBXhUAEpcjISoAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Messaging"
+        title="Messaging"
+        src="/static/1818904cadfe32d89e5945a6b8d92e94/2878e/messaging1.png"
+        srcset="/static/1818904cadfe32d89e5945a6b8d92e94/27f03/messaging1.png 173w,
+/static/1818904cadfe32d89e5945a6b8d92e94/376d0/messaging1.png 345w,
+/static/1818904cadfe32d89e5945a6b8d92e94/2878e/messaging1.png 373w"
+        sizes="(max-width: 373px) 100vw, 373px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
+<p>Ok, to allow your users to chat, you'd have to keep track of connection information (port etc). This information can be stored in API GW. However, the downside is that our system would not be loosely coupled. We want a separate microservice that handles all sessions for us, leaving the gateway to concentrate on the edge functions. So, the flow would now be that the user connects to our API gateway, and API gateway calls the <strong>sessions</strong> service. </p>
+<p>Our sessions service would reside behind a load balancer and we'll have multiple servers working as sessions service. The service would also need access to a DB where it'll be able to update/retrieve user session information. For that, we'll create a table with userID, connectionInfo etc. The type of data store I'm thinking here is a MySQL DB since we'll be able to quickly access user info by creating an index n userId. So, our architecture will look like so:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/8de4c6545a0eb27072193e18161cf29a/b0803/messaging2.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 53.527435610302355%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAACXBIWXMAAAsSAAALEgHS3X78AAABRUlEQVQoz51Ta0/DMBDb//+VAxVoy9rlncurJnfVxsY+AKtkKU4Tn3NxDrVW1FoQk0fMrsODSsDZLHj7eMX7NOBznRCSgycr4PEjLHJJOGwbUGrexSjCOiOIFISHGECJZE3bGjY01FaE57KjlLIbyQEHrXeBQA7GWLTWQEQIIXREaK0RY0TOGeM44Xh8gbUO67JinmbwCVttSIV2wWVZYKyGC0Y288ebnXPC+T+PucA4jhiGAd77XtxgnmcxcCeolILzVhw656+C7HLr/RAHvKmDOePCGfsd3AieTgu0UeJQKS2VuQgL7ot/x53DkgtSJrnZ2HvGDlJK0rdvB/8Q5L6c1QrjFdRZXY/8tGCi1GMRhfibHj4t2NomgeRw8pGdsz0WVrLHgS8/UR7nWJRylCwemPCkJyPh5sRf0u9l/BfwK9Li8gvqqFoxe3hKvAAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Messaging2"
+        title="Messaging2"
+        src="/static/8de4c6545a0eb27072193e18161cf29a/1dda8/messaging2.png"
+        srcset="/static/8de4c6545a0eb27072193e18161cf29a/27f03/messaging2.png 173w,
+/static/8de4c6545a0eb27072193e18161cf29a/376d0/messaging2.png 345w,
+/static/8de4c6545a0eb27072193e18161cf29a/1dda8/messaging2.png 690w,
+/static/8de4c6545a0eb27072193e18161cf29a/b0803/messaging2.png 893w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
+<p>Now, when userA wants to connect to userB, userA will send a <strong>sendMessage(B)</strong> request to our API GW. API GW will forward that request to sessions service. Sessions service will determine which port userB is connected to (using information from the DB) and will forward request to the appropriate connection and thus sending the message to userB. Now, to actually send message to userB (client) from server, we can use multiple techniques as discussed earlier such as long polling, ajax, websockets or xmpp etc. Now in the <a href="#allowing-users-to-chat">chat</a> section, we compared XMPP and websockets. One advantage of using websocket is that it allows for unlimited open sessions over TCP. Since we're looking for group chat as well, we'll go ahead and use websockets that communicate via TCP. </p>
+<p>One requirement for our chat app is that the sender should be able to see sent + delivered + read receipts. In order for us to be able to show to userA that the message was <strong>sent</strong>, we can send a response back from session service to gateway and back to userA that the message will be sent when possible. In order to store this information, we'll need another DB for our sessions service. This new DB will hold our message statuses. This flow is shown with red arrows in the diagram below:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/7abdc1a0abd425dbde2bbff0907f52c3/683fc/messaging4.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 51.25408942202835%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAAAsSAAALEgHS3X78AAABf0lEQVQoz2VS2XLCQAzL//9jO1NIC4EkZLP3FVVeSgbog2Y9tleWj66UAkEtFT46uKjhk0XIDoue8X0+4jT0GG8Xxg3jr/DR/tm62Z2Q5ZxQa4VLkuCh9dogdmIsxIBUEnLJRGr5uWbEHBFTbDmJto0rOmMMhssFy3WEpSJ7uyHG2OANq2uDaZ7h1Iq0rjh8HdAfe9hpxsQ/w3BBCOEuiEo77z1WJjrrWkvBuzaCIgmLgmds1RqReSVnXIcB4+nMPI/recDP6YTE4vKnEVprMY5XKCownrAG4hOExFFs215AsInNWCbJmWR935M8MFbaHDuRK20752Ccoq05vzuitPK3tB1UmakusaPvwwEfn5/Mi68tT9NERY6bparg98+P2ZR3UvrqVrms2IQ8/HvLM4eulIIyNyxq4RZzw52w/Cfkttup1bIXlAtohOLYOKdat/v9BanqG6SVrW7t0wvK0/tkN8IHuzjkjmzQnCXvkHA8VDlWKeTf7ee32QYmKPwCCYcJulJ9FYIAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Messaging4"
+        title="Messaging4"
+        src="/static/7abdc1a0abd425dbde2bbff0907f52c3/1dda8/messaging4.png"
+        srcset="/static/7abdc1a0abd425dbde2bbff0907f52c3/27f03/messaging4.png 173w,
+/static/7abdc1a0abd425dbde2bbff0907f52c3/376d0/messaging4.png 345w,
+/static/7abdc1a0abd425dbde2bbff0907f52c3/1dda8/messaging4.png 690w,
+/static/7abdc1a0abd425dbde2bbff0907f52c3/683fc/messaging4.png 917w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
+<p>When userB opens the app on his/her end, the message gets sent to userB's phone. Upon receipt of the message, userB's phone should respond with a message saying that he/she received the message from userA. At that point, the <strong>delivered</strong> confirmation flows from userB to API GW to sessions service and back to userA. This done via a TCP acknowledgement. userB will send back the info that it received message from userA and sessions service will deliver the delivered receipt by looking up the box where userA's connection resides and will send the confirmation back to userA. This flow is shown via blue arrows in the diagram below:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/0ab8c22cfb30c170c9bfa2e57ef766fb/043fa/messaging5.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 51.7051705170517%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAAAsSAAALEgHS3X78AAABkUlEQVQoz21S2XLCMAzk/3+RtwIpIYnj+3a269AwdKhnduRDXmklnWqtOBCSg08WITvE4iH1gtv3F77HK2Yxvt7fEd72LhqcOlEpBa1tJOJDdLDOwhiNmAJKzUgp7ra2uttSiFaQaVNOtIn3BSauOBljMI4j1mmGkgvEYyJ5I0mC1STWBvOyQK8KVkgMtxuu1yvcIiDmGePjAe89tg2wUeEUQoDWGlJZSKewrBJ99czXWUAuEkIqaOOgbMDXZcB8vyPx38xEbsOAGAM2KtwJrbWYpokSLS8MFG3OGc5ReqBUOqZcKKkilQrrIzaSVfo8SHhhtnuGB2HgJ0vZzgdIryGUwZG1Mp5FL0Rm0Z9IJCp8L/QfLhecz+dPyUKInSSyu44NOSSnyGy2xprWNzQ2p+02ss5dydHUl+SZxVVKsUYCCxvQV3fqQXpn30fribLbPQAD9nOr7UnYIz2zaPtM9YiZNQuUFHuGjNydX2jt77l2QnI0cA717xz+RugXPrI53nAWNQN4liH8A/9xTjnChBU/2XsIslhOfCwAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Messaging5"
+        title="Messaging5"
+        src="/static/0ab8c22cfb30c170c9bfa2e57ef766fb/1dda8/messaging5.png"
+        srcset="/static/0ab8c22cfb30c170c9bfa2e57ef766fb/27f03/messaging5.png 173w,
+/static/0ab8c22cfb30c170c9bfa2e57ef766fb/376d0/messaging5.png 345w,
+/static/0ab8c22cfb30c170c9bfa2e57ef766fb/1dda8/messaging5.png 690w,
+/static/0ab8c22cfb30c170c9bfa2e57ef766fb/043fa/messaging5.png 909w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
+<p>The flow above is also relevant for read receipt. UserB would send another message back to our API GW once the app is opened and message is read on userB's phone. This will result in a <strong>read</strong> receipt being sent back to userA. </p>
+<p><strong>Let's tackle our third requirement: last seen/online</strong></p>
+<p>Let's say userB is online and is chatting with others. UserB will send requests to our API GW via websocket connection. Remember, we've already stored userB's connection information in our sessionsDB. We can look at the sessionsDB to see whether connectionInfo related to userB is actually showing an active connection or that the connection has been closed. If it is active, we can show to userA and userC that userB is online. If connection is inactive, we need another method to determine last-seen. For last-seen, as userB exits the app, we can send a message from userB's phone to API GW and to session service saying that userB has terminated the connection. We can store this information in a Redis cache data store with userB's uniqueID and time-stamp. So, any time userA or userC clicks on userB's profile, we can display the last time userB was online: which would be the time-stamp when userB exited the app. </p>
+<p><strong>Group messaging</strong></p>
+<p>Let's focus now on group messaging. Earlier we talked about two users chatting; what if we have multiple users who're part of different groups. In the diagram below, users are grouped as shown and each user can be connected to a different API GW (remember, API gateway is also a service which needs to be highly available and resilient):</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/8da53acf9ea9b7a3a55b0a0916df31ba/22cd6/messaging6.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 42.2668240850059%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAICAYAAAD5nd/tAAAACXBIWXMAAAsSAAALEgHS3X78AAABJElEQVQoz42SyY6DMBBE/f+fGIVESECGsNvgjaXismLEYTSaQ8mo1X6urkYc+w5q/8p7D2MMtNbYtu3fSveFMhrjrLBYA2ctxnFE13WYpgl1Xcemv0DHccRzWRZIKSEaOaDqanRqgg5F510Evt9vNE2DdV1PB/xOD/AkjCD25nmO5/MJ4W0POf7AmTGMaTHPc3TJxmEYToAN7glgrSxLVFUVp6ArRtS2bQSL1etQkFi9wRJyI8w5F4FKqQgoigJ938cLjOF+v8caQcycvY/HA7fbDaIPjupwqVcSy9cdX6UIeL1eMQIuKbnkyUkISpMQmGUZxKRVgA1QZsa+7edIKUO6JSRt8brRq9KfIbwZMIUMVydDIWza2TgqHSRYWsxvui6N+gAXxGqhYIYnnAAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Messaging6"
+        title="Messaging6"
+        src="/static/8da53acf9ea9b7a3a55b0a0916df31ba/1dda8/messaging6.png"
+        srcset="/static/8da53acf9ea9b7a3a55b0a0916df31ba/27f03/messaging6.png 173w,
+/static/8da53acf9ea9b7a3a55b0a0916df31ba/376d0/messaging6.png 345w,
+/static/8da53acf9ea9b7a3a55b0a0916df31ba/1dda8/messaging6.png 690w,
+/static/8da53acf9ea9b7a3a55b0a0916df31ba/22cd6/messaging6.png 847w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
+<p>Now, here's the requirement: we want to determine if the user we just received a message from is present in a group and if the user is sending a message to a group or a single individual. If it is a single individual, the API GW call would be <strong>sendMessage(B)</strong> as we discussed earlier. If it is a group message, message received on the API GW would be <strong>sendGroupMessage(userA)</strong>, meaning userA is trying to send a group message to his/her group. Now, we need to determine what group userA is trying to send message to. If we ask session service to determine that for us, we'd be coupling our functionality so instead, let's have a separate service that handles our group information. Let' call this group service. What will now happen is that if sessionService receives a group message request, it'll call groupService to determine all the users in that group. GroupService will return that information, which'll be connectionID (remember webSockets allow us to have multiple chat sessions), where we'll be able to send message to the entire group. Group service needs to have a data-store where it converts groupId to connectionIds since different users can be on different connections:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/96af3d5ac10f12b1d4b8d7675e4e5100/2629a/messaging7.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 43.93939393939394%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAAAsSAAALEgHS3X78AAABRElEQVQoz31Si46CMBDk/79QJWhOEHkUaSkgrzrXWa9GL5cjmRT2MTuzJVq2Fdu2Cfq+h1IK1lpBiP8H55yc6/rkia6NgrIGxhiM4witNZqmQVmWmOf51RDweDwEIX6/31EUBfI8l/ropivYoZXENE2oqgp1XcN0HZZlBn6aSUKCYRgErOdwCknTFOfz2dcviEarsM2dt2slSVKC9tlk+wG6bWUFl8sF+/0eh8NBXNARn9bnKUII53XB5F9IxokMjqKiR5LmiE9frzVwEK3RYlBKsjiOsdvtJB9ldYnKaJlGVbScX6/I68bjhtXb5sLD7rhb1nANjPPkd5Zlz0u5tYVn7sQeVdIWT9UaX+A+LoWKjscjkiQRlYH03V00jRrb0ovccP1U6t5+iQDm2BRquFcShSFC6Hh77lPJb6L3+F8IOybhN+CNtr+KtKWSAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Messaging7"
+        title="Messaging7"
+        src="/static/96af3d5ac10f12b1d4b8d7675e4e5100/1dda8/messaging7.png"
+        srcset="/static/96af3d5ac10f12b1d4b8d7675e4e5100/27f03/messaging7.png 173w,
+/static/96af3d5ac10f12b1d4b8d7675e4e5100/376d0/messaging7.png 345w,
+/static/96af3d5ac10f12b1d4b8d7675e4e5100/1dda8/messaging7.png 690w,
+/static/96af3d5ac10f12b1d4b8d7675e4e5100/2629a/messaging7.png 858w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
+<p>There're multiple things to consider: </p>
+<ul>
+<li>We can have consistent hashing for db partitioning </li>
+<li>We can have MQs between services to handle failures</li>
+<li>We can have retry mechanisms between services </li>
 </ul>
 <h3 id="useful-architectures"><a href="#useful-architectures" aria-label="useful architectures permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Useful architectures</h3>
 <ul>
