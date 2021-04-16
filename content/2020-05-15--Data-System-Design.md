@@ -177,7 +177,7 @@ Brokerless architecture has some benefits:
 - Features less operational complexity, because there is no message broker to set up and maintain
 
 As appealing as these benefits may seem, brokerless messaging has significant drawbacks:
-- Services need to know about each other’s locations and must therefore use one of the discovery mechanisms describer earlier in section 3.2.4.
+- Services need to know about each other’s locations and must therefore use one of the discovery mechanisms describer earlier.
 - It offers reduced availability, because both the sender and receiver of a message must be available while the message is being exchanged.
 - Implementing mechanisms, such as guaranteed delivery, is more challenging.
 
