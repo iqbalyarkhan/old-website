@@ -87,6 +87,7 @@ tags:
     * [Design Pastebin](#design-pastebin)
     * [Design Tinder](#design-tinder)
     * [Design Chat Messaging](#design-chat-messaging)
+    * [Design Instagram](#design-instagram)
 100. [Useful architectures](#useful-architectures)
 
 ### Microservice Architecture
@@ -1276,7 +1277,7 @@ $10MB * 1 * 10^6 * 365 * 10$ would approx equal 36TB of storage
 Now, generating new URLs for each new paste: 
 $1 * 10^6 * 365 * 10$ = 3.7 billion unique URLs for the life span of our service. If we use base 64 encoding that means we need at-least 6 character strings because $64^6	= 69 billion$ which is more than what we'd need for our 10 years. 
 
-Now, to store each of these unique strings, we'd need storage as well. So if we're creating 3.7 billion URLs and each is approx 6 characters long then we need $6 * 3.7 Billion* then we need 22 billion which is 22 GB of storage for our 10 year life span.
+Now, to store each of these unique strings, we'd need storage as well. So if we're creating 3.7 billion URLs and each is approx 6 characters long then we need $6 * 3.7 Billion$ then we need 22 billion which is 22 GB of storage for our 10 year life span.
 
 ### Design Tinder
 Let's start with our features: 
@@ -1350,11 +1351,17 @@ Now, here's the requirement: we want to determine if the user we just received a
 
 ![Messaging7](./images/system-design/messaging7.png)
 
-There're multiple things to consider: 
+There're multiple improvements to consider: 
 - We can have consistent hashing for db partitioning 
 - We can have MQs between services to handle failures
 - We can have retry mechanisms between services 
 
+### Design Instagram
+**Let's design a photo-sharing service like Instagram, where users can upload photos to share them with other users.**
+
+Requirements: 
+- A user can share photos and follow other users
+- The ‘News Feed’ for each user will consist of top photos of all the people the user follows
 
 ### Useful architectures
  - [WordPress on AWS](https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html)
