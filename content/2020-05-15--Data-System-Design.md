@@ -143,7 +143,7 @@ Synchronous communication with other services as part of request handling reduce
 
 ![Problem With REST](./images/system-design/problem-with-rest.png) [Image Credit](https://microservices.io/book)
 
-If either one of the consumer service or the restaurant service is slow/unavailable, we'll be impacting the response time to our client.  All services must be available in order for the order to be processed. The best way to handle issues here is to use an asynch request/asynch reponse style of interaction to create orders:
+If either one of the consumer service or the restaurant service is slow/unavailable, we'll be impacting the response time to our client.  All services must be available in order for the order to be processed. The best way to handle issues here is to use an asynch request/asynch response style of interaction to create orders:
   
 ![Asynch-Requests](./images/system-design/asynch-requests.png) [Image Credit](https://microservices.io/book)
   
