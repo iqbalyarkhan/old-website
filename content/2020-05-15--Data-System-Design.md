@@ -17,6 +17,7 @@ tags:
     * [Communication Using RPI](#communication-using-rpi)
         * [REST: Pros vs Cons](#rest-pros-vs-cons)
         * [gRPC](#grpc)
+        * [Partial failures](#partial-failures)
     * [Services: Service discovery](#services-service-discovery)
     * [Messaging](#messaging)
         * [Brokerless Messaging](#brokerless-messaging)
@@ -154,6 +155,82 @@ One way to minimize synchronous requests during request processing is to replica
 
 ![Replicate-Data](./images/system-design/replicate-data.png) [Image Credit](https://microservices.io/book)
 
+### Communication Using RPI
+When using a remote procedure invocation-based IPC mechanism, a client sends a request to a service, and the service processes the request and sends back a response. Some clients may block waiting for a response, and others might have a reactive, non-blocking architecture. There're 2 main types of RPI methods: REST and gRPC. REST is quite well understood, so let's just understand the benefits/drawbacks of REST and then we'll see how gRPC works:
+
+### REST: Pros vs Cons
+**There are numerous benefits to using REST:**
+- It’s simple and familiar.
+- You can test an HTTP API from within a browser using, for example, the Postman plugin, or from the command line using curl (assuming JSON or some other text format is used).
+- It directly supports request/response style communication.
+- HTTP is, of course, firewall friendly.
+- It doesn’t require an intermediate broker, which simplifies the system’s architecture.
+
+**There are some drawbacks to using REST:**
+- It only supports the request/response style of communication.
+- Reduced availability. Because the client and service communicate directly without an intermediary to buffer messages, they must both be running for the duration of the exchange.
+- Clients must know the locations (URLs) of the service instances(s). This is a nontrivial problem in a modern application. Clients must use what is known as a service discovery mechanism to locate service instances.
+- Fetching multiple resources in a single request is challenging.
+- It’s sometimes difficult to map multiple update operations to HTTP verbs.
+
+### gRPC
+As mentioned in the preceding section, one challenge with using REST is that because HTTP only provides a limited number of verbs, it’s not always straightforward to design a REST API that supports multiple update operations. An IPC technology that avoids this issue is [gRPC](www.grpc.io), a framework for writing [cross-language clients and servers](https://en.wikipedia.org/wiki/Remote_procedure_call). gRPC is a binary message-based protocol, and this means that you’re forced to take an API-first approach to service design. You define your gRPC APIs using a Protocol Buffers-based IDL, which is Google’s language-neutral mechanism for serializing structured data. You use the Protocol Buffer compiler to generate client-side stubs and server-side skeletons.
+
+
+A gRPC API consists of one or more services and request/response message definitions. A service definition is analogous to a Java interface and is a collection of strongly typed methods. As well as supporting simple request/response RPC, gRPC support streaming RPC. A server can reply with a stream of messages to the client. Alternatively, a client can send a stream of messages to the server. gRPC uses Protocol Buffers as the message format. Protocol Buffer, as mentioned earlier, is an efficient, compact, binary format. It’s a tagged format. Each field of a Protocol Buffers message is numbered and has a type code. A message recipient can extract the fields that it needs and skip over the fields that it doesn’t recognize. As a result, gRPC enables APIs to evolve while remaining backward-compatible.
+
+gRPC has several benefits:
+- It’s straightforward to design an API that has a rich set of update operations.
+- It has an efficient, compact IPC mechanism, especially when exchanging large messages.
+- Bidirectional streaming enables both RPI and messaging styles of communication.
+- It enables interoperability between clients and services written in a wide range of languages.
+
+gRPC also has several drawbacks:
+- It takes more work for JavaScript clients to consume gRPC-based API than REST/JSON-based APIs.
+- Older firewalls might not support HTTP/2.
+
+### Partial Failures
+In a distributed system, whenever a service makes a synchronous request to another service, there is an ever-present risk of partial failure. Because the client and the service are separate processes, a service may not be able to respond in a timely manner to a client’s request. The service could be down because of a failure or for maintenance. Or the service might be overloaded and responding extremely slowly to requests. Because the client is blocked waiting for a response, the danger is that the failure could cascade to the client’s clients and so on and cause an outage. Thus, it is a requirement of high volume, high availability applications to build fault tolerance into their architecture and not expect infrastructure to solve it for them. 
+
+In light of the above architectural considerations we can choose to implement a solution that uses a combination of fault tolerance approaches:
+ - network timeouts and retries
+ - separate threads on per-dependency thread pools
+ - semaphores (via a tryAcquire, not a blocking call)
+ - circuit breakers
+ 
+The diagram below shows a sample architecture that can assist in creating a fault-tolerant system:
+
+![Partial Failure](./images/system-design/partial-failure.png) [Image Credit](https://netflixtechblog.com/fault-tolerance-in-a-high-volume-distributed-system-91ab4faae74a)
+
+In the above system, if a dependency becomes latent (the worst-case type of failure for a subsystem) it can saturate all of the threads in its own thread pool, but server request threads will timeout or be rejected immediately rather than blocking.
+ 
+Each of these approaches to fault-tolerance has pros and cons but when combined together provide a comprehensive protective barrier between user requests and underlying dependencies. In each of the options described above a timeout, thread-pool or semaphore rejection, or short-circuit will result in a request not retrieving the optimal response for our customers. An immediate failure (“fail fast”) throws an exception which causes the app to shed load until the dependency returns to health. This is preferable to requests “piling up” as it keeps request threads available to serve requests from healthy dependencies and enables rapid recovery once failed dependencies recover. 
+
+Instead of just failing fast, we can have some approaches to fallbacks:
+ - **Cache**: Retrieve data from local or remote caches if the realtime dependency is unavailable, even if the data ends up being stale
+ - **Eventual Consistency**: Queue writes (such as in SQS) to be persisted once the dependency is available again
+ - **Stubbed Data**: Revert to default values when personalized options can’t be retrieved
+ - **Empty Response** (“Fail Silent”): Return a null or empty list which UIs can then ignore
+ 
+
+In conclusion, here're the defining principles for creating robust, fault-tolerant service calls:
+
+- **Network timeouts** : Never block indefinitely and always use timeouts when wait- ing for a response. Using timeouts ensures that resources are never tied up indefinitely.
+- **Limiting the number of outstanding requests from a client to a service** : Impose an upper bound on the number of outstanding requests that a client can make to a particular service. If the limit has been reached, it’s probably pointless to make additional requests, and those attempts should fail immediately.
+- **Circuit breaker pattern** : Track the number of successful and failed requests, and if the error rate exceeds some threshold, trip the circuit breaker so that further attempts fail immediately. A large number of requests failing suggests that the service is unavailable and that sending more requests is pointless. After a timeout period, the client should try again, and, if successful, close the circuit breaker.
+
+### Services: Service Discovery
+Service instances have dynamically assigned network locations. Moreover, the set of service instances changes dynamically because of auto-scaling, failures, and upgrades. Consequently, your client code must use a service discovery. 
+
+![Service Discovery](./images/system-design/service-discovery.png) [Image Credit](https://microservices.io/book)
+
+An application must use a dynamic service discovery mechanism. Service discovery is conceptually quite simple: its key component is a service registry, which is a database of the network locations of an application’s service instances. The service discovery mechanism updates the service registry when service instances start and stop. When a client invokes a service, the service discovery mechanism queries the service registry to obtain a list of available service instances and routes the request to one of them. Let's see how the service registry works:
+
+![Client Side Discovery](./images/system-design/client-side-discovery.png) [Image Credit](https://microservices.io/book)
+
+This approach to service discovery is a combination of two patterns. The first pattern is the **self registration** pattern. A service instance invokes the service registry’s registration API to register its network location. It may also supply a health check URL: The health check URL is an API endpoint that the service registry invokes periodically to verify that the service instance is healthy and available to handle requests. A service registry may require a service instance to periodically invoke a “heartbeat” API in order to prevent its registration from expiring. 
+The second pattern is the **client-side discovery** pattern. When a service client wants to invoke a service, it queries the service registry to obtain a list of the service’s instances. To improve performance, a client might cache the service instances. The service client then uses a load-balancing algorithm, such as a round-robin or random, to select a service instance. It then makes a request to a select service instance.
+
 ### Messaging
 When using messaging, services communicate by asynchronously exchanging messages. A messaging-based application typically uses a message broker, which acts as an intermediary between the services, although another option is to use a brokerless architecture, where the services communicate directly with each other. A service client makes a request to a service by sending it a message. If the service instance is expected to reply, it will do so by sending a separate message back to the client. Because the communication is asynchronous, the client doesn’t block waiting for a reply. Messages are exchanged over channels.
 
@@ -201,53 +278,6 @@ A challenge you must tackle when using messaging is dealing with duplicate messa
 
 ### Message formats
 The choice of message format can impact the efficiency of IPC, the usability of the API, and its evolvability. If you’re using a messaging system or protocols such as HTTP, you get to pick your message format. Some IPC mechanisms—such as gRPC, which you’ll learn about shortly—might dictate the message format. There are two main categories of message formats: text and binary. Text based are JSON and XML. Binary are AVRO, Thrift and Protocol Buffers. 
-
-### Communication Using RPI
-When using a remote procedure invocation-based IPC mechanism, a client sends a request to a service, and the service processes the request and sends back a response. Some clients may block waiting for a response, and others might have a reactive, non-blocking architecture. There're 2 main types of RPI methods: REST and gRPC. REST is quite well understood, so let's just understand the benefits/drawbacks of REST and then we'll see how gRPC works:
-
-### REST: Pros vs Cons
-**There are numerous benefits to using REST:**
-- It’s simple and familiar.
-- You can test an HTTP API from within a browser using, for example, the Postman plugin, or from the command line using curl (assuming JSON or some other text format is used).
-- It directly supports request/response style communication.
-- HTTP is, of course, firewall friendly.
-- It doesn’t require an intermediate broker, which simplifies the system’s architecture.
-
-**There are some drawbacks to using REST:**
-- It only supports the request/response style of communication.
-- Reduced availability. Because the client and service communicate directly without an intermediary to buffer messages, they must both be running for the duration of the exchange.
-- Clients must know the locations (URLs) of the service instances(s). This is a nontrivial problem in a modern application. Clients must use what is known as a service discovery mechanism to locate service instances.
-- Fetching multiple resources in a single request is challenging.
-- It’s sometimes difficult to map multiple update operations to HTTP verbs.
-
-### gRPC
-As mentioned in the preceding section, one challenge with using REST is that because HTTP only provides a limited number of verbs, it’s not always straightforward to design a REST API that supports multiple update operations. An IPC technology that avoids this issue is [gRPC](www.grpc.io), a framework for writing [cross-language clients and servers](https://en.wikipedia.org/wiki/Remote_procedure_call for more).
-
-With the gRPC framework, you create a .proto file and define your service in that file. Finally, methods in the file can be invoked after you've provided your implementations for the methods and calls can then be made over the network.
-
-gRPC uses Protocol Buffers as the message format. Protocol Buffers is, as mentioned earlier, an efficient, compact, binary format. It’s a tagged format. Each field of a Protocol Buffers message is numbered and has a type code. A message recipient can extract the fields that it needs and skip over the fields that it doesn’t recognize. As a result, gRPC enables APIs to evolve while remaining backward-compatible.
-
-gRPC has several benefits:
-- It’s straightforward to design an API that has a rich set of update operations.
-- It has an efficient, compact IPC mechanism, especially when exchanging large messages.
-- Bidirectional streaming enables both RPI and messaging styles of communication.
-- It enables interoperability between clients and services written in a wide range of languages.
-
-gRPC also has several drawbacks:
-- It takes more work for JavaScript clients to consume gRPC-based API than REST/JSON-based APIs.
-- Older firewalls might not support HTTP/2.
-
-### Services: Service Discovery
-Service instances have dynamically assigned network locations. Moreover, the set of service instances changes dynamically because of auto-scaling, failures, and upgrades. Consequently, your client code must use a service discovery. 
-
-![Service Discovery](./images/system-design/service-discovery.png) [Image Credit](https://microservices.io/book)
-
-An application must use a dynamic service discovery mechanism. Service discovery is conceptually quite simple: its key component is a service registry, which is a database of the network locations of an application’s service instances. The service discovery mechanism updates the service registry when service instances start and stop. When a client invokes a service, the service discovery mechanism queries the service registry to obtain a list of available service instances and routes the request to one of them. Let's see how the service registry works:
-
-![Client Side Discovery](./images/system-design/client-side-discovery.png) [Image Credit](https://microservices.io/book)
-
-This approach to service discovery is a combination of two patterns. The first pattern is the **self registration** pattern. A service instance invokes the service registry’s registration API to register its network location. It may also supply a health check URL: The health check URL is an API endpoint that the service registry invokes periodically to verify that the service instance is healthy and available to handle requests. A service registry may require a service instance to periodically invoke a “heartbeat” API in order to prevent its registration from expiring. 
-The second pattern is the **client-side discovery** pattern. When a service client wants to invoke a service, it queries the service registry to obtain a list of the service’s instances. To improve performance, a client might cache the service instances. The service client then uses a load-balancing algorithm, such as a round-robin or random, to select a service instance. It then makes a request to a select service instance.
 
 ### Sagas
 Sagas are mechanisms to maintain data consistency in a microservice architecture without having to use distributed transactions. You define a saga for each system command that needs to update data in multiple services. A saga is a sequence of local transactions. Each local transaction updates data within a single service using the familiar ACID transaction frameworks and libraries mentioned earlier. 
