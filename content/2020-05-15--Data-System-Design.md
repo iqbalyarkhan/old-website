@@ -1332,7 +1332,25 @@ What is news feed? According to the Facebook help page, “News feed is the cons
 - Traffic volume: $10 \times 10^6$ DAU
 - Feed content: images and videos and text
 
-Ok, so to design our feed we need 2 things: presenting feed to the user and building the feed. When a user publishes a post, corresponding data is written into cache and DB. The post is then populated to user's friends' news feed. The news feed is then built by aggregating friends' posts in reverse chronological order. 
+Ok, so to design our feed we need 2 capabilities: 
+
+- **Feed publishing**: Presenting feed to the user and building the feed. When a user publishes a post, corresponding data is written into cache and DB. The post is then populated to user's friends' news feed. 
+- **Feed building**: The news feed is then built by aggregating friends' posts in reverse chronological order.
+
+In order to build the two capabilities above, we'll use 2 endpoints, one to POST content and the other to GET newsfeed:
+
+- **POST**
+`POST /v1/to/feed`
+
+and the body of this request will contain your post along with your oauth_token. 
+
+- **GET**
+
+`GET /v1/my/feed`
+
+and the request will contain you oauth_token.
+
+ 
 
 
 ### Useful architectures
