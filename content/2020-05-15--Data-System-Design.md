@@ -85,10 +85,8 @@ tags:
     * [Back of the envelope Estimation](#back-of-the-envelope-estimation)
     * [Storing Images](#storing-images)
     * [Allowing users to chat](#allowing-users-to-chat)
-    * [Design Pastebin](#design-pastebin)
-    * [Design Tinder](#design-tinder)
     * [Design Chat Messaging](#design-chat-messaging)
-    * [Design Instagram](#design-instagram)
+    * [Design a news feed system](#design-a-newsfeed-system)
 100. [Useful architectures](#useful-architectures)
 
 ### Microservice Architecture
@@ -1272,71 +1270,6 @@ We've already talked about websockets and WS can also be used to implement chat 
 Disadvantages:
 - **Low Security**: Although WebSockets utilize WSS(Websockets of SSL), the technology is still new and prone to attacks like XSS and DDOS.
 
-### Design Pastebin
-**Pastebin like services enable users to store plain text or images over the network (typically the Internet) and generate unique URLs to access the uploaded data. Such services are also used to share data over the network quickly, as users would just need to pass the URL to let other users see it.**
-
-Let's start by getting storage, read and write requirements:
-
-**What are the allowed data types that can be shared?**
-Text
-
-**Number of new links generated daily?**
-1 million
-
-**Can the users specify their own custom URL?**
-Yes
-
-**Max text size that users can paste?**
-10MB
-
-Ok, so we need a service where users can paste their text, have a custom URL generated and then that generated URL can be shared with other who can then visit the URL to see the original text.
-
-
-**Back of envelope estimation**
-
-Let's assume 5:1 read to write ratio. Therefore 5 million daily reads and 1 million daily writes
-
-$1 * 10^6$ daily new links = $1 * 10^6 / (24 * 60 * 60)$ =  $12$ new creations per second
-
-$5 * 10^6$ daily reads = $5 * 10^6 / (24 * 60 * 60)$ =  $60$ reads per second
-
-10MB per write and million daily new URLs and we decide to store this data for 10 years
-
-$10MB * 1 * 10^6 * 365 * 10$ would approx equal 36TB of storage
-
-Now, generating new URLs for each new paste: 
-$1 * 10^6 * 365 * 10$ = 3.7 billion unique URLs for the life span of our service. If we use base 64 encoding that means we need at-least 6 character strings because $64^6	= 69 billion$ which is more than what we'd need for our 10 years. 
-
-Now, to store each of these unique strings, we'd need storage as well. So if we're creating 3.7 billion URLs and each is approx 6 characters long then we need $6 * 3.7 Billion$ then we need 22 billion which is 22 GB of storage for our 10 year life span.
-
-### Design Tinder
-Let's start with our features: 
-- Have a profile for each user
-- Ability to swipe left or right
-- Ability to match with other users
-- Ability to chat with matched users
-
-Let's talk about our data/volume reqs:
-- 100 million total users
-- 1 million DAU
-
-Ok, so let's start with our user's profile:
-- 5 total pictures per user
-- Information such as name, age, location, preferences etc.
-- Total data per user: 1MB per pic = 5MB + another 1 KB for info. Approx 6 MB of data per profile
-- $6MB \times 100 \times 10^6$ means $6GB$ of overall data. Assuming we save data for 10 years, this comes out to 60GB of data for the life of our app.
-- We can store images in a DB or DFS. As discussed in [storing images](#storing-images) section, we'll use DFS. Next, we'll use a SQL DB to keep track of userID, profileID and the URL to our user images.
-- We'll also need to store user info for which we'll use another SQL table with a uniquely generated userID used as a primary key. The table would have columns such as name, age, location, preferences and matches. 
-- **ALL THIS INFORMATION WILL BE STORED/MANIPULATED VIA A PROFILE SERVICE**
-
-Let's think about the chat feature:
-- We can either use XMPP or Websockets to allow a user chat with matched users. As discussed in [chat](#allowing-users-to-chat) section, we'll use XMPP since it has better security and allows us to show when users are online! 
-- Before we allow chat to open up between 2 users, we'll have to determine whether the 2 users have been matched. For that, we'll call our user service to get a list of matched users. We can cache this information using a write-through cache so that we don't have to hit user DB for each chat session. 
-
-Let's think about the overall architecture
-- We'll have to authenticate our users. We'll do so using login based mechanisms and OAuth 2.0 as specified in the [secure services](#secure-services) section. Authentication will be implemented as an edge function in our API gateway. The user hits our API GW that calls our authentication service. Our auth service sits inside servers behind a load balancer. We can use **weighted round robin** to route our requests. Once we get our user authorized, the user's authorization is returned back to the API Gateway. Next, we need to populate our user's info and return this to our user.
-- To populate our user's info, we'll use a profile service that pulls our profile for us, checks for matches and returns those as well. The information is gathered for us from the profile servers and matchService. 
-
 ### Design Chat Messaging
 
 Requirements:
@@ -1386,12 +1319,21 @@ There're multiple improvements to consider:
 - We can have MQs between services to handle failures
 - We can have retry mechanisms between services 
 
-### Design Instagram
-**Let's design a photo-sharing service like Instagram, where users can upload photos to share them with other users.**
 
-Requirements: 
-- A user can share photos and follow other users
-- The ‘News Feed’ for each user will consist of top photos of all the people the user follows
+### Design a newsfeed system
+What is news feed? According to the Facebook help page, “News feed is the constantly updating list of stories in the middle of your home page. News Feed includes status updates, photos, videos, links, app activity, and likes from people, pages, and groups that you follow on Facebook”. Other examples of news feed could be Facebook news feed, Instagram feed and Twitter timeline to name a few.
+
+**Design considerations:**
+
+- Should it be a mobile app or a web app? Let's say both
+- Features: user can publish a post and see friends' post.
+- Feed sorted: By reverse chronological order
+- Friends user can have: approx 5000
+- Traffic volume: $10 \times 10^6$ DAU
+- Feed content: images and videos and text
+
+Ok, so to design our feed we need 2 things: presenting feed to the user and building the feed. When a user publishes a post, corresponding data is written into cache and DB. The post is then populated to user's friends' news feed. The news feed is then built by aggregating friends' posts in reverse chronological order. 
+
 
 ### Useful architectures
  - [WordPress on AWS](https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html)
