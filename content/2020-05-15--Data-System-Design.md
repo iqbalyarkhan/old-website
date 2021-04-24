@@ -86,7 +86,6 @@ tags:
     * [Storing Images](#storing-images)
     * [Allowing users to chat](#allowing-users-to-chat)
     * [Design Chat Messaging](#design-chat-messaging)
-    * [Design a news feed system](#design-a-newsfeed-system)
 100. [Useful architectures](#useful-architectures)
 
 ### Microservice Architecture
@@ -1318,39 +1317,6 @@ There're multiple improvements to consider:
 - We can have consistent hashing for db partitioning 
 - We can have MQs between services to handle failures
 - We can have retry mechanisms between services 
-
-
-### Design a newsfeed system
-What is news feed? According to the Facebook help page, “News feed is the constantly updating list of stories in the middle of your home page. News Feed includes status updates, photos, videos, links, app activity, and likes from people, pages, and groups that you follow on Facebook”. Other examples of news feed could be Facebook news feed, Instagram feed and Twitter timeline to name a few.
-
-**Design considerations:**
-
-- Should it be a mobile app or a web app? Let's say both
-- Features: user can publish a post and see friends' post.
-- Feed sorted: By reverse chronological order
-- Friends user can have: approx 5000
-- Traffic volume: $10 \times 10^6$ DAU
-- Feed content: images and videos and text
-
-Ok, so to design our feed we need 2 capabilities: 
-
-- **Feed publishing**: Presenting feed to the user and building the feed. When a user publishes a post, corresponding data is written into cache and DB. The post is then populated to user's friends' news feed. 
-- **Feed building**: The news feed is then built by aggregating friends' posts in reverse chronological order.
-
-In order to build the two capabilities above, we'll use 2 endpoints, one to POST content and the other to GET newsfeed:
-
-- **POST**
-`POST /v1/to/feed`
-
-and the body of this request will contain your post along with your oauth_token. 
-
-- **GET**
-
-`GET /v1/my/feed`
-
-and the request will contain you oauth_token.
-
- 
 
 
 ### Useful architectures
