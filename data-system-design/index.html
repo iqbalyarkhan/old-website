@@ -196,7 +196,13 @@
 <li><a href="#storing-images">Storing Images</a></li>
 <li><a href="#allowing-users-to-chat">Allowing users to chat</a></li>
 <li><a href="#design-chat-messaging">Design Chat Messaging</a></li>
-<li><a href="#design-a-newsfeed-system">Design a news feed system</a></li>
+<li>
+<p><a href="#design-rate-limiting">Design Rate Limiting</a></p>
+<ul>
+<li><a href="#sharing-data-between-servers">Sharing data between servers</a></li>
+<li><a href="#tcp-vs-udp">TCP vs UDP</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#useful-architectures">Useful architectures</a></li>
@@ -2569,33 +2575,314 @@ If we are using UNICODE encoding, we need 16 bits to encode each character, so N
 <li>We can have MQs between services to handle failures</li>
 <li>We can have retry mechanisms between services </li>
 </ul>
-<h3 id="design-a-newsfeed-system"><a href="#design-a-newsfeed-system" aria-label="design a newsfeed system permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Design a newsfeed system</h3>
-<p>What is news feed? According to the Facebook help page, “News feed is the constantly updating list of stories in the middle of your home page. News Feed includes status updates, photos, videos, links, app activity, and likes from people, pages, and groups that you follow on Facebook”. Other examples of news feed could be Facebook news feed, Instagram feed and Twitter timeline to name a few.</p>
-<p><strong>Design considerations:</strong></p>
+<h3 id="design-rate-limiting"><a href="#design-rate-limiting" aria-label="design rate limiting permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Design Rate Limiting</h3>
+<p>The requirement here is simple: we already know what rate limiting is. Now, we need to design it for our service. Before we begin to design rate limiting for a distributed system, let's design one for a single server first! </p>
+<p>On a single machine, all we need to worry about is the fact that there's a rules DB that'll hold the criteria based on which we'll throttle requests. We'll have a background process that routinely polls the DB for these rules and saves them in memory. Disk reads are expensive so we'll look to save these rules in memory using Redis cache. We'll check these cached rules whenever a request comes in and determine whether the request can be allowed through or not. Next, we'll have to keep track of the number of requests made by the client (we can id the client based on their IP address for example) in the past second and check whether the threshold has been reached as set in cache. If threshold is not reached, we can allow our request to go through. If threshold is met or exceeded, we have 3 options: drop the request, send back a 503 (service unavailable) or 429 (too many requests), or add the request to a queue and wait for threshold to recede:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/595a2ca3a5a61950f220baf78b08f02c/28daa/ratelimiting1.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 39.70080552359034%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAICAYAAAD5nd/tAAAACXBIWXMAAAsSAAALEgHS3X78AAABDElEQVQoz5VR2XKDMAz0h/RKQgCDDeY+EjKd/P8/bbUa3GE6fWgfFixZXq1W5uNa4CfOmYNvR/hmxCX3eLvkeE+sgucYa/2eP6WlxoafWBzPV1uh7heUoUdRd0gkJnLXSKMJrhm0ERuTyPoW0+0Ty/aEYTI+4KUSFrWCdyR2YRDyAc24CtmouWF9oF82dPMd6+MJW3VopxtMUfeoulnVZC7g5ZwpOc/8k/hVckQmCitRGIYFfBctSsuAXFTSJkOiqLCfNx2HnVjAsUgc7WANlfCO6r993H3nhIa+sBu9yqQTL6mESKzX3NFfXYjgt2XqUuJCjuBS0t3D9ED4F5hjcNpVcLQgxtN8Kv0P4RcXAu0NEfbyKwAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="RateLimiting1"
+        title="RateLimiting1"
+        src="/static/595a2ca3a5a61950f220baf78b08f02c/1dda8/ratelimiting1.png"
+        srcset="/static/595a2ca3a5a61950f220baf78b08f02c/27f03/ratelimiting1.png 173w,
+/static/595a2ca3a5a61950f220baf78b08f02c/376d0/ratelimiting1.png 345w,
+/static/595a2ca3a5a61950f220baf78b08f02c/1dda8/ratelimiting1.png 690w,
+/static/595a2ca3a5a61950f220baf78b08f02c/28daa/ratelimiting1.png 869w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
+<p>Cool, we've got the design working for a single server. Now, let's talk about a simple algorithm to handle rate limiting: bucket algorithm. Here, the idea is simple, we will have a bucket with <strong>tokens</strong> and each request from the client will deplete the tokens present in the bucket. Each second that passes, we'll refill the bucket with one token. Now, say for example we start with one server that has one bucket with 4 tokens (ie 4 requests per second) and receives 5 requests within the first second, first 4 requests will be allowed to go through while the final request will be throttled. That's the algorithm in a nutshell for a single server. </p>
+<p>Now imagine, these requests coming in to our distributed microservice. Say we have 3 hosts handling our requests, where each host is initially allotted 4 tokens. Since our architecture would have load balancers, say our requests are distributed like so:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/8178beeb748f5bee94543f57738e7e0e/4c275/ratelimiting2.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 59.58605664488018%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAYAAABiDJ37AAAACXBIWXMAAAsSAAALEgHS3X78AAABwUlEQVQoz31T70/iQBDdP/y+3F/iJX4xfjCCiZfcaTDoxVMQjBSQlgKRCv0BsYV2qWW7z92VYoHjJnnpzLyZN7PbLIEwzrmCtOl0ivF4DM/zYNs2LMtSOcdxFFzXVbyEjOU365VfgpxlxLYFQaCE/2dZL9neMPMl0jRVOV3XoWkaKKUqlvl83d4NvwQ3h3S7JgqFAqKI7gzdL7hnS2mWNUT5qoQ4XvyTz18VyRPbpOJSJj0FzsVRV8dd7bBTTzaPyjeE+OoOpVDKll/Ca47v9JL3JAVjaSaLxftyozhO2OeWQnS5ZEgYX9eqOGG5XgbSt0MEsfhz1Fdp4zVEIgrlRDlIF3E2bjJnGE3oelPPX2AUCD+eqZqOFYK0X3w4eg1+8RuoUUZz8AbfnyEKQ8zmEZ6eh6DDJ8SjJkaDHszXADQKBeYYunP0Wg3Mzr8jbPyENvBB6rqN6+IRKudHuC8eolwbfL4C8Uoc10Pp5hF/Tw9QOTvE1e8LNEwHnmvDdcbovExwcXKMqui9K/xAqdoD0Y0u6q0+Lv/UcFNtoflsoGeaMFdodUzc1jv4Va7goWHAEPUZJ/16u4/S7SOuRa/WNvABOXuUiY1fxOMAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="RateLimiting2"
+        title="RateLimiting2"
+        src="/static/8178beeb748f5bee94543f57738e7e0e/1dda8/ratelimiting2.png"
+        srcset="/static/8178beeb748f5bee94543f57738e7e0e/27f03/ratelimiting2.png 173w,
+/static/8178beeb748f5bee94543f57738e7e0e/376d0/ratelimiting2.png 345w,
+/static/8178beeb748f5bee94543f57738e7e0e/1dda8/ratelimiting2.png 690w,
+/static/8178beeb748f5bee94543f57738e7e0e/4c275/ratelimiting2.png 918w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
+<p>We've already consumed our allotted 4 requests for the current 1 second window and should throttle all remaining requests HOWEVER, each of our hosts still has tokens available. How do we make sure we throttle our requests? We need the hosts to talk to each other and determine the TOTAL number of tokens consumed:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/33d32425ebb80eb7e857ee9c0e3ce1be/355fb/ratelimiting3.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 57.01598579040852%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAACXBIWXMAAAsSAAALEgHS3X78AAABr0lEQVQoz3VSTU/CQBDtz/fo0Z/gwYPx4MEQSBASQBEoLUKN2BYbU6AflI+ybbfP2cVqITjJS3bfvDc7s7tKnucog3OOIAgQhiF835eIokjuBS/geZ5EHMcQUfYrOAlBJknyiyzL4DgOXNeVh5VzYl94ilBOOzwXhmHAtu2zuVP/mYLH44vodrvodNpnC5Q52eF/J5ZHCQMPge8dcQedXBx5lXi7JvFSmli8LSU5ctFh+RpEEeJErtDwlCEKA2zXEfIshZKlCXa7Hb3kRoo4+fcslaOL2Cdcjs55Jtc//SEmTXHUirwJY0RzukMSb3YMjpcASwMRdTtb7imZIU1T2C6JM46UMJtvwBIqxIlfMGxdE4gc2EuGeH/4EYoY9WsRotcdYHZ3gXHlGtp0QWP4CMIVeoMx3us3MFv3UCef9P/Ev1xhMPrA5PYSs4cr9McO5gu658CHYpkmTNPCy+AV1ccn1AjaeArbsmAR+pqBaq2BSvUR/eEElkk5gqobqDWeUat3SPMmtSbVUlRVhcBI1zAcqtC0IXRCwevEawIip/bQbDbRabcw0g5a4dH1P/03m39EzxMAsFsAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="RateLimiting3"
+        title="RateLimiting3"
+        src="/static/33d32425ebb80eb7e857ee9c0e3ce1be/1dda8/ratelimiting3.png"
+        srcset="/static/33d32425ebb80eb7e857ee9c0e3ce1be/27f03/ratelimiting3.png 173w,
+/static/33d32425ebb80eb7e857ee9c0e3ce1be/376d0/ratelimiting3.png 345w,
+/static/33d32425ebb80eb7e857ee9c0e3ce1be/1dda8/ratelimiting3.png 690w,
+/static/33d32425ebb80eb7e857ee9c0e3ce1be/bcbcb/ratelimiting3.png 1035w,
+/static/33d32425ebb80eb7e857ee9c0e3ce1be/355fb/ratelimiting3.png 1126w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
+<p>Host A should see that the other 2 hosts used up 3 tokens in total and reduce that number from its available tokens. Hosts B and C should do the same leaving us with this:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/c99459762c16637920cfc9ca9f6c0d3f/4a8ee/ratelimiting4.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 57.466063348416284%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAACXBIWXMAAAsSAAALEgHS3X78AAABnElEQVQoz21SDXObMAz1//9Vu7AAvV1HwZBC20FI11KWBEio8wGGN9kNlMtFdwLp6elJNjDcsK7rRu/7HnmeI8syHV/XlA1vZUwlU79lURQhDKObtet+pjS+Ac0Yc7WFMs45DGN2U+AL+3K9IYXTeRgGTI/yWe+xq4pLvZ8ID5x+rLHDJ5HLAlW5RXM6To5Cd6Q3vBrYTXGVtxA0cL+r0MkGrG1OEEJgt6t1UXY9Tmc5Ch3PwwfoKJaj8LmRaFoS7iXqWuBwoGU6SXdIj1qc8XctNHGIFS5lizirIduWRCUSipum1SLZVqDYH3XP+0agqk+6h1VlibePNX4/viFfbxElOfznjO6sRElXofDXbEOcDe4pLopCHy+MP+C/ZPi3KeCExHlf6x6WpimS5RKO/wLDfsDszsMiirFapVhRzVv8gUHYD9OBw5+QLhPCE4RPMea/AswsB/f8GXGyhNJi6pdQvgh8cM+Fzz0EKr7CXddB4Dkw5was+U8suIvA5/DcB83xL3xmWRYGt22b3jam2IArN02T8qnbl55v7n9rOj3jinlDKgAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="RateLimiting4"
+        title="RateLimiting4"
+        src="/static/c99459762c16637920cfc9ca9f6c0d3f/1dda8/ratelimiting4.png"
+        srcset="/static/c99459762c16637920cfc9ca9f6c0d3f/27f03/ratelimiting4.png 173w,
+/static/c99459762c16637920cfc9ca9f6c0d3f/376d0/ratelimiting4.png 345w,
+/static/c99459762c16637920cfc9ca9f6c0d3f/1dda8/ratelimiting4.png 690w,
+/static/c99459762c16637920cfc9ca9f6c0d3f/bcbcb/ratelimiting4.png 1035w,
+/static/c99459762c16637920cfc9ca9f6c0d3f/4a8ee/ratelimiting4.png 1105w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
+<p>How do we share information between hosts? </p>
+<h3 id="sharing-data-between-servers"><a href="#sharing-data-between-servers" aria-label="sharing data between servers permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Sharing data between servers</h3>
+<p>We need to be able to share data/information between servers. Let's look at the different ways we can do this:</p>
+<h3 id="message-broadcasting"><a href="#message-broadcasting" aria-label="message broadcasting permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Message Broadcasting</h3>
 <ul>
-<li>Should it be a mobile app or a web app? Let's say both</li>
-<li>Features: user can publish a post and see friends' post.</li>
-<li>Feed sorted: By reverse chronological order</li>
-<li>Friends user can have: approx 5000</li>
-<li>Traffic volume: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mo>×</mo><mn>1</mn><msup><mn>0</mn><mn>6</mn></msup></mrow><annotation encoding="application/x-tex">10 \times 10^6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">6</span></span></span></span></span></span></span></span></span></span></span> DAU</li>
-<li>Feed content: images and videos and text</li>
+<li>One approach to keep track of the number of tokens used is for each host to tell every other host everything. ie tell everyone everything aka <strong>full mesh topology</strong>:</li>
 </ul>
-<p>Ok, so to design our feed we need 2 capabilities: </p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 198px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/857abb0e72fa792e73a0e0a84a0e21ee/0780f/ratelimiting5.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 95.45454545454545%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAATCAYAAACQjC21AAAACXBIWXMAAAsSAAALEgHS3X78AAADBklEQVQ4y61T/U+SURT2j2qr1Vo1m605a1lTs61yc2ppZmY6zfzY1CVt/pCrrdVWfoCiEgICIciLAiphOvlQSJszh2ZqSCIoIk/3XuGdpviTdzvve+75eO459zw3ASe4IpEIEjweD0QiEVQqFaxWK4aHh6HT6TA2NsZ0juNgMpngcrkwMjICvV4Ps9nMdLFYzPI0Gg0mJiYYaEIwGITRaGQGmkRBDAYDxsfHodVqMTg4iNHRUbjdbnYgPYD+aYzFYmGiVquhVCr3AE+8ZfrZ3d2NSjgqRI/s2cLhMO8PE19sH8vbvz9QYcwQ7+QD/kh8PwOk1dA1u2SDoC8Xr1R5EChzmD77y84n+jbX0NxfQny5EJCYenkWjC4F89HOWMuxDV0Dji5USG7gzUApmnVPUdyZBL2zmwec+z2FIlES89GYCkkqPnBVzBc+CtDkVqBEfBUvldloJBVSXWuTgXYTJk1Me1wo6UxGveIemr4U4FlXMtrNjfErNExJ8aDtLATqXNQp7iK//RxU4118hfZ5OwraLqBWdhuvtUXIaz2DT0N1R1QYvUPHggUVPamo+pzBpFJyC7b5UYR2wGRxzUPu7T6xp6FGmolScQo0k8LDFe6fYHB7A8veZaysryBAdLo2AiH8+bvF9K1QAF6/F2sbXviDPr6Y42kTPkgNCrjqCx5LK57YNDNm2NzawNdZLTiHHAanAtYfOgSIzR/cgc+/jR1CYtu8GUPTChin1Rh2q7DiW/y/wsi+KfcRWlxGdS+5Q2kaCoUXwTnlfLUziy4Ud1whvnQW81iUiDZTY3zacFMSVPWm4x1XSaQc5T3XofjWvQdIZHLOTgZxDW/1ZXhveIFqaUacKUcBjS45CkWX0NCXRahxB0UdiRhwyhgY5eHMkhtPCLFrZZlo0uTjEelAaBbEBxxyyZDTchrPJTdR1p3CdJNbzl/+wtoMHraeZ74awsXsj6fQYmw4DBi7UK9/FTqHGP12IbR2EXuK65urPGBoZ5u9Jo2tncSIyF+In6vfo0PZpePFPwD1PqcidsadAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="RateLimiting5"
+        title="RateLimiting5"
+        src="/static/857abb0e72fa792e73a0e0a84a0e21ee/0780f/ratelimiting5.png"
+        srcset="/static/857abb0e72fa792e73a0e0a84a0e21ee/27f03/ratelimiting5.png 173w,
+/static/857abb0e72fa792e73a0e0a84a0e21ee/0780f/ratelimiting5.png 198w"
+        sizes="(max-width: 198px) 100vw, 198px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
+<p>How would each server know what other servers are present in the network? You could use <a href="#services-service-discovery">service discovery mechanisms</a> already discussed earlier! However, this approach is not scalable. </p>
 <ul>
-<li><strong>Feed publishing</strong>: Presenting feed to the user and building the feed. When a user publishes a post, corresponding data is written into cache and DB. The post is then populated to user's friends' news feed. </li>
-<li><strong>Feed building</strong>: The news feed is then built by aggregating friends' posts in reverse chronological order.</li>
+<li>Another good approach is to  use <a href="#handling-failures">gossip protocol</a> that we've already seen earlier. </li>
+<li>Another approach is to use a distributed, in-memory cache store (Redis) to keep track of the count for each server's used tokens. This will be eventually consistent but is highly scalable:</li>
 </ul>
-<p>In order to build the two capabilities above, we'll use 2 endpoints, one to POST content and the other to GET newsfeed:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 325px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/b344d249ce9f626768931b179a3c0ad6/d53b1/ratelimiting6.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 58.15384615384615%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAYAAABiDJ37AAAACXBIWXMAAAsSAAALEgHS3X78AAACTUlEQVQoz4VT32/SUBTmH/PBbIlZfDBG5lgyo1PjEh+c8cEYFJeNOVg0yzTR+CMb2zTuiTlgkoxmkRVUQkAoIDLMFBBH2HQE7Q9aaD/b25VAXPQ0X3p6zr3fved8pyZFUUDTNCiKgs/nQzAYBBWgEIlEiB8IBFCpVKCZLMtQ1OdfZtLyoiSC4zjwPAeWZQkEgVffv8FyLERRJIu1wzUYfmfMgMlI/M8612m+rKIld6Clx0zagvd5P+bpCbhoO7arabIpW46S7/nNcUS3Kb1kRe665eElq7YQuoMJ7xBsK/3Y+OgmCT+ziLHVAdh9Q1gKOw9uJrfJdmsCorl9rL6r4PlGGa5ACTs/eINwEleXezH6sgehLa9OmFzGlRfH1VgflkL3ILcAQWyS3HqsikEngzN3UzBPMeh3JHHkegwjDzI6YaVWQLJII1UKo87/JJv22V0wxTAShbfYqZVV4QBWkJAv/8LgdArHbAlcvJ/B5YdZDDhTOGFn0GON64SaNUQBkiR29UOUGmpcJA1vSC3wDQm5Uh291hjMjjQuzGZw7VkO52fTOHojhuGZtE7oiT/F1NowJn1nEf/6hpBtfnoNu+eSihE170KzqR2gl/zEX4RlmlHLTaLvdgLnZlIYfZxFee+gh5qaYx4LrO6TbVHWkouwvTqNca8FC7SjLYphn7+ziG7VMLf+DcyXerfKK7FHuOk+hVtuMz4U9BuG816iugZfYq5rbGRZOWRO9fkkhA1JUEWoosbtqf3Sy2q2JBLTIDaFv/4OuWOoNd+Yzz+NE1LgIepm3QAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="RateLimiting6"
+        title="RateLimiting6"
+        src="/static/b344d249ce9f626768931b179a3c0ad6/d53b1/ratelimiting6.png"
+        srcset="/static/b344d249ce9f626768931b179a3c0ad6/27f03/ratelimiting6.png 173w,
+/static/b344d249ce9f626768931b179a3c0ad6/d53b1/ratelimiting6.png 325w"
+        sizes="(max-width: 325px) 100vw, 325px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
 <ul>
-<li><strong>POST</strong>
-<code class="language-cpptext">POST /v1/to/feed</code></li>
+<li>Another approach is to have a single leader in the cluster that'll gather information from all the nodes, calculate the total number of tokens used and return the number back to each node. In this setup, all nodes will only talk to one master node. This can be done using consensus algorithms such as paxos and raft implemented in a coordination service: </li>
 </ul>
-<p>and the body of this request will contain your post along with your oauth_token. </p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 159px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/9251fa7909bc861314a18f929d257159/06169/ratelimiting7.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 139.62264150943395%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAcCAYAAABh2p9gAAAACXBIWXMAAAsSAAALEgHS3X78AAAFHklEQVRIx61U+0+TVxjuP7NfluwXk7lkukSHmnnJppuyOLPolpigRi5RcTJaQEXByrWoFAtyp4VaUC6WcmmhoFAhyhABARkXFSi372tLr9/37JzzlRZ20WzZSd6+7znn+Z6+7znPe2T4n4dsaGgIg4ODmJycxPj4OKampmA0GmGz2TA9Pc32rFYr2x8ZGcHc3BxmZ2cxOjrK8BMTExgYGMDY2BjsdjtkZrMZer0eOTk5yMvLY3FaWho0Gg1KS0uhVCqhVqtRXFwMlUqFrq4uaLVaZGRkoLGxEUVFRSgoKGDf9j3tg0wURbjdbvgDfmI+krQIv98HQQjAR7zf70cgEGCeYgPr6wRPsYIoMDw1ui/7dyckvn+XEooERAPj83LktyWg0JLCTN2eiPYX+hBQEAQWP5u0Qt2WCI0lieEKzHLoenLhdPPSpdCfZX4B8boDSDR8h18N3+LS/YM4p/sKCTWHQkB6BHRkNkUjTrsbKQ+OIr5mP8EfQlTx53g5+zRMuMTPQ2GIxK3WC7jXcQUVT5RQPooia98TQk4iFCXCnOY4pNYfR1nXdRR2JKOoMwmxFbsw/GdCOSGkWSlqIyGvPcL+Pbn2hzBhMMM80wXEVEWQag7jysMfkUCqiWGEfWHCRW6OZRNfsw9qSwIym8/gfPVepNQdg2NtdROhynQesYRQ+egUqSQdF/UHEFe5h5RsCxNyrmVcqj6I02XbEVu5m9gunCrdhiTDUbi9rk2Et1ou4mTxVpJVBMvsbMUOnCrZjlfvBiRCeoN0DE4/gem3CrQM6mAc0JG4EiNv+kNyobg1j4hp+zjBVKH1hY4ZxfWMNROt+sMZrpP+k9wCgkjO2UMI/R/WYUhnQR7aK05Biql5vH4iKw/pDOEDkheDwg5mF1iZgW+yF57f++F8/RSBKRtcS3NYcfnpP4bSXnYsoGfUhN5XLbCNteLxqBEvZ/qwXqSUYcALvjASXPoWcMqtxD4Fd+0T8PrYYCkC62E6CtoV7MLiqvbgbPkOxFRGILo8Aq/nh8KEgscB7vZe8LoocHUX4Kz/BY67B+EoP/GXg80yRuN648+oepIBTYcChdYkRFd8iaGZDbIRvE5w+QfA5+4EX/ANHPciwWd/Ab7yJPg1PzinB5zDDdeaiGzjOcRX7yfdcgLXGn5CasNxJqFNwha8JEP11+Bvfga+5Bi4O/vA3dgChzYK3oBInisBXh95vsi95LXEkzJ3Ir3pJPJazzNySdibCF3gVBHgUj+WfNZ2rF7+aEPJtFwhVPLpsm1IrD1MHohjrF2jSraFS6a3TOHufi1cDXJw9Qo4GlPIOcrhHTZJVAK9FImwc7geNx+dQY4pDlnN0chujiEXJceqc2lzp6wPh0/S4n8ZQWGL5NB9WFz1YMXhxeSbZbxdcDAxL666ycPhxRKxjX49Xjf7qjfURTLe5YO2ZQZVphnm9ZZ51LS/g671Darb3uI+mVOvN0ueYcwSRtqfQ7lxBub+BYmQZlHWNAVVWTcyNW24piJnpDYhMb0KOcUWXM42IFX1EFdzHyC3tBs38o1k3oDMwnbcuNOMtNtNKKobhal3njWAzL7ihqp6Ahmlz3HlTicU2a24frcHSSryQZEN8mwTWbdCkdsGZckzpOZ3IVllQZqmF1fJerKqDVkVwzBY3jI1yNzeABq652HoXEBd9yIePF5GXRfx3UuotdrxkMxpTNfpvC4YUwyN6b6OlG8bXg7rMKw1ccPbJb5n/e9iafwBT3+Dd+WiM9QAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="RateLimiting7"
+        title="RateLimiting7"
+        src="/static/9251fa7909bc861314a18f929d257159/06169/ratelimiting7.png"
+        srcset="/static/9251fa7909bc861314a18f929d257159/06169/ratelimiting7.png 159w"
+        sizes="(max-width: 159px) 100vw, 159px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
 <ul>
-<li><strong>GET</strong></li>
+<li>We can also have a multi-leader setup where we can have multiple leaders coming to the same answer and then broadcasting it to their respective followers:</li>
 </ul>
-<p><code class="language-cpptext">GET /v1/my/feed</code></p>
-<p>and the request will contain you oauth_token.</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 201px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/cfe4abc0b2fd0fa618d92de068254e94/51d3c/ratelimiting8.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 87.06467661691542%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAARCAYAAADdRIy+AAAACXBIWXMAAAsSAAALEgHS3X78AAADPElEQVQ4y32U628UVRiH+4/4D/hJ/abxRjQCUWwoUVQSY+Jd6gfUaoHUSADTAq263rosUtLuUmYLbbllQbCktvpBAqtGg0Wj8KHddWd3O3NmZ3ZmdmYfz8zesm71JO/MOec959n38pvtsm0by7IIhuM44dzzPFzXJfAFo1KpUC6X8X2/uQ58wdowjPAd3AlGVzqdJhKJoCgKiUSCw4ejJJNJzp07y+zMDJOTk8Tj8fDM4uIic3Nzcj1BNBpFSSrEYrHwbiqVqgGDqPL5PJlMhkKhgCrnxVUNXRhous7K8jK5XI5sNosQglXpU3N5aSrFwirFYhFVVdE0rQakY1TBd6U5clpZw+vjeBaub2N7VruvWqUreFRlDSQGT5dRjD+PiG1GHH0affQJnKXL9dM+tmsxfL6XncnNvH9qK30nNjFzdTR0B3UMgTVyrdhe5hf0Tx5CnHgFY+oNxMcPUP4+RlhueaRgqPQr3Xw+10fs2wH2nNnG6JX+ZnSdwL+XEJF1iNHHEWNb0YfuxryaoCx9sumoosiuqS18MPsMh1Kv846ykbGFvf8DzN5AH7wLPfKwTLub1YE7cH441qyRsArsOL6e/pObGL6wne3x+4le2b0WsFqrQ1nDuriP0uy7GLP9WKf7MG9dp9Eap+IwNr+XA+dfZTjVy+DZF/nm1ySNoFrA2k74DsyVj5JT+5EAppdsKp7fFIHr2JRMKXTPbetwm2waG61LraUvfcJ0cFyv4cb6l1wa+20pm7ZgWspgbH4/x+aHGF/4kJsrP9ahPiVLfprXpzC/HkK/9BHW5YNUln/uTNmvN+VmJs2OyfUMpV6W9hJvKY8xsTjYCsUx0L/YIPUpVXB0C9qBezAv7KvL1OsE/pH9iV2nehi52Btqbfd0D8e/Gwk16HhVnJKGIUGB6EvKa4jPHsW8dPC/I/xdAt9WNrDn9LPSnuPNxINMLBzClkI0yh4lrYj4ciP6yH0Y49vQ998p0x+sR7gG8La6xHvJJ9l5spuB6ackcB1nrh1ppezZGPEX0D99BHGkR4LvlV/SV50pN3UowbdyN/ht5VpYz6WVNCVbb6UUnDGLePk/pf2FV7gt/z+ctk7/A1FmtwH1TInVAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="RateLimiting8"
+        title="RateLimiting8"
+        src="/static/cfe4abc0b2fd0fa618d92de068254e94/51d3c/ratelimiting8.png"
+        srcset="/static/cfe4abc0b2fd0fa618d92de068254e94/27f03/ratelimiting8.png 173w,
+/static/cfe4abc0b2fd0fa618d92de068254e94/51d3c/ratelimiting8.png 201w"
+        sizes="(max-width: 201px) 100vw, 201px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
+<p>Out of all the approaches above, we'll use in-memory Redis cache. Here're all the approaches that can be taken to allow server-server communication:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/af08bfc973f6cd6551f95672f3bd6185/ff38c/ratelimiting9.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 51.226765799256505%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAAAsSAAALEgHS3X78AAAB3klEQVQoz42SW28SURSF55/5s3z0zTcTfag+1USpsdXEWzW1F7XEWCgiLS20IBSxXGRmmGGYYZgLc+bzMLTQxmhcmZ2drHVm7ZV9jqJrfQzdlGWg9XR832cKd+RiaCa6pqP3+rium/AiEsl5tacxMIbEIuYqlPagRrr6knJnny/19bkwDh02Syma/VM2So+YiDDhJ1HIVnmFhl5mq/QExxsgZ1BpOXT6HkrHbJCpbVJuF8g3PiwMA4d05RUtQw6svCCMgrnh5+prmnpV8m+locXttSY3bua4tVJHqfWKvCksk61vs3H0eG5oy8lr+3c57eR5mr1DMPESPpwEPM/dkwFysi9hjXUOz1xW011+qmMUL3QxXZVRYCX9EiKOMJwOXjhCd9qSme0qjmM0u40b2OiyTxNf26Hn+pialSzYtX2EEIkwHA7RzBF9c4htjLBt58KQPyDkxUSyhBSVunrMu2KKbz922T5enf0kK4oi/PR9rLMMzw6WUa3zC0ORpLxal8mnpajyUg6/v6fSPeBrY2cuTmGV1rF7J+SqsrvaNe1vUOgWIfuQYmuXHfkcFtMEqcIDTs734NMSYtCabTEW/zb81TPI7B3xMV8hV6ktUsjPcLp4vo2wVcQk+K+EvwHy++4COyl48QAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="RateLimiting9"
+        title="RateLimiting9"
+        src="/static/af08bfc973f6cd6551f95672f3bd6185/1dda8/ratelimiting9.png"
+        srcset="/static/af08bfc973f6cd6551f95672f3bd6185/27f03/ratelimiting9.png 173w,
+/static/af08bfc973f6cd6551f95672f3bd6185/376d0/ratelimiting9.png 345w,
+/static/af08bfc973f6cd6551f95672f3bd6185/1dda8/ratelimiting9.png 690w,
+/static/af08bfc973f6cd6551f95672f3bd6185/bcbcb/ratelimiting9.png 1035w,
+/static/af08bfc973f6cd6551f95672f3bd6185/ff38c/ratelimiting9.png 1345w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></p>
+<p>Now, in order for the servers to talk to each other, they have to use some sort of communication protocol. We have 2 types of protocols: TCP and UDP</p>
+<h3 id="tcp-vs-udp"><a href="#tcp-vs-udp" aria-label="tcp vs udp permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>TCP vs UDP</h3>
+<p>A service host in a network has to choose how it wants to send its data to other hosts in the network. That choice boils down to sending the data reliably vs unreliably. Reliably, data is sent via TCP:</p>
+<p><strong>TCP</strong></p>
+<p>This is the most widely used protocol to send data between hosts. If there is a network blip and some segments are lost along the way, TCP can recover them ie user experience is not compromised. Here're TCP attributes: </p>
+<ul>
+<li>Slower than UDP</li>
+<li>Guarantees delivery of data</li>
+<li>Guarantees that packets will be delivered in the order they were sent</li>
+</ul>
+<p><strong>UDP</strong></p>
+<p>UDP has no error handling or sequencing that comes with TCP. UDP has one goal which is to send data fast! All the checks done by TCP are time consuming. UDP is chosen for live data transmission such as voice calls, live gaming etc.</p>
+<ul>
+<li>Faster than TCP</li>
+<li>No data delivery guarantee</li>
+<li>No order guarantee</li>
+</ul>
+<p>So which one should we use for our rate limiting solution? If we're more interested in accuracy and are ok with a hit to our performance, we'll go with TCP. If we're ok with inaccurate counts BUT want lightning fast responses, we'll go with UDP. </p>
 <h3 id="useful-architectures"><a href="#useful-architectures" aria-label="useful architectures permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Useful architectures</h3>
 <ul>
 <li><a href="https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html">WordPress on AWS</a></li>
