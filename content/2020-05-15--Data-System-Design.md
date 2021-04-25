@@ -86,6 +86,9 @@ tags:
     * [Storing Images](#storing-images)
     * [Allowing users to chat](#allowing-users-to-chat)
     * [Design Chat Messaging](#design-chat-messaging)
+    * [Design Rate Limiting](#design-rate-limiting)
+        * [Sharing data between servers](#sharing-data-between-servers)
+        * [TCP vs UDP](#tcp-vs-udp)
 100. [Useful architectures](#useful-architectures)
 
 ### Microservice Architecture
@@ -1318,6 +1321,82 @@ There're multiple improvements to consider:
 - We can have MQs between services to handle failures
 - We can have retry mechanisms between services 
 
+### Design Rate Limiting
+The requirement here is simple: we already know what rate limiting is. Now, we need to design it for our service. Before we begin to design rate limiting for a distributed system, let's design one for a single server first! 
+
+On a single machine, all we need to worry about is the fact that there's a rules DB that'll hold the criteria based on which we'll throttle requests. We'll have a background process that routinely polls the DB for these rules and saves them in memory. Disk reads are expensive so we'll look to save these rules in memory using Redis cache. We'll check these cached rules whenever a request comes in and determine whether the request can be allowed through or not. Next, we'll have to keep track of the number of requests made by the client (we can id the client based on their IP address for example) in the past second and check whether the threshold has been reached as set in cache. If threshold is not reached, we can allow our request to go through. If threshold is met or exceeded, we have 3 options: drop the request, send back a 503 (service unavailable) or 429 (too many requests), or add the request to a queue and wait for threshold to recede:
+
+![RateLimiting1](./images/system-design/ratelimiting1.png)
+
+Cool, we've got the design working for a single server. Now, let's talk about a simple algorithm to handle rate limiting: bucket algorithm. Here, the idea is simple, we will have a bucket with **tokens** and each request from the client will deplete the tokens present in the bucket. Each second that passes, we'll refill the bucket with one token. Now, say for example we start with one server that has one bucket with 4 tokens (ie 4 requests per second) and receives 5 requests within the first second, first 4 requests will be allowed to go through while the final request will be throttled. That's the algorithm in a nutshell for a single server. 
+
+Now imagine, these requests coming in to our distributed microservice. Say we have 3 hosts handling our requests, where each host is initially allotted 4 tokens. Since our architecture would have load balancers, say our requests are distributed like so:
+
+![RateLimiting2](./images/system-design/ratelimiting2.png)
+
+We've already consumed our allotted 4 requests for the current 1 second window and should throttle all remaining requests HOWEVER, each of our hosts still has tokens available. How do we make sure we throttle our requests? We need the hosts to talk to each other and determine the TOTAL number of tokens consumed:
+
+![RateLimiting3](./images/system-design/ratelimiting3.png)
+
+
+Host A should see that the other 2 hosts used up 3 tokens in total and reduce that number from its available tokens. Hosts B and C should do the same leaving us with this:
+
+![RateLimiting4](./images/system-design/ratelimiting4.png)
+
+How do we share information between hosts? 
+
+### Sharing data between servers
+
+We need to be able to share data/information between servers. Let's look at the different ways we can do this:
+
+### Message Broadcasting
+- One approach to keep track of the number of tokens used is for each host to tell every other host everything. ie tell everyone everything aka **full mesh topology**:
+
+![RateLimiting5](./images/system-design/ratelimiting5.png)
+
+How would each server know what other servers are present in the network? You could use [service discovery mechanisms](#services-service-discovery) already discussed earlier! However, this approach is not scalable. 
+
+- Another good approach is to  use [gossip protocol](#handling-failures) that we've already seen earlier. 
+
+- Another approach is to use a distributed, in-memory cache store (Redis) to keep track of the count for each server's used tokens. This will be eventually consistent but is highly scalable:
+
+![RateLimiting6](./images/system-design/ratelimiting6.png)
+
+- Another approach is to have a single leader in the cluster that'll gather information from all the nodes, calculate the total number of tokens used and return the number back to each node. In this setup, all nodes will only talk to one master node. This can be done using consensus algorithms such as paxos and raft implemented in a coordination service: 
+
+![RateLimiting7](./images/system-design/ratelimiting7.png)
+
+- We can also have a multi-leader setup where we can have multiple leaders coming to the same answer and then broadcasting it to their respective followers:
+
+![RateLimiting8](./images/system-design/ratelimiting8.png)
+
+Out of all the approaches above, we'll use in-memory Redis cache. Here're all the approaches that can be taken to allow server-server communication:
+
+![RateLimiting9](./images/system-design/ratelimiting9.png)
+
+Now, in order for the servers to talk to each other, they have to use some sort of communication protocol. We have 2 types of protocols: TCP and UDP
+
+### TCP vs UDP
+
+A service host in a network has to choose how it wants to send its data to other hosts in the network. That choice boils down to sending the data reliably vs unreliably. Reliably, data is sent via TCP:
+
+**TCP**
+
+This is the most widely used protocol to send data between hosts. If there is a network blip and some segments are lost along the way, TCP can recover them ie user experience is not compromised. Here're TCP attributes: 
+
+- Slower than UDP
+- Guarantees delivery of data
+- Guarantees that packets will be delivered in the order they were sent
+
+**UDP**
+
+UDP has no error handling or sequencing that comes with TCP. UDP has one goal which is to send data fast! All the checks done by TCP are time consuming. UDP is chosen for live data transmission such as voice calls, live gaming etc.
+
+- Faster than TCP
+- No data delivery guarantee
+- No order guarantee
+
+So which one should we use for our rate limiting solution? If we're more interested in accuracy and are ok with a hit to our performance, we'll go with TCP. If we're ok with inaccurate counts BUT want lightning fast responses, we'll go with UDP. 
 
 ### Useful architectures
  - [WordPress on AWS](https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html)
