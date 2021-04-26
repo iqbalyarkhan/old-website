@@ -853,6 +853,10 @@ The load balancer can be a single point of failure; to overcome this, a second l
 
 ![Redundant-LB](./images/system-design/redundant-lb.png) [Image Credit](https://www.educative.io/module/lesson/grokking-system-design-interview/3w8r0BNQLwn)
 
+Another thing to consider about LBs is that they have certain limits on the number of messages that a single load balancer can handle. What happens when our service traffic reaches a limit where the LB cannot handle incoming traffic anymore? We need multiple vitual IPs or VIPs. VIPs is nothing but a method to translate a DNS to address of one of our load balancers. VIP refers to the symbolic hostname (such as myWebService.domain.com) that resolves to a load balancer system. VIPs will allow us to distribute traffic among multiple instances of our load balancer. This concept is called VIP partitioning. In DNS, we assign multiple A records to the same DNS name for the service. As a result, requests are partitioned across several load balancers. We can then spread our LBs across several data centers thus improving availability and performance:
+
+![RedundantLB](./images/system-design/redundantlb.png)
+
 Following links have some good discussion about load balancers:
 [What is load balancing](https://avinetworks.com/what-is-load-balancing/)
 [Introduction to architecting systems](https://lethain.com/introduction-to-architecting-systems-for-scale/)
