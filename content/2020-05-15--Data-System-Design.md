@@ -640,7 +640,9 @@ Our data is going to be replicated across the 3 nodes. Assuming that these nodes
 - **partition** the data: as our data grows in size, we'll break it among partitions for faster retrieval
 
 ### Replication Deep Dive
-As we said earlier, replicating data allows us to create available, scalable systems. Replicating data that is not changing (static) is easy, real difficulty lies in replicating data that is changing often. There are 3 main ways to replicate data: **single leader replication** (one we discussed briefly above), **multi-leader replication** and **leaderless replication**. Single leader replication can be done where we're sure our setup would require just a single data center (which is never the case!). Therefore, it's better to use multi-leader or leaderless replication for availability. Let's have a look at the 2 in detail:
+As we said earlier, replicating data allows us to create available, scalable systems. Replicating data that is not changing (static) is easy, real difficulty lies in replicating data that is changing often. For this sections, let's assume that our data can be stored on a single machine. We'll relax that assumption once we talk about partitioning. 
+
+There are 3 main ways to replicate data: **single leader replication** (one we discussed briefly above), **multi-leader replication** and **leaderless replication**. Single leader replication can be done where we're sure our setup would require just a single data center (which is never the case!). Therefore, it's better to use multi-leader or leaderless replication for availability. Let's have a look at the 2 in detail:
 
 ### Multi-leader Replication
 If you have a setup with multiple data-centers located in geographically separated locations, you'd have to use multi-leader replication. That is because each user would be connected to the data center closest to him/her and the leader from that data center would then asynchronously replicate that information to other leaders and data centers.   

@@ -318,9 +318,10 @@ Let's look at our functional and non-functional requirements:
 - Highly Performant (single digit latency, both send and receive operations are fast)
 - Durable (once submitted, data is not lost, so persistent)
 
-As always, let's start with a single producer and consumer and a single machine. On a single machine, all we'll be doing is receiving a request from a single producer that posts to our queue. Our application sits behind a single LB that knows the address of our single server. Our single server would be connected to one DB that'll be responsible for keeping track of the metadata of our queue. For the sake of record-keeping, we'll save each message received in a separate DB:
+As always, let's start with a single producer and consumer and a single machine. On a single machine, all we'll be doing is receiving a request from a single producer that posts to our queue. Our application sits behind a single LB that knows the address of our single server. Our single server would be connected to one DB that'll be responsible for keeping track of the metadata of our queue. For the sake of record-keeping, we'll save each message received in a separate DB that is accessed via our message service:
 
- 
+![Distributed Queue 1](./images/system-design/distributedqueue1.png)
+
 
 ### Useful architectures
  - [WordPress on AWS](https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html)
