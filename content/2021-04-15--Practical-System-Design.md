@@ -322,6 +322,18 @@ As always, let's start with a single producer and consumer and a single machine.
 
 ![Distributed Queue 1](./images/system-design/distributedqueue1.png)
 
+Here, a single producer produces a message and sends it over to our virtual IP address. This virtual IP resolves to our single LB that then forwards the request to produce the message to our API gw. API gw then checks to see whether the user is authorized to publish to the queue and upon successful authorization, allows the message to move on to metadata service first. In our metadata service, we check to see whether the queue being pushed to is already created, if so, we return the name of the queue back to API GW, otherwise, we create this new queue and return this information back to our API gw. Once API gw receives this response back, it will call the message service where it'll hold the message for the queue. For durability, we'll also store this message in  message service's DB. 
+
+To improve this experience and add reliability, availability and higher durability, we'll create a distributed service. We'll start by addressing the first point of failure in our architecture: the load balancer.
+
+A single load balancer would be overwhelmed if there are too many requests. Therefore, we need multiple load balancers using VIPs and have these load balancers partitioned so that each LB can receive a request and forward it to our API GW:
+
+![Distributed Queue 2](./images/system-design/distributed-queue1.png)
+
+Next, we need our metadata service to be durable: ie our queue metadata needs to be replicated among various nodes. For this, we can either use single leader replication, multi-leader replication or leaderless replication. We'll use leaderless replication so that we have multiple nodes available to receive our metadata and distribute it among all available nodes. Single leader replication is not scalable since it introduces a SPOF: the single leader. 
+
+We also want our data to be partitioned among nodes. Now, if our data is small enough to be stored on a single machine, we'll have every node in our cluster hold this information for us. So, when a request comes in to our metadata service to fetch information for a particular queue, we can send the request to any of the nodes. However, if our queue metadata gets too large, we'll have to partition this data using a hash ring with virtual nodes. To determine where each data queue metadata lives, we can either use client side discovery with each node updating a registry with its information or have each node ping every other node its information (gossip protocol).  
+
 
 ### Useful architectures
  - [WordPress on AWS](https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html)
