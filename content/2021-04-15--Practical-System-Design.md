@@ -21,6 +21,7 @@ tags:
 8. [Design Distributed Message Queue](#design-distributed-message-queue)
 9. [Design Distributed Cache](#design-distributed-cache)
     * [LRU Cache](#lru-cache)
+    * [Replication to Achieve HA](#replication-to-achieve-high-availability)
 100. [Useful architectures](#useful-architectures)
 
 ### System Design
@@ -380,9 +381,84 @@ Next, we can go ahead and discuss the LRU cache algorithm code in detail. Now th
 
 ![Distributed Cache 3_1](./images/system-design/distributed-cache3_1.png) [Image Credit](https://www.youtube.com/watch?v=iuqZvajTOyA&ab_channel=SystemDesignInterview)
 
-Therefore, every time a host needs to put or get from cache, it'll have the host address for that particular shard and will make its call to the appropriate host. These calls from service to cache host will be made using either TCP or UDP connections. If needed, we can dive deep into the pros and cons of using TCP vs UDP. 
+**We need to figure out how we'll decide which cache client to call?**  
 
-**Next, we need to figure out how we'll decide which cache client to call?**  
+How do we decide the method with which we'll be distributing our data among cache hosts? We can use the following two approaches:
+
+- **Key based partitioning**
+
+Here, we'll have the data partitioned based on the keys. We can have dedicated shards that handle keys from say Aa - Ba, Bb - Ca and so on. The issue with this approach is that we can have hotspots if the requests are not uniform, resulting in some shards being queried excessively while others sit idle.
+
+- **Hash based partitioning**
+ 
+Another approach is to use a hash function that uniformly distributes data among shards. This helps get rid of the hotspots issue with key based partitioning. However, now, what would happen if some of our nodes go down? We'd have to re-assign data to nodes and this would cause us to unnecessarily move data around.
+
+- **Consistent Hashing**
+
+We'll stick with the hash function but will use a ring to assign our data and servers. We'll also use virtual nodes to evenly distribute load across available nodes. This allows us to re-hash a much smaller number of values if a new host is added or an existing node is removed.
+
+Ok, so we've chosen the method we'll use to actually place our data on cache hosts but who or what  does the consistent hashing calculation? Answer: a light-weight cache client that resides on the service itself:
+
+![Distributed Cache 4](./images/system-design/distributed-cache4.png) [Image Credit](https://www.youtube.com/watch?v=iuqZvajTOyA&ab_channel=SystemDesignInterview)
+
+Each cache client needs to keep track of all the available cache server nodes. To do so, it'll have to be able to know the exact list and addresses of each of the available nodes. To keep track of that, we have a few options that can be used:
+
+- **Configuration File Method**
+
+We can use a configuration file with node information and deploy it on every service so that each cache client on each service would know exactly the server IP addresses and ports. 
+
+![Distributed Cache 5](./images/system-design/distributed-cache5.png) [Image Credit](https://www.youtube.com/watch?v=iuqZvajTOyA&ab_channel=SystemDesignInterview)
+
+This is a simple approach but not very scalable. Imagine the amount of times you'd have to re-deploy services just because a node was removed or added!
+
+- **Config file placed in shared location**
+
+In the previous approach, our issue with it was the fact that we'd have to redeploy multiple times just to update our host list. What if we have this config file in a shared location and just have services read from this shared location:
+
+![Distributed Cache 6](./images/system-design/distributed-cache6.png) [Image Credit](https://www.youtube.com/watch?v=iuqZvajTOyA&ab_channel=SystemDesignInterview)
+
+Again, the issue with this approach is what if this update takes time and our service reads an old file. This would result in a cache miss. Another issue is that we'd have to manually update the file.
+
+- **Service Discovery**
+
+We can use a configuration service such as Zookeeper that'll keep an eye on the available cache servers. To do so, periodic heartbeats are sent to each of the cache servers to determine their health status. Next, when our service is about to perform consistent hashing calculation, it'll get this information from Zookeeper before sending data over to cache servers:
+
+![Distributed Cache 7](./images/system-design/distributed-cache7.png) [Image Credit](https://www.youtube.com/watch?v=iuqZvajTOyA&ab_channel=SystemDesignInterview)
+
+The drawbacks here are the operational costs of using a configuration service BUT this is the most efficient method. 
+
+
+Now, every time a host needs to put or get from cache, it'll have the host address for that particular shard and will make its call to the appropriate host. These calls from service to cache host will be made using either TCP or UDP connections. If needed, we can dive deep into the pros and cons of using TCP vs UDP.
+
+Here're all the methods we've discussed for cache server discovery:
+
+![Distributed Cache 8](./images/system-design/distributed-cache8.png) [Image Credit](https://www.youtube.com/watch?v=iuqZvajTOyA&ab_channel=SystemDesignInterview)
+
+So far, we've handled our scalability and performance requirements. We've got an LRU cache algorithm that is performant and our lookups are fast. However, we've done nothing to make our system highly available: if a shard goes down, we don't have any backups to serve from meaning all cached data in that shard is lost.  
+
+### Replication to Achieve High Availability
+
+Types of replication models:
+
+- **Probabilistic Protocols**
+
+These protocols include gossip, epidemic broadcast tress, bimodal multicast. **These protocols are eventually consistent.**
+
+- **Consensus Protocols**
+
+These protocols include 2 or 3 phase commit, paxos, raft and chain replication. **These protocols tend to favor strong consistency.**
+
+To keep things simple, we'll use one of the three methods we already know: single leader, multi leader or leaderless replication. 
+
+Single leader replication would imply that one of our cache servers would act as a leader and we'd have followers in different regions. All cache updates will be sent from this leader to its followers. If the leader fails, a failover process will kick in that'll promote one of the followers to a leader. All `put` calls will go to the leader while `get` calls can be handled by either the leader or the replica:
+
+![Distributed Cache 9](./images/system-design/distributed-cache9.png) [Image Credit](https://www.youtube.com/watch?v=iuqZvajTOyA&ab_channel=SystemDesignInterview)
+
+We'll perform our data replication asynchronously for better performance. We don't want to wait for all replicas to return acks before returning back to the client. 
+
+Here's our entire system summarized:
+
+![Distributed Cache 10](./images/system-design/distributed-cache10.png) [Image Credit](https://www.youtube.com/watch?v=iuqZvajTOyA&ab_channel=SystemDesignInterview)
 
 ### Useful architectures
  - [WordPress on AWS](https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html)
