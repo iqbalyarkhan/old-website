@@ -19,6 +19,8 @@ tags:
     * [Sharing data between servers](#sharing-data-between-servers)
     * [TCP vs UDP](#tcp-vs-udp)
 8. [Design Distributed Message Queue](#design-distributed-message-queue)
+9. [Design Distributed Cache](#design-distributed-cache)
+    * [LRU Cache](#lru-cache)
 100. [Useful architectures](#useful-architectures)
 
 ### System Design
@@ -334,6 +336,53 @@ Next, we need our metadata service to be durable: ie our queue metadata needs to
 
 We also want our data to be partitioned among nodes. Now, if our data is small enough to be stored on a single machine, we'll have every node in our cluster hold this information for us. So, when a request comes in to our metadata service to fetch information for a particular queue, we can send the request to any of the nodes. However, if our queue metadata gets too large, we'll have to partition this data using a hash ring with virtual nodes. To determine where each data queue metadata lives, we can either use client side discovery with each node updating a registry with its information or have each node ping every other node its information (gossip protocol).  
 
+### Design Distributed Cache
+A cache sits between a service and a DB. Our questions deals with designing a distributed cache so that we can reduce the number of calls to a DB (which are expensive). Therefore, storing data in memory will help to address these issues. When a client request is received, we first check the cache and try to retrieve information from memory. And only if data is unavailable or stale, we make a call to the DB.
+
+And why do we call it a distributed cache? Because amount of data is too large to be stored in memory of a single machine and we need to split the data and store it across several machines.
+
+Let's start with the functional and non-functional requirements:
+
+**Functional**
+```cpp
+// Stores object with a unique key
+put(key, value)
+
+// Gets object from cache based on
+// key provided
+get(key)
+```
+
+**Nonfunctional**
+- Scalable
+- Highly Available
+- Highly Performant 
+
+As always, we'll start with a simple, single server design first and then evolve our solution. If we have a single server, we'll have the following setup:
+
+![Distributed Cache 1](./images/system-design/distributed-cache1.png) [Image Credit](https://www.youtube.com/watch?v=iuqZvajTOyA&ab_channel=SystemDesignInterview)
+
+In a single server setup, the client makes a request to our single server that has the cache implemented locally. If the request comes in and it is a cache miss, we'll get the data from our DB, store it in our cache and then return the value to our client. If it is a cache hit, we'll simply return the value from our cache. In essence, this is a read through cache system. Let's dive into various algorithms that can be used to create our own cache. 
+
+### LRU Cache
+We'll be using a doubly linked list to keep track of all the requests that we've received from the client in a linked list in memory. We'll have a tail pointer that points to the end of the list. This pointer will be used to evict items from the cache. Next, we'll have our linked list setup so that every new read would cause us to move the item we've just read to the front of the list (since we're using LRU as our eviction policy). The linked list will allow us to:
+
+- Keep track of least recently used key in $O(1)$ time via tail pointer
+- Move key to front of list in $O(N)$ time (we need to iterate through the list to find our key)
+- Adding key to list in $O(1)$ time (using our head pointer)
+- Finding key would take $O(N)$ time.
+
+We can make an improvement here: we can have a hash table that holds key and value from our linked list. When we add an item to our linked list, we do the same to our hash table. When we remove an item from our linked list, we do the same from our hash table. This would allow us to return items back to the client in constant time and then update our list accordingly. Here's the LRU cache algorithm decision flow for GET and PUT:
+
+![Distributed Cache 2](./images/system-design/distributed-cache2.png) [Image Credit](https://www.youtube.com/watch?v=iuqZvajTOyA&ab_channel=SystemDesignInterview)
+
+Next, we can go ahead and discuss the LRU cache algorithm code in detail. Now that we've explained how the algorithm works on a single server, we need to make it distributed. Earlier we said that this is a distributed cache because our cache data is too large to be saved on a single machine. Therefore, we'll have our data sharded among different hosts:
+
+![Distributed Cache 3_1](./images/system-design/distributed-cache3_1.png) [Image Credit](https://www.youtube.com/watch?v=iuqZvajTOyA&ab_channel=SystemDesignInterview)
+
+Therefore, every time a host needs to put or get from cache, it'll have the host address for that particular shard and will make its call to the appropriate host. These calls from service to cache host will be made using either TCP or UDP connections. If needed, we can dive deep into the pros and cons of using TCP vs UDP. 
+
+**Next, we need to figure out how we'll decide which cache client to call?**  
 
 ### Useful architectures
  - [WordPress on AWS](https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html)

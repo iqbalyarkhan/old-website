@@ -32,7 +32,7 @@ tags:
     * [Add numbers in a list](#add-numbers-in-a-list)
     * [Swap pairs in a list](#swap-pairs-in-a-list)
     * [Root to leaf path with specified sum](#root-to-leaf-path-with-specified-sum)
-    * [LRU Cache](https://leetcode.com/problems/lru-cache/)  
+    * [LRU Cache](#lru-cache)  
 2. [Conclusion](#conclusion)
 
 
@@ -1168,7 +1168,11 @@ void RootToLeafPathWithSpecifiedSum(Node<int>* root, vector<int>& elems, int sum
 }
 ```
 
-Running time is $O(N)$ and space complexity is $O(2h)$: for the solutions vector and the recursive call stack. This can be simplified to $O(h)$.   
+Running time is $O(N)$ and space complexity is $O(2h)$: for the solutions vector and the recursive call stack. This can be simplified to $O(h)$.
+
+### LRU Cache
+[Problem](https://leetcode.com/problems/lru-cache/)
+   
 
 ### Conclusion
 
