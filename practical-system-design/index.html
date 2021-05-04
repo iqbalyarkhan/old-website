@@ -55,6 +55,13 @@
 </ul>
 </li>
 <li><a href="#design-distributed-message-queue">Design Distributed Message Queue</a></li>
+<li>
+<p><a href="#design-distributed-cache">Design Distributed Cache</a></p>
+<ul>
+<li><a href="#lru-cache">LRU Cache</a></li>
+<li><a href="#replication-to-achieve-high-availability">Replication to Achieve HA</a></li>
+</ul>
+</li>
 <li><a href="#useful-architectures">Useful architectures</a></li>
 </ol>
 <h3 id="system-design"><a href="#system-design" aria-label="system design permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>System Design</h3>
@@ -863,6 +870,303 @@ Do not confuse queue with topic. In case of a topic, message goes to all subscri
     </span></p>
 <p>Next, we need our metadata service to be durable: ie our queue metadata needs to be replicated among various nodes. For this, we can either use single leader replication, multi-leader replication or leaderless replication. We'll use leaderless replication so that we have multiple nodes available to receive our metadata and distribute it among all available nodes. Single leader replication is not scalable since it introduces a SPOF: the single leader. </p>
 <p>We also want our data to be partitioned among nodes. Now, if our data is small enough to be stored on a single machine, we'll have every node in our cluster hold this information for us. So, when a request comes in to our metadata service to fetch information for a particular queue, we can send the request to any of the nodes. However, if our queue metadata gets too large, we'll have to partition this data using a hash ring with virtual nodes. To determine where each data queue metadata lives, we can either use client side discovery with each node updating a registry with its information or have each node ping every other node its information (gossip protocol).  </p>
+<h3 id="design-distributed-cache"><a href="#design-distributed-cache" aria-label="design distributed cache permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Design Distributed Cache</h3>
+<p>A cache sits between a service and a DB. Our questions deals with designing a distributed cache so that we can reduce the number of calls to a DB (which are expensive). Therefore, storing data in memory will help to address these issues. When a client request is received, we first check the cache and try to retrieve information from memory. And only if data is unavailable or stale, we make a call to the DB.</p>
+<p>And why do we call it a distributed cache? Because amount of data is too large to be stored in memory of a single machine and we need to split the data and store it across several machines.</p>
+<p>Let's start with the functional and non-functional requirements:</p>
+<p><strong>Functional</strong></p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token comment">// Stores object with a unique key</span>
+<span class="token function">put</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span>
+
+<span class="token comment">// Gets object from cache based on</span>
+<span class="token comment">// key provided</span>
+<span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span></code></pre></div>
+<p><strong>Nonfunctional</strong></p>
+<ul>
+<li>Scalable</li>
+<li>Highly Available</li>
+<li>Highly Performant </li>
+</ul>
+<p>As always, we'll start with a simple, single server design first and then evolve our solution. If we have a single server, we'll have the following setup:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 38.19444444444444%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAICAYAAAD5nd/tAAAACXBIWXMAAAsSAAALEgHS3X78AAACE0lEQVQoz02N70tTYRiGz18jBmZJiJJkiZChpkYgZZYoGdbEyi/SB/3QR0FKwanZRKxkLidEo7BME7Odc+aaHo9uc9PUzdwU1i9Tt5O7Og7RXri43vvlfp5X4ODE4/GEAz98SIERnGtjOIMf/mMMWX9f/7Vy2D8Y4WgHCG6fn99bW7AHP/98p95WyI3BNCqtGVQMZh1SNZRB+ctUmt5fIxqNomka8b8asViM7WiMmBbTd2gIals9kY11dnY1gpvL3LRk65ykxNxKrmWB8xanbi+l5gdUDqRw71UR4UiYvd0dBubCGD6FqBM3uDsZ4oUSQvB0N7IeWGYzGMC3pFDVn03F8+Pk9fZx6rGL9JZ3CRc9a+Z6XzJ11mKWvnrZDq1w/80CSS0TpD8aJbVd5rZtEeFzTRYL4ihr38KoXhcVvWco70kh72knmV1uTnfaE75oaqLMlIyhvxCPz01kbZXGt3OcaJ0ks22cDKNEg20ewTVkQhXH9V9XcSoSpcY0LhuPUdyeQ4GxjMKOK+Qbr3LJmEVJexKVpnPMziss+v04VTevZTdW0Y1NnselehBmvX4UdQ5lZgbXtIuH5lpudV+gtiefmq4cqjvOcqc7F4OpgOoneTRbG5hVVKb1vqrM4FWVBB4dVVEQRLsdSRSRJAlZkplyOBH17HBMMTw8gsUyyMfxiUTe70w5vuiWE3dRxy4esZ//ARe37YTDepJQAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Distributed Cache 1"
+        title="Distributed Cache 1"
+        src="/static/9d0d7d665d1477fe47eb86308e4c2751/1dda8/distributed-cache1.png"
+        srcset="/static/9d0d7d665d1477fe47eb86308e4c2751/27f03/distributed-cache1.png 173w,
+/static/9d0d7d665d1477fe47eb86308e4c2751/376d0/distributed-cache1.png 345w,
+/static/9d0d7d665d1477fe47eb86308e4c2751/1dda8/distributed-cache1.png 690w,
+/static/9d0d7d665d1477fe47eb86308e4c2751/91043/distributed-cache1.png 720w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.youtube.com/watch?v=iuqZvajTOyA&#x26;ab_channel=SystemDesignInterview">Image Credit</a></p>
+<p>In a single server setup, the client makes a request to our single server that has the cache implemented locally. If the request comes in and it is a cache miss, we'll get the data from our DB, store it in our cache and then return the value to our client. If it is a cache hit, we'll simply return the value from our cache. In essence, this is a read through cache system. Let's dive into various algorithms that can be used to create our own cache. </p>
+<h3 id="lru-cache"><a href="#lru-cache" aria-label="lru cache permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>LRU Cache</h3>
+<p>We'll be using a doubly linked list to keep track of all the requests that we've received from the client in a linked list in memory. We'll have a tail pointer that points to the end of the list. This pointer will be used to evict items from the cache. Next, we'll have our linked list setup so that every new read would cause us to move the item we've just read to the front of the list (since we're using LRU as our eviction policy). The linked list will allow us to:</p>
+<ul>
+<li>Keep track of least recently used key in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> time via tail pointer</li>
+<li>Move key to front of list in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span> time (we need to iterate through the list to find our key)</li>
+<li>Adding key to list in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> time (using our head pointer)</li>
+<li>Finding key would take <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span> time.</li>
+</ul>
+<p>We can make an improvement here: we can have a hash table that holds key and value from our linked list. When we add an item to our linked list, we do the same to our hash table. When we remove an item from our linked list, we do the same from our hash table. This would allow us to return items back to the client in constant time and then update our list accordingly. Here's the LRU cache algorithm decision flow for GET and PUT:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 44.14739884393064%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAAAsSAAALEgHS3X78AAABR0lEQVQoz21Ry47CMAzM//8OB04IhAQCCcGFR1tUuANNW5aljzxmbUMKy66lUZKxZ+wkCs/w3sta1zWstR0XeOcciqIQaK2l7l3btq3sVRCE9Xr9gjHmX8NrWZJZLggGHMZYalS+DIPoIez6wn9MH8SfwWn3LFEvI0ekR9W0aM3vKwc4UtVveffsbuiJqroVvbrdbqiqGk1jqNAhzzW+73d4/A1LhiVdu6L349qGzI31uJNe64z2Doo/gMHuljpyd4ZM/AFrH3m+Nu8DzxM25uGjws/leS7r6XyRBw5c4Hkyxul0ljN/UNBmWYZLpiWvjscjApIkwXq9QRzHOBzSjk/TVLgkibHd7RBFkYDrOR9FMTbbHfb7PdRyuQRjtVphPB5jOBxiNpthsVh0/GQyQa/XQ7/fF/B5Op1iPp9LDesGgwFGoxF+AKooru/AlLyVAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Distributed Cache 2"
+        title="Distributed Cache 2"
+        src="/static/77d41d62d24b8002ea60152181c14b5b/1dda8/distributed-cache2.png"
+        srcset="/static/77d41d62d24b8002ea60152181c14b5b/27f03/distributed-cache2.png 173w,
+/static/77d41d62d24b8002ea60152181c14b5b/376d0/distributed-cache2.png 345w,
+/static/77d41d62d24b8002ea60152181c14b5b/1dda8/distributed-cache2.png 690w,
+/static/77d41d62d24b8002ea60152181c14b5b/bcbcb/distributed-cache2.png 1035w,
+/static/77d41d62d24b8002ea60152181c14b5b/b4b06/distributed-cache2.png 1380w,
+/static/77d41d62d24b8002ea60152181c14b5b/6da63/distributed-cache2.png 1384w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.youtube.com/watch?v=iuqZvajTOyA&#x26;ab_channel=SystemDesignInterview">Image Credit</a></p>
+<p>Next, we can go ahead and discuss the LRU cache algorithm code in detail. Now that we've explained how the algorithm works on a single server, we need to make it distributed. Earlier we said that this is a distributed cache because our cache data is too large to be saved on a single machine. Therefore, we'll have our data sharded among different hosts:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 481px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 103.74220374220376%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAVCAYAAABG1c6oAAAACXBIWXMAAAsSAAALEgHS3X78AAAD0ElEQVQ4y32U3W/bVBjG/RfAxDXjCiGugLG7MS4AcbldoE2bxDa4YNs/gIQYXHCDBGhIXKAxuADER2gLSqMlqUSbhBaG6NjSJG3StOuaLztuE9uL48R2/JE8vOckdtdWwtKj8/p9f+c5r4+PLYxGI7BLN3RU61U0ZQnblW00xDrPsYsxAWfaJqq1CiTi2FitVdFWWiEnDIdDigDPGqElqni420Vb0tBuavAt8BpjuOmQblygJanQdnQo8kPODgyPc77vQwD5ifo2fih8gkjpOn4uXucj04+rn6KpVznMzDqmiqniF8R8hsiE+6X0Ob4vfIwtZRXMS2Ct/lWL49xvz+LS7Iu4GH2B663Z4zj76zNYbvyO8fMAW2oBb8eO40L0eWKOhdyZmacR3/iWY6HhpdljuBI/icvxl7iuUnwh+tw+w/tKntfeuXViwp3A1cTLeJO4xOZ3E0MCS607eC/1Bj7InMO11BlcW6D4j/M8V25nx4b0OHK3ho8WL+L9NDHps5z9MHMe7y6cxrI4XlhgG+l5HsxBD/2Bgb5twOjIXCzn+UP+Upg8z4flmMT10Otr6BkK+k6fc67rTV7K5HWzTkOxwXXg9XX4joXgGk1ORFAfDqxwO4JjJQRBcNZCTXL+oA/P7GLke3sc2wHXppoZcoHxXof/czEzz6Ru7V7IjjyHurQDImxkX4cu7SWTN9G4trfY0B3QNnTg0Nfi2BYc0wj3OPxSAkPLsnDv3l0U8nmsFgoorq3Btu1Dnx5bKH93GSu30yiu/IvsSg66vveJCj7rynUxpNGnBFvLZ92wmHKO4/C3x7pgMcsNubELn3J8Dm2JQx5sMcFxx5u90PLw2q0KTsW3cDqxjVeSDSzsuvyRXTJ0PZ/Ht1UPryeqOJUcs68m64g1He4xIC/Bsge8p59qNo7czOLoV//gqRt/47Gvc5Rjx8Kjs+fCdhwexyQbT3yTw5M37+Dol3/icZpz44HFPUzyErrdLh1QA+1OF0XVxHrXxTr9PVjc1umQU92gutHr8VihXIlzDmcZt9sZe+hUFzSNflWKAk1VYKhtaOslKNksursyNE1Fu001YpgUximMo7G4Bq28Pp5D98xDVVUIsiwjkNSU0di8j0apDFEU6Wcro9lsHpJEqpc30dh6wJlHPYRKpYJHVa3XUW00IEoiN2WSJCmMmRpUb+7sQCTjg/OFcrmMgyoVi5iZmUEkEkEsFsPU1BTm5uYQjUaRSCS4pqenMZdMYmNjY99cIU8H+aByuRwymQxSqRTS6TQfFxcXecxGpvn5eSwtLR2a+x+JuOAd+DHWwAAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Distributed Cache 3_1"
+        title="Distributed Cache 3_1"
+        src="/static/fd232cb4c707d116e90a00b5d8394106/2210a/distributed-cache3_1.png"
+        srcset="/static/fd232cb4c707d116e90a00b5d8394106/27f03/distributed-cache3_1.png 173w,
+/static/fd232cb4c707d116e90a00b5d8394106/376d0/distributed-cache3_1.png 345w,
+/static/fd232cb4c707d116e90a00b5d8394106/2210a/distributed-cache3_1.png 481w"
+        sizes="(max-width: 481px) 100vw, 481px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.youtube.com/watch?v=iuqZvajTOyA&#x26;ab_channel=SystemDesignInterview">Image Credit</a></p>
+<p><strong>We need to figure out how we'll decide which cache client to call?</strong>  </p>
+<p>How do we decide the method with which we'll be distributing our data among cache hosts? We can use the following two approaches:</p>
+<ul>
+<li><strong>Key based partitioning</strong></li>
+</ul>
+<p>Here, we'll have the data partitioned based on the keys. We can have dedicated shards that handle keys from say Aa - Ba, Bb - Ca and so on. The issue with this approach is that we can have hotspots if the requests are not uniform, resulting in some shards being queried excessively while others sit idle.</p>
+<ul>
+<li><strong>Hash based partitioning</strong></li>
+</ul>
+<p>Another approach is to use a hash function that uniformly distributes data among shards. This helps get rid of the hotspots issue with key based partitioning. However, now, what would happen if some of our nodes go down? We'd have to re-assign data to nodes and this would cause us to unnecessarily move data around.</p>
+<ul>
+<li><strong>Consistent Hashing</strong></li>
+</ul>
+<p>We'll stick with the hash function but will use a ring to assign our data and servers. We'll also use virtual nodes to evenly distribute load across available nodes. This allows us to re-hash a much smaller number of values if a new host is added or an existing node is removed.</p>
+<p>Ok, so we've chosen the method we'll use to actually place our data on cache hosts but who or what  does the consistent hashing calculation? Answer: a light-weight cache client that resides on the service itself:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 43.26123128119801%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAAAsSAAALEgHS3X78AAABvUlEQVQoz4VRy07bQBSdz+mGTT+mEiugiwqB2g0b1kh9RGLLEolKLYtWCNF3F02JVKwgZCkhkdzYSQQk9rh+5Ok02K59OvcmQmwQYx+d43uur87MiDzPQYuYH/qmN5/VsrlP67a+awn6M7+n8WMrxIHps44mE4xGIwyHQ/T7fWbCYDDARHkiyzNurLoaXv56glc/1lE4XkNBW0W7Z7C3UZZYO/nD2g9C2LYN13URhiGCIGCm4VmWQUyDK278ZOxi8WABK0cP8fT9EjZ39lBrt9kr6C62zlzWnu+j0+nAVxxFEcbjMTOlTtMUYnJV48bPv/fw6N0DLH1YwOr+Mp49P8R545K9bV3ixZlkHag0lM5xHEgpeXi324XneUiSBCKfb9kZXeCL+Rrfm2/xzXqDr9Y+gr8ee+vHF3j8szPb8nwgJaJkdHYEOsfpdAoRxwmu42tk6ex2kc2hdJr8U/UEp26EExkhT2OVykWz2eShdH69Xo+3TxzHMQTFJjjSge10FewbSFVzlDf0VSIF0o1GA9VqFZVKBYZhoNVqwTRNWJbFc0S9Xsd9OK/NQLpcLqNYLKJUKjETNE2Druvs/wfMZI730Woh8wAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Distributed Cache 4"
+        title="Distributed Cache 4"
+        src="/static/36be7ebdd7b03349cabb50ea51e51ad3/1dda8/distributed-cache4.png"
+        srcset="/static/36be7ebdd7b03349cabb50ea51e51ad3/27f03/distributed-cache4.png 173w,
+/static/36be7ebdd7b03349cabb50ea51e51ad3/376d0/distributed-cache4.png 345w,
+/static/36be7ebdd7b03349cabb50ea51e51ad3/1dda8/distributed-cache4.png 690w,
+/static/36be7ebdd7b03349cabb50ea51e51ad3/bcbcb/distributed-cache4.png 1035w,
+/static/36be7ebdd7b03349cabb50ea51e51ad3/07dc3/distributed-cache4.png 1202w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.youtube.com/watch?v=iuqZvajTOyA&#x26;ab_channel=SystemDesignInterview">Image Credit</a></p>
+<p>Each cache client needs to keep track of all the available cache server nodes. To do so, it'll have to be able to know the exact list and addresses of each of the available nodes. To keep track of that, we have a few options that can be used:</p>
+<ul>
+<li><strong>Configuration File Method</strong></li>
+</ul>
+<p>We can use a configuration file with node information and deploy it on every service so that each cache client on each service would know exactly the server IP addresses and ports. </p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 325px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 144.6153846153846%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAdCAYAAACqhkzFAAAACXBIWXMAAAsSAAALEgHS3X78AAAE1ElEQVRIx5WU61PTRxSGf38KCR+wndpOTUAqEOzXTj9oxTpSFMIlIYpQSnUiMNNaIdiL4oCoQKFVQRHIhdy4Q4AAQ7lIZZhB2jiEBCkMgiAgUpK3ZxfCxTItJvPm7Nk95zlndzYrgD5e+nLr9cD38Xg88Hq83HrWtsk359mK9Xq9m1ZYHxFgA+aYGcZ1+1fItiVAY1Mgp0OJ77vWdaVTCU2bgqREli0e9wdzsbK6vAMqbHdW/n4Fdf1xROreQ2xNEGJNQTjxy4c4cn0/jubtR8StDxCtC4TcGIhY40F8XrUP2qFb6zvyrm116Otucn4cSmMYEs0yUjhUVhliKg7ixM0DOFkkQSRJYTyEREs4zlg+hrwmEFc7kuFj7ApUmQ9DYQqF0hxKyTKcrfkMSaYI0jEkGY9DZfiU1kN4wWiDBLn21P8GJprCKSEM8WYpMh7moPjBU/xc9QQl1X+QHUVB+WMk605BaQkmoBTX7F/+P1BpktH5SZBVUYbCOw5o8huRk9eMa0WdKL43jrSqVCRYAxGtD9wrMAxxJim+LS9BXtEIUjJKkZp5F+kaLW6UPkVq5Tko3gbIthxHW868W4IfC4ahulCEM+eLcSFLh59ujyLl4VsDZfwM1SW/4kq+E5fzB3EpdwCX8wahyRtD8oMUKGvfskOFJQhJZalQ5zdBXVCHiwX1uHijARcKDEjUHkWi9RABpXsFhvBzVJqCSYfobpJv3LCmj/jc+rU5sHegwhwGeW04YutkOySvozmrbPMe7gmYQJc6SR8CTbEU3xVKcalQQlZCVors2xJ8cyeI7uEegSoCyq2hyLgfDEe8CN1fiPBblB96okRoPSnCUKQI7eoAxNceRox+ly2znzeBsQS8SMA/VWLYo0VoIWC3XIwGgg7F+MGW+Q7irOG7A3fr0Ad8qvKH/bQItlMi9MipQxo/pgKtmft27ZA/X7zDjcdy8sUWUF1OwLP+GFaK0REjRstpf/Ql+MOpEKMtnYDUYTQHbjwOno3na3V1Fa9fr4CeM7hmHFDqQ+l/LIP6bjBcCWJMkH6nDgeixBij8V9yP5Rnvos4C3VYLcUPtiSi0VtKDMYSlpaWsLi4iFfLrzAzN40U/Sc4Ufk+EsskuJkdwFWUE4BiUqEmALnkx9w7gGjtQUSUBaC0OwdrK8DLxQXOEebm5sA0OzeLpYVldD1pRLrpJNKMx5BsOU6KwDkmcwQfp9DceXof0wxHcLX5a7innFiYfwkfR5iensaWpvDi+QKmp6Yx7h6D2+3cVa6Jdc3NzOP5zCy2M4SJiQlsl8vt4vbZs8kdmnzDZ3JTrNvt3pEvjI2Nwel08gWXy/Uv69P4+Dif80FcG9Y3z2IYS3A4HHj06BGamprQ2dmJ9vZ2WK1W7re0tKCxsREdHR18jfnNzc2or69Ha2srj2HxbW1t3B8dHYUwMjKCnp4eHmiz2XhwbW0t9Ho9hzE1NDRwGLMmkwk6nW7TZ3lGo5GPBwcHIQwNDfEkg8HAK7IEJlaxuroaWq2Wd2yxWFBXV8cLMbGirDhbZz6zrDGhr68PAwMD6O3t5RVYUEVFBYeyIpWVldwynyWxImzM5tmY5bI8dmz9/f0Quru70dXVBWaZ7HY73zo7F2ZZp8z6xLbKzs23xnJ9Yvn/ALVXFSeoFeoOAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Distributed Cache 5"
+        title="Distributed Cache 5"
+        src="/static/406cf4c0477cdc49e841e7d7fd7d0ed8/d53b1/distributed-cache5.png"
+        srcset="/static/406cf4c0477cdc49e841e7d7fd7d0ed8/27f03/distributed-cache5.png 173w,
+/static/406cf4c0477cdc49e841e7d7fd7d0ed8/d53b1/distributed-cache5.png 325w"
+        sizes="(max-width: 325px) 100vw, 325px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.youtube.com/watch?v=iuqZvajTOyA&#x26;ab_channel=SystemDesignInterview">Image Credit</a></p>
+<p>This is a simple approach but not very scalable. Imagine the amount of times you'd have to re-deploy services just because a node was removed or added!</p>
+<ul>
+<li><strong>Config file placed in shared location</strong></li>
+</ul>
+<p>In the previous approach, our issue with it was the fact that we'd have to redeploy multiple times just to update our host list. What if we have this config file in a shared location and just have services read from this shared location:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 343px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 117.20116618075802%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAXCAYAAAALHW+jAAAACXBIWXMAAAsSAAALEgHS3X78AAAEeklEQVQ4y4WTWXBTVRjH76Pjk04VH/SBwIyKw7gMu6OMOj64jBShA5gCpQFKV9oOIEuBAWQpw1LUKouoM5rCKG1IGjpFaQqFJqVBu8Vim2ppS5OSdKfpknuT/jy5aaENjp6Z39x7z/f/f+c75ztXGh0dxfDHGbLLEjlWnkFORQbHbYKKTLKvJZFf9zWBoEJoFDfoOaTq0sO6MW12WRL66qOMKMNIzV23ibs4m/hLs4n+4nnez54mmM6SUy+iK5rDyvxXae6up2+oi3XG14VuFktPz+C9gxrBNJacfAGdeS6f5M+kqv06UqO3hgTzGyQVvUXKeS0pP8apJJ/Tklz0DjrjPJydtXT5OthQuJDEooWk/ryClB+ETi90ebEkX3qXeNNcKttKkJzeOtaZ55Bm0HJS/yen9PWcyrvNmfN/kW7Qscb0Ck2dDrp9HrHwApIvfsyX+ipO5zUIXT1nz7eyqSCV1aaZ2NuuhhOuNc9SzUdy7aTvOEtG1ncczq1gkyGVOOPLDxKuN88jzajlUO41Nu/Ss3HHNxz+vJKtBVtZZXxJJCxFavI6whUW6Nifc5OEzFwyd+rZd9xKRn5KRIXzSb2oZU/OVdK2fU/q9m/57Fglmy58qlZ4K1Rhg6dGHOprpOSvYm9OPdsOlqvsyXGQdiGB1caZNHpq6RzoYG3hHJIMMew+cYusbDtbD5Sx91gD6T9lsNI0g4qWK0ihlTdfXsQaw3wS89aRkpeukpiXIOYWkFn8gdqQ0JXYWbKCOMNsEs/pSNYL3Tmh0yeiM7wpGvM2rT2NSKH71TngptZtxeEto9ptobrDIt6viblyPPfbGR89g17q3DYcnuvUdJRS5bKonhqhc/XdUTVS6GL//xgdI2IEI1Qil1phcDQo/oaA+vTLMrIiExgNjDmCKLKCLIf+lvBcSCsrCsN+v0jy0KtWODF7aMiKEAfCwZL2QTbe6mFLbT9bHD7SfuvF1DKgxhShGfErD7zj9T+SUBEJfSOyWk1W9X0eO13H1K9uMPVoMY+fcbCholeNDQzLYjfKJO+DMxxnPOhXwlvdXuNDOmEn6mgJT+43IR25wfrK+2psRCw80TOOFHmo4TMNf5e6h1llaSfG7CTmiotYi4vCtsFJmsimTqowkok9DgQetjT4Hx5JDnU1AkV9ii4K/GJrQyN+lVDDhsc6rvyLL4Q0ODjIJHwDDMkBup1V1O6JxpoVzc1dgp3RXN+xmLrdH9JVbxOaoKqN9Et9fX1MpLenm/4hP+7fLdi1UzAvfprLS5+hWGBaPIXKZU/gshXSL7oc0kb6Ja/XyyQ89+jqG6DVfgW7ToNx2VSMyzX8GquhYJmGm6ufo6W8kK5+n6qN9Esul4uJtN+9S0dnN03WYiriNfyiFUmXT+PSCg2XY6djW/ksTZYLuDt7VW2kX2ppaWEid5r/ptXtob7UyI3lUZQL8j+KwrjoKazivTQmCoeItbnvCW0zkX7J6XQyicZGmprv4LBZsB6MwyaozF4jiMe6T0v52QM0Opt4xDfGPx0f6c3DJNGRAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Distributed Cache 6"
+        title="Distributed Cache 6"
+        src="/static/9ea182748789a55ee12071a0271cc611/c0191/distributed-cache6.png"
+        srcset="/static/9ea182748789a55ee12071a0271cc611/27f03/distributed-cache6.png 173w,
+/static/9ea182748789a55ee12071a0271cc611/c0191/distributed-cache6.png 343w"
+        sizes="(max-width: 343px) 100vw, 343px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.youtube.com/watch?v=iuqZvajTOyA&#x26;ab_channel=SystemDesignInterview">Image Credit</a></p>
+<p>Again, the issue with this approach is what if this update takes time and our service reads an old file. This would result in a cache miss. Another issue is that we'd have to manually update the file.</p>
+<ul>
+<li><strong>Service Discovery</strong></li>
+</ul>
+<p>We can use a configuration service such as Zookeeper that'll keep an eye on the available cache servers. To do so, periodic heartbeats are sent to each of the cache servers to determine their health status. Next, when our service is about to perform consistent hashing calculation, it'll get this information from Zookeeper before sending data over to cache servers:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 478px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 77.61506276150627%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAQCAYAAAAWGF8bAAAACXBIWXMAAAsSAAALEgHS3X78AAAC9ElEQVQ4y6WSW0iTYRjHv6sI1oHug9QLb4LuIrqNCq+isC4Ls5OZREHkRREeMqNBHjZ1zUhspfM0dVmieYBC5szUaXM6UdysueXWDm5u+07/3u/9Jmyu6KIXfjzP9/K+/+//Ps/DIGmJokihOccCWyEguikj5UmIbAxi0p1tmDRBQaB5aOYzLOoSmFVlmNFUUOYbn2JWW4kZsr8xYqDnBHKemviXYHisD5aym+grzsfwg+sw3svDh+IreF98FVOlN+A3vkxcks8LCQ1mp2UxcSBun0Kgqw4OvRqujjos6WoI1Vh+Wwtfuwpbk0P0nC3I4Uz/Kk63fsXF0R+yoCDyqQg8RKQunsAmbEghRnMRQ+449qlM2Ffei8zX1tQn71ySW6lGcZajNWJJjMc5uscL8i9HPSz2NC9BoTIjo4s49EbcMFi16JirR+dcA0GD9lk1Vnzz8tOJiLDdeRI5jicI4HjZboDY1q+xaFqNo8fFgTHONyG3MwvntNnIeZaJs5psnCfftab79AIrjU9CTFqSkEDcUUHi1E3errR4UT62ijrrLzC9tkZc6jqGxx1aPNHrUNmmwzVDDmrG70olIu6E1PmkP+HB028RH9dj2K2awK6SXhxsJjXsXXiBvM4TUNaZ8ajCiOcqCwrb8lA1XiQ3gDQpeQrk2RMRY3maD5MaKhq/QaEcwSH9CphuWwMud55CqdKE28WtKK2cRIE+H9XmbUHiMK3npLYcTx06IjzuTIdRYPLioTUKpt+uQ27LYdxqqEJhTT2K1Bpc0B1H/YRcQ17gkD6rotxpIhomDXrn3ETbkh+D38NgfMENjNgNGFh8g0G7ntCCgYVWrHlXwJERiUa3CNE0IgTEoxhwhrCXzKGixICMJguYUHATbEQgiIko5+FQBP6AH4FA4I/4/AHw4SB67D+xv/oTDpR1I+vVNBi32411tysFF0Ha93g8f2Xd7UFww4PRJReOti/gSNMXnDQug3E4HPgfnE4HbCurmFt2YJHE3z8taGvJMmWEAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Distributed Cache 7"
+        title="Distributed Cache 7"
+        src="/static/5349fc404fc5d690991dd30f4507842a/c78d4/distributed-cache7.png"
+        srcset="/static/5349fc404fc5d690991dd30f4507842a/27f03/distributed-cache7.png 173w,
+/static/5349fc404fc5d690991dd30f4507842a/376d0/distributed-cache7.png 345w,
+/static/5349fc404fc5d690991dd30f4507842a/c78d4/distributed-cache7.png 478w"
+        sizes="(max-width: 478px) 100vw, 478px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.youtube.com/watch?v=iuqZvajTOyA&#x26;ab_channel=SystemDesignInterview">Image Credit</a></p>
+<p>The drawbacks here are the operational costs of using a configuration service BUT this is the most efficient method. </p>
+<p>Now, every time a host needs to put or get from cache, it'll have the host address for that particular shard and will make its call to the appropriate host. These calls from service to cache host will be made using either TCP or UDP connections. If needed, we can dive deep into the pros and cons of using TCP vs UDP.</p>
+<p>Here're all the methods we've discussed for cache server discovery:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 50.68825910931174%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAAAsSAAALEgHS3X78AAACRUlEQVQoz62P204TURiF5wV8C2PiK3irURMvvFJvuPEEHgii0QsTY0IiN4bQkIgB0SAhYqKC9CBGNNAgEDNtbdMTLUyn7bSFFpAeZnru9HPa1D6BK1nZe/3519prC81mk4be6LKFQ7WCP5klmMqyky6wnc4jZfKE9wooh0VDq9QaOhjeZoftu+EV+E9oFzMoVOol1uNWlqVZNhQb1UbFeL3GprLEivyBZD7CWvQzP2OLlGpFWjX0pk6jXqOcz1IxWNUK3WBh58hD7/w57r15QN/8eeK5EIX6PgMz/dwwPeKtf4i+Fw/pnbyNoga7xno6QWDyGaLpCXvmafa0Kmu7WivQweCnOwyNubk/34+c81DVi4wvT2FamMWz/5Fx6ywm2yv+lJMY5fhTSVGsZmmWNIr5nJFexiznOG2WWoFeBhbO8Hj6EoMLZ5Gyvk6HBtlamblwjky51NYt2OVF7s5c5eX6MHVjpne2vycK9PxQEHx5H6OjJ/BePMbI2El8qr+zopM0cq5tZNlWm23dwlJojuvDIzy3jRiBGnon8ZtS4MpyDCF6JDNluYl14jITX24RO4pSVoto1RoH7hUCTy+Q3rQYX2xQVDWSBzFE6RehlB9N08gXVKiWmPOlOPXeixDeChMMSfgkmeCWRCgYQo5EiO9mCHx9x1LPcbzm1yiGliMSSjxBJpUhldglGo0ZjJKIx3CGZRbdOwh2ux2LxYzNYsFqtbC6uorD4WjT6XLh8nhx/vZ0Z6JDRBTF9vlv1qLb5STgdvIXTIW9TSyoDnkAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Distributed Cache 8"
+        title="Distributed Cache 8"
+        src="/static/2aac6325e0d06157516c9527ac6e158f/1dda8/distributed-cache8.png"
+        srcset="/static/2aac6325e0d06157516c9527ac6e158f/27f03/distributed-cache8.png 173w,
+/static/2aac6325e0d06157516c9527ac6e158f/376d0/distributed-cache8.png 345w,
+/static/2aac6325e0d06157516c9527ac6e158f/1dda8/distributed-cache8.png 690w,
+/static/2aac6325e0d06157516c9527ac6e158f/bcbcb/distributed-cache8.png 1035w,
+/static/2aac6325e0d06157516c9527ac6e158f/0787f/distributed-cache8.png 1235w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.youtube.com/watch?v=iuqZvajTOyA&#x26;ab_channel=SystemDesignInterview">Image Credit</a></p>
+<p>So far, we've handled our scalability and performance requirements. We've got an LRU cache algorithm that is performant and our lookups are fast. However, we've done nothing to make our system highly available: if a shard goes down, we don't have any backups to serve from meaning all cached data in that shard is lost.  </p>
+<h3 id="replication-to-achieve-high-availability"><a href="#replication-to-achieve-high-availability" aria-label="replication to achieve high availability permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Replication to Achieve High Availability</h3>
+<p>Types of replication models:</p>
+<ul>
+<li><strong>Probabilistic Protocols</strong></li>
+</ul>
+<p>These protocols include gossip, epidemic broadcast tress, bimodal multicast. <strong>These protocols are eventually consistent.</strong></p>
+<ul>
+<li><strong>Consensus Protocols</strong></li>
+</ul>
+<p>These protocols include 2 or 3 phase commit, paxos, raft and chain replication. <strong>These protocols tend to favor strong consistency.</strong></p>
+<p>To keep things simple, we'll use one of the three methods we already know: single leader, multi leader or leaderless replication. </p>
+<p>Single leader replication would imply that one of our cache servers would act as a leader and we'd have followers in different regions. All cache updates will be sent from this leader to its followers. If the leader fails, a failover process will kick in that'll promote one of the followers to a leader. All <code class="language-cpptext">put</code> calls will go to the leader while <code class="language-cpptext">get</code> calls can be handled by either the leader or the replica:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 32.229795520934765%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAGCAYAAADDl76dAAAACXBIWXMAAAsSAAALEgHS3X78AAABgUlEQVQY022NS0sbARSF57+UQh8ru/IndCN250q6ScGN266kSAOi0kUwIGKLiCjik9o2tlgdNZOHk5hmkhBtYmysOsYYHONMxok0nc8xVXzQA+d+cDj3XoH/yLZtZ/zjtS+DmsM/f+16x6zZSEWLfbN2Z1c4r1UJ/p5nMTvFt9ww8eLSzdH7T25pvWQhvAvRpWhQrbB/UMCynGxTVWidfEbLUAOuARfumS6MSgXTPEPXDU5OyuiGQfXMZDanMbWlYelldksa3kSRNbWMZZxyrGlOX0cIp1d4OdLIq7HnvH7jo6c3xE4uw+52htxmmnQiznb2J0d7eR5/kHk4GCaf/8Xhgcpp6ZAjh6qqUigU6hS+h3286HtKk+cJze5m2jztpJIJUqlknRsOY9EIPyJrjK5EGRZlMokYc4EID7o/8tYnk00qhOUIiqIgLK+KvJ/10D/dg3emkxGfl0AgiCRJVw7gd+j3S6yHJKJBCdnx2NclHrnH6ZhYICgu8unzF0RR5AL9VJp+zi82PAAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Distributed Cache 9"
+        title="Distributed Cache 9"
+        src="/static/e4b966349938fb531e5815f9638be373/1dda8/distributed-cache9.png"
+        srcset="/static/e4b966349938fb531e5815f9638be373/27f03/distributed-cache9.png 173w,
+/static/e4b966349938fb531e5815f9638be373/376d0/distributed-cache9.png 345w,
+/static/e4b966349938fb531e5815f9638be373/1dda8/distributed-cache9.png 690w,
+/static/e4b966349938fb531e5815f9638be373/3d731/distributed-cache9.png 1027w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.youtube.com/watch?v=iuqZvajTOyA&#x26;ab_channel=SystemDesignInterview">Image Credit</a></p>
+<p>We'll perform our data replication asynchronously for better performance. We don't want to wait for all replicas to return acks before returning back to the client. </p>
+<p>Here's our entire system summarized:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 51.66757791142701%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAAAsSAAALEgHS3X78AAABq0lEQVQoz4WSzUrDQBDH8wo+gFcv+gA+hxc9efLiSTx5qKgXoYr1oIgUxO8KfpSCInpRbIvQaIuh1lRsUaQqVGtLP5I2yW7+Jpu0Ji3iwrAzzO7Mf367HNUpTNN13TCw3VzU3s/e61hOV5gvFFUEXmRImpVrnnUuzh3+HlSp5Y+EP9C9JTLfKxTQtXaPnOxu6izLbcS8WOU92OHXcZYIg1Di6l5RKcRvGbsPBfB5CWKxDoX+NtYpdRk3eNCLgaNujCx5ML0YhkK01mFiFxXLGjh/GocvNRYThqdzXKYwJPqxl1rA/u0ezhPXoA6F5hVqdK0aKqP5Bj7rhMUtzg0ZjScBakaA8piAmsu0M0QHbI1QV04l1mhM6ecbXn3jeJobQ3Z2FN+HK+A2Y/Pw30xhlzG86mBoFjQ58gUFXw1q5B0K6zXIQhTSXQRS/BJKNglu6KDPZjiJmcWoi6Fmw89WDIbLKYNh9X+GRw8r2El6EeC3cRqPtBQ2v8RJToIvVUIoU0LwuYzj16rxpeB4ZWK/sLX/yZDY6oYvcugPZpk/wefRE0ijbA3Bmupt9gOZ1OPIvjyj0AAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Distributed Cache 10"
+        title="Distributed Cache 10"
+        src="/static/b49d5ebddafed9d0a2eebeeaac3ba2f7/1dda8/distributed-cache10.png"
+        srcset="/static/b49d5ebddafed9d0a2eebeeaac3ba2f7/27f03/distributed-cache10.png 173w,
+/static/b49d5ebddafed9d0a2eebeeaac3ba2f7/376d0/distributed-cache10.png 345w,
+/static/b49d5ebddafed9d0a2eebeeaac3ba2f7/1dda8/distributed-cache10.png 690w,
+/static/b49d5ebddafed9d0a2eebeeaac3ba2f7/bcbcb/distributed-cache10.png 1035w,
+/static/b49d5ebddafed9d0a2eebeeaac3ba2f7/b4b06/distributed-cache10.png 1380w,
+/static/b49d5ebddafed9d0a2eebeeaac3ba2f7/51aa1/distributed-cache10.png 1829w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.youtube.com/watch?v=iuqZvajTOyA&#x26;ab_channel=SystemDesignInterview">Image Credit</a></p>
 <h3 id="useful-architectures"><a href="#useful-architectures" aria-label="useful architectures permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Useful architectures</h3>
 <ul>
 <li><a href="https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html">WordPress on AWS</a></li>
