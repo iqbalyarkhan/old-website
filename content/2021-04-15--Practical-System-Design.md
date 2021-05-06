@@ -22,6 +22,7 @@ tags:
 9. [Design Distributed Cache](#design-distributed-cache)
     * [LRU Cache](#lru-cache)
     * [Replication to Achieve HA](#replication-to-achieve-high-availability)
+10. [Notification Service](#notification-service)
 100. [Useful architectures](#useful-architectures)
 
 ### System Design
@@ -459,6 +460,26 @@ We'll perform our data replication asynchronously for better performance. We don
 Here's our entire system summarized:
 
 ![Distributed Cache 10](./images/system-design/distributed-cache10.png) [Image Credit](https://www.youtube.com/watch?v=iuqZvajTOyA&ab_channel=SystemDesignInterview)
+
+### Notification Service
+Design a notification service where a publisher needs to send notifications to subscribers:
+
+![Notification Service 1](./images/system-design/notification-service1.png) [Image Credit](https://www.youtube.com/watch?v=iuqZvajTOyA&ab_channel=SystemDesignInterview)
+
+Functional Requirements:
+```cpp
+createTopic(topicName)
+publish(topicName, message)
+subscribe(topicName, endpoint)
+```
+
+Non functional requirements:
+- Scalable
+- HA
+- Highly performant
+- Durable
+
+ 
 
 ### Useful architectures
  - [WordPress on AWS](https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html)
