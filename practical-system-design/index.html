@@ -62,6 +62,7 @@
 <li><a href="#replication-to-achieve-high-availability">Replication to Achieve HA</a></li>
 </ul>
 </li>
+<li><a href="#notification-service">Notification Service</a></li>
 <li><a href="#useful-architectures">Useful architectures</a></li>
 </ol>
 <h3 id="system-design"><a href="#system-design" aria-label="system design permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>System Design</h3>
@@ -1167,6 +1168,41 @@ Do not confuse queue with topic. In case of a topic, message goes to all subscri
         loading="lazy"
       />
     </span> <a href="https://www.youtube.com/watch?v=iuqZvajTOyA&#x26;ab_channel=SystemDesignInterview">Image Credit</a></p>
+<h3 id="notification-service"><a href="#notification-service" aria-label="notification service permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Notification Service</h3>
+<p>Design a notification service where a publisher needs to send notifications to subscribers:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 690px;"
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 60.97560975609756%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAYAAABiDJ37AAAACXBIWXMAAAsSAAALEgHS3X78AAACa0lEQVQoz5WS208TURDG+w/5oiYGQ2KMj94Sgz6hJEZ9MGriLTHRAKISQQwCoigX4UEIEmiMBKjBCrUUEGmhlFKgAu0iIrotFMt2d93+3N1SLLw5ybdzzsx3vplzZi38pyWTSROGyapGU+83yq0LlLXPMz4Xw5JJyiRn+u25JJqWyi1HJE6XeTnz2MeRQjf1NgFLiqP9g6ZtE9b02E5sppgJrXD0rocTD7xk3xzhRZdgdKgfNutmYEe3O03T47HYGnFJps62SEnbPMWtc7iDa3qHOkF1t6C0X0TpuITiqkldFc30Q1+7aRgooPlzCa8GCpn9MUZiQ0FVdfyBZ51h7rXMUfg6yMjMakpQtl5GrtyH/HQ/UmMOsqIiJSRTsKb3Djn3d5FXmk1u+R46Bl+iSPq1NYXQckx/wwnOPvFxvMhDbY+QFrxCwhCszmaj6STxDYnf8XWSCtT155NXvZdzFQe4UJ+FdbiWeCyBokgsLEX1YXg4VjRO1nX9DbuF1JRVfxdKTz6KrQDV05r+QcyvV3DSNlpBh7uG9tEqFqOzyJKiC8omo7lviap3YSrfhvCH1rGoqmomtIyhaJuTNvzWINTNMnpIURRWo1FWxDUevglyqyHAjVo/Tt9PLKIoYv/Qy/CgC6fDwYDzEy6XC7vdbqKv7yOeMQ+RaARR/IUYEXVEWI+tMjQ2w6kiJ7nFgxy+7aDa6scSDofx+/1MTU3h8/nM9eTkJF6vd2sfCAQQBAGDayAUCvN9aZHRiSCHrvVw8KqN3ec7KW/5giV9wMD09PS2debeKGJw0wUNP+718bzVyaPGfkp1vHe4+QuJs0vLQUbDJwAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Notification Service 1"
+        title="Notification Service 1"
+        src="/static/85cb2379956f687e1254fdb42ae1c599/1dda8/notification-service1.png"
+        srcset="/static/85cb2379956f687e1254fdb42ae1c599/27f03/notification-service1.png 173w,
+/static/85cb2379956f687e1254fdb42ae1c599/376d0/notification-service1.png 345w,
+/static/85cb2379956f687e1254fdb42ae1c599/1dda8/notification-service1.png 690w,
+/static/85cb2379956f687e1254fdb42ae1c599/8ce0f/notification-service1.png 779w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+    </span> <a href="https://www.youtube.com/watch?v=iuqZvajTOyA&#x26;ab_channel=SystemDesignInterview">Image Credit</a></p>
+<p>Functional Requirements:</p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cppcpp"><code class="language-cppcpp"><span class="token function">createTopic</span><span class="token punctuation">(</span>topicName<span class="token punctuation">)</span>
+<span class="token function">publish</span><span class="token punctuation">(</span>topicName<span class="token punctuation">,</span> message<span class="token punctuation">)</span>
+<span class="token function">subscribe</span><span class="token punctuation">(</span>topicName<span class="token punctuation">,</span> endpoint<span class="token punctuation">)</span></code></pre></div>
+<p>Non functional requirements:</p>
+<ul>
+<li>Scalable</li>
+<li>HA</li>
+<li>Highly performant</li>
+<li>Durable</li>
+</ul>
 <h3 id="useful-architectures"><a href="#useful-architectures" aria-label="useful architectures permalink" class="anchor"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Useful architectures</h3>
 <ul>
 <li><a href="https://docs.aws.amazon.com/whitepapers/latest/best-practices-wordpress/reference-architecture.html">WordPress on AWS</a></li>
