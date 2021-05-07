@@ -456,47 +456,42 @@ Here's this logic converted to code:
 
 
 ```cpp
-void BFS(vector<vector<int>>& islands,vector<vector<bool>>& visited, int i, int j){
-    int rowLimit = int(islands.size()), colLimit = int(islands[0].size());
+void updateNeighors(vector<vector<int>>& grid, vector<vector<bool>>& visited, int row, int col, int maxRows, int maxCols){
+    vector<pair<int, int>> neighbors = {{-1,0},{0,1}, {1,0}, {0,-1}};
     queue<pair<int, int>> q;
-    q.push({i,j});
+    q.push({row,col});
     while (!q.empty()){
-        int row = q.front().first, col = q.front().second;
-        cout << "Current element: " << row << "," << col << endl;
+        row = q.front().first;
+        col = q.front().second;
         q.pop();
         visited[row][col] = true;
-        //Check up
-        if (row - 1 >= 0 && row - 1 < rowLimit && col >= 0 && col < colLimit && islands[row-1][col] == 1 && !visited[row-1][col]){
-            q.push(make_pair(row-1, col));
-        }
-        //Check down
-        if (row + 1 >= 0 && row + 1 < rowLimit && col >= 0 && col < colLimit && islands[row+1][col] == 1 && !visited[row+1][col]){
-            q.push(make_pair(row+1, col));
-        }
-        //Check left
-        if (row >= 0 && row < rowLimit && col - 1 >= 0 && col - 1 < colLimit && islands[row][col-1] == 1 && !visited[row][col-1]){
-            q.push(make_pair(row, col-1));
-        }
-        //Check right
-        if (row >= 0 && row < rowLimit && col + 1 >= 0 && col + 1 < colLimit && islands[row][col+1] == 1&& !visited[row][col+1]){
-            q.push(make_pair(row, col+1));
+        for (int i = 0; i < neighbors.size(); i++){
+            int newX = row + neighbors[i].first;
+            int newY = col + neighbors[i].second;
+            if (newX >= 0 && newX < maxRows && newY >= 0 && newY < maxCols && grid[newX][newY] == 1 && !visited[newX][newY]){
+                q.push({newX, newY});
+            }
         }
     }
 }
 
-int numIslands(vector<vector<int>>& islands){
-    vector<vector<bool>> visited (islands.size(), vector<bool>(islands[0].size(), false));
-    int numComps = 0;
-    for (int i = 0; i < visited.size(); i++){
-        for (int j = 0; j < visited[i].size(); j++){
-            if (!visited[i][j] && islands[i][j] == 1){
-                numComps++;
-                BFS(islands, visited, i, j);
+int numIslands(vector<vector<int>>& grid){
+    int numberOfIslands = 0;
+    int maxRows = int(grid.size());
+    int maxCols = int(grid[0].size());
+    if (maxRows == 0)
+        return numberOfIslands;
+    vector<vector<bool>> visited(maxRows, vector<bool>(maxCols, false));
+    for (int i = 0; i < maxRows; i++){
+        for (int j = 0; j < maxCols; j++){
+            if (grid[i][j] == 1 && !visited[i][j]){
+                numberOfIslands++;
+                updateNeighors(grid, visited, i, j, maxRows, maxCols);
             }
         }
     }
     
-    return numComps;
+    return numberOfIslands;
 }
 ```
 
