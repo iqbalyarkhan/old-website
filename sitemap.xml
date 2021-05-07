@@ -11,8 +11,8 @@
 <url> <loc>https://iqbalyarkhan.github.io/more-recursion</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/recursion</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/sorting-problems</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/data-system-design</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/todo-problems</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/data-system-design</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/quick-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/knuth-morris-pratt-algorithm</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/rabin-karp-algorithm</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
@@ -23,8 +23,8 @@
 <url> <loc>https://iqbalyarkhan.github.io/minimum-spanning-tree</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/topological-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/cycle-detection</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/directed-graphs</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/bipartite-graphs</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/directed-graphs</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/union-find</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/undirected-graphs-breadth-first-search</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/pointers</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
@@ -43,8 +43,8 @@
 <url> <loc>https://iqbalyarkhan.github.io/stack</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/queue</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/linked-lists</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/selection-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/merge-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/selection-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/insertion-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/bubble-sort</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/c-standard-input</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
@@ -70,8 +70,8 @@
 <url> <loc>https://iqbalyarkhan.github.io/tags/arrays/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/bits/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/blog/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://iqbalyarkhan.github.io/tags/selection-sort/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/merge-sort/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://iqbalyarkhan.github.io/tags/selection-sort/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/insertion-sort/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/bubble-sort/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://iqbalyarkhan.github.io/tags/streams/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
