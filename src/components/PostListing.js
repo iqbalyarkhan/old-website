@@ -18,9 +18,9 @@ import styles from  './PostsListing.module.scss'
         excerpt: postEdge.node.excerpt,
         timeToRead: postEdge.node.timeToRead
       })
-    })
+    });
     return postList;
-    }
+    };
 
     const postList = getPostList();
     return (
@@ -41,6 +41,6 @@ import styles from  './PostsListing.module.scss'
       </div>
     )
     
-  }
+  };
 
 export default PostListing

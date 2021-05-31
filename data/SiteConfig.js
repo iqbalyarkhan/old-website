@@ -21,7 +21,7 @@ const config = {
   userAvatar: "https://i.ibb.co/WPz9CNk/avatar.jpg", // User avatar to display in the author segment.
   userDescription:
     "SWE with a passion for swimming, running and competitive programming", // User description to display in the author segment.
-  copyright: "Copyright © 2020. All rights reserved.", // Copyright string for the footer of the website and RSS feed.
+  copyright: "Copyright © 2021. All rights reserved.", // Copyright string for the footer of the website and RSS feed.
   themeColor: "#c62828", // Used for setting manifest and progress theme colors.
   backgroundColor: "red" // Used for setting manifest background color.
 };

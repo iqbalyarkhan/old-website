@@ -14,6 +14,6 @@ const MainLayout = ({ children }) => (
     {children}
     <Footer /> 
   </>
-)
+);
 
 export default MainLayout

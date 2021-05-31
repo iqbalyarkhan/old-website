@@ -8,7 +8,7 @@ import styles from './Header.module.scss'
 const Header = () => (
   <header>
     <h1>
-      <Link to="/about" >{config.siteTitle}</Link>
+      <Link to="/about" >About Me</Link>
     </h1>
     <nav>
       <ul className={styles.mainNav}>

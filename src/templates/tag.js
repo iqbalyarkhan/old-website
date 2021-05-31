@@ -13,7 +13,7 @@ const TagTemplate = ({ data, pageContext }) => (
     </main>
 
   </Layout> 
-  )
+  );
   export default TagTemplate
 
 /* eslint no-undef: "off" */

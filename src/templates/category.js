@@ -15,7 +15,7 @@ const CategoryTemplate = ({ data, pageContext }) => (
       <PostListing postEdges={data.allMarkdownRemark.edges} />
     </main>
   </Layout>
-)
+);
 
 export default CategoryTemplate
 
