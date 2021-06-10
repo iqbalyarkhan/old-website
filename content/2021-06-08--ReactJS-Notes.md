@@ -23,6 +23,27 @@ tags:
     * [Handler Functions](#handler-functions)
 
 
+At its very core, React basically maintains a HTML tree for you. This tree is able to do efficient diff computations on the nodes.
+
+Think of your HTML code as a tree. In fact, that is exactly how the browser treats your DOM (your rendered HTML on the browser). React allows you to effectively re-construct your DOM in JavaScript and push only those changes to the DOM which have actually occurred. There's nothing like JSX - neither to JavaScript, nor to the browser. JSX is simply syntactic sugar for creating very specific JavaScript objects.
+
+When you write something like:
+
+```jsx 
+const tag = <h1>Hello</h1>
+```
+
+what you're essentially doing is this:
+
+```jsx
+const tag = React.createElement("h1", {}, "Hello")
+```
+
+Later down the road, we'll see the `<App />` tag in `index.js` which parses all our components and creates the completed DOM for us. This means that when `<App />` has done parsing, there's just a huge object of React elements. 
+
+Then how is React able to construct actual divs and p tags out of it?  Meet ReactDOM which recursively creates nodes depending on their 'type' property and appends them finally to the DOM. For more details, checkout [this](https://www.freecodecamp.org/news/react-under-the-hood/) great write-up
+
+Let's dive deep into various aspects of React:
 
 ### Introduction
 
