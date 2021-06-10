@@ -10,6 +10,8 @@ tags:
     - blog
 --- 
 
+**My notes as I walk through the great book on React - [Road To React by Robin Weiruch](https://www.roadtoreact.com/)**
+
 ### Table of Contents
 
 1. [Intro](#introduction)
