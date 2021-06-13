@@ -21,6 +21,7 @@ tags:
     * [Components](#components)
     * [Arrow functions](#arrow-functions)
     * [Handler Functions](#handler-functions)
+    * [React Props](#react-props)
 
 
 At its very core, React basically maintains a HTML tree for you. This tree is able to do efficient diff computations on the nodes.
@@ -498,3 +499,195 @@ export default App;
 ```
 
 ### Handler Functions
+The App component still has the input field and label, which we haven’t used. In HTML outside of JSX, input fields have an onchange handler50. We’re going to discover how to use onchange handlers with a React component’s JSX. We'll define a function – which can be normal or arrow – for the change event of the input field. In React, this function is called an (event) handler. Now the function can be passed to the `onChange` attribute (JSX named attribute) of the input field:
+
+```jsx
+const App = () => {
+  const handleChange = event => {
+    console.log(event);
+};
+  return (
+    <div>
+      <h1>My Hacker Stories</h1>
+      <label htmlFor="search">Search: </label>
+      <input id="search" type="text" onChange={handleChange} />
+```
+
+Now, when you type, say a `?`, in the search box, and inspect the console in chrome, you'll see this (notice the data field on line 2 below):
+
+```jsx
+SyntheticBaseEvent {_reactName: "onChange", _targetInst: null, type: "change", nativeEvent: InputEvent, target: input#search, …}
+nativeEvent: InputEvent {isTrusted: true, data: "?", isComposing: false, inputType: "insertText", dataTransfer: null, …}
+```
+
+This is called a synthetic event defined by a JavaScript object. To just get the value typed by the user, you can use `event.target.value`:
+
+```jsx
+const App = () => {
+    const handleChange = event => {
+        console.log(event.target.value);
+    };
+
+    return (
+        <div>
+            <ul>
+                {/*Adding our generated List as a tag:*/}
+                <List/>
+            </ul>
+            <label htmlFor="search">Search: </label>
+            <input id="search" type="text" onChange={handleChange} />
+        </div>
+    );
+};
+export default App;
+```
+
+
+The synthetic event is essentially a wrapper around the browser’s native event51, with more functions that are useful to prevent native browser behavior (e.g. refreshing a page after the user clicks a form’s submit button). This is how we give HTML elements in JSX handler functions to respond to user interaction. Always pass functions to these handlers, not the return value of the function, except when the return value is a function:
+
+```jsx
+{/*don't do this*/}
+<input
+    id="search"
+    type="text" onChange={handleChange()}
+/>
+
+{/*do this instead*/}
+<input
+    id="search"
+    type="text"
+    onChange={handleChange}
+/>
+```
+
+### React Props
+
+We are currently using the list variable as a global variable in the current application. We used it directly from the global scope in the App component, and again in the List component. This could work if you only had one variable, but it doesn't scale with multiple variables across multiple components from many different files:
+
+```jsx
+import React from 'react';
+const list = [
+    {
+        title: 'React',
+        url: 'https://reactjs.org/',
+        author: 'Jordan Walke',
+        num_comments: 3,
+        points: 4,
+        objectID: 0,
+    },
+];
+
+/*Creating our List component :*/
+const List = () => {
+    return list.map(function(item) {
+        return (
+            <div key={item.objectID}>
+                <a href={item.url}>{item.title}</a>
+                <br></br>
+                <span>Author: {item.author}</span>
+                <br></br>
+                <span>Comments: {item.num_comments}</span>
+                <br></br>
+                <span>Points: {item.points}</span>
+                <br></br>
+                <br></br>
+            </div> );
+    });
+};
+
+
+const App = () => {
+    const handleChange = event => {
+        console.log(event.target.value);
+    };
+
+    return (
+        <div>
+            <ul>
+                {/*Adding our generated List as a tag:*/}
+                <List/>
+            </ul>
+            <label htmlFor="search">Search: </label>
+            <input id="search" type="text" onChange={handleChange} />
+        </div>
+    );
+};
+export default App;
+```
+
+Using so called **props**, we can pass variables as information from one component to another component. Before using props, we’ll move the list from the global scope into the App component and rename it to its actual domain:
+
+```jsx
+import React from 'react';
+const App = () => {
+    const stories = [
+        {
+            title: 'React',
+            url: 'https://reactjs.org/',
+            author: 'Jordan Walke',
+            num_comments: 3,
+            points: 4,
+            objectID: 0,
+        },
+    ];
+...
+};
+export default App;
+```
+
+Next, we’ll use React props to pass the array to the List component:
+
+```jsx
+const App = () => {
+    const stories = [
+        {
+            title: 'React',
+            url: 'https://reactjs.org/',
+            author: 'Jordan Walke',
+            num_comments: 3,
+            points: 4,
+            objectID: 0,
+        },
+    ];
+
+    const handleChange = event => {
+        console.log(event.target.value);
+    };
+
+    return (
+        <div>
+            <ul>
+                {/*Adding our generated List as a tag:*/}
+                <List list={stories}/>
+            </ul>
+            <label htmlFor="search">Search: </label>
+            <input id="search" type="text" onChange={handleChange} />
+        </div>
+    );
+};
+export default App;
+```
+
+Remember our `List` component? It'll now accept the **props**, iterate over the props and add create our object:
+
+```jsx
+/*Creating our List component :*/
+const List = props => {
+    return props.list.map(function(item) {
+        return (
+            <div key={item.objectID}>
+                <a href={item.url}>{item.title}</a>
+                <br></br>
+                <span>Author: {item.author}</span>
+                <br></br>
+                <span>Comments: {item.num_comments}</span>
+                <br></br>
+                <span>Points: {item.points}</span>
+                <br></br>
+                <br></br>
+            </div> );
+    });
+};
+```
+
+Using this operation, we’ve prevented the list/stories variable from polluting the global scope in the App component. Since stories is not used in the App component directly, but in one of its child components, we passed them as props to the List component. There, we can access it through the first function signature’s argument, called props.
