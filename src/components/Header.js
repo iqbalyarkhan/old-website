@@ -4,11 +4,10 @@ import config from '../../data/SiteConfig';
 import Categories from './Categories'
 import styles from './Header.module.scss'
 
-
 const Header = () => (
   <header>
     <h1>
-      <Link to="/about" >About Me</Link>
+      <Link to="/about">About Me</Link>
     </h1>
     <nav>
       <ul className={styles.mainNav}>
