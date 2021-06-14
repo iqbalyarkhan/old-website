@@ -1,5 +1,3 @@
-'use strict';
+import Provider from "./src/components/Provider";
 
-exports.onClientEntry = () => {};
-require("prismjs/plugins/line-numbers/prism-line-numbers.css");
-require ("katex/dist/katex.min.css");
+export const wrapRootElement = Provider;

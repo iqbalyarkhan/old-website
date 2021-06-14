@@ -1,21 +1,32 @@
-import React from 'react'
-import Helmet from 'react-helmet'
-import {Interpolator} from 'react-apply-darkmode';
-import Footer from '../components/Footer'
-import Header from '../components/Header'
-import config from '../../data/SiteConfig'
-import styles from  './index.module.scss'
+import React, { useState, createContext } from "react";
+import Helmet from "react-helmet";
+import { Interpolator } from "react-apply-darkmode";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
+import config from "../../data/SiteConfig";
+import styles from "./index.module.scss";
 
-const MainLayout = ({ children }) => (
+import { myContext } from "../components/Provider";
 
-  <Interpolator appearance='dark'>
-    <Header />
-    <Helmet>
-      <meta name="description" content={config.siteDescription} />
-    </Helmet>
-      {children}
-    <Footer />
-  </Interpolator>
-);
+export const UserStateContext = createContext(null);
 
-export default MainLayout
+const MainLayout = ({ children }) => {
+  return (
+    <myContext.Consumer>
+      {context => (
+        <React.Fragment>
+          <Interpolator appearance={document.body.className}>
+            <Header />
+            <Helmet>
+              <meta name="description" content={config.siteDescription} />
+            </Helmet>
+            {children}
+            <Footer />
+          </Interpolator>
+        </React.Fragment>
+      )}
+    </myContext.Consumer>
+  );
+};
+
+export default MainLayout;
