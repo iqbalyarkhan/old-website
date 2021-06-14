@@ -15,7 +15,7 @@ const MainLayout = ({ children }) => {
     <myContext.Consumer>
       {context => (
         <React.Fragment>
-          <Interpolator appearance={document.body.className}>
+          <Interpolator appearance={context.isActive ? "dark" : "light"}>
             <Header />
             <Helmet>
               <meta name="description" content={config.siteDescription} />
