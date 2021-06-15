@@ -1,14 +1,16 @@
-import React from 'react'
-import Helmet from 'react-helmet'
-import { graphql } from 'gatsby'
-import Layout from '../layout'
-import PostListing from '../components/PostListing'
-import SEO from '../components/SEO'
-import config from '../../data/SiteConfig'
-
+import React from "react";
+import Helmet from "react-helmet";
+import { graphql } from "gatsby";
+import { view, store } from "@risingstack/react-easy-state";
+import Interpolator from "react-apply-darkmode/interpolator";
+import loadable from "@loadable/component";
+import Layout from "../layout";
+import PostListing from "../components/PostListing";
+import SEO from "../components/SEO";
+import config from "../../data/SiteConfig";
 
 const Index = ({ data }) => (
-  <Layout> 
+  <Layout>
     <main>
       <Helmet title={config.siteTitle} />
       <SEO />

@@ -20,6 +20,7 @@ module.exports = {
   plugins: [
     "gatsby-plugin-react-helmet",
     "gatsby-plugin-sass",
+    "gatsby-plugin-dark-mode",
     "gatsby-plugin-draft",
     "gatsby-plugin-htaccess",
     {
