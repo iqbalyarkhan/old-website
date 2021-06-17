@@ -21,6 +21,7 @@ module.exports = {
     "gatsby-plugin-react-helmet",
     "gatsby-plugin-sass",
     "gatsby-plugin-draft",
+    "gatsby-plugin-dark-mode",
     "gatsby-plugin-htaccess",
     {
       resolve: "gatsby-source-filesystem",

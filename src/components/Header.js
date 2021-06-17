@@ -3,6 +3,7 @@ import { Link } from "gatsby";
 import config from '../../data/SiteConfig';
 import Categories from './Categories'
 import styles from './Header.module.scss'
+import ThemeToggle from "../utils/themeToggle";
 
 
 const Header = () => (
@@ -10,6 +11,7 @@ const Header = () => (
     <h1>
       <Link to="/about" >About Me</Link>
     </h1>
+      <ThemeToggle />
     <nav>
       <ul className={styles.mainNav}>
         <li>

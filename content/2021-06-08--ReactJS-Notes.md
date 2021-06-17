@@ -15,13 +15,15 @@ tags:
 ### Table of Contents
 
 1. [Intro](#introduction)
-    * [String variables](#string-variables)
-    * [JS Object](#js-object)
-    * [Lists in React](#lists-in-react)
-    * [Components](#components)
-    * [Arrow functions](#arrow-functions)
-    * [Handler Functions](#handler-functions)
-    * [React Props](#react-props)
+* [String variables](#string-variables)
+* [JS Object](#js-object)
+* [Lists in React](#lists-in-react)
+* [Components](#components)
+* [Arrow functions](#arrow-functions)
+* [Handler Functions](#handler-functions)
+* [React Props](#react-props)
+* [React State](#react-state)
+    
 
 
 At its very core, React basically maintains a HTML tree for you. This tree is able to do efficient diff computations on the nodes.
@@ -657,7 +659,7 @@ const App = () => {
     return (
         <div>
             <ul>
-                {/*Adding our generated List as a tag:*/}
+                {/*List tag being passed the array as props:*/}
                 <List list={stories}/>
             </ul>
             <label htmlFor="search">Search: </label>
@@ -671,7 +673,7 @@ export default App;
 Remember our `List` component? It'll now accept the **props**, iterate over the props and add create our object:
 
 ```jsx
-/*Creating our List component :*/
+/*Creating our List component that accepts props :*/
 const List = props => {
     return props.list.map(function(item) {
         return (
@@ -691,3 +693,56 @@ const List = props => {
 ```
 
 Using this operation, we’ve prevented the list/stories variable from polluting the global scope in the App component. Since stories is not used in the App component directly, but in one of its child components, we passed them as props to the List component. There, we can access it through the first function signature’s argument, called props.
+
+### React State
+React Props are used to pass information down the component tree; React state is used to make applications interactive. We’ll be able to change the application’s appearance by interacting with it.
+First, there is a utility function called useState that we take from React for managing state. The `useState` function is called a hook. There are many more hooks in React but we'll first focus on `useState` hook:
+
+```jsx
+const App = () => {
+  const stories = [ ... ];
+  const [searchTerm, setSearchTerm] = React.useState('');
+... };
+```
+
+We get the `useState` hook by making the `React.useState('')` call. The `.useState()` call takes an initial state as argument, which in the case above, is an empty string. The `useState()` function will return an array with two values. The first value, `searchTerm` represents the current state. The second value is a function to update this state `setSearchTerm`. This function is also referred to as state updater function. This return type is called array destructuring as seen in this java script example:
+
+```jsx
+// basic array definition
+const list = ['a', 'b'];
+// no array destructuring
+const itemOne = list[0]; const itemTwo = list[1];
+// array destructuring
+const [firstItem, secondItem] = list;
+```
+
+Array destructuring is just a shorthand version of accessing each item one by one. If you express it without the array destructuring in React, it becomes less readable. After we initialize the state and have access to the current state and the state updater function, use them to display the current state and update it within the App component’s event handler:
+
+
+```jsx
+const App = () => {
+  const stories = [ ... ];
+
+  {/*Setting and getting state using hook*/}
+  const [searchTerm, setSearchTerm] = React.useState('');
+
+  const handleChange = event => {
+    setSearchTerm(event.target.value);
+};
+  return (
+    <div>
+      <h1>My Hacker Stories</h1>
+      <label htmlFor="search">Search: </label>
+      <input id="search" type="text" onChange={handleChange} />
+      <p>
+        Searching for <strong>{searchTerm}</strong>.
+</p>
+<hr />
+      <List list={stories} />
+    </div>
+); };
+```
+
+When the user types into the input field, the input field’s change event is captured by the handler with its current internal value. The handler’s logic uses the state updater function to set the new state. After the new state is set in a component, the component renders again, meaning the component function runs again. The new state becomes the current state and can be displayed in the component’s JSX.
+
+  
