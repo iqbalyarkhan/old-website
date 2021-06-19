@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'gatsby'
-import styles from  './PostsListing.module.scss'
+import * as styles from  './PostsListing.module.scss'
 
   const PostListing = ({ postEdges }) => {
     const getPostList = () => {

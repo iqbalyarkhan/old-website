@@ -1,7 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import { Link } from 'gatsby'
-import styles from './PostTags.module.scss'
+import * as styles from './PostTags.module.scss'
 
 
 const PostTags = ({ tags }) => {
