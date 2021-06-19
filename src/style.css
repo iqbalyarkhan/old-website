@@ -1,25 +1,64 @@
 body {
-    --bg: white;
-    --textNormal: #222;
-    --textTitle: #222;
-    --textLink: blue;
-    --hr: hsla(0, 0%, 0%, 0.2);
-
+    --color-link: #2c00de;
+    --color-link-hover: #30ce56;
+    --color-text: black;
+    --color-heading: black;
+    --color-background: #ececec;
+    --color-accent-background: #ececec;
+    --color-accent: lightgray;
     background-color: var(--bg);
 }
 
 body.dark {
     -webkit-font-smoothing: antialiased;
-
-    --bg: darkslategray;
-    --textNormal: rgba(255, 255, 255, 0.88);
-    --textTitle: white;
-    --textLink: yellow;
+    --bg: black;
+    --textNormal: #fff;
     --hr: hsla(0, 0%, 100%, 0.2);
-    p {
-        --textNormal: white;
-    }
 }
+
+body.dark .PostsListing-module--meta--3cFzL {
+    color: white;
+}
+
+body.dark header{
+    background-color: black;
+}
+
+body.dark h1 {
+    color: white;
+}
+
+
+body.dark h2 {
+    color: white;
+}
+
+body.dark h3 {
+    color: white;
+}
+
+body.dark li {
+    color: white;
+}
+
+body.dark a {
+    color: #90caf9;
+}
+
+
+body.dark p {
+    color: white;
+}
+
+body.dark hr {
+    color: white;
+}
+
+body.dark span {
+    color: white;
+    outline-color: white;
+}
+
 
 main {
     margin-left: auto;
@@ -29,4 +68,61 @@ main {
     flex-direction: column;
     min-height: 100vh;
     padding: 20px;
+}
+
+/* Light Mode Toggle */
+.theme-switch-wrapper {
+    float: right;
+    align-items: center;
+    margin-top: calc(-2%);
+}
+
+.theme-switch {
+    display: inline-block;
+    height: 34px;
+    position: relative;
+    width: 60px;
+    margin-top: 1.5em;
+}
+
+.theme-switch input {
+    display: none;
+}
+
+.slider {
+    background-color: black;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: 0.4s;
+}
+
+.slider:before {
+    background-color: grey;
+    bottom: 4px;
+    content: "";
+    height: 26px;
+    left: 4px;
+    position: absolute;
+    transition: 0.4s;
+    width: 26px;
+}
+
+input:checked + .slider {
+    background-color: white;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
 }

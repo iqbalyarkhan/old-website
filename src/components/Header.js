@@ -5,13 +5,11 @@ import Categories from './Categories'
 import styles from './Header.module.scss'
 import ThemeToggle from "../utils/themeToggle";
 
-
 const Header = () => (
   <header>
     <h1>
       <Link to="/about" >About Me</Link>
     </h1>
-      <ThemeToggle />
     <nav>
       <ul className={styles.mainNav}>
         <li>
@@ -20,6 +18,7 @@ const Header = () => (
         <Categories activeClassName={styles.activeNav} />
       </ul>
     </nav>
+      <ThemeToggle />
   </header>
   );
 
