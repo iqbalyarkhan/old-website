@@ -1,0 +1,2 @@
+(self.webpackChunkiqbal_khan_blog=self.webpackChunkiqbal_khan_blog||[]).push([[501],{262:function(e,t,n){"use strict";n.r(t);var l=n(7294),a=n(5414),c=n(1464),u=n(2797),i=n.n(u);t.default=function(){return l.createElement(c.Z,null,l.createElement("main",null,l.createElement(a.Z,{title:"Contact | "+i().siteTitle}),l.createElement("h1",null,"Contact us"),l.createElement("p",null,"Contact informations")))}}}]);
+//# sourceMappingURL=component---src-pages-contact-js-77305b67eefc90959b91.js.map
