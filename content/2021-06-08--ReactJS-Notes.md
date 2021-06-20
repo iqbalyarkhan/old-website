@@ -23,6 +23,8 @@ tags:
 * [Handler Functions](#handler-functions)
 * [React Props](#react-props)
 * [React State](#react-state)
+* [Callback Handlers](#callback-handlers)
+* [Lifting State in React](#lifting-state-in-react)
     
 
 
@@ -52,13 +54,14 @@ Let's dive deep into various aspects of React:
 
 Using, react-starter, go ahead and create a new project. Once done, you'll have a bunch of files generated for you. Let's start with what we see in App.js ( a simplified version):
 
-```typescript jsx
+```jsx
 import React from 'react';
 function App() {
-  return (
-    <div>
-      <h1>Hello World</h1>
-</div> );
+    return (
+        <div>
+            <h1>Hello World</h1>
+        </div> 
+    );
 }
 export default App;
 ``` 
@@ -69,7 +72,7 @@ First, this React component, called App component, is just a JavaScript function
 
 We can use string variables within our HTML like so:
 
-```typescript jsx
+```jsx
 import React from 'react';
 const title = 'React';
 function App() {
@@ -80,6 +83,8 @@ function App() {
 }
 export default App;
 ``` 
+
+**Notice the use of `<div>` in our return statement: make sure you add that otherwise return won't work correctly!
 
 The rendered variable in browser, which should read: "Hello React".
 
@@ -743,6 +748,262 @@ const App = () => {
 ); };
 ```
 
-When the user types into the input field, the input field’s change event is captured by the handler with its current internal value. The handler’s logic uses the state updater function to set the new state. After the new state is set in a component, the component renders again, meaning the component function runs again. The new state becomes the current state and can be displayed in the component’s JSX.
+When the user types into the input field, the input field’s change event is captured by the handler with its current internal value. The handler’s logic uses the state updater function to set the new state. After the new state is set in a component, the component renders again, meaning the component function runs again. The new state becomes the current state and can be displayed in the component’s JSX. Using the code below, you can see that the `<h1>` tag gets updated as we type in the search box:
 
-  
+```jsx
+
+import React from 'react';
+
+/*Creating our List component :*/
+const List = props => {
+    return props.list.map(function(item) {
+        return (
+            <div key={item.objectID}>
+                <a href={item.url}>{item.title}</a>
+                <br></br>
+                <span>Author: {item.author}</span>
+                <br></br>
+                <span>Comments: {item.num_comments}</span>
+                <br></br>
+                <span>Points: {item.points}</span>
+                <br></br>
+                <br></br>
+            </div> );
+    });
+};
+
+
+const App = () => {
+
+    const [searchTerm, setSearchTerm] = React.useState('');
+
+    const stories = [
+        {
+            title: 'React',
+            url: 'https://reactjs.org/',
+            author: 'Jordan Walke',
+            num_comments: 3,
+            points: 4,
+            objectID: 0,
+        },
+    ];
+
+    const handleChange = event => {
+        setSearchTerm(event.target.value);
+    };
+
+    return (
+        <div>
+            <h1>Search term from state: {searchTerm}</h1>
+            <ul>
+                {/*Adding our generated List as a tag:*/}
+                <List list={stories}/>
+            </ul>
+            <label htmlFor="search">Search: </label>
+            <input id="search" type="text" onChange={handleChange} />
+        </div>
+    );
+};
+export default App;
+```
+
+We can also separate `Search` out into its own component and add it to our App. Through this process, the Search component becomes a sibling of the List component, and vice versa. We’ll also move the handler and the state into the Search component to keep our functionality intact:
+
+```jsx
+import React from 'react';
+
+/*List component :*/
+const List = props => {
+    return props.list.map(function(item) {
+        return (
+            <div key={item.objectID}>
+                <a href={item.url}>{item.title}</a>
+                <br></br>
+                <span>Author: {item.author}</span>
+                <br></br>
+                <span>Comments: {item.num_comments}</span>
+                <br></br>
+                <span>Points: {item.points}</span>
+                <br></br>
+                <br></br>
+            </div> );
+    });
+};
+
+/*Search Component*/
+const Search = () => {
+    const [searchTerm, setSearchTerm] = React.useState('');
+    const handleChange = event => {
+        setSearchTerm(event.target.value);
+    };
+
+    return (
+        <div>
+            <label htmlFor="search">Search: </label>
+            <input id="search" type="text" onChange={handleChange} />
+            <h1>Search term from state: {searchTerm}</h1>
+        </div>
+    )
+};
+
+
+const App = () => {
+
+    const stories = [
+        {
+            title: 'React',
+            url: 'https://reactjs.org/',
+            author: 'Jordan Walke',
+            num_comments: 3,
+            points: 4,
+            objectID: 0,
+        },
+    ];
+
+
+    return (
+        <div>
+            <ul>
+                {/*Adding our generated List as a tag:*/}
+                <List list={stories}/>
+                <Search/>
+            </ul>
+        </div>
+    );
+};
+export default App;
+
+```  
+
+### Callback Handlers
+
+There is no way to pass information as JavaScript data types up the component tree, since props are naturally only passed downwards. However, we can introduce a callback handler as a function: A callback function gets introduced (A), is used elsewhere (B), but “calls back” to the place it was introduced (C):
+
+```jsx
+import React from 'react';
+
+const App = () => {
+    const stories = [
+        {
+            title: 'React',
+            url: 'https://reactjs.org/',
+            author: 'Jordan Walke',
+            num_comments: 3,
+            points: 4,
+            objectID: 0,
+        },
+    ];
+    
+    //******* A
+    const handleSearch = event => {
+        // ******* C
+        console.log(event.target.value);
+    };
+
+    return (
+        <div>
+            <h1>My Hacker Stories</h1>
+            <Search onSearch={handleSearch} />
+            <List list={stories} />
+        </div>
+    );
+};
+
+const Search = props => {
+    const [searchTerm, setSearchTerm] = React.useState('');
+    const handleChange = event => {
+        setSearchTerm(event.target.value);
+        //****** B
+        props.onSearch(event);
+    };
+
+    return (
+        <div>
+            <label htmlFor="search">Search: </label>
+            <input id="search" type="text" onChange={handleChange} />
+            <p>
+                Searching for <strong>{searchTerm}</strong>.
+            </p>
+        </div>
+    );
+};
+
+const List = props =>
+    props.list.map(item => (
+        <div key={item.objectID}>
+      <span>
+        <a href={item.url}>{item.title}</a>
+      </span>
+            <span>{item.author}</span>
+            <span>{item.num_comments}</span>
+            <span>{item.points}</span>
+        </div>
+    ));
+
+export default App;
+```
+
+Another thing to note here is the `props.onSearch()` call: this is for the search box and this call is exposed by react.
+
+### Lifting State in React
+Currently, the Search component still has its internal state. While we established a callback handler to pass information up to the App component, we are not using it yet. We need to figure out how to share the Search component’s state across multiple components.
+The search term is needed in the App to filter the list before passing it to the List component as props. We’ll need to lift state up from Search to App component to share the state with more components:
+
+```jsx
+import React from 'react';
+
+const App = () => {
+    const [searchTerm, setSearchTerm] = React.useState('');
+    const stories = [
+        {
+            title: 'React',
+            url: 'https://reactjs.org/',
+            author: 'Jordan Walke',
+            num_comments: 3,
+            points: 4,
+            objectID: 0,
+        },
+    ];
+
+    const handleSearch = event => {
+        setSearchTerm(event.target.value);
+    };
+
+    return (
+        <div>
+            <h1>My Hacker Stories</h1>
+            <Search onSearch={handleSearch} />
+            <p>
+                Search term received in App: <strong>{searchTerm}</strong>.
+            </p>
+            <List list={stories} />
+        </div>
+    );
+};
+
+const Search = props => {
+    const handleChange = event => {
+        props.onSearch(event);
+    };
+
+    return (
+        <div>
+            <label htmlFor="search">Search: </label>
+            <input id="search" type="text" onChange={handleChange} />
+        </div>
+    );
+};
+
+const List = props =>
+    props.list.map(item => (
+        <div key={item.objectID}>
+      <span>
+        <a href={item.url}>{item.title}</a>
+      </span>
+            <span>{item.author}</span>
+            <span>{item.num_comments}</span>
+            <span>{item.points}</span>
+        </div>
+    ));
+export default App;
+```
