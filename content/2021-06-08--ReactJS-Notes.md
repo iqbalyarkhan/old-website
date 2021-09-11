@@ -8,6 +8,7 @@ categories:
     - General
 tags:
     - blog
+    - React
 --- 
 
 **My notes as I walk through the great book on React - [Road To React by Robin Weiruch](https://www.roadtoreact.com/)**
@@ -23,9 +24,8 @@ tags:
 * [Handler Functions](#handler-functions)
 * [React Props](#react-props)
 * [React State](#react-state)
-* [Callback Handlers](#callback-handlers)
-* [Lifting State in React](#lifting-state-in-react)
-    
+* [useEffect Hook](#useeffect-hook)
+* [GraphQL](#graphql)
 
 
 At its very core, React basically maintains a HTML tree for you. This tree is able to do efficient diff computations on the nodes.
@@ -873,137 +873,698 @@ const App = () => {
 };
 export default App;
 
-```  
-
-### Callback Handlers
-
-There is no way to pass information as JavaScript data types up the component tree, since props are naturally only passed downwards. However, we can introduce a callback handler as a function: A callback function gets introduced (A), is used elsewhere (B), but “calls back” to the place it was introduced (C):
-
-```jsx
-import React from 'react';
-
-const App = () => {
-    const stories = [
-        {
-            title: 'React',
-            url: 'https://reactjs.org/',
-            author: 'Jordan Walke',
-            num_comments: 3,
-            points: 4,
-            objectID: 0,
-        },
-    ];
-    
-    //******* A
-    const handleSearch = event => {
-        // ******* C
-        console.log(event.target.value);
-    };
-
-    return (
-        <div>
-            <h1>My Hacker Stories</h1>
-            <Search onSearch={handleSearch} />
-            <List list={stories} />
-        </div>
-    );
-};
-
-const Search = props => {
-    const [searchTerm, setSearchTerm] = React.useState('');
-    const handleChange = event => {
-        setSearchTerm(event.target.value);
-        //****** B
-        props.onSearch(event);
-    };
-
-    return (
-        <div>
-            <label htmlFor="search">Search: </label>
-            <input id="search" type="text" onChange={handleChange} />
-            <p>
-                Searching for <strong>{searchTerm}</strong>.
-            </p>
-        </div>
-    );
-};
-
-const List = props =>
-    props.list.map(item => (
-        <div key={item.objectID}>
-      <span>
-        <a href={item.url}>{item.title}</a>
-      </span>
-            <span>{item.author}</span>
-            <span>{item.num_comments}</span>
-            <span>{item.points}</span>
-        </div>
-    ));
-
-export default App;
 ```
 
-Another thing to note here is the `props.onSearch()` call: this is for the search box and this call is exposed by react.
-
-### Lifting State in React
-Currently, the Search component still has its internal state. While we established a callback handler to pass information up to the App component, we are not using it yet. We need to figure out how to share the Search component’s state across multiple components.
-The search term is needed in the App to filter the list before passing it to the List component as props. We’ll need to lift state up from Search to App component to share the state with more components:
+### useEffect Hook  
+The useEffect hook is used to manage side effects that aren't related to the components' rendering. Things such as console messages or loading data are managed by useEffect. To use this hook, we need to import it:
 
 ```jsx
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+```
 
-const App = () => {
-    const [searchTerm, setSearchTerm] = React.useState('');
-    const stories = [
-        {
-            title: 'React',
-            url: 'https://reactjs.org/',
-            author: 'Jordan Walke',
-            num_comments: 3,
-            points: 4,
-            objectID: 0,
+The useEffect hook takes in two arguments a call-back function and a dependency array:
+
+```jsx
+useEffect(() => {
+    //Do something...
+}, []);
+```
+
+The dependency array can be used to keep track of values: 
+
+``` jsx
+import React, { useState, useEffect } from "react";
+
+function App(){
+    const [emotion, setEmotion] = useState("happy");
+    
+    useEffect(() => {
+        console.log(`The emotion is: ${emotion}`);
+    }, [emotion]);    
+
+}
+```
+
+useEffect will update the console ONLY on emotion change. We can use useEffect to handle values returned from API calls:
+
+```jsx
+function App(props) {
+    const [data,setData] = useState(null);
+    const [loading,setLoading] = useState(false);
+    const [error,setError] = useState(null);
+
+    useEffect(() => {
+        if (!props.login) return;
+        setLoading(true);
+
+       fetch(`https://api.github.com/users/${props.login}`)
+           .then(r => r.json())
+           .then(setData)
+           .then(() => setLoading(false))
+           .catch(setError);
+    }, [props.login]);
+
+    if (loading){
+        return <h1>Loading...</h1>
+    }
+
+    if (error){
+        return <pre>{JSON.stringify(error,null,2)}</pre>
+    }
+
+    if (!data){
+        return null;
+    }
+
+    return (
+        <>
+            <div>
+                <h3>UserName: {data.login}</h3>
+                <h3>Id: {data.id}</h3>
+                <h3>email: {data.email}</h3>
+                <img alt={data.login} src={data.avatar_url}/>
+            </div>
+        </>
+    )
+
+}
+```
+
+### GraphQL
+
+If we have our schema in a `schema.js` file like so:
+
+```jsx
+import {buildSchema} from 'graphql';
+
+const schema = buildSchema(`
+    type Query {
+        hello: String
+    }
+`)
+
+export default schema;
+
+```
+
+we can have the following resolver:
+
+```jsx
+const root = { hello: () => "This is from resolver"};
+
+app.use('/graphql', graphqlHTTP({
+    schema: schema,
+    rootValue: root,
+    graphiql: true,
+}));
+```
+
+The schema shows that we can `Query` on type `hello` and we'll get back the hard-coded value from the resolver. Also notice that the resolver called `root` has the same name inside of it that's defined in `Query` in the schema, ie `hello`. Basically, the resolver will determine what to return when a `Query` of type `hello` is made.   
+
+Expanding on the example above, you can have the following schema:
+```jsx
+import {buildSchema} from "graphql";
+
+const schema = buildSchema(`
+    type Friend {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String        
+    }
+    
+    type Query {
+        friend: Friend
+    }
+    
+`);
+
+export default schema;
+```
+
+with the following resolver now being called for the `Query` friend: 
+
+```jsx
+const root = { friend: () => {
+        return {
+            "id": 123456,
+            "firstName": "First",
+            "lastName": "Last",
+            "gender": "Male",
+            "email": "test@test.com"
+        }
+    }};
+
+app.use('/graphql', graphqlHTTP({
+    schema: schema,
+    rootValue: root,
+    graphiql: true,
+}));
+```
+
+If you go to the `/graphql` endpoint, you can ask only for the data you're interested in:
+
+```graphql
+query {
+  friend {
+    gender
+  } 
+}
+```
+
+We can also have arrays of objects within GraphQL schemas as well. Let's say we want to have an array of emails:
+
+We'll say that we have an object of type `email` that takes an array of type `Email`. We also need to define what `Email` looks like: 
+
+```jsx
+const schema = buildSchema(`
+    type Friend {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        # exclamation means mandatory
+        email: [Email]!       
+    }
+    
+    type Email {
+        email: String
+    }
+    
+    type Query {
+        friend: Friend
+    }
+    
+`);
+```
+
+Next, our resolver should return an array of emails like so:
+
+```jsx
+const root = { friend: () => {
+        return {
+            "id": 123456,
+            "firstName": "First",
+            "lastName": "Last",
+            "gender": "Male",
+            "email": [
+                {"email": "test1@test1.com"},
+                {"email": "test2@test2.com"}
+            ]
+        }
+    }};
+```
+
+Finally, we can query via graphiql:
+
+```graphql
+query {
+  friend {
+    firstName
+    email{
+      email
+    }
+  } 
+}
+```
+
+So far we've only seen `Query` in action. What if we want to Create, Update or Delete records? For that we need `Mutation`. Let's start with create. To create new records, we also need to define the `input` type in our schema. It'll literally determine the type of input we expect. So, if we're creating a new `Friend`, our input would be:
+
+```jsx
+    input FriendInput {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: [Email]!
+    }
+``` 
+
+Notice above that our `FriendInput` is of type `input`. Next, we'll make use of `Mutation` to actually accept and check the `input`:
+
+```jsx
+    type Mutation {
+        # name        type   typeName     return
+        createFriend(input: FriendInput): Friend
+    }
+```
+
+In the schema above, our `Mutation` defines a function called `createFriend` that takes in an input called `input` which is of type `FriendInput`. The `FriendInput` input type will check to make sure that the fields provided are of the correct type. If so, the mutation will return the `Friend`. So now, our schema looks like this:
+
+```jsx
+const schema = buildSchema(`
+    type Friend {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String   
+    }
+    
+    type Query {
+        friend: Friend
+    }
+    
+    input FriendInput {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String
+    }
+    
+    type Mutation {
+        createFriend(input: FriendInput): Friend
+    }
+`);
+```
+
+Usually, created data is stored to a data store (usually a DB), but for our example we'll use an in-memory array. So, in our .ts file, we'll have our resolver save the mutation to an array. So we'll create a new `Friend` class and an array to hold our `Friend` objects:
+
+```jsx
+const friendDB = {};
+
+class Friend {
+    constructor(id, {firstName, lastName, gender, email}) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.email = email;
+    }
+}
+```
+
+Next, we need to update our resolver. We need to be able to handle the `createFriend` mutation. To do so, we'll add the following to our resolver:
+
+```jsx
+
+const root = {
+    friend: () => {
+        return {
+            "id": 123456,
+            "firstName": "First",
+            "lastName": "Last",
+            "gender": "Male",
+            "email": "test@test.com"
+        }
         },
-    ];
+    createFriend: ({input}) => {
+        let id = require('crypto').randomBytes(10).toString('hex');
+        friendDB[id] = input;
+        return new Friend(id, input);
+    }
+};
+```
 
-    const handleSearch = event => {
-        setSearchTerm(event.target.value);
-    };
+Before we proceed, let's talk a little about resolvers. Resolvers are the functions that respond to queries and mutations. They're the functions that give us the result of the query. A good practice is to extract resolvers into their own files for ease of use. Let's do that. We'll move the resolvers out and are left with this in our index.js:
 
-    return (
-        <div>
-            <h1>My Hacker Stories</h1>
-            <Search onSearch={handleSearch} />
-            <p>
-                Search term received in App: <strong>{searchTerm}</strong>.
-            </p>
-            <List list={stories} />
-        </div>
-    );
+```jsx
+import express from 'express';
+import schema from './schema';
+import { graphqlHTTP } from 'express-graphql';
+
+const app = express();
+
+app.get('/', (req,res) => {
+    res.send('Graphql is amazing!');
+});
+
+app.use('/graphql', graphqlHTTP({
+    schema: schema,
+    rootValue: root,
+    graphiql: true,
+}));
+
+app.listen(8080, () => console.log('Running server on port localhost:8080/graphql'));
+```
+
+We've moved resolvers to a file called `resolvers.js` and have the following in it:
+
+```jsx
+const friendDB = {};
+
+class Friend {
+    constructor(id, {firstName, lastName, gender, email}) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.email = email;
+    }
+}
+
+const resolvers = {
+    friend: () => {
+        return {
+            "id": 123456,
+            "firstName": "First",
+            "lastName": "Last",
+            "gender": "Male",
+            "email": "test@test.com"
+        }
+    },
+    createFriend: ({input}) => {
+        let id = require('crypto').randomBytes(10).toString('hex');
+        friendDB[id] = input;
+        return new Friend(id, input);
+    }
+};
+```
+
+Now, instead of hard-coded values, let's re-name the first resolver (that we've been using for `Query`) and return from the array. So now, our resolvers look like this:
+
+```jsx
+const friendDB = {};
+
+class Friend {
+    constructor(id, {firstName, lastName, gender, email}) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.email = email;
+    }
+}
+
+const resolvers = {
+    // Needs an id for lookup
+    getFriend: ({id}) => {
+        // Return a new Friend object along with id
+        return new Friend(id, friendDB[id])
+    },
+    createFriend: ({input}) => {
+        let id = require('crypto').randomBytes(10).toString('hex');
+        friendDB[id] = input;
+        return new Friend(id, input);
+    }
 };
 
-const Search = props => {
-    const handleChange = event => {
-        props.onSearch(event);
-    };
+export default resolvers;
+```
 
-    return (
-        <div>
-            <label htmlFor="search">Search: </label>
-            <input id="search" type="text" onChange={handleChange} />
-        </div>
-    );
+In our current schema, we have no `getFriend` Query because this is what we had initially:
+
+```jsx
+const schema = buildSchema(`
+    type Friend {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String   
+    }
+    
+    # Need to edit this Query 
+    # to account for getFriend
+    type Query {
+        friend: Friend
+    }
+    
+    input FriendInput {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String
+    }
+    
+    type Mutation {
+        createFriend(input: FriendInput): Friend
+    }
+`);
+```
+
+Like we said earlier, the `getFriend()` function takes in an ID and returns a `Friend`  object. So, our updated `Query` would look like this:
+
+```jsx
+    type Query {
+        getFriend(id: ID): Friend
+    }
+```
+
+and our updated `schema.js` file will look like this:
+
+```jsx
+import {buildSchema} from "graphql";
+
+const schema = buildSchema(`
+    type Friend {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String 
+    }
+    
+    type Query {
+        getFriend(id: ID): Friend
+    }
+    
+    input FriendInput {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String
+    }
+    
+    type Mutation {
+        createFriend(input: FriendInput): Friend
+    }
+    
+`);
+
+export default schema;
+```
+
+Finally, our index.js needs to be updated to use the new resolver file we created:
+
+```jsx
+import express from 'express';
+import schema from './schema';
+import { graphqlHTTP } from 'express-graphql';
+import resolvers  from './resolvers'
+
+const app = express();
+
+app.get('/', (req,res) => {
+    res.send('Graphql is amazing!');
+});
+
+// Pass resolvers to root
+const root = resolvers;
+
+app.use('/graphql', graphqlHTTP({
+    schema: schema,
+    rootValue: root,
+    graphiql: true,
+}));
+
+app.listen(8080, () => console.log('Running server on port localhost:8080/graphql'));
+```
+
+Now let's see how we can use mutation to add `Friend` from GraphiQL:
+
+```graphql
+mutation {
+  createFriend(input:{
+    firstName:"FName1",
+    lastName:"LName1",
+    gender: "gender1",
+    email:"email1@test.com"
+  
+  }) {
+    id
+  }
+}
+```
+The mutation above will be resolved by this resolver:
+
+```jsx
+    createFriend: ({input}) => {
+        let id = require('crypto').randomBytes(10).toString('hex');
+        friendDB[id] = input;
+        return new Friend(id, input);
+    }
+```
+
+Notice how the `createFriend` mutation, and by extension the resolver, takes in an input object of type `Friend`. We've made sure that we provide all the relevant fields required for a `Friend` object (id: ID, firstName: String, lastName: String ,gender: String ,email: String). It'll then return the ID for the `Friend` that was created. So the sample shown above has our test fields and an `id` field with an unspecified value. That `id` is automatically generated for us via the resolver. The result of the above mutation would look like so:
+
+```graphql
+{
+  "data": {
+    "createFriend": {
+      "id": "096b554f9de88f8a6a61"
+    }
+  }
+}
+``` 
+
+Now, if you want to query the `Friend` with an id, you can do the following:
+
+```graphql
+query {
+  getFriend(id: "d7d7b2481cd95d25f7d8"){
+    firstName
+    lastName
+    gender
+    email
+  }
+}
+```
+
+The query above will be resolved by this resolver: 
+
+```jsx
+    getFriend: ({id}) => {
+        return new Friend(id, friendDB[id])
+    },
+```
+
+and you'll see this output via GraphiQL:
+
+```graphql
+{
+  "data": {
+    "getFriend": {
+      "firstName": "FName1",
+      "lastName": "LName1",
+      "gender": "gender1",
+      "email": "email1@test.com"
+    }
+  }
+}
+```
+
+And that's how you handle queries and mutations via resolvers! 
+
+Let's refactor our schema by leveraging a library called `graphql-tools`. To do so, we'd run `npm i @graphql-tools/schema`. Next, let's see what our schema looks like right now:
+
+```jsx
+import {buildSchema} from "graphql";
+
+const schema = buildSchema(`
+    type Friend {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String 
+    }
+    
+    type Query {
+        getFriend(id: ID): Friend
+    }
+    
+    input FriendInput {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String
+    }
+    
+    type Mutation {
+        createFriend(input: FriendInput): Friend
+    }
+    
+`);
+
+export default schema;
+```
+
+First, we'll import an executable schema helper from graphql-tools and import the resolvers within the schema:
+
+```jsx
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { resolvers } from './resolvers';
+
+const typeDefs = `
+    type Friend {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String 
+    }
+    
+    type Query {
+        getFriend(id: ID): Friend
+    }
+    
+    input FriendInput {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String
+    }
+    
+    type Mutation {
+        createFriend(input: FriendInput): Friend
+    }
+    
+`;
+
+const schema = makeExecutableSchema({typeDefs, resolvers});
+
+export { schema };
+```
+
+With that updated, we need to update our resolvers.js file as well. We'll create a resolver map that'll look a lot like the GraphQL syntax that we've been using: 
+
+```jsx
+const friendDB = {};
+
+class Friend {
+    constructor(id, {firstName, lastName, gender, email}) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.email = email;
+    }
+}
+
+//resolver map
+export const resolvers = {
+    Query: {
+        getFriend: ({id}) => {
+            return new Friend(id, friendDB[id])
+        },
+    },
+
+    Mutation: {
+        createFriend: ({input}) => {
+            let id = require('crypto').randomBytes(10).toString('hex');
+            friendDB[id] = input;
+            return new Friend(id, input);
+        }
+    }
 };
 
-const List = props =>
-    props.list.map(item => (
-        <div key={item.objectID}>
-      <span>
-        <a href={item.url}>{item.title}</a>
-      </span>
-            <span>{item.author}</span>
-            <span>{item.num_comments}</span>
-            <span>{item.points}</span>
-        </div>
-    ));
-export default App;
+export default resolvers;
+```
+
+All we did here was move the `createFriend` resolver inside the Mutation and `getFriend` resolver inside the Query. Now, our resolvers are being used inside of the schema. Finally, we need to update the `index.js` file by removing the old resolvers import. We'll instead import resolvers from the schema. We'll also get rid of the root resolvers and the rootValue field inside app.use:
+
+```jsx
+import express from 'express';
+import { graphqlHTTP } from 'express-graphql';
+import { schema }  from './schema'
+
+const app = express();
+
+app.get('/', (req,res) => {
+    res.send('Graphql is amazing!');
+});
+
+app.use('/graphql', graphqlHTTP({
+    schema: schema,
+    graphiql: true,
+}));
+
+app.listen(8080, () => console.log('Running server on port localhost:8080/graphql'));
 ```
