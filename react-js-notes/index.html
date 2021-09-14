@@ -97,6 +97,11 @@ void function() {
 <li><a href="#handler-functions">Handler Functions</a></li>
 <li><a href="#react-props">React Props</a></li>
 <li><a href="#react-state">React State</a></li>
+<li><a href="#useeffect-hook">useEffect Hook</a></li>
+<li><a href="#graphql-basics">GraphQL Basics</a></li>
+<li><a href="#updates-with-mutations">Updates with Mutations</a></li>
+<li><a href="#queries-and-aliases">Queries and Aliases</a></li>
+<li><a href="#queries-and-fragments">Queries and Fragments</a></li>
 </ul>
 <p>At its very core, React basically maintains a HTML tree for you. This tree is able to do efficient diff computations on the nodes.</p>
 <p>Think of your HTML code as a tree. In fact, that is exactly how the browser treats your DOM (your rendered HTML on the browser). React allows you to effectively re-construct your DOM in JavaScript and push only those changes to the DOM which have actually occurred. There's nothing like JSX - neither to JavaScript, nor to the browser. JSX is simply syntactic sugar for creating very specific JavaScript objects.</p>
@@ -109,26 +114,28 @@ void function() {
 <p>Let's dive deep into various aspects of React:</p>
 <h3 id="introduction" style="position:relative;"><a href="#introduction" aria-label="introduction permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Introduction</h3>
 <p>Using, react-starter, go ahead and create a new project. Once done, you'll have a bunch of files generated for you. Let's start with what we see in App.js ( a simplified version):</p>
-<div class="gatsby-highlight" data-language="typescriptjsx"><pre class="language-cpptypescriptjsx"><code class="language-cpptypescriptjsx">import React from &#39;react&#39;;
-function App() {
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;Hello World&lt;/h1&gt;
-&lt;/div&gt; );
-}
-export default App;</code></pre></div>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">Hello World</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span> 
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> App<span class="token punctuation">;</span></code></pre></div>
 <p>First, this React component, called App component, is just a JavaScript function. It’s commonly called function component, because there are other variations of React components. The App component doesn't receive any parameters in its function signature yet. The App component returns code that resembles HTML which is called JSX.</p>
 <h3 id="string-variables" style="position:relative;"><a href="#string-variables" aria-label="string variables permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>String variables</h3>
 <p>We can use string variables within our HTML like so:</p>
-<div class="gatsby-highlight" data-language="typescriptjsx"><pre class="language-cpptypescriptjsx"><code class="language-cpptypescriptjsx">import React from &#39;react&#39;;
-const title = &#39;React&#39;;
-function App() {
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;Hello World {title}&lt;/h1&gt;
-&lt;/div&gt; );
-}
-export default App;</code></pre></div>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> title <span class="token operator">=</span> <span class="token string">'React'</span><span class="token punctuation">;</span>
+<span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">Hello World </span><span class="token punctuation">{</span>title<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> App<span class="token punctuation">;</span></code></pre></div>
+<p>**Notice the use of <code class="language-cpptext">&lt;div&gt;</code> in our return statement: make sure you add that otherwise return won't work correctly!</p>
 <p>The rendered variable in browser, which should read: "Hello React".</p>
 <h3 id="js-object" style="position:relative;"><a href="#js-object" aria-label="js object permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>JS Object</h3>
 <p>Let's see how we can add js object:</p>
@@ -686,7 +693,855 @@ First, there is a utility function called useState that we take from React for m
       </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">List</span></span> <span class="token attr-name">list</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>stories<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
     </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
 <span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre></div>
-<p>When the user types into the input field, the input field’s change event is captured by the handler with its current internal value. The handler’s logic uses the state updater function to set the new state. After the new state is set in a component, the component renders again, meaning the component function runs again. The new state becomes the current state and can be displayed in the component’s JSX.</p></div><div class="post-module--post-meta--2SNYO"><div class="PostTags-module--tag-container--2fM2Y"><a href="/tags/blog"><span>blog</span></a></div></div><hr/></div><nav><ul class="post-module--pagination--2K15k"><li><a rel="prev" href="/c-standard-input">← <!-- -->C++ Standard input</a></li><li><a rel="next" href="/practical-system-design">Practical System Design<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--1ScUQ"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2Iyp5">Copyright © 2021. All rights reserved.</div></div></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
+<p>When the user types into the input field, the input field’s change event is captured by the handler with its current internal value. The handler’s logic uses the state updater function to set the new state. After the new state is set in a component, the component renders again, meaning the component function runs again. The new state becomes the current state and can be displayed in the component’s JSX. Using the code below, you can see that the <code class="language-cpptext">&lt;h1&gt;</code> tag gets updated as we type in the search box:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx">
+<span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+
+<span class="token comment">/*Creating our List component :*/</span>
+<span class="token keyword">const</span> <span class="token function-variable function">List</span> <span class="token operator">=</span> <span class="token parameter">props</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> props<span class="token punctuation">.</span>list<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">item</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">(</span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>item<span class="token punctuation">.</span>objectID<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>item<span class="token punctuation">.</span>url<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>item<span class="token punctuation">.</span>title<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>br</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">Author: </span><span class="token punctuation">{</span>item<span class="token punctuation">.</span>author<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>br</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">Comments: </span><span class="token punctuation">{</span>item<span class="token punctuation">.</span>num_comments<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>br</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">Points: </span><span class="token punctuation">{</span>item<span class="token punctuation">.</span>points<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>br</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>br</span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+
+<span class="token keyword">const</span> <span class="token function-variable function">App</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">const</span> <span class="token punctuation">[</span>searchTerm<span class="token punctuation">,</span> setSearchTerm<span class="token punctuation">]</span> <span class="token operator">=</span> React<span class="token punctuation">.</span><span class="token function">useState</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">const</span> stories <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+            title<span class="token operator">:</span> <span class="token string">'React'</span><span class="token punctuation">,</span>
+            url<span class="token operator">:</span> <span class="token string">'https://reactjs.org/'</span><span class="token punctuation">,</span>
+            author<span class="token operator">:</span> <span class="token string">'Jordan Walke'</span><span class="token punctuation">,</span>
+            num_comments<span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+            points<span class="token operator">:</span> <span class="token number">4</span><span class="token punctuation">,</span>
+            objectID<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">const</span> <span class="token function-variable function">handleChange</span> <span class="token operator">=</span> <span class="token parameter">event</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        <span class="token function">setSearchTerm</span><span class="token punctuation">(</span>event<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">Search term from state: </span><span class="token punctuation">{</span>searchTerm<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token punctuation">{</span><span class="token comment">/*Adding our generated List as a tag:*/</span><span class="token punctuation">}</span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">List</span></span> <span class="token attr-name">list</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>stories<span class="token punctuation">}</span></span><span class="token punctuation">/></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">htmlFor</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>search<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Search: </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>search<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>handleChange<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> App<span class="token punctuation">;</span></code></pre></div>
+<p>We can also separate <code class="language-cpptext">Search</code> out into its own component and add it to our App. Through this process, the Search component becomes a sibling of the List component, and vice versa. We’ll also move the handler and the state into the Search component to keep our functionality intact:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+
+<span class="token comment">/*List component :*/</span>
+<span class="token keyword">const</span> <span class="token function-variable function">List</span> <span class="token operator">=</span> <span class="token parameter">props</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> props<span class="token punctuation">.</span>list<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">item</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">(</span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>item<span class="token punctuation">.</span>objectID<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>item<span class="token punctuation">.</span>url<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>item<span class="token punctuation">.</span>title<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>br</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">Author: </span><span class="token punctuation">{</span>item<span class="token punctuation">.</span>author<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>br</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">Comments: </span><span class="token punctuation">{</span>item<span class="token punctuation">.</span>num_comments<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>br</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">Points: </span><span class="token punctuation">{</span>item<span class="token punctuation">.</span>points<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>br</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>br</span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment">/*Search Component*/</span>
+<span class="token keyword">const</span> <span class="token function-variable function">Search</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> <span class="token punctuation">[</span>searchTerm<span class="token punctuation">,</span> setSearchTerm<span class="token punctuation">]</span> <span class="token operator">=</span> React<span class="token punctuation">.</span><span class="token function">useState</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> <span class="token function-variable function">handleChange</span> <span class="token operator">=</span> <span class="token parameter">event</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        <span class="token function">setSearchTerm</span><span class="token punctuation">(</span>event<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">htmlFor</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>search<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Search: </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>search<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>handleChange<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">Search term from state: </span><span class="token punctuation">{</span>searchTerm<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+
+<span class="token keyword">const</span> <span class="token function-variable function">App</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">const</span> stories <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+            title<span class="token operator">:</span> <span class="token string">'React'</span><span class="token punctuation">,</span>
+            url<span class="token operator">:</span> <span class="token string">'https://reactjs.org/'</span><span class="token punctuation">,</span>
+            author<span class="token operator">:</span> <span class="token string">'Jordan Walke'</span><span class="token punctuation">,</span>
+            num_comments<span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+            points<span class="token operator">:</span> <span class="token number">4</span><span class="token punctuation">,</span>
+            objectID<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token punctuation">{</span><span class="token comment">/*Adding our generated List as a tag:*/</span><span class="token punctuation">}</span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">List</span></span> <span class="token attr-name">list</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>stories<span class="token punctuation">}</span></span><span class="token punctuation">/></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Search</span></span><span class="token punctuation">/></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> App<span class="token punctuation">;</span>
+</code></pre></div>
+<h3 id="useeffect-hook" style="position:relative;"><a href="#useeffect-hook" aria-label="useeffect hook permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>useEffect Hook</h3>
+<p>The useEffect hook is used to manage side effects that aren't related to the components' rendering. Things such as console messages or loading data are managed by useEffect. To use this hook, we need to import it:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> React<span class="token punctuation">,</span> <span class="token punctuation">{</span>useState<span class="token punctuation">,</span> useEffect<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span></code></pre></div>
+<p>The useEffect hook takes in two arguments a call-back function and a dependency array:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token comment">//Do something...</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<p>The dependency array can be used to keep track of values:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> React<span class="token punctuation">,</span> <span class="token punctuation">{</span> useState<span class="token punctuation">,</span> useEffect <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"react"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">const</span> <span class="token punctuation">[</span>emotion<span class="token punctuation">,</span> setEmotion<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token string">"happy"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    
+    <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">The emotion is: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>emotion<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>emotion<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    
+
+<span class="token punctuation">}</span></code></pre></div>
+<p>useEffect will update the console ONLY on emotion change. We can use useEffect to handle values returned from API calls:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token parameter">props</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> <span class="token punctuation">[</span>data<span class="token punctuation">,</span>setData<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> <span class="token punctuation">[</span>loading<span class="token punctuation">,</span>setLoading<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> <span class="token punctuation">[</span>error<span class="token punctuation">,</span>setError<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>props<span class="token punctuation">.</span>login<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token function">setLoading</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+       <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">https://api.github.com/users/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>props<span class="token punctuation">.</span>login<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">r</span> <span class="token operator">=></span> r<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>setData<span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setLoading</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+           <span class="token punctuation">.</span><span class="token function">catch</span><span class="token punctuation">(</span>setError<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>props<span class="token punctuation">.</span>login<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>loading<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">Loading...</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>error<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">></span></span><span class="token punctuation">{</span><span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>error<span class="token punctuation">,</span><span class="token keyword">null</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">></span></span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>data<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h3</span><span class="token punctuation">></span></span><span class="token plain-text">UserName: </span><span class="token punctuation">{</span>data<span class="token punctuation">.</span>login<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h3</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h3</span><span class="token punctuation">></span></span><span class="token plain-text">Id: </span><span class="token punctuation">{</span>data<span class="token punctuation">.</span>id<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h3</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h3</span><span class="token punctuation">></span></span><span class="token plain-text">email: </span><span class="token punctuation">{</span>data<span class="token punctuation">.</span>email<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h3</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">alt</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>data<span class="token punctuation">.</span>login<span class="token punctuation">}</span></span> <span class="token attr-name">src</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>data<span class="token punctuation">.</span>avatar_url<span class="token punctuation">}</span></span><span class="token punctuation">/></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+    <span class="token punctuation">)</span>
+
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="graphql-basics" style="position:relative;"><a href="#graphql-basics" aria-label="graphql basics permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>GraphQL Basics</h3>
+<p>If we have our schema in a <code class="language-cpptext">schema.js</code> file like so:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> <span class="token punctuation">{</span>buildSchema<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'graphql'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> schema <span class="token operator">=</span> <span class="token function">buildSchema</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
+    type Query {
+        hello: String
+    }
+</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> schema<span class="token punctuation">;</span>
+</code></pre></div>
+<p>we can have the following resolver:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">const</span> root <span class="token operator">=</span> <span class="token punctuation">{</span> <span class="token function-variable function">hello</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token string">"This is from resolver"</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token string">'/graphql'</span><span class="token punctuation">,</span> <span class="token function">graphqlHTTP</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    schema<span class="token operator">:</span> schema<span class="token punctuation">,</span>
+    rootValue<span class="token operator">:</span> root<span class="token punctuation">,</span>
+    graphiql<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<p>The schema shows that we can <code class="language-cpptext">Query</code> on type <code class="language-cpptext">hello</code> and we'll get back the hard-coded value from the resolver. Also notice that the resolver called <code class="language-cpptext">root</code> has the same name inside of it that's defined in <code class="language-cpptext">Query</code> in the schema, ie <code class="language-cpptext">hello</code>. Basically, the resolver will determine what to return when a <code class="language-cpptext">Query</code> of type <code class="language-cpptext">hello</code> is made.</p>
+<p>Expanding on the example above, you can have the following schema:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> <span class="token punctuation">{</span>buildSchema<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"graphql"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> schema <span class="token operator">=</span> <span class="token function">buildSchema</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
+    type Friend {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String        
+    }
+    
+    type Query {
+        friend: Friend
+    }
+    
+</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> schema<span class="token punctuation">;</span></code></pre></div>
+<p>with the following resolver now being called for the <code class="language-cpptext">Query</code> friend:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">const</span> root <span class="token operator">=</span> <span class="token punctuation">{</span> <span class="token function-variable function">friend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">{</span>
+            <span class="token string">"id"</span><span class="token operator">:</span> <span class="token number">123456</span><span class="token punctuation">,</span>
+            <span class="token string">"firstName"</span><span class="token operator">:</span> <span class="token string">"First"</span><span class="token punctuation">,</span>
+            <span class="token string">"lastName"</span><span class="token operator">:</span> <span class="token string">"Last"</span><span class="token punctuation">,</span>
+            <span class="token string">"gender"</span><span class="token operator">:</span> <span class="token string">"Male"</span><span class="token punctuation">,</span>
+            <span class="token string">"email"</span><span class="token operator">:</span> <span class="token string">"test@test.com"</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token string">'/graphql'</span><span class="token punctuation">,</span> <span class="token function">graphqlHTTP</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    schema<span class="token operator">:</span> schema<span class="token punctuation">,</span>
+    rootValue<span class="token operator">:</span> root<span class="token punctuation">,</span>
+    graphiql<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<p>If you go to the <code class="language-cpptext">/graphql</code> endpoint, you can ask only for the data you're interested in:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">query</span> <span class="token punctuation">{</span>
+  friend <span class="token punctuation">{</span>
+    gender
+  <span class="token punctuation">}</span> 
+<span class="token punctuation">}</span></code></pre></div>
+<p>We can also have arrays of objects within GraphQL schemas as well. Let's say we want to have an array of emails:</p>
+<p>We'll say that we have an object of type <code class="language-cpptext">email</code> that takes an array of type <code class="language-cpptext">Email</code>. We also need to define what <code class="language-cpptext">Email</code> looks like:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">const</span> schema <span class="token operator">=</span> <span class="token function">buildSchema</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
+    type Friend {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        # exclamation means mandatory
+        email: [Email]!       
+    }
+    
+    type Email {
+        email: String
+    }
+    
+    type Query {
+        friend: Friend
+    }
+    
+</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<p>Next, our resolver should return an array of emails like so:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">const</span> root <span class="token operator">=</span> <span class="token punctuation">{</span> <span class="token function-variable function">friend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">{</span>
+            <span class="token string">"id"</span><span class="token operator">:</span> <span class="token number">123456</span><span class="token punctuation">,</span>
+            <span class="token string">"firstName"</span><span class="token operator">:</span> <span class="token string">"First"</span><span class="token punctuation">,</span>
+            <span class="token string">"lastName"</span><span class="token operator">:</span> <span class="token string">"Last"</span><span class="token punctuation">,</span>
+            <span class="token string">"gender"</span><span class="token operator">:</span> <span class="token string">"Male"</span><span class="token punctuation">,</span>
+            <span class="token string">"email"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token punctuation">{</span><span class="token string">"email"</span><span class="token operator">:</span> <span class="token string">"test1@test1.com"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token punctuation">{</span><span class="token string">"email"</span><span class="token operator">:</span> <span class="token string">"test2@test2.com"</span><span class="token punctuation">}</span>
+            <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre></div>
+<p>Finally, we can query via graphiql:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">query</span> <span class="token punctuation">{</span>
+  friend <span class="token punctuation">{</span>
+    firstName
+    email<span class="token punctuation">{</span>
+      email
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span> 
+<span class="token punctuation">}</span></code></pre></div>
+<p>So far we've only seen <code class="language-cpptext">Query</code> in action. What if we want to Create, Update or Delete records? For that we need <code class="language-cpptext">Mutation</code>. Let's start with create. To create new records, we also need to define the <code class="language-cpptext">input</code> type in our schema. It'll literally determine the type of input we expect. So, if we're creating a new <code class="language-cpptext">Friend</code>, our input would be:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx">    input FriendInput <span class="token punctuation">{</span>
+        id<span class="token operator">:</span> <span class="token constant">ID</span>
+        firstName<span class="token operator">:</span> String
+        lastName<span class="token operator">:</span> String
+        gender<span class="token operator">:</span> String
+        email<span class="token operator">:</span> <span class="token punctuation">[</span>Email<span class="token punctuation">]</span><span class="token operator">!</span>
+    <span class="token punctuation">}</span></code></pre></div>
+<p>Notice above that our <code class="language-cpptext">FriendInput</code> is of type <code class="language-cpptext">input</code>. Next, we'll make use of <code class="language-cpptext">Mutation</code> to actually accept and check the <code class="language-cpptext">input</code>:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx">    type Mutation <span class="token punctuation">{</span>
+        # name        type   typeName     <span class="token keyword">return</span>
+        <span class="token function">createFriend</span><span class="token punctuation">(</span>input<span class="token operator">:</span> FriendInput<span class="token punctuation">)</span><span class="token operator">:</span> Friend
+    <span class="token punctuation">}</span></code></pre></div>
+<p>In the schema above, our <code class="language-cpptext">Mutation</code> defines a function called <code class="language-cpptext">createFriend</code> that takes in an input called <code class="language-cpptext">input</code> which is of type <code class="language-cpptext">FriendInput</code>. The <code class="language-cpptext">FriendInput</code> input type will check to make sure that the fields provided are of the correct type. If so, the mutation will return the <code class="language-cpptext">Friend</code>. So now, our schema looks like this:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">const</span> schema <span class="token operator">=</span> <span class="token function">buildSchema</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
+    type Friend {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String   
+    }
+    
+    type Query {
+        friend: Friend
+    }
+    
+    input FriendInput {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String
+    }
+    
+    type Mutation {
+        createFriend(input: FriendInput): Friend
+    }
+</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<p>Usually, created data is stored to a data store (usually a DB), but for our example we'll use an in-memory array. So, in our .ts file, we'll have our resolver save the mutation to an array. So we'll create a new <code class="language-cpptext">Friend</code> class and an array to hold our <code class="language-cpptext">Friend</code> objects:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">const</span> friendDB <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Friend</span> <span class="token punctuation">{</span>
+    <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter">id<span class="token punctuation">,</span> <span class="token punctuation">{</span>firstName<span class="token punctuation">,</span> lastName<span class="token punctuation">,</span> gender<span class="token punctuation">,</span> email<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>id <span class="token operator">=</span> id<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>firstName <span class="token operator">=</span> firstName<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>lastName <span class="token operator">=</span> lastName<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>gender <span class="token operator">=</span> gender<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>email <span class="token operator">=</span> email<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>Next, we need to update our resolver. We need to be able to handle the <code class="language-cpptext">createFriend</code> mutation. To do so, we'll add the following to our resolver:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx">
+<span class="token keyword">const</span> root <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">friend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">{</span>
+            <span class="token string">"id"</span><span class="token operator">:</span> <span class="token number">123456</span><span class="token punctuation">,</span>
+            <span class="token string">"firstName"</span><span class="token operator">:</span> <span class="token string">"First"</span><span class="token punctuation">,</span>
+            <span class="token string">"lastName"</span><span class="token operator">:</span> <span class="token string">"Last"</span><span class="token punctuation">,</span>
+            <span class="token string">"gender"</span><span class="token operator">:</span> <span class="token string">"Male"</span><span class="token punctuation">,</span>
+            <span class="token string">"email"</span><span class="token operator">:</span> <span class="token string">"test@test.com"</span>
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">createFriend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span>input<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        <span class="token keyword">let</span> id <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'crypto'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">randomBytes</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token string">'hex'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        friendDB<span class="token punctuation">[</span>id<span class="token punctuation">]</span> <span class="token operator">=</span> input<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Friend</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre></div>
+<p>Before we proceed, let's talk a little about resolvers. Resolvers are the functions that respond to queries and mutations. They're the functions that give us the result of the query. A good practice is to extract resolvers into their own files for ease of use. Let's do that. We'll move the resolvers out and are left with this in our index.js:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> express <span class="token keyword">from</span> <span class="token string">'express'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> schema <span class="token keyword">from</span> <span class="token string">'./schema'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> graphqlHTTP <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'express-graphql'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token function">express</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span>res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'Graphql is amazing!'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token string">'/graphql'</span><span class="token punctuation">,</span> <span class="token function">graphqlHTTP</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    schema<span class="token operator">:</span> schema<span class="token punctuation">,</span>
+    rootValue<span class="token operator">:</span> root<span class="token punctuation">,</span>
+    graphiql<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">listen</span><span class="token punctuation">(</span><span class="token number">8080</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Running server on port localhost:8080/graphql'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<p>We've moved resolvers to a file called <code class="language-cpptext">resolvers.js</code> and have the following in it:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">const</span> friendDB <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Friend</span> <span class="token punctuation">{</span>
+    <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter">id<span class="token punctuation">,</span> <span class="token punctuation">{</span>firstName<span class="token punctuation">,</span> lastName<span class="token punctuation">,</span> gender<span class="token punctuation">,</span> email<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>id <span class="token operator">=</span> id<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>firstName <span class="token operator">=</span> firstName<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>lastName <span class="token operator">=</span> lastName<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>gender <span class="token operator">=</span> gender<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>email <span class="token operator">=</span> email<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> resolvers <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">friend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">{</span>
+            <span class="token string">"id"</span><span class="token operator">:</span> <span class="token number">123456</span><span class="token punctuation">,</span>
+            <span class="token string">"firstName"</span><span class="token operator">:</span> <span class="token string">"First"</span><span class="token punctuation">,</span>
+            <span class="token string">"lastName"</span><span class="token operator">:</span> <span class="token string">"Last"</span><span class="token punctuation">,</span>
+            <span class="token string">"gender"</span><span class="token operator">:</span> <span class="token string">"Male"</span><span class="token punctuation">,</span>
+            <span class="token string">"email"</span><span class="token operator">:</span> <span class="token string">"test@test.com"</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">createFriend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span>input<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        <span class="token keyword">let</span> id <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'crypto'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">randomBytes</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token string">'hex'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        friendDB<span class="token punctuation">[</span>id<span class="token punctuation">]</span> <span class="token operator">=</span> input<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Friend</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre></div>
+<p>Now, instead of hard-coded values, let's re-name the first resolver (that we've been using for <code class="language-cpptext">Query</code>) and return from the array. So now, our resolvers look like this:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">const</span> friendDB <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Friend</span> <span class="token punctuation">{</span>
+    <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter">id<span class="token punctuation">,</span> <span class="token punctuation">{</span>firstName<span class="token punctuation">,</span> lastName<span class="token punctuation">,</span> gender<span class="token punctuation">,</span> email<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>id <span class="token operator">=</span> id<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>firstName <span class="token operator">=</span> firstName<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>lastName <span class="token operator">=</span> lastName<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>gender <span class="token operator">=</span> gender<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>email <span class="token operator">=</span> email<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> resolvers <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token comment">// Needs an id for lookup</span>
+    <span class="token function-variable function">getFriend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span>id<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        <span class="token comment">// Return a new Friend object along with id</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Friend</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> friendDB<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">createFriend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span>input<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        <span class="token keyword">let</span> id <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'crypto'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">randomBytes</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token string">'hex'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        friendDB<span class="token punctuation">[</span>id<span class="token punctuation">]</span> <span class="token operator">=</span> input<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Friend</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> resolvers<span class="token punctuation">;</span></code></pre></div>
+<p>In our current schema, we have no <code class="language-cpptext">getFriend</code> Query because this is what we had initially:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">const</span> schema <span class="token operator">=</span> <span class="token function">buildSchema</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
+    type Friend {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String   
+    }
+    
+    # Need to edit this Query 
+    # to account for getFriend
+    type Query {
+        friend: Friend
+    }
+    
+    input FriendInput {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String
+    }
+    
+    type Mutation {
+        createFriend(input: FriendInput): Friend
+    }
+</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<p>Like we said earlier, the <code class="language-cpptext">getFriend()</code> function takes in an ID and returns a <code class="language-cpptext">Friend</code> object. So, our updated <code class="language-cpptext">Query</code> would look like this:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx">    type Query <span class="token punctuation">{</span>
+        <span class="token function">getFriend</span><span class="token punctuation">(</span>id<span class="token operator">:</span> <span class="token constant">ID</span><span class="token punctuation">)</span><span class="token operator">:</span> Friend
+    <span class="token punctuation">}</span></code></pre></div>
+<p>and our updated <code class="language-cpptext">schema.js</code> file will look like this:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> <span class="token punctuation">{</span>buildSchema<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"graphql"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> schema <span class="token operator">=</span> <span class="token function">buildSchema</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
+    type Friend {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String 
+    }
+    
+    type Query {
+        getFriend(id: ID): Friend
+    }
+    
+    input FriendInput {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String
+    }
+    
+    type Mutation {
+        createFriend(input: FriendInput): Friend
+    }
+    
+</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> schema<span class="token punctuation">;</span></code></pre></div>
+<p>Finally, our index.js needs to be updated to use the new resolver file we created:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> express <span class="token keyword">from</span> <span class="token string">'express'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> schema <span class="token keyword">from</span> <span class="token string">'./schema'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> graphqlHTTP <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'express-graphql'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> resolvers  <span class="token keyword">from</span> <span class="token string">'./resolvers'</span>
+
+<span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token function">express</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span>res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'Graphql is amazing!'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Pass resolvers to root</span>
+<span class="token keyword">const</span> root <span class="token operator">=</span> resolvers<span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token string">'/graphql'</span><span class="token punctuation">,</span> <span class="token function">graphqlHTTP</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    schema<span class="token operator">:</span> schema<span class="token punctuation">,</span>
+    rootValue<span class="token operator">:</span> root<span class="token punctuation">,</span>
+    graphiql<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">listen</span><span class="token punctuation">(</span><span class="token number">8080</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Running server on port localhost:8080/graphql'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<p>Now let's see how we can use mutation to add <code class="language-cpptext">Friend</code> from GraphiQL:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">mutation</span> <span class="token punctuation">{</span>
+  createFriend<span class="token punctuation">(</span><span class="token attr-name">input</span><span class="token punctuation">:</span><span class="token punctuation">{</span>
+    <span class="token attr-name">firstName</span><span class="token punctuation">:</span><span class="token string">"FName1"</span><span class="token punctuation">,</span>
+    <span class="token attr-name">lastName</span><span class="token punctuation">:</span><span class="token string">"LName1"</span><span class="token punctuation">,</span>
+    <span class="token attr-name">gender</span><span class="token punctuation">:</span> <span class="token string">"gender1"</span><span class="token punctuation">,</span>
+    <span class="token attr-name">email</span><span class="token punctuation">:</span><span class="token string">"email1@test.com"</span>
+  
+  <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    id
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>The mutation above will be resolved by this resolver:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx">    <span class="token function-variable function">createFriend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span>input<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        <span class="token keyword">let</span> id <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'crypto'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">randomBytes</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token string">'hex'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        friendDB<span class="token punctuation">[</span>id<span class="token punctuation">]</span> <span class="token operator">=</span> input<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Friend</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre></div>
+<p>Notice how the <code class="language-cpptext">createFriend</code> mutation, and by extension the resolver, takes in an input object of type <code class="language-cpptext">Friend</code>. We've made sure that we provide all the relevant fields required for a <code class="language-cpptext">Friend</code> object (id: ID, firstName: String, lastName: String ,gender: String ,email: String). It'll then return the ID for the <code class="language-cpptext">Friend</code> that was created. So the sample shown above has our test fields and an <code class="language-cpptext">id</code> field with an unspecified value. That <code class="language-cpptext">id</code> is automatically generated for us via the resolver. The result of the above mutation would look like so:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token punctuation">{</span>
+  <span class="token string">"data"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">"createFriend"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token string">"id"</span><span class="token punctuation">:</span> <span class="token string">"096b554f9de88f8a6a61"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>Now, if you want to query the <code class="language-cpptext">Friend</code> with an id, you can do the following:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">query</span> <span class="token punctuation">{</span>
+  getFriend<span class="token punctuation">(</span><span class="token attr-name">id</span><span class="token punctuation">:</span> <span class="token string">"d7d7b2481cd95d25f7d8"</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    firstName
+    lastName
+    gender
+    email
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>The query above will be resolved by this resolver:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx">    <span class="token function-variable function">getFriend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span>id<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Friend</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> friendDB<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span></code></pre></div>
+<p>and you'll see this output via GraphiQL:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token punctuation">{</span>
+  <span class="token string">"data"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">"getFriend"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token string">"firstName"</span><span class="token punctuation">:</span> <span class="token string">"FName1"</span><span class="token punctuation">,</span>
+      <span class="token string">"lastName"</span><span class="token punctuation">:</span> <span class="token string">"LName1"</span><span class="token punctuation">,</span>
+      <span class="token string">"gender"</span><span class="token punctuation">:</span> <span class="token string">"gender1"</span><span class="token punctuation">,</span>
+      <span class="token string">"email"</span><span class="token punctuation">:</span> <span class="token string">"email1@test.com"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>And that's how you handle queries and mutations via resolvers!</p>
+<p>Let's refactor our schema by leveraging a library called <code class="language-cpptext">graphql-tools</code>. To do so, we'd run <code class="language-cpptext">npm i graphql-tools</code>. Next, let's see what our schema looks like right now:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> <span class="token punctuation">{</span>buildSchema<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"graphql"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> schema <span class="token operator">=</span> <span class="token function">buildSchema</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
+    type Friend {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String 
+    }
+    
+    type Query {
+        getFriend(id: ID): Friend
+    }
+    
+    input FriendInput {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String
+    }
+    
+    type Mutation {
+        createFriend(input: FriendInput): Friend
+    }
+    
+</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> schema<span class="token punctuation">;</span></code></pre></div>
+<p>We'll import an executable schema helper from graphql-tools and import the resolvers within the schema. We'll define our schema as <code class="language-cpptext">typeDefs</code> and then declare a schema variable that'll call <code class="language-cpptext">makeExecutableSchema</code> with our <code class="language-cpptext">typeDefs</code> and our resolvers.</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> <span class="token punctuation">{</span> makeExecutableSchema <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'graphql-tools'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> resolvers <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./resolvers'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> typeDefs <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
+    type Friend {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String 
+    }
+    
+    type Query {
+        getFriend(id: ID): Friend
+    }
+    
+    input FriendInput {
+        id: ID
+        firstName: String
+        lastName: String
+        gender: String
+        email: String
+    }
+    
+    type Mutation {
+        createFriend(input: FriendInput): Friend
+    }
+    
+</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> schema <span class="token operator">=</span> <span class="token function">makeExecutableSchema</span><span class="token punctuation">(</span><span class="token punctuation">{</span>typeDefs<span class="token punctuation">,</span> resolvers<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token punctuation">{</span> schema <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre></div>
+<p>With that updated, we need to update our resolvers.js file as well. We'll create a resolver map that'll look a lot like the GraphQL syntax that we've been using:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">const</span> friendDB <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Friend</span> <span class="token punctuation">{</span>
+    <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter">id<span class="token punctuation">,</span> <span class="token punctuation">{</span>firstName<span class="token punctuation">,</span> lastName<span class="token punctuation">,</span> gender<span class="token punctuation">,</span> email<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>id <span class="token operator">=</span> id<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>firstName <span class="token operator">=</span> firstName<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>lastName <span class="token operator">=</span> lastName<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>gender <span class="token operator">=</span> gender<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>email <span class="token operator">=</span> email<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">//resolver map</span>
+<span class="token keyword">export</span> <span class="token keyword">const</span> resolvers <span class="token operator">=</span> <span class="token punctuation">{</span>
+    Query<span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token function-variable function">getFriend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">_<span class="token punctuation">,</span><span class="token punctuation">{</span>id<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Friend</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> friendDB<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+    Mutation<span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token function-variable function">createFriend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">_<span class="token punctuation">,</span><span class="token punctuation">{</span>input<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+            <span class="token keyword">let</span> id <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'crypto'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">randomBytes</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token string">'hex'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            friendDB<span class="token punctuation">[</span>id<span class="token punctuation">]</span> <span class="token operator">=</span> input<span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Friend</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div>
+<p>All we did here was move the <code class="language-cpptext">createFriend</code> resolver inside the Mutation and <code class="language-cpptext">getFriend</code> resolver inside the Query. Now, our resolvers are being used inside of the schema. One thing to note here is that the query and mutation resolvers are now using a function and it's signature is as follows:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token function-variable function">fieldName</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">parent<span class="token punctuation">,</span> args<span class="token punctuation">,</span> context<span class="token punctuation">,</span> info</span><span class="token punctuation">)</span> <span class="token operator">=></span> data<span class="token punctuation">;</span></code></pre></div>
+<p>Since we're not using any of the function arguments except for <code class="language-cpptext">args</code>, we'd have to provide an underscore, <code class="language-cpptext">_</code>, for the arguments before args as shown above.</p>
+<p>Finally, we need to update the <code class="language-cpptext">index.js</code> file by removing the old resolvers import. We'll instead import resolvers from the schema. We'll also get rid of the root resolvers and the rootValue field inside app.use:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> express <span class="token keyword">from</span> <span class="token string">'express'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> graphqlHTTP <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'express-graphql'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> schema <span class="token punctuation">}</span>  <span class="token keyword">from</span> <span class="token string">'./schema'</span>
+
+<span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token function">express</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span>res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'Graphql is amazing!'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token string">'/graphql'</span><span class="token punctuation">,</span> <span class="token function">graphqlHTTP</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    schema<span class="token operator">:</span> schema<span class="token punctuation">,</span>
+    graphiql<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">listen</span><span class="token punctuation">(</span><span class="token number">8080</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Running server on port localhost:8080/graphql'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<h3 id="updates-with-mutations" style="position:relative;"><a href="#updates-with-mutations" aria-label="updates with mutations permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Updates with Mutations</h3>
+<p>So far, we've added new items to our in-memory db using mutations and have been using queries to return items from our DB. Now, let's see how we can use mutations to update existing items. Ofcourse, the first thing we need to do is decide what the <code class="language-cpptext">updateFriend</code> mutation will look like: ie what will it accept and what would be returned?</p>
+<p>It makes sense for it to accept <code class="language-cpptext">FriendInput</code> which already exists and then it should return the updated <code class="language-cpptext">Friend</code>. Ok, so our <code class="language-cpptext">schema.js</code> with this new mutation would look like this:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx">    type Mutation <span class="token punctuation">{</span>
+        <span class="token function">createFriend</span><span class="token punctuation">(</span>input<span class="token operator">:</span> FriendInput<span class="token punctuation">)</span><span class="token operator">:</span> Friend
+        <span class="token function">updateFriend</span><span class="token punctuation">(</span>input<span class="token operator">:</span> FriendInput<span class="token punctuation">)</span><span class="token operator">:</span> Friend
+    <span class="token punctuation">}</span></code></pre></div>
+<p>Next, we need to update the resolver as well. Again, we'll add the logic inside the <code class="language-cpptext">Mutation</code> like so:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">const</span> resolvers <span class="token operator">=</span> <span class="token punctuation">{</span>
+    Query<span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token function-variable function">getFriend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">_<span class="token punctuation">,</span><span class="token punctuation">{</span>id<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Friend</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> friendDB<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+    Mutation<span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token function-variable function">createFriend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">_<span class="token punctuation">,</span><span class="token punctuation">{</span>input<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+            <span class="token keyword">let</span> id <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'crypto'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">randomBytes</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token string">'hex'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            friendDB<span class="token punctuation">[</span>id<span class="token punctuation">]</span> <span class="token operator">=</span> input<span class="token punctuation">;</span>
+            console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"DB looks like this: "</span><span class="token punctuation">,</span> friendDB<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Friend</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token function-variable function">updateFriend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">_<span class="token punctuation">,</span><span class="token punctuation">{</span>input<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+            <span class="token comment">//Do something</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre></div>
+<p>Now, this resolver should grab the <code class="language-cpptext">id</code> from the input (remember our FriendInput already has the ID present) and update the item in our array. We can call a separate function called <code class="language-cpptext">findFriendAndUpdate</code> to do that for us. Next, this resolver should then return the updated <code class="language-cpptext">Friend</code>. Here's this logic in code:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">function</span> <span class="token function">findFriendAndUpdate</span> <span class="token punctuation">(</span><span class="token parameter">input</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    friendDB<span class="token punctuation">[</span>input<span class="token punctuation">.</span>id<span class="token punctuation">]</span> <span class="token operator">=</span> input<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">//resolver map</span>
+<span class="token keyword">const</span> resolvers <span class="token operator">=</span> <span class="token punctuation">{</span>
+    Query<span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token function-variable function">getFriend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">_<span class="token punctuation">,</span><span class="token punctuation">{</span>id<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Friend</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> friendDB<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+    Mutation<span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token function-variable function">createFriend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">_<span class="token punctuation">,</span><span class="token punctuation">{</span>input<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+            <span class="token keyword">let</span> id <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'crypto'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">randomBytes</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token string">'hex'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            friendDB<span class="token punctuation">[</span>id<span class="token punctuation">]</span> <span class="token operator">=</span> input<span class="token punctuation">;</span>
+            console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"DB looks like this: "</span><span class="token punctuation">,</span> friendDB<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Friend</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token function-variable function">updateFriend</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">_<span class="token punctuation">,</span><span class="token punctuation">{</span>input<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+            <span class="token function">findFriendAndUpdate</span><span class="token punctuation">(</span>input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Friend</span><span class="token punctuation">(</span>input<span class="token punctuation">.</span>id<span class="token punctuation">,</span> input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre></div>
+<p>Finally, the graphql query to update an existing <code class="language-cpptext">Friend</code> would look like this:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">mutation</span><span class="token punctuation">{</span>
+ 	updateFriend<span class="token punctuation">(</span><span class="token attr-name">input</span><span class="token punctuation">:</span><span class="token punctuation">{</span>
+    <span class="token attr-name">id</span><span class="token punctuation">:</span> <span class="token description string">"<span class="token language-markdown">192f3e997a5f14ff109f</span>"</span>
+    <span class="token attr-name">firstName</span><span class="token punctuation">:</span><span class="token description string">"<span class="token language-markdown">FnameNew</span>"</span>
+    <span class="token attr-name">lastName</span><span class="token punctuation">:</span><span class="token description string">"<span class="token language-markdown">LnameNew</span>"</span>
+    <span class="token attr-name">email</span><span class="token punctuation">:</span><span class="token description string">"<span class="token language-markdown">newEmail@email.com</span>"</span>
+    <span class="token attr-name">gender</span><span class="token punctuation">:</span><span class="token string">"FEMALE"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    id
+    firstName
+    lastName
+ 	<span class="token punctuation">}</span> 
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="queries-and-aliases" style="position:relative;"><a href="#queries-and-aliases" aria-label="queries and aliases permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Queries and Aliases</h3>
+<p>You can define aliases for queries for better readability. For example, if I have 2 friends in my DB, I can have the following 2 aliases for those queries:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">query</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">SuperStartFriend</span><span class="token punctuation">:</span>getFriend<span class="token punctuation">(</span><span class="token attr-name">id</span><span class="token punctuation">:</span> <span class="token string">"192f3e997a5f14ff109f"</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    firstName
+    lastName
+    email
+  <span class="token punctuation">}</span>
+  <span class="token attr-name">FriendWithMyName</span><span class="token punctuation">:</span>getFriend<span class="token punctuation">(</span><span class="token attr-name">id</span><span class="token punctuation">:</span><span class="token string">"8dc8fd71c3001cbdcc7a"</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    firstName
+    lastName
+    email
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>and the result you get back would be:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token punctuation">{</span>
+  <span class="token string">"data"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">"SuperStartFriend"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token string">"firstName"</span><span class="token punctuation">:</span> <span class="token string">"Ronaldo"</span><span class="token punctuation">,</span>
+      <span class="token string">"lastName"</span><span class="token punctuation">:</span> <span class="token string">"Cristiano"</span><span class="token punctuation">,</span>
+      <span class="token string">"email"</span><span class="token punctuation">:</span> <span class="token string">"superstart@test.com"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">"FriendWithMyName"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token string">"firstName"</span><span class="token punctuation">:</span> <span class="token string">"Me"</span><span class="token punctuation">,</span>
+      <span class="token string">"lastName"</span><span class="token punctuation">:</span> <span class="token string">"Ne"</span><span class="token punctuation">,</span>
+      <span class="token string">"email"</span><span class="token punctuation">:</span> <span class="token string">"meme@test.com"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="queries-and-fragments" style="position:relative;"><a href="#queries-and-fragments" aria-label="queries and fragments permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Queries and Fragments</h3>
+<p>Like Aliases, Fragments are a neat feature that come built in with GraphiQL and are very useful when we start requesting the same data across several items. Let's say our DB has 4 friends present:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx">
+<span class="token constant">DB</span> looks like <span class="token keyword">this</span><span class="token operator">:</span>  <span class="token punctuation">{</span>
+  <span class="token string">'192f3e997a5f14ff109f'</span><span class="token operator">:</span> <span class="token punctuation">[</span>Object<span class="token operator">:</span> <span class="token keyword">null</span> prototype<span class="token punctuation">]</span> <span class="token punctuation">{</span>
+    id<span class="token operator">:</span> <span class="token string">'192f3e997a5f14ff109f'</span><span class="token punctuation">,</span>
+    firstName<span class="token operator">:</span> <span class="token string">'Ronaldo'</span><span class="token punctuation">,</span>
+    lastName<span class="token operator">:</span> <span class="token string">'Cristiano'</span><span class="token punctuation">,</span>
+    gender<span class="token operator">:</span> <span class="token string">'MALE'</span><span class="token punctuation">,</span>
+    email<span class="token operator">:</span> <span class="token string">'ronaldo@gmail.com'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token string">'8dc8fd71c3001cbdcc7a'</span><span class="token operator">:</span> <span class="token punctuation">[</span>Object<span class="token operator">:</span> <span class="token keyword">null</span> prototype<span class="token punctuation">]</span> <span class="token punctuation">{</span>
+    firstName<span class="token operator">:</span> <span class="token string">'Iqbal'</span><span class="token punctuation">,</span>
+    lastName<span class="token operator">:</span> <span class="token string">'khan'</span><span class="token punctuation">,</span>
+    email<span class="token operator">:</span> <span class="token string">'asjkdhaskhd@gmail.com'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  fd956a321845f09240c9<span class="token operator">:</span> <span class="token punctuation">[</span>Object<span class="token operator">:</span> <span class="token keyword">null</span> prototype<span class="token punctuation">]</span> <span class="token punctuation">{</span>
+    firstName<span class="token operator">:</span> <span class="token string">'Friend3'</span><span class="token punctuation">,</span>
+    lastName<span class="token operator">:</span> <span class="token string">'Friend3'</span><span class="token punctuation">,</span>
+    email<span class="token operator">:</span> <span class="token string">'friend3@test.com'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token string">'33700cc78de32fdf6b3e'</span><span class="token operator">:</span> <span class="token punctuation">[</span>Object<span class="token operator">:</span> <span class="token keyword">null</span> prototype<span class="token punctuation">]</span> <span class="token punctuation">{</span>
+    firstName<span class="token operator">:</span> <span class="token string">'Friend4'</span><span class="token punctuation">,</span>
+    lastName<span class="token operator">:</span> <span class="token string">'Friend4'</span><span class="token punctuation">,</span>
+    email<span class="token operator">:</span> <span class="token string">'friend4@test.com'</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>Fragments are similar to aliases in that they help us collect data from various objects. One thing to keep in mind though: for your fragments to work, each query must return similar data. Let's see what that means:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">query</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">one</span><span class="token punctuation">:</span>getFriend<span class="token punctuation">(</span><span class="token attr-name">id</span><span class="token punctuation">:</span><span class="token string">"33700cc78de32fdf6b3e"</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token operator">...</span><span class="token fragment function">friendFragment</span>
+  <span class="token punctuation">}</span>
+  <span class="token attr-name">two</span><span class="token punctuation">:</span>getFriend<span class="token punctuation">(</span><span class="token attr-name">id</span><span class="token punctuation">:</span><span class="token string">"8dc8fd71c3001cbdcc7a"</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token operator">...</span><span class="token fragment function">friendFragment</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>If you paste the query above, you'll see that the <code class="language-cpptext">friendFragment</code> would be showing an error. That's because we haven't defined what the <code class="language-cpptext">friendFragment</code> is. Let's do that now:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">fragment</span> <span class="token fragment function">friendFragment</span> <span class="token keyword">on</span> <span class="token class-name">Friend</span><span class="token punctuation">{</span>
+ <span class="token comment"># Define here what you want! </span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>In the syntax above, we've defined a friend fragment on type <code class="language-cpptext">Friend</code>. Now you see why each fragment should be of the same type?! Then inside the fragment, you define what you want from each returned friend. Obviously, you'd want to make sure that the returned fields are actually present for our <code class="language-cpptext">Friend</code> type. Let's get back the <code class="language-cpptext">firstName</code> and <code class="language-cpptext">email</code> only:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">fragment</span> <span class="token fragment function">friendFragment</span> <span class="token keyword">on</span> <span class="token class-name">Friend</span><span class="token punctuation">{</span>
+  email
+  firstName
+<span class="token punctuation">}</span></code></pre></div>
+<p>Therefore, our complete query would look like so:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">query</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">one</span><span class="token punctuation">:</span>getFriend<span class="token punctuation">(</span><span class="token attr-name">id</span><span class="token punctuation">:</span><span class="token string">"33700cc78de32fdf6b3e"</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token operator">...</span><span class="token fragment function">friendFragment</span>
+  <span class="token punctuation">}</span>
+  <span class="token attr-name">two</span><span class="token punctuation">:</span>getFriend<span class="token punctuation">(</span><span class="token attr-name">id</span><span class="token punctuation">:</span><span class="token string">"192f3e997a5f14ff109f"</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token operator">...</span><span class="token fragment function">friendFragment</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">fragment</span> <span class="token fragment function">friendFragment</span> <span class="token keyword">on</span> <span class="token class-name">Friend</span><span class="token punctuation">{</span>
+  email
+  firstName
+  gender
+<span class="token punctuation">}</span></code></pre></div>
+<p>and if you run the above, you get this back:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token punctuation">{</span>
+  <span class="token string">"data"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">"one"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token string">"email"</span><span class="token punctuation">:</span> <span class="token string">"friend4@test.com"</span><span class="token punctuation">,</span>
+      <span class="token string">"firstName"</span><span class="token punctuation">:</span> <span class="token string">"Friend4"</span><span class="token punctuation">,</span>
+      <span class="token string">"gender"</span><span class="token punctuation">:</span> null
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">"two"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token string">"email"</span><span class="token punctuation">:</span> <span class="token string">"ronaldo@test.com"</span><span class="token punctuation">,</span>
+      <span class="token string">"firstName"</span><span class="token punctuation">:</span> <span class="token string">"Ronaldo"</span><span class="token punctuation">,</span>
+      <span class="token string">"gender"</span><span class="token punctuation">:</span> <span class="token string">"MALE"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>Notie if one object doesn't have a value, it's returned as null.</p></div><div class="post-module--post-meta--2SNYO"><div class="PostTags-module--tag-container--2fM2Y"><a href="/tags/blog"><span>blog</span></a><a href="/tags/react"><span>React</span></a></div></div><hr/></div><nav><ul class="post-module--pagination--2K15k"><li><a rel="prev" href="/c-standard-input">← <!-- -->C++ Standard input</a></li><li><a rel="next" href="/practical-system-design">Practical System Design<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--1ScUQ"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2Iyp5">Copyright © 2021. All rights reserved.</div></div></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
   
   
   if(true) {
