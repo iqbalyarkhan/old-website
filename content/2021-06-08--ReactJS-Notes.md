@@ -27,7 +27,8 @@ tags:
 * [useEffect Hook](#useeffect-hook)
 * [GraphQL Basics](#graphql-basics)
 * [Updates with Mutations](#updates-with-mutations)
-
+* [Queries and Aliases](#queries-and-aliases)
+* [Queries and Fragments](#queries-and-fragments)
 
 At its very core, React basically maintains a HTML tree for you. This tree is able to do efficient diff computations on the nodes.
 
@@ -1662,3 +1663,139 @@ mutation{
 }
 ```
 
+### Queries and Aliases
+You can define aliases for queries for better readability. For example, if I have 2 friends in my DB, I can have the following 2 aliases for those queries:
+
+```graphql
+query {
+  SuperStartFriend:getFriend(id: "192f3e997a5f14ff109f"){
+    firstName
+    lastName
+    email
+  }
+  FriendWithMyName:getFriend(id:"8dc8fd71c3001cbdcc7a"){
+    firstName
+    lastName
+    email
+  }
+}
+```
+
+and the result you get back would be:
+
+```graphql
+{
+  "data": {
+    "SuperStartFriend": {
+      "firstName": "Ronaldo",
+      "lastName": "Cristiano",
+      "email": "superstart@test.com"
+    },
+    "FriendWithMyName": {
+      "firstName": "Me",
+      "lastName": "Ne",
+      "email": "meme@test.com"
+    }
+  }
+}
+```
+
+### Queries and Fragments
+Like Aliases, Fragments are a neat feature that come built in with GraphiQL and are very useful when we start requesting the same data across several items. Let's say our DB has 4 friends present:
+
+```jsx
+
+DB looks like this:  {
+  '192f3e997a5f14ff109f': [Object: null prototype] {
+    id: '192f3e997a5f14ff109f',
+    firstName: 'Ronaldo',
+    lastName: 'Cristiano',
+    gender: 'MALE',
+    email: 'ronaldo@gmail.com'
+  },
+  '8dc8fd71c3001cbdcc7a': [Object: null prototype] {
+    firstName: 'Iqbal',
+    lastName: 'khan',
+    email: 'asjkdhaskhd@gmail.com'
+  },
+  fd956a321845f09240c9: [Object: null prototype] {
+    firstName: 'Friend3',
+    lastName: 'Friend3',
+    email: 'friend3@test.com'
+  },
+  '33700cc78de32fdf6b3e': [Object: null prototype] {
+    firstName: 'Friend4',
+    lastName: 'Friend4',
+    email: 'friend4@test.com'
+  }
+}
+```
+
+Fragments are similar to aliases in that they help us collect data from various objects. One thing to keep in mind though: for your fragments to work, each query must return similar data. Let's see what that means:
+
+```graphql
+query {
+  one:getFriend(id:"33700cc78de32fdf6b3e"){
+    ...friendFragment
+  }
+  two:getFriend(id:"8dc8fd71c3001cbdcc7a"){
+    ...friendFragment
+  }
+}
+```
+
+If you paste the query above, you'll see that the `friendFragment` would be showing an error. That's because we haven't defined what the `friendFragment` is. Let's do that now:
+
+```graphql
+fragment friendFragment on Friend{
+ # Define here what you want! 
+}
+```
+In the syntax above, we've defined a friend fragment on type `Friend`. Now you see why each fragment should be of the same type?! Then inside the fragment, you define what you want from each returned friend. Obviously, you'd want to make sure that the returned fields are actually present for our `Friend` type. Let's get back the `firstName` and `email` only:
+
+```graphql
+fragment friendFragment on Friend{
+  email
+  firstName
+}
+```
+
+Therefore, our complete query would look like so:
+
+```graphql
+query {
+  one:getFriend(id:"33700cc78de32fdf6b3e"){
+    ...friendFragment
+  }
+  two:getFriend(id:"192f3e997a5f14ff109f"){
+    ...friendFragment
+  }
+}
+
+fragment friendFragment on Friend{
+  email
+  firstName
+  gender
+}
+```
+
+and if you run the above, you get this back:
+
+```graphql
+{
+  "data": {
+    "one": {
+      "email": "friend4@test.com",
+      "firstName": "Friend4",
+      "gender": null
+    },
+    "two": {
+      "email": "ronaldo@test.com",
+      "firstName": "Ronaldo",
+      "gender": "MALE"
+    }
+  }
+}
+```
+
+Notie if one object doesn't have a value, it's returned as null.
