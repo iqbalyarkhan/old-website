@@ -25,7 +25,8 @@ tags:
 * [React Props](#react-props)
 * [React State](#react-state)
 * [useEffect Hook](#useeffect-hook)
-* [GraphQL](#graphql)
+* [GraphQL Basics](#graphql-basics)
+* [Updates with Mutations](#updates-with-mutations)
 
 
 At its very core, React basically maintains a HTML tree for you. This tree is able to do efficient diff computations on the nodes.
@@ -950,7 +951,7 @@ function App(props) {
 }
 ```
 
-### GraphQL
+### GraphQL Basics
 
 If we have our schema in a `schema.js` file like so:
 
@@ -1575,3 +1576,89 @@ app.use('/graphql', graphqlHTTP({
 
 app.listen(8080, () => console.log('Running server on port localhost:8080/graphql'));
 ```
+
+### Updates with Mutations
+
+So far, we've added new items to our in-memory db using mutations and have been using queries to return items from our DB. Now, let's see how we can use mutations to update existing items. Ofcourse, the first thing we need to do is decide what the `updateFriend` mutation will look like: ie what will it accept and what would be returned?
+
+It makes sense for it to accept `FriendInput` which already exists and then it should return the updated `Friend`. Ok, so our `schema.js` with this new mutation would look like this:
+
+```jsx
+    type Mutation {
+        createFriend(input: FriendInput): Friend
+        updateFriend(input: FriendInput): Friend
+    }
+```
+
+Next, we need to update the resolver as well. Again, we'll add the logic inside the `Mutation` like so:
+
+```jsx
+const resolvers = {
+    Query: {
+        getFriend: (_,{id}) => {
+            return new Friend(id, friendDB[id])
+        },
+    },
+
+    Mutation: {
+        createFriend: (_,{input}) => {
+            let id = require('crypto').randomBytes(10).toString('hex');
+            friendDB[id] = input;
+            console.log("DB looks like this: ", friendDB);
+            return new Friend(id, input);
+        },
+        updateFriend: (_,{input}) => {
+            //Do something
+        }
+    }
+};
+``` 
+
+Now, this resolver should grab the `id` from the input (remember our FriendInput already has the ID present) and update the item in our array. We can call a separate function called `findFriendAndUpdate` to do that for us. Next, this resolver should then return the updated `Friend`. Here's this logic in code:
+
+```jsx
+function findFriendAndUpdate (input) {
+    friendDB[input.id] = input;
+}
+
+//resolver map
+const resolvers = {
+    Query: {
+        getFriend: (_,{id}) => {
+            return new Friend(id, friendDB[id])
+        },
+    },
+
+    Mutation: {
+        createFriend: (_,{input}) => {
+            let id = require('crypto').randomBytes(10).toString('hex');
+            friendDB[id] = input;
+            console.log("DB looks like this: ", friendDB);
+            return new Friend(id, input);
+        },
+        updateFriend: (_,{input}) => {
+            findFriendAndUpdate(input);
+            return new Friend(input.id, input);
+        }
+    }
+};
+```
+
+Finally, the graphql query to update an existing `Friend` would look like this:
+
+```graphql
+mutation{
+ 	updateFriend(input:{
+    id: "192f3e997a5f14ff109f"
+    firstName:"FnameNew"
+    lastName:"LnameNew"
+    email:"newEmail@email.com"
+    gender:"FEMALE"
+  }) {
+    id
+    firstName
+    lastName
+ 	} 
+}
+```
+
