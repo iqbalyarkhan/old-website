@@ -1296,7 +1296,7 @@ const schema = buildSchema(`
 `);
 ```
 
-Like we said earlier, the `getFriend()` function takes in an ID and returns a `Friend`  object. So, our updated `Query` would look like this:
+Like we said earlier, the `getFriend()` function takes in an ID and returns a `Friend` object. So, our updated `Query` would look like this:
 
 ```jsx
     type Query {
@@ -1440,7 +1440,7 @@ and you'll see this output via GraphiQL:
 
 And that's how you handle queries and mutations via resolvers! 
 
-Let's refactor our schema by leveraging a library called `graphql-tools`. To do so, we'd run `npm i @graphql-tools/schema`. Next, let's see what our schema looks like right now:
+Let's refactor our schema by leveraging a library called `graphql-tools`. To do so, we'd run `npm i graphql-tools`. Next, let's see what our schema looks like right now:
 
 ```jsx
 import {buildSchema} from "graphql";
@@ -1475,10 +1475,10 @@ const schema = buildSchema(`
 export default schema;
 ```
 
-First, we'll import an executable schema helper from graphql-tools and import the resolvers within the schema:
+We'll import an executable schema helper from graphql-tools and import the resolvers within the schema. We'll define our schema as `typeDefs` and then declare a schema variable that'll call `makeExecutableSchema` with our `typeDefs` and our resolvers. 
 
 ```jsx
-import { makeExecutableSchema } from '@graphql-tools/schema';
+import { makeExecutableSchema } from 'graphql-tools';
 import { resolvers } from './resolvers';
 
 const typeDefs = `
@@ -1531,13 +1531,13 @@ class Friend {
 //resolver map
 export const resolvers = {
     Query: {
-        getFriend: ({id}) => {
+        getFriend: (_,{id}) => {
             return new Friend(id, friendDB[id])
         },
     },
 
     Mutation: {
-        createFriend: ({input}) => {
+        createFriend: (_,{input}) => {
             let id = require('crypto').randomBytes(10).toString('hex');
             friendDB[id] = input;
             return new Friend(id, input);
@@ -1545,10 +1545,17 @@ export const resolvers = {
     }
 };
 
-export default resolvers;
 ```
 
-All we did here was move the `createFriend` resolver inside the Mutation and `getFriend` resolver inside the Query. Now, our resolvers are being used inside of the schema. Finally, we need to update the `index.js` file by removing the old resolvers import. We'll instead import resolvers from the schema. We'll also get rid of the root resolvers and the rootValue field inside app.use:
+All we did here was move the `createFriend` resolver inside the Mutation and `getFriend` resolver inside the Query. Now, our resolvers are being used inside of the schema. One thing to note here is that the query and mutation resolvers are now using a function and it's signature is as follows:
+
+```jsx
+fieldName: (parent, args, context, info) => data;
+```
+
+Since we're not using any of the function arguments except for `args`, we'd have to provide an underscore, `_`, for the arguments before args as shown above. 
+
+Finally, we need to update the `index.js` file by removing the old resolvers import. We'll instead import resolvers from the schema. We'll also get rid of the root resolvers and the rootValue field inside app.use:
 
 ```jsx
 import express from 'express';
