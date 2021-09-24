@@ -336,7 +336,7 @@ const App = () => {
 export default App;
 ```
 
-As explained, we're not importing `CalendarCard` into `calendar-container` and displaying it. Now, if you run both `calendar-card` on `localhost:3000` and `calendar-container` on `localhost:3001` you should see this:
+As explained, we're now importing `CalendarCard` into `calendar-container` and displaying it. Now, if you run both `calendar-card` on `localhost:3000` and `calendar-container` on `localhost:3001` you should see this:
 
 ![Final](./images/mfe/final.png)
 
