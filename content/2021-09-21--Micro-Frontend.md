@@ -47,7 +47,7 @@ At its core, [webpack](https://webpack.js.org/concepts/) is a static module bund
 So webpack helps us with module federation
 
 ### MFE in Action
-Let's create a project from scratch. We'll first create a MFE app and then add webpacks for module federation. Credit to Hege Haavaldsen's post that can be found [here](https://react.christmas/2020/5). As per the example, here's what we're going to build: We will create a Christmas calendar using module federation. For illustrative purposes, we will be using two separate npm projects:
+Let's create a project from scratch. We'll first create a MFE app and then add webpacks for module federation. Credit to Hege Haavaldsen's post that can be found [here](https://react.christmas/2020/5). Here's what we're going to build: We will create a Christmas calendar using module federation. For illustrative purposes, we will be using two separate npm projects:
 
 - `calendar-container`: Contains the calendar component.
 - `calendar-card`: Contains the calendar card component.
@@ -64,9 +64,10 @@ Let's start with the app's structure. Since these are two separate apps, our app
 |--------public/
 |----------index.html
 |--------src/
-|----------App.js
+|----------App.jsx
 |----------Index.js
 |----------CalendarCard.jsx
+|----------bootstrap.js
 |--------package-lock.json
 |--------package.json
 |----calendar-container/
@@ -75,7 +76,7 @@ Let's start with the app's structure. Since these are two separate apps, our app
 |--------src/
 |----------App.js
 |----------Index.js
-|----------CalendarContainer.jsx
+|----------bootstrap.js
 |--------package-lock.json
 |--------package.json
 ```
@@ -131,9 +132,7 @@ const style = {
 
 const CalendarCard = ({ dayOfDecember }) => {
     const [isClicked, setIsClicked] = useState(false);
-    var date1 = new Date();
-    var date2 = new Date("12/25/2021");
-    const daysUntilChristmas = Math.round((date2.getTime() - date1.getTime())/ (1000 * 3600 * 24));
+    const daysUntilChristmas = 24 - dayOfDecember;
     return (
         <div onClick={() => setIsClicked(!isClicked)} style={style}>
             {isClicked ? (
@@ -170,7 +169,7 @@ Ok, so now we've got our `calendar-card` package that is displaying the number o
 
 ![Card](./images/mfe/card.png)
 
-So far, we've created our `calendar-card` package to show the number of days till Christmas while our `calendar-container` package prints out a simple line. We'll now connect the two so that `calendar-container` can use the `calendar-car**__**``d`. This is done in each app's `webpack.config.js` utilizing webpack's ModuleFederation-plugin. We need to expose `CalendarCard` component. Let's create an empty `webpack.config.js` file in `calendar-card` project at the root level:
+So far, we've created our `calendar-card` package to show the number of days till Christmas while our `calendar-container` package prints out a simple line. We'll now connect the two so that `calendar-container` can use the `calendar-card`. This is done in each app's `webpack.config.js` utilizing webpack's ModuleFederation-plugin. We need to expose `CalendarCard` component. Let's create an empty `webpack.config.js` file in `calendar-card` project at the root level:
 
 ```text
 |--mainApp
@@ -186,7 +185,7 @@ So far, we've created our `calendar-card` package to show the number of days til
 |--------webpack.config.js
 ```
 
-Here's what the `webpack.config.js` file will look like:
+Here's what the `webpack.config.js` file will look like for `calendar-card`:
 
 ```jsx
 const path = require('path');
@@ -196,6 +195,7 @@ const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPl
 module.exports = {
     mode: 'development',
     devServer: {
+        //Port where calendar-card is running
         port: 3000,
     },
     module: {
@@ -222,6 +222,7 @@ module.exports = {
             name: 'calendar_card',
             filename: 'remoteEntry.js',
             exposes: {
+                // what we're exposing from this package
                 './CalendarCard': './src/CalendarCard',
             },
             shared: ['react', 'react-dom'],
@@ -279,6 +280,8 @@ module.exports = {
         new ModuleFederationPlugin({
             name: 'container',
             remotes: {
+                //What remote to import in container
+                //and where that remote is exposed
                 calendar_card:
                     'calendar_card@http://localhost:3000/remoteEntry.js',
             },
@@ -288,4 +291,54 @@ module.exports = {
 };
 ```
 
-Interesting thing to note here is the `remotes` as defined under `HtmlWebpackPlugin`. Here, we're pointing to the remote package we want imported here. 
+Interesting thing to note here is the `remotes` as defined under `HtmlWebpackPlugin`. Here, we're pointing to the remote package we want imported. Next, we need to asynchronously load the application. This can be done by moving all the code from `index.js` into a new file `bootstrap.js`. We do this in both applications. So, `calendar-container`'s `bootstrap.js` file would be:
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App'; 
+
+ReactDOM.render(<App />, document.getElementById('calendar-container'));
+```
+and then the same for `calendar-card`. ie, both `calendar-card` and `calendar-container` will have the same bootstrap.js file. 
+
+Then we dynamically import the content in index.js:
+
+```jsx
+import './bootstrap'
+```
+
+Now we are ready to import the `CalendarCard` component from `calendar-card` into `calendar-container` package. Therefore, we do the following in `calendar-container`'s `App.jsx`:
+
+```jsx
+import React from 'react';
+
+const CalendarCard = React.lazy(() =>  import('calendar_card/CalendarCard'));
+
+const App = () => {
+    const  calendarCards = Array.from(Array(24).keys());
+    return (
+        <main>
+            <h1>This is the calendar-container app</h1>
+            <div>
+                {calendarCards.map((day) => (
+                    <React.Suspense
+                        fallback={<p>Loading content from calendar-card...</p>}
+                        key={day}
+                    >
+                        <CalendarCard  dayOfDecember={day + 1}  />
+                    </React.Suspense>
+                ))}
+            </div>
+        </main>
+    );
+};
+export default App;
+```
+
+As explained, we're not importing `CalendarCard` into `calendar-container` and displaying it. Now, if you run both `calendar-card` on `localhost:3000` and `calendar-container` on `localhost:3001` you should see this:
+
+![Final](./images/mfe/final.png)
+
+
+ 
