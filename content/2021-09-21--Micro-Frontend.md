@@ -340,5 +340,6 @@ As explained, we're now importing `CalendarCard` into `calendar-container` and d
 
 ![Final](./images/mfe/final.png)
 
+Ofcourse the app would break if `calendar-card` is not running and you only try to run `calendar-conatiner`.
 
  
