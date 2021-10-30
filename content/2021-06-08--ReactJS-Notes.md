@@ -149,6 +149,90 @@ class App extends Component {
 export default App;
 ```
 
+As your classes grow, they may have multiple properties. For example, say we add age, location, height and weight to our person class:
+
+```jsx
+import React, { Component } from "react";
+
+class Person extends Component {
+  constructor(props) {
+    super(props);
+    this.firstName = 'John';
+    this.lastName = 'Doe';
+    this.age = 22; 
+    this.location = 'UK';
+    this.height = '6 feet';
+    this.weight = 160;
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>{this.firstName}</h1>
+        <h1>{this.lastName}</h1>
+      </div>
+    );
+  }
+}
+export default Person;
+```
+Managing all these properties becomes a hassle. Fortunately, we can use `state` and `arrowFunctions` to bind our class variables. We get rid of the constructor and simply store our variables in the state:
+
+```jsx
+class App extends Component {
+  state = {
+    message: "Hi",
+    firstName: "John",
+    lastName: "Doe",
+    age: 22,
+    location: "UK,",
+    height: "6 feet",
+    weight: 160
+  };
+
+  render() {
+    return (
+      <div>
+        <h1>{this.state.height}</h1>
+      </div>
+    );
+  }
+}
+export default App;
+```
+Notice how we access the variable using `this.state.<name>`.
+
+Obviously, you also need a way to manipulate the variables. For that we can use `this.setState`. Say, for one button click, we call a function called `increaseWeight` and `decreaseWeight` on another click. We'll increase and decrease weight for each click:
+
+```jsx
+class App extends Component{
+    state = {/*...*/}
+    increaseWeight = () => {
+        this.setState((state) => ({ weight: this.state.weight + 1 }));
+    };
+
+    decreaseWeight = () => {
+        this.setState((state) => ({ weight: this.state.weight - 1 }));
+    };
+
+    render() {
+        return (
+        <div>
+            <button onClick={this.increaseWeight} type="button">
+            Increase weight
+            </button>
+            <button onClick={this.decreaseWeight} type="button">
+            Decrease weight
+            </button>
+            <h2>{this.state.weight}</h2>
+        </div>
+        );
+  }
+}
+```
+
+Notice how we call `increaseWeight` on click. Inside that function (more on the weird syntax in the next section), we use the `setState` function call that's extended via the `Component`. Here, we take the state called `weight` and assign it the value of 1 + current weight. 
+
 #### Arrow Functions
 
 In JS ES5 version, here's how you'd define a function:
