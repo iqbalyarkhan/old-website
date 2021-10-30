@@ -15,20 +15,25 @@ tags:
 
 ### Table of Contents
 
-1. [Intro](#introduction)
-* [String variables](#string-variables)
-* [JS Object](#js-object)
-* [Lists in React](#lists-in-react)
-* [Components](#components)
-* [Arrow functions](#arrow-functions)
-* [Handler Functions](#handler-functions)
-* [React Props](#react-props)
-* [React State](#react-state)
-* [useEffect Hook](#useeffect-hook)
-* [GraphQL Basics](#graphql-basics)
-* [Updates with Mutations](#updates-with-mutations)
-* [Queries and Aliases](#queries-and-aliases)
-* [Queries and Fragments](#queries-and-fragments)
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+- [React and JS](#react-and-js)
+  - [Classes](#classes)
+  - [Arrow Functions](#arrow-functions)
+  - [Functional Programming](#functional-programming)
+- [String variables](#string-variables)
+- [JS Object](#js-object)
+- [Lists in React](#lists-in-react)
+- [Components](#components)
+- [Arrow Functions](#arrow-functions-1)
+- [Handler Functions](#handler-functions)
+- [React Props](#react-props)
+- [React State](#react-state)
+- [useEffect Hook](#useeffect-hook)
+- [GraphQL Basics](#graphql-basics)
+- [Updates with Mutations](#updates-with-mutations)
+- [Queries and Aliases](#queries-and-aliases)
+- [Queries and Fragments](#queries-and-fragments)
 
 At its very core, React basically maintains a HTML tree for you. This tree is able to do efficient diff computations on the nodes.
 
@@ -53,6 +58,134 @@ Then how is React able to construct actual divs and p tags out of it?  Meet Reac
 Let's dive deep into various aspects of React:
 
 ### Introduction
+
+If you look up more info on React, you'll find some flavor of the following:
+
+*React is a free and open-source front-end JavaScript library for building user interfaces or UI components.*
+
+React is a Javascript library. It only makes sense to start with understanding JS before diving into React. Let's look at a few basic concepts in JS that are a part of React as well
+
+### React and JS
+
+#### Classes
+In pure JS, a simple class would look like this:
+
+```jsx
+class Person {
+    constructor(firstName, lastName){
+        this.firstName = firstName;
+        this.lastName = firstName;
+    }
+
+    getName(){
+        return this.lastName + ',' this.firstName;
+    }
+}
+var newPerson = new Person('John', 'Doe');
+console.log(newPerson.getName());
+```
+
+This is quite a simple class with a constructor that expects two strings and a `getName()` method that returns concatenated strings. In addition, the `extends` keyword can be used to inherit from another class. The more specialized class (ie more specific class), inherits from the more general class. For example, if there's a specific type of person represnted by a class, say a soccer player, then it can `extend` the `Person` class like so:
+
+```jsx
+class Person {
+    constructor(firstName, lastName){
+        this.firstName = firstName;
+        this.lastName = firstName;
+    }
+
+    getName(){
+        return this.lastName + ',' this.firstName;
+    }
+}
+class SoccerPlayer extends Person{
+    getPosition(){
+        return 'attacker';
+    }
+}
+
+var newPlayer = new SoccerPlayer('John', 'Doe');
+console.log(newPlayer.getName()); //Prints John Doe
+console.log(newPlayer.getPosition()); //Prints attacker
+```
+
+Similarly, here's a class in React:
+
+```jsx
+import React, { Component } from 'react';
+ 
+class App extends Component {
+  render() {
+    return (
+      <div>
+        <h1>Welcome to React</h1>
+      </div>
+    );
+  }
+}
+export default App;
+```
+
+We've defined a class called `App` that's a more specific version of class `Component` which is imported from the `react` package (the import statement). Similar to how we were able to use `getName()` for our player above, the `App` component can use methods exposed by `Component` class such as `componentDidMount()`, `setState()` etc. 
+
+You can also define your own classes:
+
+```jsx
+import React, { Component } from 'react';
+ 
+class App extends Component {
+  getGreeting() {
+    return 'Welcome!';
+  }
+ 
+  render() {
+    return (
+      <div>
+        <h1>{this.getGreeting()}</h1>
+      </div>
+    );
+  }
+}
+export default App;
+```
+
+#### Arrow Functions
+
+In JS ES5 version, here's how you'd define a function:
+```jsx
+function sayHello(){
+    return 'Hello!' 
+}; 
+```
+
+In ES6, you can use an arrow function with body:
+```jsx
+const sayHello = () => {
+  return 'Hello!';
+}
+```
+
+or you can have a function without body and with an implicit return:
+```jsx
+const sayHello = () => 
+    'Hello';
+```
+
+JavaScript arrow functions are often used in React applications for keeping the code concise and readable.
+
+#### Functional Programming
+In React, you can use a function to define a component:
+```jsx
+const sayHello = (props) =>
+  <h1>{props.greeting}</h1>;
+```
+If there's computation in between, you can't use the implicit return. Instead add the return statement:
+
+```jsx
+const sayHello = (props) =>
+  return <h1>{props.greeting}</h1>;
+```
+
 
 Using, react-starter, go ahead and create a new project. Once done, you'll have a bunch of files generated for you. Let's start with what we see in App.js ( a simplified version):
 
