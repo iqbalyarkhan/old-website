@@ -837,7 +837,7 @@ You can read more about events [here](https://reactjs.org/docs/events.html)
 
 ### React Props
 
-We are currently using the list variable as a global variable in the current application. We used it directly from the global scope in the App component, and again in the List component. This could work if you only had one variable, but it doesn't scale with multiple variables across multiple components from many different files:
+We are currently using the list variable as a global variable in the current application. As a reminder, here's what we had:
 
 ```jsx
 import React from 'react';
@@ -882,13 +882,13 @@ const App = () => {
                 {/*Adding our generated List as a tag:*/}
                 <List/>
             </ul>
-            <label htmlFor="search">Search: </label>
-            <input id="search" type="text" onChange={handleChange} />
         </div>
     );
 };
 export default App;
 ```
+
+We used the list directly from global scope in App component, and again in the List component. This could work if you only had one variable, but it doesn't scale with multiple variables across multiple components from many different files.
 
 Using so called **props**, we can pass variables as information from one component to another component. Before using props, we’ll move the list from the global scope into the App component and rename it to its actual domain:
 
@@ -905,7 +905,9 @@ const App = () => {
             objectID: 0,
         },
     ];
-...
+
+const handleChange = event => { ... };
+return ( ... );
 };
 export default App;
 ```
@@ -924,19 +926,12 @@ const App = () => {
             objectID: 0,
         },
     ];
-
-    const handleChange = event => {
-        console.log(event.target.value);
-    };
-
     return (
         <div>
             <ul>
                 {/*List tag being passed the array as props:*/}
                 <List list={stories}/>
             </ul>
-            <label htmlFor="search">Search: </label>
-            <input id="search" type="text" onChange={handleChange} />
         </div>
     );
 };
@@ -970,7 +965,7 @@ Using this operation, we’ve prevented the list/stories variable from polluting
 ### React State
 
 React Props are used to pass information down the component tree; React state is used to make applications interactive. We’ll be able to change the application’s appearance by interacting with it.
-First, there is a utility function called useState that we take from React for managing state. The `useState` function is called a hook. There are many more hooks in React but we'll first focus on `useState` hook:
+First, there is a utility function called `useState` that we take from React for managing state. The `useState` function is called a hook. You might remember `useState` from [earlier](#classes) when we incremented and decremented weight based on button clicks. There are many more hooks in React but we'll first focus on `useState` hook:
 
 ```jsx
 const App = () => {
@@ -979,7 +974,13 @@ const App = () => {
 ... };
 ```
 
-We get the `useState` hook by making the `React.useState('')` call. The `.useState()` call takes an initial state as argument, which in the case above, is an empty string. The `useState()` function will return an array with two values. The first value, `searchTerm` represents the current state. The second value is a function to update this state `setSearchTerm`. This function is also referred to as state updater function. This return type is called array destructuring as seen in this java script example:
+We get the `useState` hook by making the `React.useState('')` call. The `.useState()` call takes an initial state as argument, which in the case above, is an empty string. The `useState()` function will return an array with two values. The first value, `searchTerm` represents the current state. The second value is a function to update this state `setSearchTerm`. This function is also referred to as state updater function. Now, every time we need to update the state, we'll have to make a call to `setSearchTerm` to do so. This can be done like this:
+
+```jsx
+setSearchTerm('newStateVal');
+```
+
+This return type (where multiple values are returned from a function) is called array destructuring as seen in this java script example:
 
 ```jsx
 // basic array definition
@@ -993,142 +994,73 @@ const [firstItem, secondItem] = list;
 Array destructuring is just a shorthand version of accessing each item one by one. If you express it without the array destructuring in React, it becomes less readable. After we initialize the state and have access to the current state and the state updater function, use them to display the current state and update it within the App component’s event handler:
 
 ```jsx
+import * as React from 'react';
+
 const App = () => {
-  const stories = [ ... ];
-
-  {/*Setting and getting state using hook*/}
   const [searchTerm, setSearchTerm] = React.useState('');
-
-  const handleChange = event => {
+  const handleChange = (event) => {
     setSearchTerm(event.target.value);
-};
+  }
+
   return (
     <div>
-      <h1>My Hacker Stories</h1>
       <label htmlFor="search">Search: </label>
       <input id="search" type="text" onChange={handleChange} />
-      <p>
-        Searching for <strong>{searchTerm}</strong>.
-</p>
-<hr />
-      <List list={stories} />
+      <h3>You searched for: </h3>
+      <p>{searchTerm}</p>
     </div>
-); };
-```
-
-When the user types into the input field, the input field’s change event is captured by the handler with its current internal value. The handler’s logic uses the state updater function to set the new state. After the new state is set in a component, the component renders again, meaning the component function runs again. The new state becomes the current state and can be displayed in the component’s JSX. Using the code below, you can see that the `<h1>` tag gets updated as we type in the search box:
-
-```jsx
-
-import React from 'react';
-
-/*Creating our List component :*/
-const List = props => {
-    return props.list.map(function(item) {
-        return (
-            <div key={item.objectID}>
-                <a href={item.url}>{item.title}</a>
-                <br></br>
-                <span>Author: {item.author}</span>
-                <br></br>
-                <span>Comments: {item.num_comments}</span>
-                <br></br>
-                <span>Points: {item.points}</span>
-                <br></br>
-                <br></br>
-            </div> );
-    });
-};
-
-
-const App = () => {
-
-    const [searchTerm, setSearchTerm] = React.useState('');
-
-    const stories = [
-        {
-            title: 'React',
-            url: 'https://reactjs.org/',
-            author: 'Jordan Walke',
-            num_comments: 3,
-            points: 4,
-            objectID: 0,
-        },
-    ];
-
-    const handleChange = event => {
-        setSearchTerm(event.target.value);
-    };
-
-    return (
-        <div>
-            <h1>Search term from state: {searchTerm}</h1>
-            <ul>
-                {/*Adding our generated List as a tag:*/}
-                <List list={stories}/>
-            </ul>
-            <label htmlFor="search">Search: </label>
-            <input id="search" type="text" onChange={handleChange} />
-        </div>
-    );
+  )
 };
 export default App;
 ```
+
+When the user types into the input field, the input field’s change event is captured by the handler with its current internal value. The handler’s logic uses the state updater function to set the new state. This means that inside the `handleChange` function we use `setSearchTerm` function call and pass it the value of new state. After the new state is set, the component renders again, meaning the component function runs again. The new state becomes the current state and can be displayed in the component’s JSX. Notice how we're not using `this.state` or `this.searchTerm`. Instead we've used curly braces: `{searchTerm}`. In the code above, `<p>` tag gets updated as we type in search box.
 
 We can also separate `Search` out into its own component and add it to our App. Through this process, the Search component becomes a sibling of the List component, and vice versa. We’ll also move the handler and the state into the Search component to keep our functionality intact:
 
 ```jsx
 import React from 'react';
 
-/*List component :*/
-const List = props => {
-    return props.list.map(function(item) {
-        return (
-            <div key={item.objectID}>
-                <a href={item.url}>{item.title}</a>
-                <br></br>
-                <span>Author: {item.author}</span>
-                <br></br>
-                <span>Comments: {item.num_comments}</span>
-                <br></br>
-                <span>Points: {item.points}</span>
-                <br></br>
-                <br></br>
-            </div> );
-    });
-};
-
-/*Search Component*/
+/*Search component*/
 const Search = () => {
-    const [searchTerm, setSearchTerm] = React.useState('');
-    const handleChange = event => {
-        setSearchTerm(event.target.value);
-    };
-
-    return (
-        <div>
-            <label htmlFor="search">Search: </label>
-            <input id="search" type="text" onChange={handleChange} />
-            <h1>Search term from state: {searchTerm}</h1>
-        </div>
-    )
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const handleChange = (event) => {
+    setSearchTerm(event.target.value);
+  }
+  return (
+    <div>
+      <label htmlFor="search">Search: </label>
+      <input id="search" type="text" onChange={handleChange} />
+      <p>
+        Searching for <strong>{searchTerm}</strong>.
+      </p>
+      <hr />
+    </div>
+  )
 };
 
+/*List component*/
+const List = (props) => (
+  <ul>
+    {props.list.map((item) => (
+      <li key={item.objectID}>
+        <span>
+          <a href={item.url}>{item.title}</a>
+        </span>
+        <span>{item.author}</span>
+        <span>{item.num_comments}</span>
+        <span>{item.points}</span>
+      </li>
+    ))}
+  </ul>
+);
+```
 
+Finally, we can now just import `List` and `Search` components into our app like so:
+
+```jsx
 const App = () => {
-
-    const stories = [
-        {
-            title: 'React',
-            url: 'https://reactjs.org/',
-            author: 'Jordan Walke',
-            num_comments: 3,
-            points: 4,
-            objectID: 0,
-        },
-    ];
-
-
+    const stories = [/**/];
     return (
         <div>
             <ul>
@@ -1143,7 +1075,7 @@ export default App;
 
 ```
 
-### useEffect Hook  
+### useEffect Hook
 
 The useEffect hook is used to manage side effects that aren't related to the components' rendering. Things such as console messages or loading data are managed by useEffect. To use this hook, we need to import it:
 
