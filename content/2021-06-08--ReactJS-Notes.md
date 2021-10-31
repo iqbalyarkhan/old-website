@@ -777,7 +777,7 @@ export default App;
 
 ### Handler Functions
 
-The App component still has the input field and label, which we haven’t used. In HTML outside of JSX, input fields have an onchange handler50. We’re going to discover how to use onchange handlers with a React component’s JSX. We'll define a function – which can be normal or arrow – for the change event of the input field. In React, this function is called an (event) handler. Now the function can be passed to the `onChange` attribute (JSX named attribute) of the input field:
+The App component still has the input field and label, which we haven’t used. In HTML outside of JSX, input fields have an onchange handler. We’re going to discover how to use onchange handlers with a React component’s JSX. We'll define a function – which can be normal or arrow – for the change event of the input field. In React, this function is called an "event" handler. Now the function can be passed to the `onChange` attribute (JSX named attribute) of the input field:
 
 ```jsx
 const App = () => {
@@ -791,7 +791,7 @@ const App = () => {
       <input id="search" type="text" onChange={handleChange} />
 ```
 
-Now, when you type, say a `?`, in the search box, and inspect the console in chrome, you'll see this (notice the data field on line 2 below):
+Now, when you type, say a `?`, in the search box, and inspect the console in chrome, you'll see this (notice the `data` field on line 2 below):
 
 ```jsx
 SyntheticBaseEvent {_reactName: "onChange", _targetInst: null, type: "change", nativeEvent: InputEvent, target: input#search, …}
@@ -808,10 +808,6 @@ const App = () => {
 
     return (
         <div>
-            <ul>
-                {/*Adding our generated List as a tag:*/}
-                <List/>
-            </ul>
             <label htmlFor="search">Search: </label>
             <input id="search" type="text" onChange={handleChange} />
         </div>
@@ -820,7 +816,7 @@ const App = () => {
 export default App;
 ```
 
-The synthetic event is essentially a wrapper around the browser’s native event51, with more functions that are useful to prevent native browser behavior (e.g. refreshing a page after the user clicks a form’s submit button). This is how we give HTML elements in JSX handler functions to respond to user interaction. Always pass functions to these handlers, not the return value of the function, except when the return value is a function:
+The synthetic event is essentially a wrapper around the browser’s native event, with more functions that are useful to prevent native browser behavior (e.g. refreshing a page after the user clicks a form’s submit button). This is how we give HTML elements in JSX handler functions to respond to user interaction. Always pass functions to these handlers, not the return value of the function, except when the return value is a function:
 
 ```jsx
 {/*don't do this*/}
@@ -836,6 +832,8 @@ The synthetic event is essentially a wrapper around the browser’s native event
     onChange={handleChange}
 />
 ```
+
+You can read more about events [here](https://reactjs.org/docs/events.html)
 
 ### React Props
 
