@@ -21,11 +21,16 @@ tags:
   - [Classes](#classes)
   - [Arrow Functions](#arrow-functions)
   - [Functional Programming](#functional-programming)
+  - [Template Literals](#template-literals)
+  - [var, let and const](#var-let-and-const)
+  - [Ternary operator](#ternary-operator)
+  - [Import and Export](#import-and-export)
+- [Getting Started](#getting-started)
 - [String variables](#string-variables)
 - [JS Object](#js-object)
 - [Lists in React](#lists-in-react)
 - [Components](#components)
-- [Arrow Functions](#arrow-functions-1)
+- [Arrow Functions Continued](#arrow-functions-continued)
 - [Handler Functions](#handler-functions)
 - [React Props](#react-props)
 - [React State](#react-state)
@@ -41,7 +46,7 @@ Think of your HTML code as a tree. In fact, that is exactly how the browser trea
 
 When you write something like:
 
-```jsx 
+```jsx
 const tag = <h1>Hello</h1>
 ```
 
@@ -51,7 +56,7 @@ what you're essentially doing is this:
 const tag = React.createElement("h1", {}, "Hello")
 ```
 
-Later down the road, we'll see the `<App />` tag in `index.js` which parses all our components and creates the completed DOM for us. This means that when `<App />` has done parsing, there's just a huge object of React elements. 
+Later down the road, we'll see the `<App />` tag in `index.js` which parses all our components and creates the completed DOM for us. This means that when `<App />` has done parsing, there's just a huge object of React elements.
 
 Then how is React able to construct actual divs and p tags out of it?  Meet ReactDOM which recursively creates nodes depending on their 'type' property and appends them finally to the DOM. For more details, checkout [this](https://www.freecodecamp.org/news/react-under-the-hood/) great write-up
 
@@ -68,6 +73,7 @@ React is a Javascript library. It only makes sense to start with understanding J
 ### React and JS
 
 #### Classes
+
 In pure JS, a simple class would look like this:
 
 ```jsx
@@ -126,7 +132,7 @@ class App extends Component {
 export default App;
 ```
 
-We've defined a class called `App` that's a more specific version of class `Component` which is imported from the `react` package (the import statement). Similar to how we were able to use `getName()` for our player above, the `App` component can use methods exposed by `Component` class such as `componentDidMount()`, `setState()` etc. 
+We've defined a class called `App` that's a more specific version of class `Component` which is imported from the `react` package (the import statement). Similar to how we were able to use `getName()` for our player above, the `App` component can use methods exposed by `Component` class such as `componentDidMount()`, `setState()` etc.
 
 You can also define your own classes:
 
@@ -176,6 +182,7 @@ class Person extends Component {
 }
 export default Person;
 ```
+
 Managing all these properties becomes a hassle. Fortunately, we can use `state` and `arrowFunctions` to bind our class variables. We get rid of the constructor and simply store our variables in the state:
 
 ```jsx
@@ -200,6 +207,7 @@ class App extends Component {
 }
 export default App;
 ```
+
 Notice how we access the variable using `this.state.<name>`.
 
 Obviously, you also need a way to manipulate the variables. For that we can use `this.setState`. Say, for one button click, we call a function called `increaseWeight` and `decreaseWeight` on another click. We'll increase and decrease weight for each click:
@@ -231,11 +239,14 @@ class App extends Component{
 }
 ```
 
-Notice how we call `increaseWeight` on click. Inside that function (more on the weird syntax in the next section), we use the `setState` function call that's extended via the `Component`. Here, we take the state called `weight` and assign it the value of 1 + current weight. 
+Notice how we call `increaseWeight` on click. Inside that function (more on the weird syntax in the next section), we use the `setState` function call that's extended via the `Component`. Here, we take the state called `weight` and assign it the value of 1 + current weight. Notice the use of `this.state.weight` instead of `this.weight`.
+
+By using JavaScript arrow functions, you can auto-bind class methods without having to bind them in the constructor. Also the constructor can be left out, when not using the props, by defining the state directly as a class property.
 
 #### Arrow Functions
 
 In JS ES5 version, here's how you'd define a function:
+
 ```jsx
 function sayHello(){
     return 'Hello!' 
@@ -243,6 +254,7 @@ function sayHello(){
 ```
 
 In ES6, you can use an arrow function with body:
+
 ```jsx
 const sayHello = () => {
   return 'Hello!';
@@ -250,6 +262,7 @@ const sayHello = () => {
 ```
 
 or you can have a function without body and with an implicit return:
+
 ```jsx
 const sayHello = () => 
     'Hello';
@@ -258,11 +271,14 @@ const sayHello = () =>
 JavaScript arrow functions are often used in React applications for keeping the code concise and readable.
 
 #### Functional Programming
+
 In React, you can use a function to define a component:
+
 ```jsx
 const sayHello = (props) =>
   <h1>{props.greeting}</h1>;
 ```
+
 If there's computation in between, you can't use the implicit return. Instead add the return statement:
 
 ```jsx
@@ -270,8 +286,110 @@ const sayHello = (props) =>
   return <h1>{props.greeting}</h1>;
 ```
 
+#### Template Literals
 
-Using, react-starter, go ahead and create a new project. Once done, you'll have a bunch of files generated for you. Let's start with what we see in App.js ( a simplified version):
+Template literals are literals delimited with backticks (`), allowing embedded expressions called substitutions.
+Untagged template literals result in strings, which makes them useful for string interpolation (and multiline strings, since unescaped newlines are allowed).
+
+Tagged template literals call a function (the tag function) with an array of any text segments from the literal followed by arguments with the values of any substitutions.
+
+An example:
+
+```jsx
+function getGreeting(what) {
+  return `Welcome to ${what}`;
+}
+```
+
+#### var, let and const
+
+(1) don't use var anymore, because let and const are more specific
+
+(2) default to const, because it cannot be re-assigned or re-declared
+
+(3) use let when re-assigning the variable
+
+#### Ternary operator
+
+Here's how to use the ternary operator in React:
+
+```jsx
+<evluation ? do_this_if_true : else_do_this>
+```
+
+example:
+
+```jsx
+{this.showUsers ? (<h3>Will show users</h3>) : (<h3>Won't show users</h3>)}
+```
+
+#### Import and Export
+
+In React, you can import/export like so:
+
+```jsx
+//File1.js
+const firstname = 'John';
+const lastname = 'Doe';
+ 
+export { firstname, lastname };
+```
+
+Then you can import them in another file with a relative path to the first file:
+
+```jsx
+//File2.js
+import { firstname, lastname } from './File1.js';
+
+console.log(firstname);
+```
+
+You can also import all exported variables from another file as one object:
+
+```jsx
+import * as person from './File1.js';
+
+console.log(person.firstname);
+```
+
+Imports can have an aliases too:
+
+```jsx
+import { firstname as username } from './File1.js';
+ 
+console.log(username);
+```
+
+All the previous cases are named imports and exports. But there exists the `default` statement too that can be used for:
+
+(1) Exporting and importing a single functionality
+
+(2) Highlighting main functionality of exported API of a module
+
+(3) Having a fallback import functionality
+
+```jsx
+const person = {
+  firstname: 'John',
+  lastname: 'Doe',
+};
+ 
+export default person;
+```
+
+Leave out the curly braces for the import to import the default export:
+
+```jsx
+import developer from './file1.js';
+
+console.log(developer);
+```
+
+These are the basic concepts present in both JS and React. You can read more about these [here](https://www.robinwieruch.de/javascript-fundamentals-react-requirements)
+
+### Getting Started
+
+To get started with react, we can use the create-react-app starter. To use it, we can use the command `npx create-react-app`. Once done, you'll have a bunch of files generated for you. Let's start with what we see in App.js ( a simplified version):
 
 ```jsx
 import React from 'react';
@@ -283,9 +401,9 @@ function App() {
     );
 }
 export default App;
-``` 
+```
 
-First, this React component, called App component, is just a JavaScript function. It’s commonly called function component, because there are other variations of React components. The App component doesn't receive any parameters in its function signature yet. The App component returns code that resembles HTML which is called JSX.
+This is a React component, called App component which is nothing but a JavaScript function. It’s commonly called function component, because there are other variations of React components. The App component doesn't receive any parameters in its function signature yet. The App component returns code that resembles HTML which is called JSX.
 
 ### String variables
 
@@ -298,10 +416,10 @@ function App() {
   return (
     <div>
       <h1>Hello World {title}</h1>
-</div> );
+    </div> );
 }
 export default App;
-``` 
+```
 
 **Notice the use of `<div>` in our return statement: make sure you add that otherwise return won't work correctly!
 
@@ -320,11 +438,10 @@ const welcome = {
 
 function App() {
   return (
-<div> <h1>
-        {welcome.greeting} {welcome.title}
-</h1>
-      <label htmlFor="search">Search: </label>
-      <input id="search" type="text" />
+    <div> 
+        <h1>
+            {welcome.greeting} {welcome.title}
+        </h1>
     </div>
 ); }
 export default App;
@@ -364,8 +481,6 @@ function App() {
         <h1>
             Hello React!
         </h1>
-      <label htmlFor="search">Search: </label>
-      <input id="search" type="text" />
     </div>
 ); }
 export default App;
@@ -403,8 +518,6 @@ function App() {
                 return <div>{item.title}</div>;
             })}
         </ul>
-      <label htmlFor="search">Search: </label>
-      <input id="search" type="text" />
     </div>
 ); }
 export default App;
@@ -442,8 +555,6 @@ function App() {
                 return <div key={item.objectID}>{item.title}</div>;
             })}
         </ul>
-      <label htmlFor="search">Search: </label>
-      <input id="search" type="text" />
     </div>
 ); }
 export default App;
@@ -494,12 +605,11 @@ function App() {
                     );
                 })}
             </ul>
-            <label htmlFor="search">Search: </label>
-            <input id="search" type="text" />
         </div>
     ); }
 export default App;
 ```
+
 The map function is in-lined concisely in your JSX. Within the map function, we have access to each item and its properties. The url property of each item is used as dynamic href attribute for the anchor tag. Not only can JavaScript in JSX be used to display items, but also to assign HTML attributes dynamically.
 
 Code block above would print:
@@ -524,24 +634,7 @@ In the example above, notice how our list generation logic became quite complica
 
 ```jsx
 import React from 'react';
-const list = [
-    {
-        title: 'React',
-        url: 'https://reactjs.org/',
-        author: 'Jordan Walke',
-        num_comments: 3,
-        points: 4,
-        objectID: 0,
-    },
-    {
-        title: 'Redux',
-        url: 'https://redux.js.org/',
-        author: 'Dan Abramov, Andrew Clark',
-        num_comments: 2,
-        points: 5,
-        objectID: 1,
-    },
-];
+const list = [/*...*/];
 
 /*Creating our List component :*/
 function List() {
@@ -569,14 +662,12 @@ function App() {
                 {/*Adding our generated List as a tag:*/}
                 <List/>
             </ul>
-            <label htmlFor="search">Search: </label>
-            <input id="search" type="text" />
         </div>
     ); }
 export default App;
 ```
 
-Once we’ve defined a component, we can use it like an HTML element anywhere in our JSX. The element produces an component instance of your component, or in other words, the component gets instantiated. You can create as many component instances as you want. It’s not much different from a JavaScript class definition and usage.
+Once we’ve defined a component, we can use it like any HTML element anywhere in our JSX. The element produces an component instance of your component, or in other words, the component gets instantiated. You can create as many component instances as you want. It’s not much different from a JavaScript class definition and usage.
 
 Larger React applications have component hierarchies (also called component trees). There is usually one uppermost entry point component (e.g. App) that spans a tree of components below it. The App is the parent component of the List, so the List is a child component of the App. In a component tree, the App is the root component, and the components that don’t render any other components are called leaf components (e.g. List). The App can have multiple children, as can the List. If the App has another child component, the additional child component is called a sibling component of the List.
 
@@ -585,26 +676,18 @@ Similar to how we have components inside App.js, our `App` itself is a component
 ```jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <App />,
+    document.getElementById('root')
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
 ```
 
 Next to React in the snippet above, there is another imported library called react-dom, in which a ReactDOM.render() function uses an HTML node to replace it with JSX. The process integrates React into HTML. ReactDOM.render() expects two arguments; the first is to render the JSX. It creates an instance of your App component, though it can also pass simple JSX without any component instantiation. The second argument specifies where the React application enters your HTML. It expects an element with an id='root', found in the public/index.html file. This is a basic HTML file.
 
-### Arrow Functions
+### Arrow Functions Continued
+
 JavaScript has multiple ways to declare functions. So far, we have used the function statement, though arrow functions can be used more concisely:
 
 ```jsx
@@ -622,24 +705,7 @@ Converting our class to use arrow functions, we'll get this:
 
 ```jsx
 import React from 'react';
-const list = [
-    {
-        title: 'React',
-        url: 'https://reactjs.org/',
-        author: 'Jordan Walke',
-        num_comments: 3,
-        points: 4,
-        objectID: 0,
-    },
-    {
-        title: 'Redux',
-        url: 'https://redux.js.org/',
-        author: 'Dan Abramov, Andrew Clark',
-        num_comments: 2,
-        points: 5,
-        objectID: 1,
-    },
-];
+const list = [/**/];
 
 /*Creating our List component :*/
 const List = () => {
@@ -667,15 +733,13 @@ const App = () => {
                 {/*Adding our generated List as a tag:*/}
                 <List/>
             </ul>
-            <label htmlFor="search">Search: </label>
-            <input id="search" type="text" />
         </div>
     );
 };
 export default App;
 ```
 
-If an arrow function doesn't do anything in between, but only returns something, – in other words, if an arrow function doesn't perform any task, but only returns information –, you can remove the block body (curly braces) of the function. In a concise body, an implicit return statement is attached, so you can remove the return statement:
+If an arrow function doesn't do anything in between, but only returns something,in other words, if an arrow function doesn't perform any task, but only returns information, you can remove the block body (curly braces) of the function. In a concise body, an implicit return statement is attached, so you can remove the return statement:
 
 ```jsx
 // with block body
@@ -691,40 +755,28 @@ Our `App` and `List` components are eligible for concise body returns:
 
 ```jsx
 /*Creating our List component :*/
-const List = () => {
-    return list.map(function(item) {
-        return (
-            <div key={item.objectID}>
-                <a href={item.url}>{item.title}</a>
-                <br></br>
-                <span>Author: {item.author}</span>
-                <br></br>
-                <span>Comments: {item.num_comments}</span>
-                <br></br>
-                <span>Points: {item.points}</span>
-                <br></br>
-                <br></br>
-            </div> );
-    });
-};
+const List = () =>
+  list.map(item => (
+    <div key={item.objectID}>
+        <span>
+            <a href={item.url}>{item.title}</a>
+        </span>
+        <span>{item.author}</span>
+        <span>{item.num_comments}</span>
+        <span>{item.points}</span>
+    </div>
+));
 
 
-const App = () => {
-    return (
-        <div>
-            <ul>
-                {/*Adding our generated List as a tag:*/}
-                <List/>
-            </ul>
-            <label htmlFor="search">Search: </label>
-            <input id="search" type="text" />
-        </div>
-    );
-};
+const App = () => (
+    <div> ...
+    </div>
+);
 export default App;
 ```
 
 ### Handler Functions
+
 The App component still has the input field and label, which we haven’t used. In HTML outside of JSX, input fields have an onchange handler50. We’re going to discover how to use onchange handlers with a React component’s JSX. We'll define a function – which can be normal or arrow – for the change event of the input field. In React, this function is called an (event) handler. Now the function can be passed to the `onChange` attribute (JSX named attribute) of the input field:
 
 ```jsx
@@ -767,7 +819,6 @@ const App = () => {
 };
 export default App;
 ```
-
 
 The synthetic event is essentially a wrapper around the browser’s native event51, with more functions that are useful to prevent native browser behavior (e.g. refreshing a page after the user clicks a form’s submit button). This is how we give HTML elements in JSX handler functions to respond to user interaction. Always pass functions to these handlers, not the return value of the function, except when the return value is a function:
 
@@ -919,6 +970,7 @@ const List = props => {
 Using this operation, we’ve prevented the list/stories variable from polluting the global scope in the App component. Since stories is not used in the App component directly, but in one of its child components, we passed them as props to the List component. There, we can access it through the first function signature’s argument, called props.
 
 ### React State
+
 React Props are used to pass information down the component tree; React state is used to make applications interactive. We’ll be able to change the application’s appearance by interacting with it.
 First, there is a utility function called useState that we take from React for managing state. The `useState` function is called a hook. There are many more hooks in React but we'll first focus on `useState` hook:
 
@@ -941,7 +993,6 @@ const [firstItem, secondItem] = list;
 ```
 
 Array destructuring is just a shorthand version of accessing each item one by one. If you express it without the array destructuring in React, it becomes less readable. After we initialize the state and have access to the current state and the state updater function, use them to display the current state and update it within the App component’s event handler:
-
 
 ```jsx
 const App = () => {
@@ -1095,6 +1146,7 @@ export default App;
 ```
 
 ### useEffect Hook  
+
 The useEffect hook is used to manage side effects that aren't related to the components' rendering. Things such as console messages or loading data are managed by useEffect. To use this hook, we need to import it:
 
 ```jsx
@@ -1109,7 +1161,7 @@ useEffect(() => {
 }, []);
 ```
 
-The dependency array can be used to keep track of values: 
+The dependency array can be used to keep track of values:
 
 ``` jsx
 import React, { useState, useEffect } from "react";
@@ -1198,9 +1250,10 @@ app.use('/graphql', graphqlHTTP({
 }));
 ```
 
-The schema shows that we can `Query` on type `hello` and we'll get back the hard-coded value from the resolver. Also notice that the resolver called `root` has the same name inside of it that's defined in `Query` in the schema, ie `hello`. Basically, the resolver will determine what to return when a `Query` of type `hello` is made.   
+The schema shows that we can `Query` on type `hello` and we'll get back the hard-coded value from the resolver. Also notice that the resolver called `root` has the same name inside of it that's defined in `Query` in the schema, ie `hello`. Basically, the resolver will determine what to return when a `Query` of type `hello` is made.
 
 Expanding on the example above, you can have the following schema:
+
 ```jsx
 import {buildSchema} from "graphql";
 
@@ -1222,7 +1275,7 @@ const schema = buildSchema(`
 export default schema;
 ```
 
-with the following resolver now being called for the `Query` friend: 
+with the following resolver now being called for the `Query` friend:
 
 ```jsx
 const root = { friend: () => {
@@ -1254,7 +1307,7 @@ query {
 
 We can also have arrays of objects within GraphQL schemas as well. Let's say we want to have an array of emails:
 
-We'll say that we have an object of type `email` that takes an array of type `Email`. We also need to define what `Email` looks like: 
+We'll say that we have an object of type `email` that takes an array of type `Email`. We also need to define what `Email` looks like:
 
 ```jsx
 const schema = buildSchema(`
@@ -1318,7 +1371,7 @@ So far we've only seen `Query` in action. What if we want to Create, Update or D
         gender: String
         email: [Email]!
     }
-``` 
+```
 
 Notice above that our `FriendInput` is of type `input`. Next, we'll make use of `Mutation` to actually accept and check the `input`:
 
@@ -1599,6 +1652,7 @@ mutation {
   }
 }
 ```
+
 The mutation above will be resolved by this resolver:
 
 ```jsx
@@ -1619,7 +1673,7 @@ Notice how the `createFriend` mutation, and by extension the resolver, takes in 
     }
   }
 }
-``` 
+```
 
 Now, if you want to query the `Friend` with an id, you can do the following:
 
@@ -1634,7 +1688,7 @@ query {
 }
 ```
 
-The query above will be resolved by this resolver: 
+The query above will be resolved by this resolver:
 
 ```jsx
     getFriend: ({id}) => {
@@ -1657,7 +1711,7 @@ and you'll see this output via GraphiQL:
 }
 ```
 
-And that's how you handle queries and mutations via resolvers! 
+And that's how you handle queries and mutations via resolvers!
 
 Let's refactor our schema by leveraging a library called `graphql-tools`. To do so, we'd run `npm i graphql-tools`. Next, let's see what our schema looks like right now:
 
@@ -1694,7 +1748,7 @@ const schema = buildSchema(`
 export default schema;
 ```
 
-We'll import an executable schema helper from graphql-tools and import the resolvers within the schema. We'll define our schema as `typeDefs` and then declare a schema variable that'll call `makeExecutableSchema` with our `typeDefs` and our resolvers. 
+We'll import an executable schema helper from graphql-tools and import the resolvers within the schema. We'll define our schema as `typeDefs` and then declare a schema variable that'll call `makeExecutableSchema` with our `typeDefs` and our resolvers.
 
 ```jsx
 import { makeExecutableSchema } from 'graphql-tools';
@@ -1732,7 +1786,7 @@ const schema = makeExecutableSchema({typeDefs, resolvers});
 export { schema };
 ```
 
-With that updated, we need to update our resolvers.js file as well. We'll create a resolver map that'll look a lot like the GraphQL syntax that we've been using: 
+With that updated, we need to update our resolvers.js file as well. We'll create a resolver map that'll look a lot like the GraphQL syntax that we've been using:
 
 ```jsx
 const friendDB = {};
@@ -1772,7 +1826,7 @@ All we did here was move the `createFriend` resolver inside the Mutation and `ge
 fieldName: (parent, args, context, info) => data;
 ```
 
-Since we're not using any of the function arguments except for `args`, we'd have to provide an underscore, `_`, for the arguments before args as shown above. 
+Since we're not using any of the function arguments except for `args`, we'd have to provide an underscore, `_`, for the arguments before args as shown above.
 
 Finally, we need to update the `index.js` file by removing the old resolvers import. We'll instead import resolvers from the schema. We'll also get rid of the root resolvers and the rootValue field inside app.use:
 
@@ -1830,7 +1884,7 @@ const resolvers = {
         }
     }
 };
-``` 
+```
 
 Now, this resolver should grab the `id` from the input (remember our FriendInput already has the ID present) and update the item in our array. We can call a separate function called `findFriendAndUpdate` to do that for us. Next, this resolver should then return the updated `Friend`. Here's this logic in code:
 
@@ -1866,7 +1920,7 @@ Finally, the graphql query to update an existing `Friend` would look like this:
 
 ```graphql
 mutation{
- 	updateFriend(input:{
+  updateFriend(input:{
     id: "192f3e997a5f14ff109f"
     firstName:"FnameNew"
     lastName:"LnameNew"
@@ -1876,11 +1930,12 @@ mutation{
     id
     firstName
     lastName
- 	} 
+  } 
 }
 ```
 
 ### Queries and Aliases
+
 You can define aliases for queries for better readability. For example, if I have 2 friends in my DB, I can have the following 2 aliases for those queries:
 
 ```graphql
@@ -1918,6 +1973,7 @@ and the result you get back would be:
 ```
 
 ### Queries and Fragments
+
 Like Aliases, Fragments are a neat feature that come built in with GraphiQL and are very useful when we start requesting the same data across several items. Let's say our DB has 4 friends present:
 
 ```jsx
@@ -1968,6 +2024,7 @@ fragment friendFragment on Friend{
  # Define here what you want! 
 }
 ```
+
 In the syntax above, we've defined a friend fragment on type `Friend`. Now you see why each fragment should be of the same type?! Then inside the fragment, you define what you want from each returned friend. Obviously, you'd want to make sure that the returned fields are actually present for our `Friend` type. Let's get back the `firstName` and `email` only:
 
 ```graphql
