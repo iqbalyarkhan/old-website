@@ -35,6 +35,7 @@ tags:
 - [React Props](#react-props)
 - [React State](#react-state)
   - [Hooks](#hooks)
+- [Callback Hanlders](#callback-hanlders)
 - [useEffect Hook](#useeffect-hook)
 - [GraphQL Basics](#graphql-basics)
 - [Updates with Mutations](#updates-with-mutations)
@@ -1101,6 +1102,65 @@ I've used the term `hook` above, but what's a `hook`?
 
 #### Hooks
 A Hook is a special function that lets you “hook into” React features. For example, `useState` is a Hook that lets you add React state to function components. We’ll learn other Hooks later. If you write a function component and realize you need to add some state to it, previously you had to convert it to a class. Now you can use a Hook inside the existing function component. You can learn more about hooks [here](https://reactjs.org/docs/hooks-state.html).
+
+
+### Callback Hanlders
+
+So far, we've seen a `Search` component that sets a state by taking input in from the user. Search component is a child of `App`. Remember we also had a sibling of search component called `List`. The idea is to filter the displayed `List` based on the user input received. To do so, the `Search` component needs to share its state with its parent, ie transfer state up. Now, we know that state can be passed down from parent to child via props, but how do we send state back up to the `App` component? `callBack` functions! Great explanation [here](https://codeburst.io/javascript-what-the-heck-is-a-callback-aba4da2deced)
+
+Simply put: A callback is a function that is to be executed after another function has finished executing — hence the name ‘call back’. Callbacks are a way to make sure certain code doesn’t execute until other code has already finished execution.
+
+Let's look at a simple example:
+
+```jsx
+function doHomework(subject, callback) {
+  alert(`Starting my ${subject} homework.`);
+  callback();
+}
+
+doHomework('math', function() {
+  alert('Finished my homework');
+});
+```
+
+In the example above, we first make a call to `doHomework` with the arguments `math` and an anonymous `callBack` function:
+
+```jsx
+function() {
+  alert('Finished my homework');
+}
+```
+
+So, the order of execution would be 
+- `doHomework` is called with the `math` and `callback` argument. 
+- Inside `doHomework`, we see the following output: `Starting my math homework`.
+- Next, the callback function is called and the order of execution returns back to the original call
+- We then see the following printed: `'Finished my homework'`
+
+One cool thing about callbacks, you don't have to define the callback within the function call. They can be defined elsewhere:
+
+```jsx
+function doHomework(subject, callback) {
+  alert(`Starting my ${subject} homework.`);
+  callback();
+}
+function alertFinished(){
+  alert('Finished my homework');
+}
+doHomework('math', alertFinished);
+```
+
+Looking at a real world example, here's a sample call to the Twitter API's `search/tweets` endpoint with `params` and a callback function:
+
+```jsx
+T.get('search/tweets', params, function(err, data, response) {
+  if(!err){
+    // This is where the magic will happen
+  } else {
+    console.log(err);
+  }
+})
+```
 
 
 ### useEffect Hook
