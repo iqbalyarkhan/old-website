@@ -34,6 +34,7 @@ tags:
 - [Handler Functions](#handler-functions)
 - [React Props](#react-props)
 - [React State](#react-state)
+  - [Hooks](#hooks)
 - [useEffect Hook](#useeffect-hook)
 - [GraphQL Basics](#graphql-basics)
 - [Updates with Mutations](#updates-with-mutations)
@@ -965,6 +966,7 @@ Using this operation, we’ve prevented the list/stories variable from polluting
 ### React State
 
 React Props are used to pass information down the component tree; React state is used to make applications interactive. We’ll be able to change the application’s appearance by interacting with it.
+
 First, there is a utility function called `useState` that we take from React for managing state. The `useState` function is called a hook. You might remember `useState` from [earlier](#classes) when we incremented and decremented weight based on button clicks. There are many more hooks in React but we'll first focus on `useState` hook:
 
 ```jsx
@@ -974,13 +976,13 @@ const App = () => {
 ... };
 ```
 
-We get the `useState` hook by making the `React.useState('')` call. The `.useState()` call takes an initial state as argument, which in the case above, is an empty string. The `useState()` function will return an array with two values. The first value, `searchTerm` represents the current state. The second value is a function to update this state `setSearchTerm`. This function is also referred to as state updater function. Now, every time we need to update the state, we'll have to make a call to `setSearchTerm` to do so. This can be done like this:
+We get the `useState` hook by making the `React.useState('')` call. The `.useState()` call takes an initial state as argument, which in the case above, is an empty string. The `useState()` function will return an array with two values. The first value, `searchTerm`, represents the current state. The second value is a function to update this state `setSearchTerm`. This function is also referred to as state updater function. Now, every time we need to update the state, we'll have to make a call to `setSearchTerm` to do so. This can be done like this:
 
 ```jsx
 setSearchTerm('newStateVal');
 ```
 
-This return type (where multiple values are returned from a function) is called array destructuring as seen in this java script example:
+As a side note, this return type (where multiple values are returned from a function) is called array destructuring as seen in this java script example:
 
 ```jsx
 // basic array definition
@@ -991,7 +993,9 @@ const itemOne = list[0]; const itemTwo = list[1];
 const [firstItem, secondItem] = list;
 ```
 
-Array destructuring is just a shorthand version of accessing each item one by one. If you express it without the array destructuring in React, it becomes less readable. After we initialize the state and have access to the current state and the state updater function, use them to display the current state and update it within the App component’s event handler:
+Array destructuring is just a shorthand version of accessing each item one by one. If you express it without the array destructuring in React, it becomes less readable. 
+
+After we initialize the state and have access to the current state and the state updater function, we'll display the current state and update it within the App component’s event handler:
 
 ```jsx
 import * as React from 'react';
@@ -1014,9 +1018,11 @@ const App = () => {
 export default App;
 ```
 
-When the user types into the input field, the input field’s change event is captured by the handler with its current internal value. The handler’s logic uses the state updater function to set the new state. This means that inside the `handleChange` function we use `setSearchTerm` function call and pass it the value of new state. After the new state is set, the component renders again, meaning the component function runs again. The new state becomes the current state and can be displayed in the component’s JSX. Notice how we're not using `this.state` or `this.searchTerm`. Instead we've used curly braces: `{searchTerm}`. In the code above, `<p>` tag gets updated as we type in search box.
+When the user types into the input field, the input field’s change event is captured by the handler with its current internal value. This is done using `onChange={handleChange}`. Once the call is made to `handleChange` function we use `setSearchTerm` function call and pass it the value of new state. After the new state is set, the component renders again. The new state becomes the current state and can be displayed in the component’s JSX. 
 
-We can also separate `Search` out into its own component and add it to our App. Through this process, the Search component becomes a sibling of the List component, and vice versa. We’ll also move the handler and the state into the Search component to keep our functionality intact:
+Notice how we're not using `this.state` or `this.searchTerm`. Instead we've used curly braces: `{searchTerm}`. That's because in a class, we need to call `this.setState()` to update the state. If it's a function component, then simply using the state variable would suffice. 
+
+We can also separate `Search` out into its own component and add it to our App. Through this process, the Search component becomes a sibling of the List component, and vice versa. We’ll also move the handler and the state into the Search component to keep our functionality intact. As shown below, we've created a new `Search` component that renders the search box and updates HTML based on input received in that search box:
 
 ```jsx
 import React from 'react';
@@ -1072,8 +1078,30 @@ const App = () => {
     );
 };
 export default App;
-
 ```
+
+Side note: if you add the initial state, it'll be rendered in the initial rendering of the component (when the user hasn't typed anything yet). To do so, simply add the initial state on `useState` hook initialization:
+
+```jsx
+const [searchTerm, setSearchTerm] = React.useState('<Initial State>');
+```
+
+Declaring state variables as a pair of [something, setSomething] is also handy because it lets us give different names to different state variables if we want to use more than one:
+
+```jsx
+function ExampleWithManyStates() {
+  // Declare multiple state variables!
+  const [age, setAge] = useState(42);
+  const [fruit, setFruit] = useState('banana');
+  const [todos, setTodos] = useState([{ text: 'Learn Hooks' }]);
+}
+```
+
+I've used the term `hook` above, but what's a `hook`?
+
+#### Hooks
+A Hook is a special function that lets you “hook into” React features. For example, `useState` is a Hook that lets you add React state to function components. We’ll learn other Hooks later. If you write a function component and realize you need to add some state to it, previously you had to convert it to a class. Now you can use a Hook inside the existing function component. You can learn more about hooks [here](https://reactjs.org/docs/hooks-state.html).
+
 
 ### useEffect Hook
 
