@@ -36,6 +36,7 @@ tags:
 - [React State](#react-state)
   - [Hooks](#hooks)
 - [Callback Hanlders](#callback-hanlders)
+- [Lifting State In React](#lifting-state-in-react)
 - [useEffect Hook](#useeffect-hook)
 - [GraphQL Basics](#graphql-basics)
 - [Updates with Mutations](#updates-with-mutations)
@@ -1106,7 +1107,7 @@ A Hook is a special function that lets you “hook into” React features. For e
 
 ### Callback Hanlders
 
-So far, we've seen a `Search` component that sets a state by taking input in from the user. Search component is a child of `App`. Remember we also had a sibling of search component called `List`. The idea is to filter the displayed `List` based on the user input received. To do so, the `Search` component needs to share its state with its parent, ie transfer state up. Now, we know that state can be passed down from parent to child via props, but how do we send state back up to the `App` component? `callBack` functions! Great explanation [here](https://codeburst.io/javascript-what-the-heck-is-a-callback-aba4da2deced)
+So far, we've seen a `Search` component that sets a state by taking input from the user. Search component is a child of `App`. Remember we also had a sibling of search component called `List`. The idea is to filter the displayed `List` based on the user input received. To do so, the `Search` component needs to share its state with its parent, ie transfer state up. Now, we know that state can be passed down from parent to child via props, but how do we send state back up to the `App` component? `callBack` functions! Great explanation [here](https://codeburst.io/javascript-what-the-heck-is-a-callback-aba4da2deced)
 
 Simply put: A callback is a function that is to be executed after another function has finished executing — hence the name ‘call back’. Callbacks are a way to make sure certain code doesn’t execute until other code has already finished execution.
 
@@ -1137,7 +1138,7 @@ So, the order of execution would be
 - Next, the callback function is called and the order of execution returns back to the original call
 - We then see the following printed: `'Finished my homework'`
 
-One cool thing about callbacks, you don't have to define the callback within the function call. They can be defined elsewhere:
+One cool thing about callbacks, you don't have to define the callback within the function call. In the above example, we passed the entire function in our call to `doHomework`. However, callbacks can be defined elsewhere:
 
 ```jsx
 function doHomework(subject, callback) {
@@ -1161,6 +1162,243 @@ T.get('search/tweets', params, function(err, data, response) {
   }
 })
 ```
+
+Going back to our example, we wanted to use callbacks to pass our state up the dependency tree: from `Search` back to `App`. To do so, we'll make a few changes to our `App` and `Search` components. First, we'll create a callback function called `handleSearch`:
+
+```jsx
+const handleSearch = event => {
+  console.log(event.target.value);
+}
+```
+
+This is a simple function that takes an event and logs it to the console. Next, we'll pass this callback to `Search` component as props from `App`. That's because `Search` is a child of `App`.
+
+```jsx
+<Search onSearch={handleSearch}>
+```
+
+This means, once you're done searching call the callback! For this to work, we'd change our `Search` component so that it accepts props now:
+
+```jsx
+const Search = (props) => {...}
+```
+
+Here's what our setup looks like now:
+
+```jsx
+const App = () => {
+  const stories = [...]];
+
+  // A -> Callback function
+  const handleSearch = (event) => {
+    console.log(event.target.value);
+  }
+
+  return (
+    <div>
+      // B -> Call search with callback as prop
+      <Search onSearch={handleSearch}/>
+      <List list={stories} />
+    </div>
+  );
+};
+
+const Search = (props) => {
+  const [searchTerm, setSearchTerm] = React.useState();
+
+  const handleChange = (event) => {
+    setSearchTerm(event.target.value);
+    // C -> Call the callback once done capturing event
+    props.onSearch(event);
+  }
+
+  return (
+    <div>
+      <label htmlFor="search"> Search: </label>
+      <input id="search" type="text" onChange={handleChange}/>
+      <p>
+        Searching for <strong>{searchTerm}</strong>
+      </p>
+    </div>
+  )
+}
+```
+
+We pass a function from one component (App) to another component (Search); we call it in the second component (Search); but have the actual implementation of the function call in the first component (App). This way, we can communicate up the component tree. 
+
+
+### Lifting State In React
+Currently, the Search component still has its internal state. While we established a callback handler to pass information up to the App component, we are not using it yet. We need to figure out how to share the Search component’s state across multiple components.
+
+The search term is needed in the App to filter the list before passing it to the List component as props. We’ll need to lift state up from Search to App component to share the state with more components. To do so, we can remove the state from `Search` and add it in `App`:
+
+```jsx
+const App = () => {
+  const [searchTerm, setSearchTerm] = React.useState();
+
+  const handleSearch = (event) => {    
+    setSearchTerm(event.target.value);
+  }
+  
+  return (
+    <div>
+      <Search onSearch={handleSearch}/>
+      <List list={stories} />
+    </div>
+  );
+}
+
+
+const Search = (props) => {
+  return (
+    <div>
+      <label htmlFor="search"> Search: </label>
+      <input id="search" type="text" onChange={props.onSearch}/>
+    </div>
+  )
+}
+```
+
+Now in the logic above, we define the `handleSearch` in `App`. Next, we call `Search` with the `onSearch={handleSearch}` callback prop. Inside `Search`, the prop is called back once input is captured by the user using the line:
+```jsx
+      <input id="search" type="text" onChange={props.onSearch}/>
+```
+
+Finally, when the callback is called, the state is set by using the `setSearchTerm` call. We're now ready to filter the `stories` prop that is being passed to `List` component. We'll use what was returned from `Search` to filter what to display in `List`. 
+
+To filter our results based on what the user types in the search, we'll again make use of the state we saved in our `App` component. Always manage the state at a component where every component that’s interested in it is one that either manages the state (using information directly from state) or a component below the managing component (using information from props). If a component below needs to update the state, pass a callback handler down to it (see Search component). If a component needs to use the state (e.g. displaying it), pass it down as props.
+
+By managing the search feature state in the `App` component, we can finally filter the list with the stateful `searchTerm` before passing the list to the `List` component:
+
+```jsx
+
+const App = () => {
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const handleSearch = (event) => {    
+    setSearchTerm(event.target.value);
+  }
+  const filteredStories = stories.filter(function(story){
+    return story.title.includes(searchTerm);
+  })
+  return (
+    <div>
+      <h1>My Hacker Stories</h1>
+      <Search onSearch={handleSearch}/>
+      <List list={filteredStories} />
+    </div>
+  );
+};
+
+const Search = (props) => {
+  return (
+    <div>
+      <label htmlFor="search"> Search: </label>
+      <input id="search" type="text" onChange={props.onSearch}/>
+    </div>
+  )
+}
+```
+
+Above, [JavaScript array’s built-in filter function](https://developer.mozilla.org/en- US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter) is used to create a new filtered array. The filter function takes a function as an argument, which accesses each item in the array and returns true or false. If the function returns true, meaning the condition is met, the item stays in the newly created array; if the function returns false, it’s removed. 
+
+If you run the code above as is and search for `react` you'll see nothing rendered in the list because `React !== react`. We can remedy that by changing both the titles and search term to lower case before comparing in the filter function:
+
+
+```jsx
+  const filteredStories = stories.filter(function(story) {
+    return story.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+});
+```
+
+Let's refactor the filter function above to:
+
+```jsx
+  const filteredStories = stories.filter(story => {
+    return story.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+});
+```
+
+In addition, we could turn the return statement into an immediate return, because no other task (business logic) happens before the return:
+
+```jsx
+
+  const searchedStories = stories.filter(story =>
+    story.title.toLowerCase().includes(searchTerm.toLowerCase())
+);
+```
+
+Here's where we ended up:
+
+```jsx
+import * as React from 'react';
+
+const App = () => {
+  const stories = [
+    {
+      title: 'React',
+      url: 'https://reactjs.org/',
+      author: 'Jordan Walke',
+      num_comments: 3,
+      points: 4,
+      objectID: 0,
+    },
+    {
+      title: 'Redux',
+      url: 'https://redux.js.org/',
+      author: 'Dan Abramov, Andrew Clark',
+      num_comments: 2,
+      points: 5,
+      objectID: 1,
+    },
+  ];
+
+  const [searchTerm, setSearchTerm] = React.useState('');
+
+  const handleSearch = (event) => {    
+    setSearchTerm(event.target.value);
+  }
+
+  const filteredStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  return (
+    <div>
+      <h1>My Hacker Stories</h1>
+      <Search onSearch={handleSearch}/>
+      <List list={filteredStories} />
+    </div>
+  );
+};
+
+const Search = (props) => {
+  return (
+    <div>
+      <label htmlFor="search"> Search: </label>
+      <input id="search" type="text" onChange={props.onSearch}/>
+    </div>
+  )
+}
+
+const List = (props) => (
+  <ul>
+    {props.list.map((item) => (
+      <li key={item.objectID}>
+        <span>
+          <a href={item.url}>{item.title}</a>
+        </span>
+        <span>{item.author}</span>
+        <span>{item.num_comments}</span>
+        <span>{item.points}</span>
+      </li>
+    ))}
+  </ul>
+);
+export default App;
+```
+
 
 
 ### useEffect Hook
