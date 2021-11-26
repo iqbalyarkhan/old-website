@@ -37,6 +37,7 @@ tags:
   - [Hooks](#hooks)
 - [Callback Hanlders](#callback-hanlders)
 - [Lifting State In React](#lifting-state-in-react)
+- [React Controlled Components](#react-controlled-components)
 - [useEffect Hook](#useeffect-hook)
 - [GraphQL Basics](#graphql-basics)
 - [Updates with Mutations](#updates-with-mutations)
@@ -1299,7 +1300,7 @@ const Search = (props) => {
 }
 ```
 
-Above, [JavaScript array’s built-in filter function](https://developer.mozilla.org/en- US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter) is used to create a new filtered array. The filter function takes a function as an argument, which accesses each item in the array and returns true or false. If the function returns true, meaning the condition is met, the item stays in the newly created array; if the function returns false, it’s removed. 
+Above, [JavaScript array’s built-in filter function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter) is used to create a new filtered array. The filter function takes a function as an argument, which accesses each item in the array and returns true or false. If the function returns true, meaning the condition is met, the item stays in the newly created array; if the function returns false, it’s removed. 
 
 If you run the code above as is and search for `react` you'll see nothing rendered in the list because `React !== react`. We can remedy that by changing both the titles and search term to lower case before comparing in the filter function:
 
@@ -1399,7 +1400,119 @@ const List = (props) => (
 export default App;
 ```
 
+### React Controlled Components
+In HTML, form elements such as `<input>`, `<textarea>`, and `<select>` typically maintain their own state and update it based on user input. In React, mutable state is typically kept in the state property of components, and only updated with `setState()`.
 
+We can combine the two by making the React state be the “single source of truth”. Then the React component that renders a form also controls what happens in that form on subsequent user input. An input form element whose value is controlled by React in this way is called a “controlled component”. Controlled components are not necessarily React components, but HTML elements. Here, we’ll learn how to turn the Search component and its input field into a controlled component.
+
+Why do we actually need a controlled component? Well, if we look again at the example above, we have the following:
+
+```jsx
+import * as React from 'react';
+
+const App = () => {
+  const stories = [
+    {
+      title: 'React',
+      url: 'https://reactjs.org/',
+      author: 'Jordan Walke',
+      num_comments: 3,
+      points: 4,
+      objectID: 0,
+    },
+    {
+      title: 'Redux',
+      url: 'https://redux.js.org/',
+      author: 'Dan Abramov, Andrew Clark',
+      num_comments: 2,
+      points: 5,
+      objectID: 1,
+    },
+  ];
+
+  const [searchTerm, setSearchTerm] = React.useState('');
+
+  const handleSearch = (event) => {    
+    setSearchTerm(event.target.value);
+  }
+
+  const filteredStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  return (
+    <div>
+      <h1>My Hacker Stories</h1>
+      <Search onSearch={handleSearch}/>
+      <List list={filteredStories} />
+    </div>
+  );
+};
+
+const Search = (props) => {
+  return (
+    <div>
+      <label htmlFor="search"> Search: </label>
+      <input id="search" type="text" onChange={props.onSearch}/>
+    </div>
+  )
+}
+
+const List = (props) => (
+  <ul>
+    {props.list.map((item) => (
+      <li key={item.objectID}>
+        <span>
+          <a href={item.url}>{item.title}</a>
+        </span>
+        <span>{item.author}</span>
+        <span>{item.num_comments}</span>
+        <span>{item.points}</span>
+      </li>
+    ))}
+  </ul>
+);
+export default App;
+```
+
+Here, we didn't have an initial state set:
+
+```jsx
+const [searchTerm, setSearchTerm] = React.useState('');
+```
+
+if we change this line to:
+
+```jsx
+const [searchTerm, setSearchTerm] = React.useState('React');
+```
+
+we'll see that the list has been filtered but the input field doesn't show the initial `searchTerm` (ie the search box is empty!). We want the input field to reflect the actual searchTerm used from the initial state; but it’s only reflected through the filtered list. We need to convert the Search component with its input field into a controlled component. So far, the input field doesn’t know anything about the searchTerm. It only uses the change event to inform us of a change.
+
+The input field has a value attribute that can be used to show the initial state. To do so, we'll update the `Search` component in `App` to:
+
+```jsx
+//old
+<Search onSearch={handleSearch}/>
+//new - searchTerm is the state
+<Search search={searchTerm} onSearch={handleSearch}/>
+```
+
+and inside `Search` component, we'll do this:
+
+```jsx
+//old
+<input id="search" type="text" onChange={props.onSearch}/>
+//new - pull value from props.search
+<input id="search" type="text" value={props.search} onChange={props.onSearch}/>
+```
+
+Now the input field starts with the correct initial value, using the searchTerm from the React state.We learned about controlled components in this section, and, taking all the previous sections as learning steps into consideration, discovered another concept called unidirectional data flow:
+
+```jsx
+UI -> Side-Effect -> State -> UI -> ...
+```
+
+
+A React application and its components start with an initial state, which may be passed down as props to other components. It’s rendered for the first time as a UI. Once a side-effect occurs, like user input or data loading from a remote API, the change is captured in React’s state. Once state has been changed, all the components affected by the modified state or the implicitly modified props are re-rendered (the component functions runs again).
 
 ### useEffect Hook
 
