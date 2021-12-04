@@ -38,6 +38,8 @@ tags:
 - [Callback Hanlders](#callback-hanlders)
 - [Lifting State In React](#lifting-state-in-react)
 - [React Controlled Components](#react-controlled-components)
+- [Props: Enhancements](#props-enhancements)
+- [React Side Effects](#react-side-effects)
 - [useEffect Hook](#useeffect-hook)
 - [GraphQL Basics](#graphql-basics)
 - [Updates with Mutations](#updates-with-mutations)
@@ -1505,6 +1507,19 @@ and inside `Search` component, we'll do this:
 <input id="search" type="text" value={props.search} onChange={props.onSearch}/>
 ```
 
+`Search` component now looks like:
+
+```jsx
+const Search = (props) => {
+  return (
+    <div>
+      <label htmlFor="search"> Search: </label>
+      <input id="search" type="text" value={props.search} onChange={props.onSearch}/>
+    </div>
+  )
+}
+```
+
 Now the input field starts with the correct initial value, using the searchTerm from the React state.We learned about controlled components in this section, and, taking all the previous sections as learning steps into consideration, discovered another concept called unidirectional data flow:
 
 ```jsx
@@ -1513,6 +1528,82 @@ UI -> Side-Effect -> State -> UI -> ...
 
 
 A React application and its components start with an initial state, which may be passed down as props to other components. It’s rendered for the first time as a UI. Once a side-effect occurs, like user input or data loading from a remote API, the change is captured in React’s state. Once state has been changed, all the components affected by the modified state or the implicitly modified props are re-rendered (the component functions runs again).
+
+### Props: Enhancements
+Let's take a look at a few ways we can improve props and props processing in our react components. We had this `Search` component earlier:
+
+```jsx
+const Search = (props) => {
+  return (
+    <div>
+      <label htmlFor="search"> Search: </label>
+      <input id="search" type="text" value={props.search} onChange={props.onSearch}/>
+    </div>
+  )
+}
+```
+
+We can apply destructuring of the props object in the component's function body:
+
+```jsx
+const Search = (props) => {
+  const {search, onSearch} = props
+  return (
+    <div>
+      <label htmlFor="search"> Search: </label>
+      <input id="search" type="text" value={search} onChange={onSearch}/>
+    </div>
+  )
+}
+```
+
+That’s a basic destructuring of the props object in a React component, so that the object’s properties can be used conveniently in the component. We can take all this one step further by destructuring the props object right away in the function signature of our component, omitting the function’s block body of the component again:
+
+```jsx
+const Search = ({search, onSearch}) => {
+  return (
+    <div>
+      <label htmlFor="search"> Search: </label>
+      <input id="search" type="text" value={search} onChange={onSearch}/>
+    </div>
+  )
+}
+```
+
+### React Side Effects
+Next we’ll add a feature to our Search component in the form of another React hook. We’ll make the Search component remember the most recent search interaction, so the application opens it in the browser whenever it restarts. We'll use the local storage of our browser to store the `searchTerm` accompanied by an id. Next, we'll use this stored value (if it exists)m to set the initial state of the `searchTerm`. If it doesn't exist, we'll do 2 things:
+
+1. We'll default to `React` for our initial search term.
+2. We'll set the `stateHistory` to whatever the user searches for which'll be used when the user re-visits the page.
+
+
+To do so, we'll use `localStorage`. `localStorge` has 2 important methods:
+```jsx
+localStorage.setItem(<identifier>,<value>)
+localStorage.getItem(<identifier>)
+```
+
+In our example, we'll place the `searchTerm` in our local storage with the identifier called `stateHistory`. Let's see this in action:
+
+First thing we need to do is check and see if a value exists in `localStorage` with the id `stateHistory`. If so, set `searchTerm` to that, otherwise, set `searchTerm` to "React":
+
+```jsx
+  const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('stateHistory') || 'React');
+```
+
+Next, we need to update the value stored in local storage. To do so, we'll use our callback function to capture what's returned from the `Search` component and update item in local storage:
+
+```jsx
+  const handleSearch = (event) => {    
+    setSearchTerm(event.target.value);
+    localStorage.setItem('stateHistory',searchTerm);
+  }
+```
+
+That's it! Using the local storage in React can be seen as a side-effect because we interact outside of React’s domain by using the browser’s API.
+
+
+
 
 ### useEffect Hook
 
