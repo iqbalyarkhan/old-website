@@ -1600,7 +1600,7 @@ Next, we need to update the value stored in local storage. To do so, we'll use o
   }
 ```
 
-That's it! Using the local storage in React can be seen as a side-effect because we interact outside of React’s domain by using the browser’s API.
+That's it! Using the local storage in React can be seen as a side-effect because we interact outside of React’s domain by using the browser’s API. 
 
 
 
