@@ -41,6 +41,7 @@ tags:
 - [Props: Enhancements](#props-enhancements)
 - [React Side Effects](#react-side-effects)
 - [useEffect Hook](#useeffect-hook)
+- [Creating our own hook](#creating-our-own-hook)
 - [GraphQL Basics](#graphql-basics)
 - [Updates with Mutations](#updates-with-mutations)
 - [Queries and Aliases](#queries-and-aliases)
@@ -1600,14 +1601,80 @@ Next, we need to update the value stored in local storage. To do so, we'll use o
   }
 ```
 
-That's it! Using the local storage in React can be seen as a side-effect because we interact outside of React’s domain by using the browser’s API. 
+That's it! Using the local storage in React can be seen as a side-effect because we interact outside of React’s domain by using the browser’s API. Here's what we have so far:
 
+```jsx
+import * as React from 'react';
 
+const App = () => {
+  const stories = [
+    {
+      title: 'React',
+      url: 'https://reactjs.org/',
+      author: 'Jordan Walke',
+      num_comments: 3,
+      points: 4,
+      objectID: 0,
+    },
+    {
+      title: 'Redux',
+      url: 'https://redux.js.org/',
+      author: 'Dan Abramov, Andrew Clark',
+      num_comments: 2,
+      points: 5,
+      objectID: 1,
+    }
+  ];
+
+  const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('stateHistory') || 'React');
+
+  const handleSearch = (event) => {    
+    setSearchTerm(event.target.value);
+    localStorage.setItem('stateHistory',searchTerm);
+  }
+
+  const filteredStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  return (
+    <div>
+      <h1>My Hacker Stories</h1>
+      <Search search={searchTerm} onSearch={handleSearch}/>
+      <List list={filteredStories} />
+    </div>
+  );
+};
+
+const Search = ({search, onSearch}) => {
+  return (
+    <div>
+      <label htmlFor="search"> Search: </label>
+      <input id="search" type="text" value={search} onChange={onSearch}/>
+    </div>
+  )
+}
+
+const List = (props) => (
+  <ul>
+    {props.list.map((item) => (
+      <li key={item.objectID}>
+        <span>
+          <a href={item.url}>{item.title}</a>
+        </span>
+        <span>{item.author}</span>
+        <span>{item.num_comments}</span>
+        <span>{item.points}</span>
+      </li>
+    ))}
+  </ul>
+);
+export default App;
+```
 
 
 ### useEffect Hook
 
-The useEffect hook is used to manage side effects that aren't related to the components' rendering. Things such as console messages or loading data are managed by useEffect. To use this hook, we need to import it:
+We used `localStorage` in the previous section but that approach has a flaw: the handler function we have, `handleSearch`, should only be concerned with updating the state and not worry about side-effects. Also, if we use `setSearchTerm` elsewhere to update the state, we can't be sure that our `localStorage` is being updated as well. We need to fix this using `useEffect` hook. 
+
+The `useEffect` hook is used to manage side effects that aren't related to the components' rendering. Things such as console messages or loading data are managed by `useEffect`. To use this hook, we need to import it:
 
 ```jsx
 import React, {useState, useEffect} from 'react';
@@ -1636,49 +1703,320 @@ function App(){
 }
 ```
 
-useEffect will update the console ONLY on emotion change. We can use useEffect to handle values returned from API calls:
+In our example from earlier, we'll use `useEffect` to trigger the side-effect each time `searchTerm` changes. We said we weren't happy with `handleSearch` dealing with `localStorage`, so let's get rid of that logic from `handleSearch` callback:
 
 ```jsx
-function App(props) {
-    const [data,setData] = useState(null);
-    const [loading,setLoading] = useState(false);
-    const [error,setError] = useState(null);
+ const handleSearch = (event) => {    
+    setSearchTerm(event.target.value);
+  }
+```
 
-    useEffect(() => {
-        if (!props.login) return;
-        setLoading(true);
+We'll keep the initial state load logic as is:
 
-       fetch(`https://api.github.com/users/${props.login}`)
-           .then(r => r.json())
-           .then(setData)
-           .then(() => setLoading(false))
-           .catch(setError);
-    }, [props.login]);
+```jsx
+  const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('stateHistory') || 'React');
+```
 
-    if (loading){
-        return <h1>Loading...</h1>
+Next, we'll use `useEffect` to update the state within the `App`:
+
+```jsx
+
+ React.useEffect(() => {
+    localStorage.setItem('stateHistory', searchTerm)
+  }, [searchTerm]);
+```
+
+Like mentioned earlier, React’s useEffect Hook takes two arguments: The first argument is a function where the side-effect occurs. In our case, the side-effect is when the user types the searchTerm into the browser’s local storage. The optional second argument is a dependency array of variables. If one of theses variables changes, the function for the side-effect is called. In our case, the function is called every time the searchTerm changes; and it’s also called initially when the component renders for the first time.
+
+Leaving out the dependency array, would make the function for the side-effect run on every render (initial render and update renders) of the component. If the dependency array of React’s useEffect is an empty array, the function for the side-effect is only called once, after the component renders for the first time. The hook lets us opt into React’s component lifecycle. It can be triggered when the component is first mounted, but also if one of its dependencies are updated.
+
+Using `React.useEffect` instead of managing the side-effect in the handler has made the application more robust. Whenever and wherever `searchTerm` is updated via `setSearchTerm`, local storage will always be in sync with it.
+
+Finally, here's the updated code:
+
+```jsx
+import * as React from 'react';
+
+const App = () => {
+  const stories = [
+    {
+      title: 'React',
+      url: 'https://reactjs.org/',
+      author: 'Jordan Walke',
+      num_comments: 3,
+      points: 4,
+      objectID: 0,
+    },
+    {
+      title: 'Redux',
+      url: 'https://redux.js.org/',
+      author: 'Dan Abramov, Andrew Clark',
+      num_comments: 2,
+      points: 5,
+      objectID: 1,
     }
+  ];
 
-    if (error){
-        return <pre>{JSON.stringify(error,null,2)}</pre>
-    }
+  const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('stateHistory') || 'React');
 
-    if (!data){
-        return null;
-    }
+  const handleSearch = (event) => {    
+    setSearchTerm(event.target.value);
+  }
 
-    return (
-        <>
-            <div>
-                <h3>UserName: {data.login}</h3>
-                <h3>Id: {data.id}</h3>
-                <h3>email: {data.email}</h3>
-                <img alt={data.login} src={data.avatar_url}/>
-            </div>
-        </>
-    )
+  React.useEffect(() => {
+    localStorage.setItem('stateHistory', searchTerm)
+  }, [searchTerm]);
 
+
+  const filteredStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  return (
+    <div>
+      <h1>My Hacker Stories</h1>
+      <Search search={searchTerm} onSearch={handleSearch}/>
+      <List list={filteredStories} />
+    </div>
+  );
+};
+
+const Search = ({search, onSearch}) => {
+  return (
+    <div>
+      <label htmlFor="search"> Search: </label>
+      <input id="search" type="text" value={search} onChange={onSearch}/>
+    </div>
+  )
 }
+
+const List = (props) => (
+  <ul>
+    {props.list.map((item) => (
+      <li key={item.objectID}>
+        <span>
+          <a href={item.url}>{item.title}</a>
+        </span>
+        <span>{item.author}</span>
+        <span>{item.num_comments}</span>
+        <span>{item.points}</span>
+      </li>
+    ))}
+  </ul>
+);
+export default App;
+```
+
+### Creating our own hook
+Thus far we’ve covered the two most popular hooks in React: useState and useEffect. useState is used to make your application interactive; useEffect is used to opt into the lifecycle of your components. Next, we'll create a custom hook called `useSemiPersistentState`: one that manages state and also synchronizes with local storage. It’s not fully persistent because clearing the local storage of the browser deletes relevant data for this application. 
+
+Start by extracting all relevant implementation details from the App component into this new custom
+hook:
+
+```jsx
+const useSemiPersistentState = () => {
+  const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('stateHistory') || 'React');
+
+  React.useEffect(() => {
+    localStorage.setItem('stateHistory', searchTerm)
+  }, [searchTerm]);
+}
+```
+So far, it’s just a function around our useState and useEffect hooks. Before we can use it, let’s return the values that are needed in our App component from this custom hook:
+
+```jsx
+const useSemiPersistentState = () => {
+  const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('stateHistory') || 'React');
+
+  React.useEffect(() => {
+    localStorage.setItem('stateHistory', searchTerm)
+  }, [searchTerm]);
+
+  return [searchTerm, setSearchTerm]
+}
+```
+
+We are following two conventions of React’s built-in hooks here. First, the naming convention which puts the “use” prefix in front of every hook name; second, the returned values are returned as an array. This custom hook is defined outside of `App` component. Now we can use the custom hook with its returned values in the App component with the usual array destructuring:
+
+```jsx
+const[searchTerm,setSearchTerm] = useSemiPersistentState();
+```
+
+Here's what our code looks like right now:
+
+```jsx
+import * as React from 'react';
+
+const useSemiPersistentState = () => {
+  const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('stateHistory') || 'React');
+
+  React.useEffect(() => {
+    localStorage.setItem('stateHistory', searchTerm)
+  }, [searchTerm]);
+
+  return [searchTerm, setSearchTerm]
+}
+
+const App = () => {
+  const stories = [
+    {
+      title: 'React',
+      url: 'https://reactjs.org/',
+      author: 'Jordan Walke',
+      num_comments: 3,
+      points: 4,
+      objectID: 0,
+    },
+    {
+      title: 'Redux',
+      url: 'https://redux.js.org/',
+      author: 'Dan Abramov, Andrew Clark',
+      num_comments: 2,
+      points: 5,
+      objectID: 1,
+    }
+  ];
+
+  const[searchTerm,setSearchTerm] = useSemiPersistentState();
+
+  const handleSearch = (event) => {    
+    setSearchTerm(event.target.value);
+  }
+
+  React.useEffect(() => {
+    localStorage.setItem('stateHistory', searchTerm)
+  }, [searchTerm]);
+
+
+  const filteredStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  return (
+    <div>
+      <h1>My Hacker Stories</h1>
+      <Search search={searchTerm} onSearch={handleSearch}/>
+      <List list={filteredStories} />
+    </div>
+  );
+};
+
+```
+
+Another goal of a custom hook should be reusability. All of this custom hook’s internals are about the search domain, but the hook should be for a value that’s set in state and synchronized in local storage. Let’s adjust the naming:
+
+```jsx
+const useSemiPersistentState = () => {
+  const [value, setValue] = React.useState(localStorage.getItem('value') || '');
+
+  React.useEffect(() => {
+    localStorage.setItem('value', setValue)
+  }, [value]);
+
+  return [value, setValue]
+}
+```
+
+We handle an abstracted “value” within the custom hook. Using it in the App component, we can name the returned current state and state updater function anything domain-related (e.g. searchTerm and setSearchTerm) with array destructuring.
+
+There is still one problem with this custom hook. Using the custom hook more than once in a React application leads to an overwrite of the “value” allocated item in the local storage. To fix this, pass in a key to our hook. Another improvement is to give the custom hook the initial state we had from the outside:
+
+```jsx
+
+const useSemiPersistentState = (key, initialState) => {
+  const [value, setValue] = React.useState(localStorage.getItem(key) || initialState);
+
+  React.useEffect(() => {
+    localStorage.setItem(key, setValue)
+  }, [value, key]);
+
+  return [value, setValue]
+}
+```
+
+Now from the `App` component, we need to call this hook like so:
+
+```jsx
+const[searchTerm,setSearchTerm] = useSemiPersistentState('stateHistory', 'React');
+```
+
+A custom hook can encapsulate non-trivial implementation details that should be kept away from a component; can be used in more than one React component; and can even be open-sourced as an external library. More on react hooks [here](https://www.robinwieruch.de/react-hooks/) 
+
+Here's what our complete code looks like right now:
+
+```jsx
+import * as React from 'react';
+
+const useSemiPersistentState = (key, initialState) => {
+  const [value, setValue] = React.useState(localStorage.getItem(key) || initialState);
+
+  React.useEffect(() => {
+    localStorage.setItem(key, setValue)
+  }, [value, key]);
+
+  return [value, setValue]
+}
+
+const App = () => {
+  const stories = [
+    {
+      title: 'React',
+      url: 'https://reactjs.org/',
+      author: 'Jordan Walke',
+      num_comments: 3,
+      points: 4,
+      objectID: 0,
+    },
+    {
+      title: 'Redux',
+      url: 'https://redux.js.org/',
+      author: 'Dan Abramov, Andrew Clark',
+      num_comments: 2,
+      points: 5,
+      objectID: 1,
+    }
+  ];
+
+  const[searchTerm,setSearchTerm] = useSemiPersistentState('stateHistory', 'React');
+
+  const handleSearch = (event) => {    
+    setSearchTerm(event.target.value);
+  }
+
+  React.useEffect(() => {
+    localStorage.setItem('stateHistory', searchTerm)
+  }, [searchTerm]);
+
+
+  const filteredStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  return (
+    <div>
+      <h1>My Hacker Stories</h1>
+      <Search search={searchTerm} onSearch={handleSearch}/>
+      <List list={filteredStories} />
+    </div>
+  );
+};
+
+const Search = ({search, onSearch}) => {
+  return (
+    <div>
+      <label htmlFor="search"> Search: </label>
+      <input id="search" type="text" value={search} onChange={onSearch}/>
+    </div>
+  )
+}
+
+const List = (props) => (
+  <ul>
+    {props.list.map((item) => (
+      <li key={item.objectID}>
+        <span>
+          <a href={item.url}>{item.title}</a>
+        </span>
+        <span>{item.author}</span>
+        <span>{item.num_comments}</span>
+        <span>{item.points}</span>
+      </li>
+    ))}
+  </ul>
+);
+export default App;
+
 ```
 
 ### GraphQL Basics
