@@ -45,6 +45,7 @@ tags:
 - [React Fragments](#react-fragments)
 - [React Reusable components](#react-reusable-components)
 - [Children](#children)
+- [Inline Handlers in JSX](#inline-handlers-in-jsx)
 - [GraphQL Basics](#graphql-basics)
 - [Updates with Mutations](#updates-with-mutations)
 - [Queries and Aliases](#queries-and-aliases)
@@ -2147,17 +2148,19 @@ Finally, here's what our entire `App` looks like:
 
 
 ```jsx
-import * as React from 'react';
+import React from 'react';
 
 const useSemiPersistentState = (key, initialState) => {
-  const [value, setValue] = React.useState(localStorage.getItem(key) || initialState);
+  const [value, setValue] = React.useState(
+    localStorage.getItem(key) || initialState
+  );
 
   React.useEffect(() => {
-    localStorage.setItem(key, setValue)
+    localStorage.setItem(key, value);
   }, [value, key]);
 
-  return [value, setValue]
-}
+  return [value, setValue];
+};
 
 const App = () => {
   const stories = [
@@ -2179,21 +2182,27 @@ const App = () => {
     },
   ];
 
-  const[searchTerm,setSearchTerm] = useSemiPersistentState('stateHistory', 'act');
+  const [searchTerm, setSearchTerm] = useSemiPersistentState(
+    'search',
+    'React'
+  );
 
-  const handleSearch = (event) => {    
+  const handleSearch = event => {
     setSearchTerm(event.target.value);
-  }
+  };
 
-  const filteredStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredStories = stories.filter(story =>
+    story.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <h1>My Hacker Stories</h1>
-      <InputWithLabel 
-        label="Search" 
-        id="search" 
-        type="text" 
-        input={searchTerm} 
+
+      <InputWithLabel
+        id="search"
+        label="Search"
+        value={searchTerm}
         onInputChange={handleSearch}
       />
       <List list={filteredStories} />
@@ -2201,37 +2210,39 @@ const App = () => {
   );
 };
 
-const InputWithLabel = ({label, id, type, input, onInputChange}) => {
-  return (
-    <div>
-      <label htmlFor={id}> {label} </label>
-      <input 
-        id={id} 
-        type={type} 
-        value={input} 
-        onChange={onInputChange}
-      />
-    </div>
-  )
-}
-
-const List = (props) => (
-  <ul>
-    {props.list.map((item) => (
-      <li key={item.objectID}>
-        <span>
-          <a href={item.url}>{item.title}</a>
-        </span>
-        <span>{item.author}</span>
-        <span>{item.num_comments}</span>
-        <span>{item.points}</span>
-      </li>
-    ))}
-  </ul>
+const InputWithLabel = ({
+  id,
+  label,
+  value,
+  type = 'text',
+  onInputChange,
+}) => (
+  <>
+    <label htmlFor={id}>{label}</label>
+    <input
+      id={id}
+      type={type}
+      value={value}
+      onChange={onInputChange}
+    />
+  </>
 );
+
+const List = ({ list }) =>
+  list.map(item => <Item key={item.objectID} item={item} />);
+
+const Item = ({ item }) => (
+  <div>
+    <span>
+      <a href={item.url}>{item.title}</a>
+    </span>
+    <span>{item.author}</span>
+    <span>{item.num_comments}</span>
+    <span>{item.points}</span>
+  </div>
+);
+
 export default App;
-
-
 ```
 
 With just a few changes we turned a specialized Search component into a more reusable component. We generalized the naming of the internal implementation details and gave the new component a larger API surface to provide all the necessary information from the outside. We aren’t using the component elsewhere, but we increased its ability to handle the task if we do. More on re-usable components [here](https://www.robinwieruch.de/react-reusable-components/)
@@ -2241,28 +2252,38 @@ With just a few changes we turned a specialized Search component into a more reu
 In the code we used above, our `App` component is passing in the `Search` string as a label. This label is displayed before the search box. However, there's another way we can capture this information from App instead of passing it as a prop: `children`. What we can do is remove the `label` prop and use the `InputWithLabel` like so:
 
 ```jsx
-      <InputWithLabel 
-        id="search" 
-        type="text" 
-        input={searchTerm} 
-        onInputChange={handleSearch}> Search:
+      <InputWithLabel
+        id="search"
+        value={searchTerm}
+        onInputChange={handleSearch}
+      >
+        <strong>Search:</strong>
       </InputWithLabel>
 ```
 
 Notice how we've added a closing tag and text, `Search:` in between. Next, this can be accessed as `children` in the `InputWithLabel` component:
 
 ```jsx
-const InputWithLabel = ({id, type, input, onInputChange, children}) => {
-  return (
-    <div>
-      <label htmlFor={id}> {children} </label>
-      <input id={id} type={type} value={input} onChange={onInputChange}/>
-    </div>
-  )
-}
+const InputWithLabel = ({
+  id,
+  value,
+  type = 'text',
+  onInputChange,
+  children,
+}) => (
+  <>
+    <label htmlFor={id}>{children}</label>
+    <input
+      id={id}
+      type={type}
+      value={value}
+      onChange={onInputChange}
+    />
+  </>
+);
 ```
 
-React component’s elements behave similar to native HTML. Everything that’s passed between a component’s elements can be accessed as `children` in the component and be rendered somewhere. This allows you to have more freedom from outside the `InputWithLabel` component in controlling how you want your label to show. For example, you could show the label as bold:
+React component’s elements behave similar to native HTML. Everything that’s passed between a component’s elements can be accessed as `children` in the component and be rendered somewhere. This allows you to have more freedom from outside the `InputWithLabel` component in controlling how you want your label to show. For example, you could show the label as bold: 
 
 ```jsx
       <InputWithLabel 
@@ -2275,6 +2296,72 @@ React component’s elements behave similar to native HTML. Everything that’s 
 ```
 
 With this React feature, we can compose React components into each other. You can pass components via React children as well.
+
+### Inline Handlers in JSX
+
+The list of stories we have so far is only an unstateful variable. We can filter the rendered list with the search feature, but the list itself stays intact if we remove the filter. The filter is just a temporary change through a third party, but we can’t manipulate the real list yet. To gain control over the list, make it stateful by using it as initial state in React’s useState Hook. The returned values are the current state (stories) and the state updater function (setStories). We aren’t using the custom useSemiPersistentState hook yet, because we don’t want to open the browser with the cached list each time. Instead, we always want to start with the initial list:
+
+```jsx
+//App.jsx
+const App = () => {
+  const stories = [
+    {
+      title: 'React',
+      url: 'https://reactjs.org/',
+      author: 'Jordan Walke',
+      num_comments: 3,
+      points: 4,
+      objectID: 0,
+    },
+    {
+      title: 'Redux',
+      url: 'https://redux.js.org/',
+      author: 'Dan Abramov, Andrew Clark',
+      num_comments: 2,
+      points: 5,
+      objectID: 1,
+    },
+  ];
+
+  const [searchTerm, setSearchTerm] = useSemiPersistentState(
+    'search',
+    'React'
+  );
+
+  const handleSearch = event => {
+    setSearchTerm(event.target.value);
+  };
+  // Grab allStories and set as initial state:
+  const [allStories, setStories] = useState(stories);
+  //Filter allStories
+  const filteredStories = allStories.filter(story =>
+    story.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div>
+      <h1>My Hacker Stories</h1>
+
+      <InputWithLabel
+        id="search"
+        value={searchTerm}
+        onInputChange={handleSearch}
+      >
+        <strong>Search:</strong>
+      </InputWithLabel>
+
+      <List list={filteredStories} />
+    </div>
+  );
+};
+```
+
+Next, we'll manipulate the list by removing an item from it:
+
+```jsx
+
+```
+
 
 ### GraphQL Basics
 
