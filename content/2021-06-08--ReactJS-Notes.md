@@ -1369,7 +1369,10 @@ const App = () => {
     setSearchTerm(event.target.value);
   }
 
-  const filteredStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredStories = stories.filter(
+    story => story.title.toLowerCase()
+              .includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div>
@@ -1575,10 +1578,10 @@ const Search = ({search, onSearch}) => {
 ```
 
 ### React Side Effects
-Next we’ll add a feature to our Search component in the form of another React hook. We’ll make the Search component remember the most recent search interaction, so the application opens it in the browser whenever it restarts. We'll use the local storage of our browser to store the `searchTerm` accompanied by an id. Next, we'll use this stored value (if it exists)m to set the initial state of the `searchTerm`. If it doesn't exist, we'll do 2 things:
+Next we’ll add a feature to our Search component in the form of another React hook. We’ll make the Search component remember the most recent search interaction, so the application opens it in the browser whenever it restarts. We'll use the local storage of our browser to store the `searchTerm` accompanied by an id. Next, we'll use this stored value (if it exists) to set the initial state of the `searchTerm`. If it doesn't exist, we'll do 2 things:
 
 1. We'll default to `React` for our initial search term.
-2. We'll set the `stateHistory` to whatever the user searches for which'll be used when the user re-visits the page.
+2. We'll set the `stateHistory` to whatever the user searches for. This value will then be used when user re-visits the page.
 
 
 To do so, we'll use `localStorage`. `localStorge` has 2 important methods:
@@ -1592,7 +1595,9 @@ In our example, we'll place the `searchTerm` in our local storage with the ident
 First thing we need to do is check and see if a value exists in `localStorage` with the id `stateHistory`. If so, set `searchTerm` to that, otherwise, set `searchTerm` to "React":
 
 ```jsx
-  const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('stateHistory') || 'React');
+  const [searchTerm, setSearchTerm] = React.useState(
+    localStorage.getItem('stateHistory') || 'React'
+  );
 ```
 
 Next, we need to update the value stored in local storage. To do so, we'll use our callback function to capture what's returned from the `Search` component and update item in local storage:
@@ -1629,14 +1634,18 @@ const App = () => {
     }
   ];
 
-  const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('stateHistory') || 'React');
+  const [searchTerm, setSearchTerm] = React.useState(
+    localStorage.getItem('stateHistory') || 'React'
+  );
 
   const handleSearch = (event) => {    
     setSearchTerm(event.target.value);
     localStorage.setItem('stateHistory',searchTerm);
   }
 
-  const filteredStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredStories = stories.filter(
+    story => story.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   return (
     <div>
       <h1>My Hacker Stories</h1>
@@ -1717,7 +1726,9 @@ In our example from earlier, we'll use `useEffect` to trigger the side-effect ea
 We'll keep the initial state load logic as is:
 
 ```jsx
-  const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('stateHistory') || 'React');
+  const [searchTerm, setSearchTerm] = React.useState(
+    localStorage.getItem('stateHistory') || 'React'
+  );
 ```
 
 Next, we'll use `useEffect` to update the state within the `App`:
@@ -1729,11 +1740,11 @@ Next, we'll use `useEffect` to update the state within the `App`:
   }, [searchTerm]);
 ```
 
-Like mentioned earlier, React’s useEffect Hook takes two arguments: The first argument is a function where the side-effect occurs. In our case, the side-effect is when the user types the searchTerm into the browser’s local storage. The optional second argument is a dependency array of variables. If one of theses variables changes, the function for the side-effect is called. In our case, the function is called every time the searchTerm changes; and it’s also called initially when the component renders for the first time.
+Like mentioned earlier, React’s useEffect Hook takes two arguments: The first argument is a function where the side-effect occurs. In our case, the side-effect is when the user types the searchTerm we save that value in browser’s local storage. The optional second argument is a dependency array of variables. If one of theses variables changes, the function for the side-effect is called. In our case, the function is called every time the `searchTerm` changes; and it’s also called initially when the component renders for the first time.
 
-Leaving out the dependency array, would make the function for the side-effect run on every render (initial render and update renders) of the component. If the dependency array of React’s useEffect is an empty array, the function for the side-effect is only called once, after the component renders for the first time. The hook lets us opt into React’s component lifecycle. It can be triggered when the component is first mounted, but also if one of its dependencies are updated.
+Leaving out the dependency array, would make the function for the side-effect run on every render (initial render and update renders) of the component. If the dependency array of React’s useEffect is an empty array, the function for the side-effect is only called once, after the component renders for the first time. As is evident, `useEffect` hook lets us opt into React’s component lifecycle. It can be triggered when the component is first mounted, but also if one of its dependencies are updated.
 
-Using `React.useEffect` instead of managing the side-effect in the handler has made the application more robust. Whenever and wherever `searchTerm` is updated via `setSearchTerm`, local storage will always be in sync with it.
+Using `useEffect` instead of managing the side-effect in the handler has made the application more robust. Whenever and wherever `searchTerm` is updated via `setSearchTerm`, local storage will always be in sync with it.
 
 Finally, here's the updated code:
 
@@ -1815,7 +1826,9 @@ hook:
 
 ```jsx
 const useSemiPersistentState = () => {
-  const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('stateHistory') || 'React');
+  const [searchTerm, setSearchTerm] = React.useState(
+    localStorage.getItem('stateHistory') || 'React'
+  );
 
   React.useEffect(() => {
     localStorage.setItem('stateHistory', searchTerm)
@@ -1826,7 +1839,9 @@ So far, it’s just a function around our useState and useEffect hooks. Before w
 
 ```jsx
 const useSemiPersistentState = () => {
-  const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('stateHistory') || 'React');
+  const [searchTerm, setSearchTerm] = React.useState(
+    localStorage.getItem('stateHistory') || 'React'
+  );
 
   React.useEffect(() => {
     localStorage.setItem('stateHistory', searchTerm)
@@ -1836,7 +1851,12 @@ const useSemiPersistentState = () => {
 }
 ```
 
-We are following two conventions of React’s built-in hooks here. First, the naming convention which puts the “use” prefix in front of every hook name; second, the returned values are returned as an array. This custom hook is defined outside of `App` component. Now we can use the custom hook with its returned values in the App component with the usual array destructuring:
+We are following two conventions of React’s built-in hooks here: 
+
+- First, the naming convention which puts the “use” prefix in front of every hook name; 
+- second, the returned values are returned as an array. 
+
+This custom hook is defined outside of `App` component. Now we can use the custom hook with its returned values in the App component with the usual array destructuring:
 
 ```jsx
 const[searchTerm,setSearchTerm] = useSemiPersistentState();
@@ -1848,7 +1868,9 @@ Here's what our code looks like right now:
 import * as React from 'react';
 
 const useSemiPersistentState = () => {
-  const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('stateHistory') || 'React');
+  const [searchTerm, setSearchTerm] = React.useState(
+    localStorage.getItem('stateHistory') || 'React'
+  );
 
   React.useEffect(() => {
     localStorage.setItem('stateHistory', searchTerm)
@@ -1883,12 +1905,9 @@ const App = () => {
     setSearchTerm(event.target.value);
   }
 
-  React.useEffect(() => {
-    localStorage.setItem('stateHistory', searchTerm)
-  }, [searchTerm]);
-
-
-  const filteredStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredStories = stories.filter(
+    story => story.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   return (
     <div>
       <h1>My Hacker Stories</h1>
@@ -1904,7 +1923,9 @@ Another goal of a custom hook should be reusability. All of this custom hook’s
 
 ```jsx
 const useSemiPersistentState = () => {
-  const [value, setValue] = React.useState(localStorage.getItem('value') || '');
+  const [value, setValue] = React.useState(
+    localStorage.getItem('value') || ''
+  );
 
   React.useEffect(() => {
     localStorage.setItem('value', setValue)
@@ -1937,7 +1958,7 @@ Now from the `App` component, we need to call this hook like so:
 const[searchTerm,setSearchTerm] = useSemiPersistentState('stateHistory', 'React');
 ```
 
-A custom hook can encapsulate non-trivial implementation details that should be kept away from a component; can be used in more than one React component; and can even be open-sourced as an external library. More on react hooks [here](https://www.robinwieruch.de/react-hooks/) 
+A custom hook can encapsulate non-trivial implementation details that should be kept away from a component; it can be used in more than one React component and can even be open-sourced as an external library. More on react hooks [here](https://www.robinwieruch.de/react-hooks/) 
 
 Here's what our complete code looks like right now:
 
@@ -1979,11 +2000,6 @@ const App = () => {
   const handleSearch = (event) => {    
     setSearchTerm(event.target.value);
   }
-
-  React.useEffect(() => {
-    localStorage.setItem('stateHistory', searchTerm)
-  }, [searchTerm]);
-
 
   const filteredStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()));
   return (
@@ -2058,7 +2074,7 @@ A fragment wraps other elements into a single top-level element without adding t
 
 ### React Reusable components
 
-Let's take a look at what our `Search` component looks like right now:
+Let's take a look at what our `Search` component:
 
 ```jsx
 const Search = ({search, onSearch}) => {
@@ -2070,11 +2086,12 @@ const Search = ({search, onSearch}) => {
   )
 }
 ```
-As you can see above, the `Search` component isn't performing any sort of search but instead is responsible for capturing input from the user. Therefore, we can re-name this component to `InputWithLabel` . Next, notice it takes in two props: `({search, onSearch})` where one is the value and the other is the callback function that gets called when value changes. This can be extracted to a simpler component that can accept any input, let's call it `input` and a callback function, let's call it `onInputChange`, that should be called when the said input changes. 
+
+`Search` component isn't performing any sort of search but instead is responsible for capturing input from the user. Therefore, we can re-name this component to `InputWithLabel` . Next, notice it takes in two props: `({search, onSearch})` where one is the value and the other is the callback function that gets called when value changes. This can be extracted to a simpler component that can accept any input, let's call it `input` and a callback function, let's call it `onInputChange`, that should be called when the said input changes. 
 
 Also, notice we provide values for id:
 
-``jsx
+```jsx
 id="search"
 ```
 
@@ -2168,16 +2185,17 @@ const App = () => {
     setSearchTerm(event.target.value);
   }
 
-  React.useEffect(() => {
-    localStorage.setItem('stateHistory', searchTerm)
-  }, [searchTerm]);
-
-
   const filteredStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()));
   return (
     <div>
       <h1>My Hacker Stories</h1>
-      <InputWithLabel label="Search" id="search" type="text" input={searchTerm} onInputChange={handleSearch}/>
+      <InputWithLabel 
+        label="Search" 
+        id="search" 
+        type="text" 
+        input={searchTerm} 
+        onInputChange={handleSearch}
+      />
       <List list={filteredStories} />
     </div>
   );
@@ -2187,7 +2205,12 @@ const InputWithLabel = ({label, id, type, input, onInputChange}) => {
   return (
     <div>
       <label htmlFor={id}> {label} </label>
-      <input id={id} type={type} value={input} onChange={onInputChange}/>
+      <input 
+        id={id} 
+        type={type} 
+        value={input} 
+        onChange={onInputChange}
+      />
     </div>
   )
 }
@@ -2218,10 +2241,15 @@ With just a few changes we turned a specialized Search component into a more reu
 In the code we used above, our `App` component is passing in the `Search` string as a label. This label is displayed before the search box. However, there's another way we can capture this information from App instead of passing it as a prop: `children`. What we can do is remove the `label` prop and use the `InputWithLabel` like so:
 
 ```jsx
-      <InputWithLabel id="search" type="text" input={searchTerm} onInputChange={handleSearch}> Search:</InputWithLabel>
+      <InputWithLabel 
+        id="search" 
+        type="text" 
+        input={searchTerm} 
+        onInputChange={handleSearch}> Search:
+      </InputWithLabel>
 ```
 
-Notice how we've added a closing tag and text, `Search:` between the two tags. Next, this can be accessed as `children` in the `InputWithLabel` component:
+Notice how we've added a closing tag and text, `Search:` in between. Next, this can be accessed as `children` in the `InputWithLabel` component:
 
 ```jsx
 const InputWithLabel = ({id, type, input, onInputChange, children}) => {
@@ -2237,10 +2265,16 @@ const InputWithLabel = ({id, type, input, onInputChange, children}) => {
 React component’s elements behave similar to native HTML. Everything that’s passed between a component’s elements can be accessed as `children` in the component and be rendered somewhere. This allows you to have more freedom from outside the `InputWithLabel` component in controlling how you want your label to show. For example, you could show the label as bold:
 
 ```jsx
-      <InputWithLabel id="search" type="text" input={searchTerm} onInputChange={handleSearch}> <strong>Search:</strong></InputWithLabel>
+      <InputWithLabel 
+        id="search" 
+        type="text" 
+        input={searchTerm} 
+        onInputChange={handleSearch}> 
+          <strong>Search:</strong>
+      </InputWithLabel>
 ```
 
-With this React feature, we can compose React components into each other. We’ve used it with a JavaScript string and with a string wrapped in an HTML <strong> element, but it doesn’t end here. You can pass components via React children as well.
+With this React feature, we can compose React components into each other. You can pass components via React children as well.
 
 ### GraphQL Basics
 
