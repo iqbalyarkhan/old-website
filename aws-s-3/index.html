@@ -102,6 +102,16 @@ void function() {
 <li><a href="#delete-markers">Delete Markers</a></li>
 </ul>
 </li>
+<li><a href="#s3-object-lock">S3 Object Lock</a></li>
+<li><a href="#s3-glacier-vault-lock-policy">S3 Glacier Vault Lock Policy</a></li>
+<li><a href="#s3-encryption">S3 Encryption</a>
+<ul>
+<li><a href="#server-side-encryption">Server Side Encryption</a></li>
+<li><a href="#userver-side-encryption-with-amazon-s3-managed-keys-sse-s3u"><u>Server-Side Encryption with Amazon S3-Managed Keys (SSE-S3)</u></a></li>
+<li><a href="#userver-side-encryption-with-kms-keys-stored-in-aws-key-management-service-sse-kmsu"><u>Server-Side Encryption with KMS keys Stored in AWS Key Management Service (SSE-KMS)</u></a></li>
+<li><a href="#userver-side-encryption-with-customer-provided-keys-sse-cu"><u>Server-Side Encryption with Customer-Provided Keys (SSE-C)</u></a></li>
+</ul>
+</li>
 <li><a href="#s3-storage-classes">S3 Storage Classes</a>
 <ul>
 <li><a href="#s3-standard">S3 Standard</a></li>
@@ -134,8 +144,18 @@ void function() {
 </li>
 </ul>
 </li>
+<li><a href="#s3-prefixes">S3 Prefixes</a></li>
+<li><a href="#s3-performance">S3 Performance</a></li>
+<li><a href="#s3-replication">S3 Replication</a>
+<ul>
+<li><a href="#when-to-use-cross-region-replication">When to use Cross-Region Replication</a></li>
+<li><a href="#when-to-use-same-region-replication">When to use Same-Region Replication</a></li>
+<li><a href="#requirements-for-replication">Requirements for replication</a></li>
+<li><a href="#replication-walk-through">Replication Walk through!</a></li>
 </ul>
-<h2 id="what-is-s3" style="position:relative;"><a href="#what-is-s3" aria-label="what is s3 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What is S3?</h2>
+</li>
+</ul>
+<h2 id="what-is-s3" style="position:relative;"><a href="#what-is-s3" aria-label="what is s3 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What is <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html">S3</a>?</h2>
 <p>Simple Storage Service, or S3, provides object storage in the cloud. It is a durable and highly scalable service. S3 is object based storage: meaning it manages data as objects rather than file system. S3 is a key value store where key is the name you give your object and value is the object itself. You can upload any file type to S3 (image, text, videos, HTML files etc). You however, cannot run OSs or DBs on S3! You store your static files in S3.</p>
 <h2 id="s3-basics" style="position:relative;"><a href="#s3-basics" aria-label="s3 basics permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>S3 Basics</h2>
 <p>You can store unlimited number of objects in S3. Objects can be from 0B to 5TB in size. Files are stored in a bucket.</p>
@@ -168,7 +188,7 @@ void function() {
 <h3 id="object-key" style="position:relative;"><a href="#object-key" aria-label="object key permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Object Key</h3>
 <p>The name that you assign to an object. You use the object key to retrieve the object. The object key (or key name) uniquely identifies the object in an Amazon S3 bucket.</p>
 <h3 id="object-value" style="position:relative;"><a href="#object-value" aria-label="object value permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Object Value</h3>
-<p>Value is the actual content that you are storing. An object value can be any sequence of bytes. Objects can range in size from zero to 5 TB. If your object size is >= 5MB, it is suggested to use multi-part upload. The multipart upload API is designed to improve the upload experience for larger objects. You can upload an object in parts. These object parts can be uploaded independently, in any order, and in parallel. You can use a multipart upload for objects from 5 MB to 5 TB in size.</p>
+<p>Value is the actual content that you are storing. An object value can be any sequence of bytes. Objects can range in size from zero to 5 TB. <strong>If your object size is >= 5GB, it is required to use multi-part upload</strong>. The multipart upload API is designed to improve the upload experience for larger objects. You can upload an object in parts. These object parts can be uploaded independently, in any order, and in parallel. You can use a multipart upload for objects from 5 MB to 5 TB in size.</p>
 <h3 id="object-metadata" style="position:relative;"><a href="#object-metadata" aria-label="object metadata permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Object Metadata</h3>
 <p>Along with the object data (bytes that make your object), there also exists object metadata. The metadata is a set of name-value pairs that describe the object. These pairs include some default metadata, such as the date last modified, and standard HTTP metadata, such as Content-Type. You can also specify custom metadata at the time that the object is stored.</p>
 <p>There are two kinds of metadata in Amazon S3: system-defined metadata and user-defined metadata. System metadata information include the following:</p>
@@ -347,6 +367,106 @@ void function() {
     </span></p>
 <p>Now what if I want to bring back this deleted file? Just delete the delete marker! Which is delete the <code class="language-cpptext">index.html</code> file again.</p>
 <p>If you delete an object, instead of removing it permanently, Amazon S3 inserts a delete marker, which becomes the current object version. You can then restore the previous version.</p>
+<h2 id="s3-object-lock" style="position:relative;"><a href="#s3-object-lock" aria-label="s3 object lock permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>S3 Object Lock</h2>
+<p>With S3 Object Lock, you can store objects using a write-once-read-many (WORM) model. This means that you write your object "ONCE" and then that object is to be read many many times.</p>
+<p>Object Lock can help prevent objects from being deleted or overwritten for a fixed amount of time or indefinitely. You can use Object Lock to help meet regulatory requirements that require WORM storage, or to simply add another layer of protection against object changes and deletion.</p>
+<p>S3 Object Lock provides two retention modes:</p>
+<p><strong>Governance mode</strong></p>
+<p>In governance mode, users can't overwrite or delete an object version or alter its lock settings unless they have special permissions. With governance mode, you protect objects against being deleted by most users, but you can still grant some users permission to alter the retention settings or delete the object if necessary. You can also use governance mode to test retention-period settings before creating a compliance-mode retention period.</p>
+<p>To override or remove governance-mode retention settings, a user must have the s3:BypassGovernanceRetention permission and must explicitly include x-amz-bypass-governance-retention:true as a request header with any request that requires overriding governance mode.</p>
+<p><strong>Compliance mode</strong></p>
+<p>In compliance mode, a protected object version can't be overwritten or deleted by any user, including the root user in your AWS account. When an object is locked in compliance mode, its retention mode can't be changed, and its retention period can't be shortened. Compliance mode helps ensure that an object version can't be overwritten or deleted for the duration of the retention period.</p>
+<p>Let's look at the retention periods that are available with the two modes we discussed above:</p>
+<p><strong>Retention period</strong> — Specifies a fixed period of time during which an object remains locked. During this period, your object is WORM-protected and can't be overwritten or deleted. To implement retention period, S3 stores a timestamp in the object version's metadata to indicate when the retention period expires. After the period expires, the object version can be overwritten or deleted unless you also placed a legal hold on the object version.</p>
+<p><strong>Legal hold</strong> — Provides the same protection as a retention period, but it has no expiration date. Instead, a legal hold remains in place until you explicitly remove it. Legal holds are independent from retention periods. Legal holds do not have an assoicated retention period and remain in effect until removed. Legal holds can be freely placed and removed by any user who has the <code class="language-cpptext">s3:PutObjectLegalHold</code> permission.</p>
+<p>An object version can have both a retention period and a legal hold, one but not the other, or neither. Object Lock works only in versioned buckets, and retention periods and legal holds apply to individual object versions. When you lock an object version, Amazon S3 stores the lock information in the metadata for that object version. Placing a retention period or legal hold on an object protects only the version specified in the request. It doesn't prevent new versions of the object from being created.</p>
+<h2 id="s3-glacier-vault-lock-policy" style="position:relative;"><a href="#s3-glacier-vault-lock-policy" aria-label="s3 glacier vault lock policy permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>S3 Glacier Vault Lock Policy</h2>
+<p>S3 Glacier Vault Lock allows you to easily deploy and enforce compliance controls for individual S3 Glacier vaults with a vault lock policy. You can specify controls such as “write once read many” (WORM) in a vault lock policy and lock the policy from future edits. Once locked, the policy can no longer be changed. S3 Glacier enforces the controls set in the vault lock policy to help achieve your compliance objectives, for example, for data retention. You can deploy a variety of compliance controls in a vault lock policy using the AWS Identity and Access Management (IAM) policy language.</p>
+<p>A vault lock policy is different than a vault access policy. Both policies govern access controls to your vault. However, a vault lock policy can be locked to prevent future changes, providing strong enforcement for your compliance controls. You can use the vault lock policy to deploy regulatory and compliance controls, which typically require tight controls on data access.</p>
+<p>In contrast, you use a vault access policy to implement access controls that are not compliance related, temporary, and subject to frequent modification. Vault lock and vault access policies can be used together. For example, you can implement time-based data retention rules in the vault lock policy (deny deletes), and grant read access to designated third parties or your business partners (allow reads).</p>
+<p>Locking a vault takes two steps:</p>
+<ol>
+<li>
+<p>Initiate the lock by attaching a vault lock policy to your vault, which sets the lock to an in-progress state and returns a lock ID. While in the in-progress state, you have 24 hours to validate your vault lock policy before the lock ID expires.</p>
+</li>
+<li>
+<p>Use the lock ID to complete the lock process. If the vault lock policy doesn't work as expected, you can stop the lock and restart from the beginning.</p>
+</li>
+</ol>
+<h2 id="s3-encryption" style="position:relative;"><a href="#s3-encryption" aria-label="s3 encryption permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>S3 Encryption</h2>
+<p>Let's first look at the types of encryptions:</p>
+<ul>
+<li>
+<p><strong>Server Side Encryption:</strong> Encryption of data as it resides in your S3 bucket. Can be done using SSE-S3, SSE-KMS and SSE-C. To select the type of encryption, you could use the console or via bucket policy.</p>
+</li>
+<li>
+<p><strong>Encryption in transit:</strong> Encryption of data as you transfer data to and retrieve data from S3. This can be done using SSL/TLS and HTTPS.</p>
+</li>
+<li>
+<p><strong>Client Side Encryption:</strong> You encrypt the files yourself before you upload them to S3.</p>
+</li>
+</ul>
+<h3 id="server-side-encryption" style="position:relative;"><a href="#server-side-encryption" aria-label="server side encryption permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Server Side Encryption</h3>
+<p>Server-side encryption is the encryption of data at its destination by the application or service that receives it. Amazon S3 encrypts your data at the object level as it writes it to disks in its data centers and decrypts it for you when you access it. As long as you authenticate your request and you have access permissions, there is no difference in the way you access encrypted or unencrypted objects. You have three mutually exclusive options, depending on how you choose to manage the encryption keys.</p>
+<h3 id="userver-side-encryption-with-amazon-s3-managed-keys-sse-s3u" style="position:relative;"><a href="#userver-side-encryption-with-amazon-s3-managed-keys-sse-s3u" aria-label="userver side encryption with amazon s3 managed keys sse s3u permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><u>Server-Side Encryption with Amazon S3-Managed Keys (SSE-S3)</u></h3>
+<p>When you use Server-Side Encryption with Amazon S3-Managed Keys (SSE-S3), each object is encrypted with a unique key. As an additional safeguard, it encrypts the key itself with a root key that it regularly rotates. Amazon S3 server-side encryption uses one of the strongest block ciphers available, 256-bit Advanced Encryption Standard (AES-256), to encrypt your data.</p>
+<p>If you need server-side encryption for all of the objects that are stored in a bucket, use a bucket policy. For example, the following bucket policy denies permissions to upload an object unless the request includes the x-amz-server-side-encryption header to request server-side encryption:</p>
+<div class="gatsby-highlight" data-language="json"><pre class="language-cppjson"><code class="language-cppjson"><span class="token punctuation">{</span>
+  <span class="token property">"Version"</span><span class="token operator">:</span> <span class="token string">"2012-10-17"</span><span class="token punctuation">,</span>
+  <span class="token property">"Id"</span><span class="token operator">:</span> <span class="token string">"PutObjectPolicy"</span><span class="token punctuation">,</span>
+  <span class="token property">"Statement"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"Sid"</span><span class="token operator">:</span> <span class="token string">"DenyIncorrectEncryptionHeader"</span><span class="token punctuation">,</span>
+      <span class="token property">"Effect"</span><span class="token operator">:</span> <span class="token string">"Deny"</span><span class="token punctuation">,</span>
+      <span class="token property">"Principal"</span><span class="token operator">:</span> <span class="token string">"*"</span><span class="token punctuation">,</span>
+      <span class="token property">"Action"</span><span class="token operator">:</span> <span class="token string">"s3:PutObject"</span><span class="token punctuation">,</span>
+      <span class="token property">"Resource"</span><span class="token operator">:</span> <span class="token string">"arn:aws:s3:::awsexamplebucket1/*"</span><span class="token punctuation">,</span>
+      <span class="token property">"Condition"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"StringNotEquals"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"s3:x-amz-server-side-encryption"</span><span class="token operator">:</span> <span class="token string">"AES256"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"Sid"</span><span class="token operator">:</span> <span class="token string">"DenyUnencryptedObjectUploads"</span><span class="token punctuation">,</span>
+      <span class="token property">"Effect"</span><span class="token operator">:</span> <span class="token string">"Deny"</span><span class="token punctuation">,</span>
+      <span class="token property">"Principal"</span><span class="token operator">:</span> <span class="token string">"*"</span><span class="token punctuation">,</span>
+      <span class="token property">"Action"</span><span class="token operator">:</span> <span class="token string">"s3:PutObject"</span><span class="token punctuation">,</span>
+      <span class="token property">"Resource"</span><span class="token operator">:</span> <span class="token string">"arn:aws:s3:::awsexamplebucket1/*"</span><span class="token punctuation">,</span>
+      <span class="token property">"Condition"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"Null"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"s3:x-amz-server-side-encryption"</span><span class="token operator">:</span> <span class="token string">"true"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="userver-side-encryption-with-kms-keys-stored-in-aws-key-management-service-sse-kmsu" style="position:relative;"><a href="#userver-side-encryption-with-kms-keys-stored-in-aws-key-management-service-sse-kmsu" aria-label="userver side encryption with kms keys stored in aws key management service sse kmsu permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><u>Server-Side Encryption with KMS keys Stored in AWS Key Management Service (SSE-KMS)</u></h3>
+<p>Server-Side Encryption with AWS KMS keys (SSE-KMS) is similar to SSE-S3, but with some additional benefits and charges for using this service. There are separate permissions for the use of a KMS key that provides added protection against unauthorized access of your objects in Amazon S3. SSE-KMS also provides you with an audit trail that shows when your KMS key was used and by whom. Additionally, you can create and manage customer managed keys or use AWS managed keys that are unique to you, your service, and your Region.</p>
+<p>When you use server-side encryption with AWS KMS (SSE-KMS), you can use the default AWS managed key, or you can specify a customer managed key that you have already created. The data keys used to encrypt your data are also encrypted and stored alongside the data that they protect.</p>
+<p>If you don't specify a customer managed key, Amazon S3 automatically creates an AWS KMS key in your AWS account the first time that you add an object encrypted with SSE-KMS to a bucket. By default, Amazon S3 uses this KMS key for SSE-KMS. To require server-side encryption of all objects in a particular Amazon S3 bucket, you can use a policy. For example, the following bucket policy denies upload object (s3:PutObject) permission to everyone if the request does not include the x-amz-server-side-encryption header requesting server-side encryption with SSE-KMS:</p>
+<div class="gatsby-highlight" data-language="json"><pre class="language-cppjson"><code class="language-cppjson"><span class="token punctuation">{</span>
+   <span class="token property">"Version"</span><span class="token operator">:</span><span class="token string">"2012-10-17"</span><span class="token punctuation">,</span>
+   <span class="token property">"Id"</span><span class="token operator">:</span><span class="token string">"PutObjectPolicy"</span><span class="token punctuation">,</span>
+   <span class="token property">"Statement"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span>
+         <span class="token property">"Sid"</span><span class="token operator">:</span><span class="token string">"DenyUnEncryptedObjectUploads"</span><span class="token punctuation">,</span>
+         <span class="token property">"Effect"</span><span class="token operator">:</span><span class="token string">"Deny"</span><span class="token punctuation">,</span>
+         <span class="token property">"Principal"</span><span class="token operator">:</span><span class="token string">"*"</span><span class="token punctuation">,</span>
+         <span class="token property">"Action"</span><span class="token operator">:</span><span class="token string">"s3:PutObject"</span><span class="token punctuation">,</span>
+         <span class="token property">"Resource"</span><span class="token operator">:</span><span class="token string">"arn:aws:s3:::DOC-EXAMPLE-BUCKET1/*"</span><span class="token punctuation">,</span>
+         <span class="token property">"Condition"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+            <span class="token property">"StringNotEquals"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+               <span class="token property">"s3:x-amz-server-side-encryption"</span><span class="token operator">:</span><span class="token string">"aws:kms"</span>
+            <span class="token punctuation">}</span>
+         <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+   <span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="userver-side-encryption-with-customer-provided-keys-sse-cu" style="position:relative;"><a href="#userver-side-encryption-with-customer-provided-keys-sse-cu" aria-label="userver side encryption with customer provided keys sse cu permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><u>Server-Side Encryption with Customer-Provided Keys (SSE-C)</u></h3>
+<p>With Server-Side Encryption with Customer-Provided Keys (SSE-C), you manage the encryption keys and Amazon S3 manages the encryption, as it writes to disks, and decryption, when you access your objects.</p>
+<p>Using server-side encryption with customer-provided encryption keys (SSE-C) allows you to set your own encryption keys. With the encryption key you provide as part of your request, Amazon S3 manages the encryption as it writes to disks and decryption when you access your objects. Therefore, you don't need to maintain any code to perform data encryption and decryption. The only thing you do is manage the encryption keys you provide.</p>
+<p>When you upload an object, Amazon S3 uses the encryption key you provide to apply AES-256 encryption to your data and removes the encryption key from memory. When you retrieve an object, you must provide the same encryption key as part of your request. Amazon S3 first verifies that the encryption key you provided matches and then decrypts the object before returning the object data to you.</p>
+<p>There are no new charges for using server-side encryption with customer-provided encryption keys (SSE-C).</p>
 <h2 id="s3-storage-classes" style="position:relative;"><a href="#s3-storage-classes" aria-label="s3 storage classes permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>S3 Storage Classes</h2>
 <h3 id="s3-standard" style="position:relative;"><a href="#s3-standard" aria-label="s3 standard permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>S3 Standard</h3>
 <p>The default storage class. If you don't specify the storage class when you upload an object, Amazon S3 assigns the S3 Standard storage class.</p>
@@ -813,7 +933,344 @@ void function() {
       />
   </a>
     </span></p>
-<p>You can now visit the endpoint and see your page! S3 is highly available and reliable and is also scalable, meaning as traffic increases to your website, S3 will automatically!</p></div><div class="post-module--post-meta--2SNYO"><div class="PostTags-module--tag-container--2fM2Y"><a href="/tags/blog"><span>blog</span></a><a href="/tags/aws"><span>AWS</span></a></div></div><hr/></div><nav><ul class="post-module--pagination--2K15k"><li><a rel="prev" href="/c-standard-input">← <!-- -->C++ Standard input</a></li><li><a rel="next" href="/aws-iam">AWS - IAM<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--1ScUQ"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2Iyp5">Copyright © 2021. All rights reserved.</div></div></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
+<p>To conclude, here're the steps that we took:</p>
+<ul>
+<li>Create a bucket</li>
+<li>Enable public access by unchecking the box</li>
+<li>Upload index.html and error.html</li>
+<li>Enable static website hosting in Properties tab</li>
+<li>Add bucket policy</li>
+<li>Enjoy!</li>
+</ul>
+<p>You can now visit the endpoint and see your page! S3 is highly available and reliable and is also scalable, meaning as traffic increases to your website, S3 will automatically!</p>
+<h2 id="s3-prefixes" style="position:relative;"><a href="#s3-prefixes" aria-label="s3 prefixes permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>S3 Prefixes</h2>
+<p>You can use prefixes to organize the data that you store in Amazon S3 buckets. A prefix value is similar to a directory name that enables you to group similar objects together in a bucket. When you programmatically upload objects, you can use prefixes to organize your data.</p>
+<p>The prefix limits the results to only those keys that begin with the specified prefix. The delimiter causes a list operation to roll up all the keys that share a common prefix into a single summary list result.</p>
+<p>The purpose of the prefix and delimiter parameters is to help you organize and then browse your keys hierarchically. To do this, first pick a delimiter for your bucket, such as slash (/), that doesn't occur in any of your anticipated key names. Next, construct your key names by concatenating all containing levels of the hierarchy, separating each level with the delimiter.</p>
+<p>For example, if you were storing information about cities, you might naturally organize them by continent, then by country, then by province or state. Because these names don't usually contain punctuation, you might use slash (/) as the delimiter. The following examples use a slash (/) delimiter.</p>
+<div class="gatsby-highlight" data-language="json"><pre class="language-cppjson"><code class="language-cppjson">MyBucket1/France/Nouvelle-Aquitaine/Bordeaux
+
+MyBucket2/Canada/Quebec/Montreal
+
+MyBucket3/USA/Washington/Bellevue
+
+MyBucket4/USA/Washington/Seattle</code></pre></div>
+<h2 id="s3-performance" style="position:relative;"><a href="#s3-performance" aria-label="s3 performance permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>S3 Performance</h2>
+<ul>
+<li>You can get better performance by <strong>spreading your reads across different prefixes</strong>.</li>
+<li>For good upload performance, <strong>use multi-part upload</strong>:
+<ul>
+<li>Recommended for files > 100MB</li>
+<li>Required for files > 5GB</li>
+<li>Parallelized uploads improves efficiency</li>
+</ul>
+</li>
+<li><strong>Byte range fetches</strong>:
+<ul>
+<li>Parallelize downloads by specifying byte ranges</li>
+<li>Failures are isolated for each range</li>
+</ul>
+</li>
+<li>Use Amazon S3 Transfer Acceleration to Minimize Latency Caused by Distance
+<ul>
+<li>Helps achieve fast, easy, and secure transfers of files over long geographic distances between the client and an S3 bucket.</li>
+</ul>
+</li>
+<li>Using Caching for Frequently Accessed Content
+<ul>
+<li>Many applications that store data in Amazon S3 serve a “working set” of data that is repeatedly requested by users. If a workload is sending repeated GET requests for a common set of objects, you can use a cache such as Amazon CloudFront, Amazon ElastiCache, or AWS Elemental MediaStore to optimize performance. Successful cache adoption can result in low latency and high data transfer rates. Applications that use caching also send fewer direct requests to Amazon S3, which can help reduce request costs.</li>
+</ul>
+</li>
+</ul>
+<h2 id="s3-replication" style="position:relative;"><a href="#s3-replication" aria-label="s3 replication permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>S3 Replication</h2>
+<p>Replication enables automatic, asynchronous copying of objects across Amazon S3 buckets. Buckets that are configured for object replication can be owned by the same AWS account or by different accounts. Objects may be replicated to a single destination bucket or multiple destination buckets. Destination buckets can be in different AWS Regions or within the same Region as the source bucket. By default, replication only supports copying new Amazon S3 objects after it is enabled.</p>
+<p>To enable object replication, you add a replication configuration to your source bucket. The minimum configuration must provide the following:</p>
+<ul>
+<li>The destination bucket or buckets where you want Amazon S3 to replicate objects.</li>
+<li>An AWS Identity and Access Management (IAM) role that Amazon S3 can assume to replicate objects on your behalf</li>
+</ul>
+<h3 id="when-to-use-cross-region-replication" style="position:relative;"><a href="#when-to-use-cross-region-replication" aria-label="when to use cross region replication permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>When to use Cross-Region Replication</h3>
+<p>S3 Cross-Region Replication (CRR) is used to copy objects across Amazon S3 buckets in different AWS Regions. CRR can help you do the following:</p>
+<ul>
+<li>
+<p>Meet compliance requirements — Although Amazon S3 stores your data across multiple geographically distant Availability Zones by default, compliance requirements might dictate that you store data at even greater distances. Cross-Region Replication allows you to replicate data between distant AWS Regions to satisfy these requirements.</p>
+</li>
+<li>
+<p>Minimize latency — If your customers are in two geographic locations, you can minimize latency in accessing objects by maintaining object copies in AWS Regions that are geographically closer to your users.</p>
+</li>
+<li>
+<p>Increase operational efficiency — If you have compute clusters in two different AWS Regions that analyze the same set of objects, you might choose to maintain object copies in those Regions.</p>
+</li>
+</ul>
+<h3 id="when-to-use-same-region-replication" style="position:relative;"><a href="#when-to-use-same-region-replication" aria-label="when to use same region replication permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>When to use Same-Region Replication</h3>
+<p>Same-Region Replication (SRR) is used to copy objects across Amazon S3 buckets in the same AWS Region. SRR can help you do the following:</p>
+<ul>
+<li>
+<p>Aggregate logs into a single bucket — If you store logs in multiple buckets or across multiple accounts, you can easily replicate logs into a single, in-Region bucket. This allows for simpler processing of logs in a single location.</p>
+</li>
+<li>
+<p>Configure live replication between production and test accounts — If you or your customers have production and test accounts that use the same data, you can replicate objects between those multiple accounts, while maintaining object metadata.</p>
+</li>
+<li>
+<p>Abide by data sovereignty laws — You might be required to store multiple copies of your data in separate AWS accounts within a certain Region. Same-Region replication can help you automatically replicate critical data when compliance regulations don't allow the data to leave your country.</p>
+</li>
+</ul>
+<h3 id="requirements-for-replication" style="position:relative;"><a href="#requirements-for-replication" aria-label="requirements for replication permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Requirements for replication</h3>
+<p><strong>- Both source and destination buckets must have versioning enabled. For more information about versioning, see Using versioning in S3 buckets.</strong></p>
+<ul>
+<li>
+<p>Existing objects won't be replicated if replication is turned on after the bucket has been created.</p>
+</li>
+<li>
+<p>Delete markers are not turned on by default but can be turned on if needed.</p>
+</li>
+<li>
+<p>The source bucket owner must have the source and destination AWS Regions enabled for their account. The destination bucket owner must have the destination Region-enabled for their account.</p>
+</li>
+<li>
+<p>Amazon S3 must have permissions to replicate objects from the source bucket to the destination bucket or buckets on your behalf.</p>
+</li>
+<li>
+<p>If the owner of the source bucket doesn't own the object in the bucket, the object owner must grant the bucket owner READ and READ_ACP permissions with the object access control list (ACL). For more information, see Access control list (ACL) overview.</p>
+</li>
+<li>
+<p>If the source bucket has S3 Object Lock enabled, the destination buckets must also have S3 Object Lock enabled.</p>
+</li>
+</ul>
+<h3 id="replication-walk-through" style="position:relative;"><a href="#replication-walk-through" aria-label="replication walk through permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Replication Walk through!</h3>
+<p>I created 2 buckets, one in the region us-east-1 (source) and the other in us-west-2 (destination). I deliberately left versioning off and uploaded a sample file to source bucket. Next, we're going to go to <code class="language-cpptext">Management</code> tab for the source bucket and create a replication rule:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/f138a3555c762b104a33008d3ef9a9f8/6f278/replication1.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 30.63583815028902%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAGCAYAAADDl76dAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA20lEQVQY031Q2W7DMAzz/3/ksO2hQRPfZ5w44UClBfrQTgAhExQoyuq+aHx9/+A2TfAhoLWGUipqvUBeW5Mu79pQapUZ6Y+5UhvaukJNi8HvbYaxVgxTykg5I6YE7wO0NtLnRQuc8yilIOd8dXkX5LqibxsUt6aUROi9ixlNyWlEjWm4wFiHGB88RoRw6Uz4nFXr2mUz01Fw3gvI2XkGF1CjCZM5H2CMFXNtrFzHS6xzUPs+8Km2bZf/W7TBfV7kNAb4r9QYA+d5vsVxHJLQOi/gd4zjEO21npzzf0bZ0Im1NT7jAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Replication-1"
+        title="Replication-1"
+        src="/static/f138a3555c762b104a33008d3ef9a9f8/1e043/replication1.png"
+        srcset="/static/f138a3555c762b104a33008d3ef9a9f8/991de/replication1.png 173w,
+/static/f138a3555c762b104a33008d3ef9a9f8/e4d6b/replication1.png 345w,
+/static/f138a3555c762b104a33008d3ef9a9f8/1e043/replication1.png 690w,
+/static/f138a3555c762b104a33008d3ef9a9f8/e3189/replication1.png 1035w,
+/static/f138a3555c762b104a33008d3ef9a9f8/b1001/replication1.png 1380w,
+/static/f138a3555c762b104a33008d3ef9a9f8/6f278/replication1.png 1488w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+  </a>
+    </span></p>
+<p>When you click on create replication rule, you'll see that S3 complains that versioning is not enabled:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/1e487d9342aaf1b7c84c18fc8195ac8d/a8417/replication2.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 17.91907514450867%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAECAYAAACOXx+WAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAu0lEQVQY01WO2w6CMBBE+f9vEzGiUR8UaDFQ8ALdpVISHdP1Fh9OJnubnShOFlimK2EWzxHPE2y2O6SrNa5dB0uE3lrRD6/agphBTCAi0TCLGmNQ1TVqY4SqNjBNi6Ztv0ZySPw142FAbwmnywVn4SoaZtHUd9jvD1BaQ+sSSmlkeY6yPEo/ywsUhUKW5a89pfG43+HcTR4H2tNZlHlAdBtHicwS/0eoQxJ+pxOY4ZyD9x6j95im6Y/QewLtZy2OuN5towAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Replication-2"
+        title="Replication-2"
+        src="/static/1e487d9342aaf1b7c84c18fc8195ac8d/1e043/replication2.png"
+        srcset="/static/1e487d9342aaf1b7c84c18fc8195ac8d/991de/replication2.png 173w,
+/static/1e487d9342aaf1b7c84c18fc8195ac8d/e4d6b/replication2.png 345w,
+/static/1e487d9342aaf1b7c84c18fc8195ac8d/1e043/replication2.png 690w,
+/static/1e487d9342aaf1b7c84c18fc8195ac8d/a8417/replication2.png 941w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+  </a>
+    </span></p>
+<p>We'll go ahead and enable it. The next few options are quite self explanatory. Finally, you get to choose your destination bucket and since versioning was turned off on that as well, we see a warning:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/ccb2f8da1b8434147d475af3bec7bfb6/1cfc2/replication3.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 27.167630057803464%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAFCAYAAABFA8wzAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAv0lEQVQY05WP3WrCQBBG8/5P11JMvIkFtUZjsxuz/9lsTtnV3hQpOHCYYdn5OFPFEHBqQhuLydjcTZmttSilmZS6Mym0MTjnEXIsyPFWephnnHNUKUb6ryNv7x80zbZQ1w2bTU3dbGnbHfv9gXb3SdedsdbhvUfmMDkyPgLnOWJz4JISMSW01sXo11BpXeyWZeFvrevKsyqBeel7EAghyynPPue3/0iPHR8CVVY+X3pOXcelvzIMghjjy+RLsuEPfwWCmRPfpeMAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Replication-3"
+        title="Replication-3"
+        src="/static/ccb2f8da1b8434147d475af3bec7bfb6/1e043/replication3.png"
+        srcset="/static/ccb2f8da1b8434147d475af3bec7bfb6/991de/replication3.png 173w,
+/static/ccb2f8da1b8434147d475af3bec7bfb6/e4d6b/replication3.png 345w,
+/static/ccb2f8da1b8434147d475af3bec7bfb6/1e043/replication3.png 690w,
+/static/ccb2f8da1b8434147d475af3bec7bfb6/1cfc2/replication3.png 900w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+  </a>
+    </span></p>
+<p>Next, there're quite a few options that can be chosen:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/124791405a4f2f9ddfe1636a714ed4b1/0955e/replication4.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 95.3757225433526%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAATCAYAAACQjC21AAAACXBIWXMAAAsTAAALEwEAmpwYAAACdUlEQVQ4y41U2ZKbMBDk/78qH5DnZI/sYWObW0LoQhLQqRnA9m5tauOqrhEyGrW6W2SdEHh7f8fheMQ4jgghfADN/S+sc8iMtWjbFkKIa0Oq3nt4P2KaJszzzNjHVFNKSHtNiedoXUYPTdPicMzx9n5Anp/x+nZYx6cz70owxsI5DyJAm371o15ZiBEhRBjrGNZ5bqCGAc57RP5/lyBipBojL44bdraeGJKGl6JAWVao6hpFWaJuGj4ys7P2ytI6Yulu85aeLbMmaG2Q0eLfD494fHrGn5dXPDw8cZV9f0Xf9+hkj6q3uEiLWigU0qCQFnlnYEjrlPhEGR2JsJuwG6K1xjBo3jXGVXQ6VkxkxDomhG1MZpEsGWmijYGUPXqlmNEwDDxuu45BL96c3XB19wsNyc2yqlhHqsWmJx2BsGv0T5hNQ2OQkT55nnOz8/mCoihxuRSoqop1IWb3mD/VezBDsp2OdSlWd8uq5rFjPQNnj15k+JEZ+405zfEpnGcNyQsOtlIDOiFZv1YqdvMkVjMoe6txactkxJ5dnt8yuiwLZzKrlUPZCHRti64TEELyzaGrGDnA09psM+EaZDZiRpgWjHECqGFMyHyIaHqDU9Pj3BIU8lpybHZTbnFaI8VSkFljhPIJyo5YlnllGFNkdyi4nVRoOokQE99NOsZ3wD4GbhoWbY9j2UIpBSElh1mbuytlDFfL951iYjgq+0dj0BY2TBvDGCGUZnYUIWpGm3xmMt/VeQHj4480DGtDKVcj6rrhOmi9sXNXpszSGGjrIWxEZ8LdhmvLuAAZLSbquwH0NfnuZli7NTeaN9RKQP36AfXyE38BaAe+HnLSijwAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Replication-4"
+        title="Replication-4"
+        src="/static/124791405a4f2f9ddfe1636a714ed4b1/1e043/replication4.png"
+        srcset="/static/124791405a4f2f9ddfe1636a714ed4b1/991de/replication4.png 173w,
+/static/124791405a4f2f9ddfe1636a714ed4b1/e4d6b/replication4.png 345w,
+/static/124791405a4f2f9ddfe1636a714ed4b1/1e043/replication4.png 690w,
+/static/124791405a4f2f9ddfe1636a714ed4b1/0955e/replication4.png 901w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+  </a>
+    </span></p>
+<p>One main option that can't be left out is the IAM role:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/ba2ea50baa8058bf1a6878abb14920b7/f4281/replication5.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 23.699421965317917%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAFCAYAAABFA8wzAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAjklEQVQY06XQ2wrCQAyE4X3/x1SwoHUXDzWbyW5/afXGGysY+JiLwBCSDoeBUgq1Vszsb2m335NLofeOIohftEZEo635uUt5HAmJHvGmDUH3SpOorldpe5XP80yajgNTyfilgJxZ+sJhKZxuNHtwvd2RhNWKSyyTLI9YPvMYT1Sz9Zeb3PGFtOZS6uvFzhOvsIazhgEX+AAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Replication-5"
+        title="Replication-5"
+        src="/static/ba2ea50baa8058bf1a6878abb14920b7/1e043/replication5.png"
+        srcset="/static/ba2ea50baa8058bf1a6878abb14920b7/991de/replication5.png 173w,
+/static/ba2ea50baa8058bf1a6878abb14920b7/e4d6b/replication5.png 345w,
+/static/ba2ea50baa8058bf1a6878abb14920b7/1e043/replication5.png 690w,
+/static/ba2ea50baa8058bf1a6878abb14920b7/f4281/replication5.png 1016w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+  </a>
+    </span></p>
+<p>You can choose the Create Role option that'll create the replication role automatically for us. If you go to IAM, you'll see a role with name similar to:</p>
+<div class="gatsby-highlight" data-language="txt"><pre class="language-cpptxt"><code class="language-cpptxt">s3crr_role_for_mysourcebucket</code></pre></div>
+<p>For that role, a trust relationship would be created for s3:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 667px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/512fc027db5a14bf6c712737573c0f57/295bd/replication6.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 45.664739884393065%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAAAsTAAALEwEAmpwYAAABTUlEQVQoz52QzW7UMBSF88zd0U1fgldg0wVLhCp4gILQtKu2mWSIh5CZOpk4/slvk/mQXYZlW3GlT8c+8r0611Gx23F3d0+S/sSoikdxj4hvEQ8rqjymPpRst1sOhwObzYY4jhFC0DQN6/WaNE2Dp5TCV9S3ls4oeqt46h3zNDB2DqUNxnWhUUoZGqqqoizLoP7u/ZOnGo3pJqK8avm8Kri6Kbha5Xz6Lvhy84taKYzRaP2MtRZjDM65oCe8H3Atqn0iuk4azj488O4y5vwy5uJjwvuvBf9bUdt25L/3FDuJyPc4o5k6n8ai/dp/dZ5njsfjq0TjOGCMQus6YExDo2uc82sqnG2wVrMsS0jgm15M2LWKZH1Nmnwjy34w9Bljnz3rIBiHDOj/DXs14TSN1HVJWT5SVRIpd+Es5T5Q1xXLMr/9D0+rvFT+zVv5A0AysLwuv/WfAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Replication-6"
+        title="Replication-6"
+        src="/static/512fc027db5a14bf6c712737573c0f57/295bd/replication6.png"
+        srcset="/static/512fc027db5a14bf6c712737573c0f57/991de/replication6.png 173w,
+/static/512fc027db5a14bf6c712737573c0f57/e4d6b/replication6.png 345w,
+/static/512fc027db5a14bf6c712737573c0f57/295bd/replication6.png 667w"
+        sizes="(max-width: 667px) 100vw, 667px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+  </a>
+    </span></p>
+<p>Under permissions for the same role, you'll see a policy is also created and if you click on it, you'll be taken to the permissions that were attached to that policy:</p>
+<div class="gatsby-highlight" data-language="json"><pre class="language-cppjson"><code class="language-cppjson"><span class="token punctuation">{</span>
+    <span class="token property">"Version"</span><span class="token operator">:</span> <span class="token string">"2012-10-17"</span><span class="token punctuation">,</span>
+    <span class="token property">"Statement"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+            <span class="token property">"Action"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">"s3:ListBucket"</span><span class="token punctuation">,</span>
+                <span class="token string">"s3:GetReplicationConfiguration"</span><span class="token punctuation">,</span>
+                <span class="token string">"s3:GetObjectVersionForReplication"</span><span class="token punctuation">,</span>
+                <span class="token string">"s3:GetObjectVersionAcl"</span><span class="token punctuation">,</span>
+                <span class="token string">"s3:GetObjectVersionTagging"</span><span class="token punctuation">,</span>
+                <span class="token string">"s3:GetObjectRetention"</span><span class="token punctuation">,</span>
+                <span class="token string">"s3:GetObjectLegalHold"</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token property">"Effect"</span><span class="token operator">:</span> <span class="token string">"Allow"</span><span class="token punctuation">,</span>
+            <span class="token property">"Resource"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">"arn:aws:s3:::mysourcebucket"</span><span class="token punctuation">,</span>
+                <span class="token string">"arn:aws:s3:::mysourcebucket/*"</span><span class="token punctuation">,</span>
+                <span class="token string">"arn:aws:s3:::mydestbucket"</span><span class="token punctuation">,</span>
+                <span class="token string">"arn:aws:s3:::mydestbucket/*"</span>
+            <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+            <span class="token property">"Action"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">"s3:ReplicateObject"</span><span class="token punctuation">,</span>
+                <span class="token string">"s3:ReplicateDelete"</span><span class="token punctuation">,</span>
+                <span class="token string">"s3:ReplicateTags"</span><span class="token punctuation">,</span>
+                <span class="token string">"s3:ObjectOwnerOverrideToBucketOwner"</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token property">"Effect"</span><span class="token operator">:</span> <span class="token string">"Allow"</span><span class="token punctuation">,</span>
+            <span class="token property">"Resource"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">"arn:aws:s3:::mysourcebucket/*"</span><span class="token punctuation">,</span>
+                <span class="token string">"arn:aws:s3:::mydestbucket/*"</span>
+            <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>Going back to S3, we've now got versioning enabeled for both buckets and have enabled CRR. However, the initial file that we uploaded to source WILL NOT be in destination. However, any new  files added to source will be.</p></div><div class="post-module--post-meta--2SNYO"><div class="PostTags-module--tag-container--2fM2Y"><a href="/tags/blog"><span>blog</span></a><a href="/tags/aws"><span>AWS</span></a></div></div><hr/></div><nav><ul class="post-module--pagination--2K15k"><li><a rel="prev" href="/aws-ec-2">← <!-- -->AWS - EC2</a></li><li><a rel="next" href="/aws-iam">AWS - IAM<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--1ScUQ"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2Iyp5">Copyright © 2021. All rights reserved.</div></div></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
   
   
   if(true) {
