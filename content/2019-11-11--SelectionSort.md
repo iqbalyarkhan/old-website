@@ -5,7 +5,7 @@ thumbnail: /post-images/selection.png
 draft: false
 extract: Implementation and analysis of selection sort in C++
 categories: 
-    - Algorithms
+    - DS&A
 tags:
   - Sorting Algorithms
   - Selection Sort

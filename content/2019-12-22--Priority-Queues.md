@@ -6,7 +6,7 @@ draft: false
 extract: A brief overview showing the properties and usage of priority queue data structure
 
 categories: 
-    - Data Structures
+    - DS&A
 tags:
   - Data Structures
   - C++

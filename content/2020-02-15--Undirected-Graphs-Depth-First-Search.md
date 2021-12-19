@@ -5,7 +5,7 @@ thumbnail: /post-images/dfs.png
 draft: false
 extract: An analysis of Depth First Search on undirected graphs
 categories: 
-    - Graphs
+    - DS&A
 tags:
   - Algorithms
   - Graphs

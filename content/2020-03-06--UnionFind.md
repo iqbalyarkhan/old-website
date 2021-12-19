@@ -5,7 +5,7 @@ thumbnail: /post-images/union-find.png
 draft: false
 extract: Analysis of the Union Find algorithm
 categories: 
-    - Graphs
+    - DS&A
 tags:
   - C++
   - General Algorithms

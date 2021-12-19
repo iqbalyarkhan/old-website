@@ -5,7 +5,7 @@ thumbnail: /post-images/bst.png
 draft: false
 extract: An analysis of binary search trees in C++
 categories: 
-    - Data Structures
+    - DS&A
 tags:
   - Data Structures
   - Binary Search Trees
@@ -41,17 +41,35 @@ tags:
 
 13. [Trees as arrays](#trees-as-arrays)
 
-15. [Problems](#problems)
-    * [Test if a Binary Tree satisfies the Binary Search Tree Property](#test-if-a-bt-satisfies-the-bst-property)
-    * [Find next in in-order traversal](#find-next-in-in-order-traversal)
-    * [Find k largest elements](#find-k-largest-elements)
-    * [Find kth smallest element](#find-kth-smallest-element)
-    * [Find LCA](#find-lca)
-    * [Construct tree from pre-order](#construct-tree-from-pre-order)
-    * [Construct tree from post-order](#construct-tree-from-post-order)
-    * [Create minimum height tree from sorted array](#create-minimum-height-tree-from-sorted-array)
-    * [Range BST](#range-bst)
-    * [Convert BST to sorted doubly linked list](#convert-bst-to-sorted-doubly-linked-list)
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+- [Setup](#setup)
+- [Constructor](#constructor)
+- [Insert](#insert)
+- [Recursive Insert](#recursive-insert)
+- [Traversal](#traversal)
+- [Iterative Traversal](#iterative-traversal)
+- [Find](#find)
+- [Max](#max)
+- [Min](#min)
+- [Delete:](#delete)
+  - [Delete leaf node 20:](#delete-leaf-node-20)
+  - [Delete node with one child 15:](#delete-node-with-one-child-15)
+  - [Delete node with two children 21:](#delete-node-with-two-children-21)
+- [Destructor](#destructor)
+- [Running Time Analysis:](#running-time-analysis)
+- [Trees as arrays](#trees-as-arrays)
+- [Test if a BT satisfies the BST property](#test-if-a-bt-satisfies-the-bst-property)
+- [Find next in in-order traversal](#find-next-in-in-order-traversal)
+- [Find K largest elements](#find-k-largest-elements)
+- [Find Kth Smallest Element](#find-kth-smallest-element)
+- [Find LCA](#find-lca)
+- [Construct tree from pre-order](#construct-tree-from-pre-order)
+- [Construct tree from post-order](#construct-tree-from-post-order)
+- [Create minimum height tree from sorted array](#create-minimum-height-tree-from-sorted-array)
+- [Range BST](#range-bst)
+- [Convert BST To Sorted Doubly Linked List](#convert-bst-to-sorted-doubly-linked-list)
+- [Conclusion](#conclusion)
 
 14. [Conclusion](#conclusion)
 

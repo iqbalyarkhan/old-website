@@ -5,35 +5,34 @@ thumbnail: /post-images/links.png
 draft: false
 extract: Implementation of a linked list template class in C++
 categories: 
-    - Data Structures
+    - DS&A
 tags:
   - Data Structures
   - C++
 ---
 
-1. [Introduction](#introduction)
-2. [Code](#code)
-3. [Setup](#setup)
-4. [Inserts](#inserts)
-5. [Reverse Singly Linked List](#reverse-a-singly-linked-list)
-6. [Move to Front Algorithm](#move-to-front-algorithm)
-7. Problems
-    * [Merge Two Sorted Lists](#merge-two-sorted-lists)
-    * [Reverse a sublist](#reverse-a-sublist)
-    * [Reverse a singly linked list](#reverse-a-singly-linked-list)
-    * [Check if list is circular](#check-if-list-is-circular)
-    * [Check if lists overlap](#check-if-lists-overlap)
-    * [Return overlap node](#return-overlap-node)
-    * [Remove Kth last node from list](#remove-kth-last-node-from-list)
-    * [Remove duplicates from sorted list](#remove-duplicates-from-sorted-list)
-    * [Right shift elements in a linked list](#right-shift-elements-in-a-linked-list)
-    * [Even odd list](#even-odd-list)
-    * [Pivot list](#pivot-list)
-    * [Add numbers in a list](#add-numbers-in-a-list)
-    * [Swap pairs in a list](#swap-pairs-in-a-list)
-    * [Root to leaf path with specified sum](#root-to-leaf-path-with-specified-sum)
-    * [LRU Cache](#lru-cache)  
-2. [Conclusion](#conclusion)
+- [Introduction](#introduction)
+- [Code](#code)
+- [Setup](#setup)
+  - [Inserts](#inserts)
+- [Reverse Singly Linked List](#reverse-singly-linked-list)
+- [Move to Front Algorithm](#move-to-front-algorithm)
+- [Merge two sorted lists](#merge-two-sorted-lists)
+- [Reverse A sublist](#reverse-a-sublist)
+- [Reverse a singly linked list](#reverse-a-singly-linked-list)
+- [Check if list is circular](#check-if-list-is-circular)
+- [Check if lists overlap](#check-if-lists-overlap)
+- [Return overlap node](#return-overlap-node)
+- [Remove Kth last node from list](#remove-kth-last-node-from-list)
+- [Remove duplicates from sorted list](#remove-duplicates-from-sorted-list)
+- [Right shift elements in a linked list](#right-shift-elements-in-a-linked-list)
+- [Even odd List](#even-odd-list)
+- [Pivot list](#pivot-list)
+- [Add numbers in a list](#add-numbers-in-a-list)
+- [Swap pairs in a list](#swap-pairs-in-a-list)
+- [Root to leaf path with specified sum](#root-to-leaf-path-with-specified-sum)
+- [LRU Cache](#lru-cache)
+- [Conclusion](#conclusion)
 
 
 ### Introduction

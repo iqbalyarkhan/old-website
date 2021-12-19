@@ -5,7 +5,7 @@ thumbnail: /post-images/sorting_problems.png
 draft: false
 extract: Problems related to sorting algorithms
 categories: 
-    - Algorithms
+    - DS&A
 tags:
   - Sorting Problems
 ---
@@ -14,15 +14,15 @@ Header credit: <a href="https://iconscout.com/icons/text-rotation-down" target="
 
 ### Table of Contents
 
-1. [Introduction](#introduction)
-    * [Writing your own sort function](#writing-your-own-sort-function)
-2. Problems
-    * [Compute intersection of two sorted arrays](#compute-intersection-of-two-sorted-arrays)
-    * [Merge two sorted arrays](#merge-two-sorted-arrays)
-    * [Find h index](#find-h-index)
-    * [Remove first name duplicates](#remove-first-name-duplicates)
-    * [Merge Intervals](#merge-intervals)
-2. [Conclusion](#conclusion)
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+- [Writing your own sort function](#writing-your-own-sort-function)
+- [Compute intersection of two sorted arrays](#compute-intersection-of-two-sorted-arrays)
+- [Merge two sorted arrays](#merge-two-sorted-arrays)
+- [Find h index](#find-h-index)
+- [Remove first name duplicates](#remove-first-name-duplicates)
+- [Merge Intervals](#merge-intervals)
+- [Conclusion](#conclusion)
 
 ### Introduction
 

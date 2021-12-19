@@ -5,7 +5,7 @@ thumbnail: /post-images/bfs.png
 draft: false
 extract: An analysis of Breadth First Search on undirected graphs
 categories: 
-    - Graphs
+    - DS&A
 tags:
   - Algorithms
   - Graphs

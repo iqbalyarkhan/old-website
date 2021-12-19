@@ -5,7 +5,7 @@ draft: false
 thumbnail: /post-images/directed-graph.png
 extract: An analysis of directed graphs
 categories: 
-    - Graphs
+    - DS&A
 tags:
   - Data Structures
   - Graphs

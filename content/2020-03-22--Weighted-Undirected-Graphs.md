@@ -5,7 +5,7 @@ draft: false
 extract: An analysis of weighted undirected graphs
 thumbnail: /post-images/tree.png
 categories: 
-    - Graphs
+    - DS&A
 tags:
   - Data Structures
   - Graphs

@@ -5,7 +5,7 @@ thumbnail: /post-images/hash.png
 draft: false
 extract: An analysis of hash table data structure
 categories: 
-    - Data Structures
+    - DS&A
 tags:
   - Data Structures
   - Hash Tables

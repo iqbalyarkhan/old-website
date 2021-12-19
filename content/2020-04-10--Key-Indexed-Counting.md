@@ -5,7 +5,7 @@ thumbnail: /post-images/keyindexcounting.png
 draft: true
 extract: An analysis of key index counting of strings
 categories: 
-    - Strings
+    - DS&A
 tags:
   - Algorithms
   - Key index counting

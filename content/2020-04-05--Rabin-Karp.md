@@ -5,7 +5,7 @@ thumbnail: /post-images/kmp.png
 draft: false
 extract: An analysis of Rabin Karp substring search algorithm
 categories: 
-    - Strings
+    - DS&A
 tags:
   - Data Structures
 ---

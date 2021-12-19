@@ -5,7 +5,7 @@ thumbnail: /post-images/tree.png
 draft: false
 extract: Binary tree data structure
 categories: 
-    - Data Structures
+    - DS&A
 tags:
     - Binary Tree
     - Data Structures

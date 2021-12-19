@@ -5,7 +5,7 @@ thumbnail: /post-images/merge.png
 draft: false
 extract: Explanation and implementation of merge sort algorithm
 categories: 
-    - Algorithms
+    - DS&A
 tags:
   - Sorting Algorithms
   - Merge Sort

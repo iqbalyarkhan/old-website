@@ -5,16 +5,15 @@ thumbnail: /post-images/greedy.png
 draft: false
 extract: A deep dive into greedy algorithms
 categories: 
-    - General
+    - DS&A
 tags:
     - Greedy Algorithms
 ---
 
-1. [Introduction](#introduction)
-2. [Examples](#examples)
-    * [Max water between vertical lines](#max-water-between-vertical-lines)
-    * [Task Scheduler](#task-scheduler)
-    * [Re-arrange string](https://leetcode.com/problems/reorganize-string/)
+- [Introduction](#introduction)
+- [Max water between vertical lines](#max-water-between-vertical-lines)
+- [Task Scheduler](#task-scheduler)
+- [Re-arrange String](#re-arrange-string)
 
 
 ### Introduction

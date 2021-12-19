@@ -5,7 +5,7 @@ thumbnail: /post-images/bubble.png
 draft: false 
 extract: Explanation and implementation of bubble sort algorithm
 categories: 
-    - Algorithms
+    - DS&A
 tags:
   - Sorting Algorithms
   - Bubble Sort

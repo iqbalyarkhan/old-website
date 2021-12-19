@@ -5,7 +5,7 @@ thumbnail: /post-images/bits.png
 draft: false
 extract: Common methods on primitive types in C++
 categories: 
-    - General
+    - DS&A
 tags:
     - C++
     - Bits

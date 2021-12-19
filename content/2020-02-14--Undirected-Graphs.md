@@ -5,7 +5,7 @@ thumbnail: /post-images/undirected-graph.png
 draft: false
 extract: An analysis of undirected graphs
 categories: 
-    - Graphs
+    - DS&A
 tags:
   - Data Structures
   - Graphs

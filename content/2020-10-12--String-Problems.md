@@ -5,23 +5,23 @@ thumbnail: /post-images/string_problems.png
 draft: false
 extract: A look at some interesting string problems
 categories: 
-    - Strings
+    - DS&A
 tags:
   - Data Structures
 ---
 
-1.  [All Anagrams](#all-anagrams)
-2.  [Group Anagrams](#group-anagrams)
-3.  [Word Break](#word-break)
-4.  [Number of Good Ways to Split a String](#number-of-good-ways-to-split-a-string)
-5.  [Generate all valid parens](#generate-all-valid-parens)
-6.  [Is Palindrome](#is-palindrome)
-7.  [String to int without libraries](#string-to-int-without-libraries)
-8.  [Int to string without libraries](#int-to-string-without-libraries)
-9.  [Change base of string](#change-base-of-string)
-10. [Compute spread sheet column encoding](#spread-sheet-column-encoding)
-11. [Check Palindromicity](#check-palindromicity)
-12. [Reverse words in a string](#reverse-words-in-a-string)
+- [All Anagrams](#all-anagrams)
+- [Group Anagrams](#group-anagrams)
+- [Word Break](#word-break)
+- [Number of Good Ways to Split a String](#number-of-good-ways-to-split-a-string)
+- [Generate all valid parens](#generate-all-valid-parens)
+- [Is Palindrome](#is-palindrome)
+- [String to int without libraries](#string-to-int-without-libraries)
+- [Int to string without libraries](#int-to-string-without-libraries)
+- [Change base of string](#change-base-of-string)
+- [Spread Sheet column encoding](#spread-sheet-column-encoding)
+- [Check Palindromicity](#check-palindromicity)
+- [Reverse words in a string](#reverse-words-in-a-string)
 
 ### All Anagrams
 [All anagrams](https://leetcode.com/problems/find-all-anagrams-in-a-string/)

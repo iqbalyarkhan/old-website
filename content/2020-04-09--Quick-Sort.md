@@ -5,7 +5,7 @@ thumbnail: /post-images/quick.png
 draft: false
 extract: Explanation and implementation of quick sort algorithm
 categories: 
-    - Algorithms
+    - DS&A
 tags:
   - Sorting Algorithms
   - Quick Sort

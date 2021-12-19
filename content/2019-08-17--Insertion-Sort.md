@@ -5,7 +5,7 @@ thumbnail: /post-images/insertion.png
 draft: false
 extract: Explanation and implementation of insertion sort algorithm
 categories: 
-    - Algorithms
+    - DS&A
 tags:
   - Sorting Algorithms
   - Insertion Sort

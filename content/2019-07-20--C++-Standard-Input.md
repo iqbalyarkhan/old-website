@@ -5,7 +5,7 @@ thumbnail: /post-images/input-output.png
 draft: false
 extract: Common methods to extract input from user and its nuances
 categories: 
-    - General
+    - DS&A
 tags:
     - C++
     - Streams

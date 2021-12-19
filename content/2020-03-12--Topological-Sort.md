@@ -5,7 +5,7 @@ draft: false
 thumbnail: /post-images/topology.png
 extract: Analysis of topological sort algorithm
 categories: 
-    - Graphs
+    - DS&A
 tags:
   - Graphs
   - Sorting Algorithms
