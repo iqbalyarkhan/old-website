@@ -2,7 +2,7 @@
 title: TODO Problems
 date: 2020-05-14
 thumbnail: /post-images/todo.png
-draft: false
+draft: true
 extract: TODO problems
 categories: 
     - DS&A

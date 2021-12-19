@@ -2,7 +2,7 @@
 date: 2019-07-20
 title: C++ Standard input
 thumbnail: /post-images/input-output.png 
-draft: false
+draft: true
 extract: Common methods to extract input from user and its nuances
 categories: 
     - DS&A

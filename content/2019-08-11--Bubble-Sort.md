@@ -2,7 +2,7 @@
 date: 2019-08-11
 title: Bubble Sort
 thumbnail: /post-images/bubble.png
-draft: false 
+draft: true 
 extract: Explanation and implementation of bubble sort algorithm
 categories: 
     - DS&A

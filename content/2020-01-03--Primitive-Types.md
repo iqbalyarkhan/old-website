@@ -2,7 +2,7 @@
 date: 2020-01-03
 title: Primitive Types
 thumbnail: /post-images/bits.png
-draft: false
+draft: true
 extract: Common methods on primitive types in C++
 categories: 
     - DS&A

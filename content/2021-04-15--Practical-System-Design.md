@@ -2,28 +2,30 @@
 title: Practical System Design
 date: 2021-04-15
 thumbnail: /post-images/distributed-systems.png
-draft: false
+draft: true
 extract: Practical system design
 categories: 
     - System Design
 tags:
     - Data system design
 ---
-1. [System Design](#system-design)
-2. [Generating Unique IDs in a distributed Env](#generating-unique-ids-in-a-distributed-env)
-3. [Back of the envelope Estimation](#back-of-the-envelope-estimation)
-4. [Storing Images](#storing-images)
-5. [Allowing users to chat](#allowing-users-to-chat)
-6. [Design Chat Messaging](#design-chat-messaging)
-7. [Design Rate Limiting](#design-rate-limiting)
-    * [Sharing data between servers](#sharing-data-between-servers)
-    * [TCP vs UDP](#tcp-vs-udp)
-8. [Design Distributed Message Queue](#design-distributed-message-queue)
-9. [Design Distributed Cache](#design-distributed-cache)
-    * [LRU Cache](#lru-cache)
-    * [Replication to Achieve HA](#replication-to-achieve-high-availability)
-10. [Notification Service](#notification-service)
-100. [Useful architectures](#useful-architectures)
+- [System Design](#system-design)
+- [Generating Unique IDs in a distributed Env](#generating-unique-ids-in-a-distributed-env)
+- [Types of Encoding](#types-of-encoding)
+- [Back of the envelope Estimation](#back-of-the-envelope-estimation)
+- [Storing Images](#storing-images)
+- [Allowing users to Chat](#allowing-users-to-chat)
+- [Design Chat Messaging](#design-chat-messaging)
+- [Design Rate Limiting](#design-rate-limiting)
+- [Sharing data between servers](#sharing-data-between-servers)
+- [Message Broadcasting](#message-broadcasting)
+- [TCP vs UDP](#tcp-vs-udp)
+- [Design Distributed Message Queue](#design-distributed-message-queue)
+- [Design Distributed Cache](#design-distributed-cache)
+- [LRU Cache](#lru-cache)
+- [Replication to Achieve High Availability](#replication-to-achieve-high-availability)
+- [Notification Service](#notification-service)
+- [Useful architectures](#useful-architectures)
 
 ### System Design
 Let's look at some example system designs and see the trade-offs between various approaches that can be used to design a solution.  

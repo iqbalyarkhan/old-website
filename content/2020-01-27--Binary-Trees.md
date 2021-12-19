@@ -2,7 +2,7 @@
 title: Binary Trees
 date: 2020-01-27
 thumbnail: /post-images/tree.png
-draft: false
+draft: true
 extract: Binary tree data structure
 categories: 
     - DS&A

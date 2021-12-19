@@ -2,7 +2,7 @@
 title: Substring Search
 date: 2020-04-04
 thumbnail: /post-images/substringsearch.png
-draft: false
+draft: true
 extract: An analysis of substring search algorithms
 categories: 
     - Strings

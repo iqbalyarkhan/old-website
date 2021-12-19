@@ -2,7 +2,7 @@
 title: DP Discussion Updated
 date: 2021-03-27
 thumbnail: /post-images/dynamic-programming.png
-draft: false
+draft: true
 extract: A deep dive into DP problems
 categories: 
     - Dynamic Programming
@@ -10,15 +10,17 @@ tags:
     - Dynamic programming
 ---
 
-1. [Introduction](#introduction)
-2. [Fibonacci](#fibonacci)
-3. [Factorial](#factorial)
-3. [Climbing Stairs](#climbing-stairs)
-4. [0-1 Knapsack](#0-1-knapsack)
-5. [Unbounded Knapsack](#unbounded-knapsack)
-4. [Minimum Path Sum](#minimum-path-sum)
-5. [Combination Sum](#combination-sum)
-6. [Coin change](#coin-change)
+- [Introduction](#introduction)
+- [Fibonacci](#fibonacci)
+- [Factorial](#factorial)
+- [Climbing stairs](#climbing-stairs)
+- [0-1 Knapsack](#0-1-knapsack)
+- [Unbounded Knapsack](#unbounded-knapsack)
+- [Processed vs Unprocessed](#processed-vs-unprocessed)
+- [Code Difference](#code-difference)
+- [Minimum Path Sum](#minimum-path-sum)
+- [Combination Sum](#combination-sum)
+- [Coin change](#coin-change)
 
 100. [Conclusion](#conclusion)
 

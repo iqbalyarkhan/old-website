@@ -2,7 +2,7 @@
 title: Quick Sort 
 date: 2020-04-09
 thumbnail: /post-images/quick.png
-draft: false
+draft: true
 extract: Explanation and implementation of quick sort algorithm
 categories: 
     - DS&A

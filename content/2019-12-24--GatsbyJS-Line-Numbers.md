@@ -2,7 +2,7 @@
 date: 2019-12-24
 title: Gatsby JS Code block Line Numbers
 thumbnail: /post-images/line-numbers.png
-draft: false
+draft: true
 extract: How to add line numbers to code blocks in GatsbyJS
 categories: 
     - DS&A

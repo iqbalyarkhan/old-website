@@ -1,7 +1,7 @@
 ---
 title: Topological Sort
 date: 2020-03-12
-draft: false
+draft: true
 thumbnail: /post-images/topology.png
 extract: Analysis of topological sort algorithm
 categories: 

@@ -2,7 +2,7 @@
 title: Undirected Graphs Breadth First Search
 date: 2020-02-16
 thumbnail: /post-images/bfs.png
-draft: false
+draft: true
 extract: An analysis of Breadth First Search on undirected graphs
 categories: 
     - DS&A

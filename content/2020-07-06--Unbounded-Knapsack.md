@@ -2,7 +2,7 @@
 title: Unbounded Knapsack
 date: 2020-07-06
 thumbnail: /post-images/knapsack.png
-draft: false
+draft: true
 extract: Detailed look at Unbounded Knapsack
 categories: 
     - Dynamic Programming
@@ -10,19 +10,32 @@ tags:
     - Dynamic programming
 ---
 
-1. [Introduction](#introduction)
-2. [Processed vs Unprocessed](#processed-vs-unprocessed)
-3. [Code Difference](#code-difference)
-4. [Problems](#problems)
-5. [Rod cutting](#rod-cutting-problem)
-    * [Rod Cutting Recursive Solution](#rod-cutting-recursive-solution)
-    * [Rod cutting bottom up](#rod-cutting-bottom-up)
-6. [Coin change number of ways](#coin-change-number-of-ways)
-    * [Coin number of ways recursive](#coin-number-of-ways-recursive)
-    * [Coin number of ways bottom up](#coin-number-of-ways-bottom-up)
-7. [Coin change minimum number of coins](#coin-change-minimum-number-of-coins)
-    * [Min num of coins recursive](#min-num-of-coins-recursive)
-    * [Min num of coins bottom up](#min-num-of-coins-bottom-up)
+- [Introduction](#introduction)
+- [Processed vs Unprocessed](#processed-vs-unprocessed)
+- [Code Difference](#code-difference)
+- [Problems](#problems)
+- [Rod cutting Problem](#rod-cutting-problem)
+- [Rod Cutting Recursive Solution](#rod-cutting-recursive-solution)
+- [Base case:](#base-case)
+- [Recursive Case](#recursive-case)
+- [1a: Choose current element](#1a-choose-current-element)
+- [1b: Ignore current element](#1b-ignore-current-element)
+- [Length of current element we're considering is > length of the rod](#length-of-current-element-were-considering-is--length-of-the-rod)
+- [Rod cutting bottom up](#rod-cutting-bottom-up)
+- [Coin Change: Number of ways](#coin-change-number-of-ways)
+- [Coin number of ways recursive](#coin-number-of-ways-recursive)
+- [1(a) Choose current coin](#1a-choose-current-coin)
+- [1(b) Ignore current coin](#1b-ignore-current-coin)
+- [The coin we're on right now is > target remaining: only choice is to ignore it](#the-coin-were-on-right-now-is--target-remaining-only-choice-is-to-ignore-it)
+- [Coin number of ways bottom up](#coin-number-of-ways-bottom-up)
+- [Coin change minimum number of coins](#coin-change-minimum-number-of-coins)
+- [Min num of coins recursive](#min-num-of-coins-recursive)
+- [Base case:](#base-case-1)
+- [Recursive case:](#recursive-case-1)
+- [1a: We can choose the current coin and add 1 to the total](#1a-we-can-choose-the-current-coin-and-add-1-to-the-total)
+- [1b: We can ignore the current coin](#1b-we-can-ignore-the-current-coin)
+- [2: The coin we're on right now is > target remaining: only choice is to ignore it](#2-the-coin-were-on-right-now-is--target-remaining-only-choice-is-to-ignore-it)
+- [Min num of coins bottom up](#min-num-of-coins-bottom-up)
 
 ### Introduction
 

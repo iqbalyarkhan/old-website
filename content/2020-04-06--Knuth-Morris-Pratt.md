@@ -2,7 +2,7 @@
 title: Knuth Morris Pratt Algorithm
 date: 2020-04-05
 thumbnail: /post-images/kmp.png
-draft: false
+draft: true
 extract: An analysis of KMP substring search algorithm
 categories: 
     - DS&A

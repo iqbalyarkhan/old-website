@@ -2,7 +2,7 @@
 title: Greedy Algorithms
 date: 2020-08-16
 thumbnail: /post-images/greedy.png
-draft: false
+draft: true
 extract: A deep dive into greedy algorithms
 categories: 
     - DS&A

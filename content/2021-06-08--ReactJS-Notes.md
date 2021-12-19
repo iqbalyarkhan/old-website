@@ -5,7 +5,7 @@ thumbnail: /post-images/react.png
 title: ReactJS Notes
 extract: My notes as I learn ReactJS
 categories:
-    - General
+    - React
 tags:
     - blog
     - React

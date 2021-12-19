@@ -2,7 +2,7 @@
 title: DP Discussion
 date: 2020-08-02
 thumbnail: /post-images/dynamic-programming.png
-draft: false
+draft: true
 extract: A deep dive into DP problems
 categories: 
     - Dynamic Programming
@@ -10,10 +10,11 @@ tags:
     - Dynamic programming
 ---
 
-1. [Introduction](#introduction)
-2. [Tiling](#tiling)
-3. [Longest Increasing Subsequence](#longest-increasing-subsequence)
-4. [Minimum Path Sum](#minimum-path-sum)
+- [Introduction](#introduction)
+- [Tiling](#tiling)
+- [Longest Increasing Subsequence](#longest-increasing-subsequence)
+- [Minimum Path Sum](#minimum-path-sum)
+- [Conclusion](#conclusion)
 
 100. [Conclusion](#conclusion)
 

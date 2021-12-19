@@ -2,7 +2,7 @@
 title: Strings and DP
 date: 2020-07-14
 thumbnail: /post-images/lcs.png
-draft: false
+draft: true
 extract: Longest Common Subsequence and its derivatives
 categories: 
     - Dynamic Programming
@@ -10,12 +10,12 @@ tags:
     - Dynamic programming
 ---
 
-1. [Introduction](#introduction)
-2. [Longest Common Subsequence](#longest-common-subsequence)
-    * [LCSubsequence Recursive](#lcsubsequence-recursive)
-    * [LCSubsequence Bottom Up](#longest-common-subsequence-bottom-up)
-3. [Min number of insertions and deletions](#minimum-number-of-insertions-and-deletions)
-4. [Longest Palindromic Substring](#longest-palindromic-substring)
+- [Introduction](#introduction)
+- [Longest Common subsequence](#longest-common-subsequence)
+- [LCSubsequence Recursive](#lcsubsequence-recursive)
+- [Longest Common subsequence Bottom Up](#longest-common-subsequence-bottom-up)
+- [Minimum number of insertions and deletions](#minimum-number-of-insertions-and-deletions)
+- [Longest Palindromic Substring](#longest-palindromic-substring)
 
 ### Introduction
 

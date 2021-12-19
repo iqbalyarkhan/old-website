@@ -2,7 +2,7 @@
 title: Binary Search Trees
 date: 2020-01-26
 thumbnail: /post-images/bst.png
-draft: false
+draft: true
 extract: An analysis of binary search trees in C++
 categories: 
     - DS&A

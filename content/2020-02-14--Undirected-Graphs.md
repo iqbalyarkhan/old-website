@@ -2,7 +2,7 @@
 title: Undirected Graphs
 date: 2020-02-14
 thumbnail: /post-images/undirected-graph.png
-draft: false
+draft: true
 extract: An analysis of undirected graphs
 categories: 
     - DS&A

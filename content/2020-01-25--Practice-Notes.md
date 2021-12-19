@@ -2,10 +2,10 @@
 date: 2020-01-25
 title: Practice Notes
 thumbnail: /post-images/notes.png
-draft: false
+draft: true
 extract: Notes as I solve various practice problems
 categories: 
-    - General
+    - DS&A
 tags:
     - C++
 ---

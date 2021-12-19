@@ -2,7 +2,7 @@
 title: Sorting Problems 
 date: 2020-06-10
 thumbnail: /post-images/sorting_problems.png
-draft: false
+draft: true
 extract: Problems related to sorting algorithms
 categories: 
     - DS&A

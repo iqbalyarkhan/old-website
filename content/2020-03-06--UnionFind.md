@@ -2,7 +2,7 @@
 title: Union Find
 date: 2020-03-06
 thumbnail: /post-images/union-find.png
-draft: false
+draft: true
 extract: Analysis of the Union Find algorithm
 categories: 
     - DS&A

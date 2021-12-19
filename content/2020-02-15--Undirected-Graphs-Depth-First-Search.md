@@ -2,7 +2,7 @@
 title: Undirected Graphs Depth First Search
 date: 2020-02-15
 thumbnail: /post-images/dfs.png
-draft: false
+draft: true
 extract: An analysis of Depth First Search on undirected graphs
 categories: 
     - DS&A

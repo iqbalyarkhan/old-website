@@ -5,7 +5,7 @@ thumbnail: /post-images/microfrontends.png
 title: Micro Frontend
 extract: My notes as I learn Micro Frontend
 categories:
-    - General
+    - React
 tags:
     - blog
 --- 
@@ -13,9 +13,10 @@ tags:
 
 ### Table of contents
 
-1. [What is MFE](#what-is-mfe)
-2. [Module Federation](#module-federation)
-2. [MFE in Action](#mfe-in-action)
+- [Table of contents](#table-of-contents)
+- [What is MFE](#what-is-mfe)
+- [Module Federation](#module-federation)
+- [MFE in Action](#mfe-in-action)
 
 
 ### What is MFE

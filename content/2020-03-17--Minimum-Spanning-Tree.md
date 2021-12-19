@@ -2,7 +2,7 @@
 title: Minimum Spanning Tree
 date: 2020-03-17
 thumbnail: /post-images/mst.png
-draft: false
+draft: true
 extract: Analysis of minimum spanning trees
 categories: 
     - DS&A
