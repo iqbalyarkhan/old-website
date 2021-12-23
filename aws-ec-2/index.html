@@ -98,13 +98,41 @@ void function() {
 <li><a href="#aws-cli">AWS CLI</a></li>
 <li><a href="#ec2-and-assuming-roles">EC2 and Assuming Roles</a></li>
 <li><a href="#security-groups">Security Groups</a></li>
+<li><a href="#bootstrap-scripts">Bootstrap scripts</a></li>
+<li><a href="#ec2-metadata-and-user-data">EC2 Metadata and User data</a></li>
+<li><a href="#networking-with-ec2">Networking with EC2</a></li>
+<li><a href="#ec2-placement-groups">EC2 Placement Groups</a></li>
+<li><a href="#using-ec2-roles-and-instance-profiles">Using EC2 Roles and Instance profiles</a></li>
 <li><a href="#best-practices">Best Practices</a></li>
 </ul>
 <h2 id="what-is-ec2" style="position:relative;"><a href="#what-is-ec2" aria-label="what is ec2 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What is <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html">EC2</a>?</h2>
 <p>Amazon Elastic Compute Cloud (Amazon EC2) provides scalable computing capacity in AWS Cloud. Using EC2 eliminates your need to invest in hardware up front, so you can develop and deploy applications faster. You can use EC2 to launch as many or as few virtual servers as you need, configure security and networking, and manage storage. EC2 enables you to scale up or down to handle changes in requirements or spikes in popularity, reducing your need to forecast traffic.</p>
 <p>EC2 is esentially a virtual machine that's hosted in AWS instead of your own data center. It gives you the capacity you want when you need it. You're in complete control of your instances. You pay only for what you use. You grow and shrink your infra as needed. Your instances are provisioned in minutes! Let's look at the pricing options for EC2:</p>
 <h2 id="pricing-options" style="position:relative;"><a href="#pricing-options" aria-label="pricing options permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Pricing options</h2>
-<p><img src="./images/aws/ec2-pricing-options.png" alt="EC2-Pricing-Options"><a href="https://acloudguru.com/">Image Credit - Acloud guru</a></p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 39.884393063583815%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAICAYAAAD5nd/tAAAACXBIWXMAAAsTAAALEwEAmpwYAAACD0lEQVQozyWPW1MSYQBAV1HY5duFxTUEBBbl4hUN7xkCxlSgsqzINUEdXnSsqdSxX9FM9axO00wP9tY/PE34eF7OnCMpIxZ+tcxOvIjmsRGefWRRJqCWKJi7qM49hLOEMvIWXS6RM3PoooSi7qHp+/jGLXKpPCndJq4dI7mGLX4fr8LPRW4LW0hDezgdZR57GXiY43pnC7ergdtZ5+vBGtwn+VHbwOGu4fIcclPMwv0sf882SIoe0ujwAb86K3A/x03uBY4hCzFi89hdg4cFrrLbA6FXdPhmbcJdnO/VdRxyHadW5/PuDtzN86e3RlBpIsnOCkH9gHy8iEfYqK4KYvSQsGpRNIvoThtdsfFrTQJag7z5Cl3exy1XEMLCq1Z4nSoQ8ZWRR98gecUhyUiTdKJNLNRAdVn4RI1EqM1StMXURAuvYmOoNSb9LeZiTaKTLYLP6kRDHVYXTyms9Hg+0yFsVJF0rUY6/Z7lzEeSqXOEXMXw1llavGB5+ZJM5pKQv4mh26xmzslmr9hc/0Ai1mM+1aeQv6Ww+4Vs9ppEpI30fzMa7pJK9gkF2qiKhaEfMW32SE6dkIyfERiv49drLMz02d76RCZ9QSzcZTraI26eDnhm+oxxTxVJVaqDKo/bRsgWmvJUOGE0CIw1mTCa+H1HBMcaJMwTXm5fMZvoEw12BrKpSJdIoI05+Q7DW+Mfo/IGvTLgwEMAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="EC2-Pricing-Options"
+        title="EC2-Pricing-Options"
+        src="/static/242c279b3c08c2ff9e9b77c0b5a4ea05/1e043/all-ec2-pricing-options.png"
+        srcset="/static/242c279b3c08c2ff9e9b77c0b5a4ea05/991de/all-ec2-pricing-options.png 173w,
+/static/242c279b3c08c2ff9e9b77c0b5a4ea05/e4d6b/all-ec2-pricing-options.png 345w,
+/static/242c279b3c08c2ff9e9b77c0b5a4ea05/1e043/all-ec2-pricing-options.png 690w,
+/static/242c279b3c08c2ff9e9b77c0b5a4ea05/e3189/all-ec2-pricing-options.png 1035w,
+/static/242c279b3c08c2ff9e9b77c0b5a4ea05/46e30/all-ec2-pricing-options.png 1303w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span><a href="https://acloudguru.com/">Image Credit - Acloud guru</a></p>
 <ul>
 <li><strong>On demand</strong>: as the name suggests, is priced by the hour or second and the type of instance you run</li>
 <li><strong>Reserved</strong>: pricing comes into play when you sign up for a contract with AWS and you get discounted rates based off how much you pay up-front and length of the contract (pay more up-front and sign up for a longer contract).</li>
@@ -135,12 +163,14 @@ void function() {
 <h3 id="spot-instances" style="position:relative;"><a href="#spot-instances" aria-label="spot instances permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Spot instances</h3>
 <ul>
 <li>Spot instances are provisioned when the price hits the mark that you chose. If the price goes higher than what you chose, the spot instance will be terminated.</li>
-<li>These are good for applications that have flexible start and end times.</li>
+<li>These are good for applications that have flexible start and end times. This can be for applications such as big data, CI/CD, high performance computing and other test and development workloads.</li>
 <li>Can't be used for web servers since the instance gets terminated as price moves.</li>
 <li>Good for apps that are feasible at very low compute prices. Such as in the middle of night on a Sunday morning!</li>
 <li>Use thse when you have an urgent need for large amounts of additional computing capacity</li>
 <li>Scenarios: image rendering, genomic sequencing, algo trading engines.</li>
 </ul>
+<p>To use spot instances, you must first decide on your max spot price. As long as the price &#x3C; your max price, your instance will be in provisioned state. As soon as it crosses the max, you'll have 2 minutes to choose if you terminate or stop your instance.</p>
+<p>To terminate spot instances you first need to cancel your request (otherwise the spot requests will keep re-provisioning your instances as you terminate them!). Next, you'll go in and then terminate the instances.</p>
 <h3 id="dedicated-hosts" style="position:relative;"><a href="#dedicated-hosts" aria-label="dedicated hosts permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Dedicated Hosts</h3>
 <ul>
 <li>Good for compliance where there're requirements for NOT having multi-tenants on the same VMs. Your compliance needs would mean that your app needs to be the only app running on the machine</li>
@@ -158,8 +188,8 @@ void function() {
 <li>Next we download security key pair in the form of a <code class="language-cpptext">.pem</code> file.</li>
 <li>Finally we use EC2 instance connect to log in to our EC2 instance.</li>
 </ul>
-<p>(Make sure to update the quality)</p>
-<div class="gatsby-resp-iframe-wrapper" style="padding-bottom: 62.5%; position: relative; height: 0; overflow: hidden; " > <iframe src="https://www.youtube.com/embed/FJJwzWwS1xA?vq=720p60" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" style=" position: absolute; top: 0; left: 0; width: 100%; height: 100%; "></iframe> </div>
+<!-- copy and paste. Modify height and width if desired. -->
+<div class="gatsby-resp-iframe-wrapper" style="padding-bottom: 52.85412262156448%; position: relative; height: 0; overflow: hidden; " > <iframe class="embeddedObject shadow resizable" name="embedded_content" scrolling="no" frameborder="0" type="text/html" style="overflow:hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; " src="https://www.screencast.com/users/IqbalKhan8502/folders/Capture/media/02f47bd8-6a15-4360-9290-a0bc95899d6a/embed" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe> </div>
 <h2 id="aws-cli" style="position:relative;"><a href="#aws-cli" aria-label="aws cli permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>AWS CLI</h2>
 <p>While we're on the topic if EC2, it's a good to time familiarize ourselves with AWS CLI. CLI allows us to log in to our EC2 instance. To do so, once you've launched your instance (with SSH, HTTP and HTTPS enabled), go ahead and copy your  public IPv4 address. Before we can log in, we also need to change permissions on the key value pair we downloaded. To do so run:</p>
 <div class="gatsby-highlight" data-language="bash"><pre class="language-cppbash"><code class="language-cppbash"><span class="token function">chmod</span> <span class="token number">400</span> KVPair.pem</code></pre></div>
@@ -192,10 +222,11 @@ AWS Access Key ID <span class="token punctuation">[</span>None<span class="token
     <span class="token punctuation">]</span>
 <span class="token punctuation">}</span></code></pre></div>
 <p>Small video showing how I added a user. Notice how we use programmatic access to generate access key ID and secret access key:</p>
-<div class="gatsby-resp-iframe-wrapper" style="padding-bottom: 53.125%; position: relative; height: 0; overflow: hidden; " > <iframe src="https://www.youtube.com/embed/Mv1qvNfg-vI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" style=" position: absolute; top: 0; left: 0; width: 100%; height: 100%; "></iframe> </div>
-<p>From the above, we've generated our access key id and secret access key. We can now go back to our command line and re-run:</p>
+<!-- copy and paste. Modify height and width if desired. -->
+<div class="gatsby-resp-iframe-wrapper" style="padding-bottom: 52.63157894736842%; position: relative; height: 0; overflow: hidden; " > <iframe class="embeddedObject shadow resizable" name="embedded_content" scrolling="no" frameborder="0" type="text/html" style="overflow:hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; " src="https://www.screencast.com/users/IqbalKhan8502/folders/Capture/media/815645d5-b730-4131-878c-1207f739a939/embed" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe> </div>
+<p>From the above, after we hit create user, we'll get our Access Key ID and Secret Access key. We'll use that in the command line to authenticate our user. Once completed, we can now re-run:</p>
 <div class="gatsby-highlight" data-language="bash"><pre class="language-cppbash"><code class="language-cppbash">aws s3 <span class="token function">ls</span></code></pre></div>
-<p>and get back the buckets we have. We can also create a bucker from the command line like so:</p>
+<p>and get back the buckets we have. We can also create a bucket from the command line like so:</p>
 <div class="gatsby-highlight" data-language="bash"><pre class="language-cppbash"><code class="language-cppbash"><span class="token punctuation">[</span>root@ip-172-31-83-150 ec2-user<span class="token punctuation">]</span><span class="token comment"># clear</span>
 <span class="token punctuation">[</span>root@ip-172-31-83-150 ec2-user<span class="token punctuation">]</span><span class="token comment"># aws s3 mb s3://letsmakethisbucketforourtestingshallwe</span>
 make_bucket: letsmakethisbucketforourtestingshallwe</code></pre></div>
@@ -211,9 +242,317 @@ make_bucket: letsmakethisbucketforourtestingshallwe</code></pre></div>
 <!-- copy and paste. Modify height and width if desired. -->
 <div class="gatsby-resp-iframe-wrapper" style="padding-bottom: 50.208623087621696%; position: relative; height: 0; overflow: hidden; " > <iframe class="embeddedObject shadow resizable" name="embedded_content" scrolling="no" frameborder="0" type="text/html" style="overflow:hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; " src="https://www.screencast.com/users/IqbalKhan8502/folders/Capture/media/73923868-4af1-4f3c-a347-c35bead34513/embed" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe> </div>
 <h2 id="security-groups" style="position:relative;"><a href="#security-groups" aria-label="security groups permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Security Groups</h2>
-<p>Before we dive in to how security groups work, let's understand a few concpets: There're a few different methods to communicate with a server. You can SSH into it, or you can use HTTP, or HTTPS etc. Depending on the type of server, our communication method changes.</p>
+<p>Before we dive in to how security groups work, let's understand a few concpets: There're a few different methods to communicate with a server. You can SSH into it, or you can use HTTP, or HTTPS etc. Depending on the type of server, our communication method changes. Below are the types of instances and the methods we use to communicate with each:</p>
+<ul>
+<li>Linux: SSH over port 22</li>
+<li>Windows: RDP port 3389</li>
+<li>HTTP: Web browsing over port 80</li>
+<li>HTTPS: Encrypted web browsing (SSL) over port 443</li>
+</ul>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 34.104046242774565%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAHCAYAAAAIy204AAAACXBIWXMAAAsTAAALEwEAmpwYAAABq0lEQVQozy2R3W8SURDFb1nosh/3snt32eWjLVGMTdoXojZRE20XaUuXAgsEIqVWY/xoeNDEN//6n+m1DyeZnJyZM2dGxGpOqpek0X+0GxsCb0pUmxMHC4NWcoOWBVpOiWszIjUjCZd41RGec43vTpDuhEivEN3ODdK+wN45o1rKiFRBP/tLEs0piQzbGhB4Yw7aa6QzpCwydkt9Au+ap51bpHNFZadPRWQEcobYbyzwK5kZ5lUGaDXj5OWWWF1RFm9xrMxs9WCsvaExdssDIjml29mg3CGWeI9tfSCUc4RSK1oHW6STY1t9QlWgk2+k7Z/sPfmFDlamWesNzf0tgSyols5MfFXbEDV+UG/dY4lTArVAPO/e0UjW2OVz41wPFxwffaeZfjQCv5qb+x0++8KL3pbjwzsOmnMiWfCqd8/puz+8ef0brUboYIkI5RDlXjxGOTdPiGROrHK8St/w2p8SqxFxLcffHRiE3oST3ld6R5/oNAuSIKed3iJc+5LAHRF6Y0J/TKO+RrkjfHuIcnJq3ohEr0wtH7kHpOGSejhDVnOc8qXR7zU/8w8278qzE0JQgwAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Communitcating-With-Servers"
+        title="Communitcating-With-Servers"
+        src="/static/d56e558fb6fb04394871a039493d31ec/1e043/communicating-with-servers.png"
+        srcset="/static/d56e558fb6fb04394871a039493d31ec/991de/communicating-with-servers.png 173w,
+/static/d56e558fb6fb04394871a039493d31ec/e4d6b/communicating-with-servers.png 345w,
+/static/d56e558fb6fb04394871a039493d31ec/1e043/communicating-with-servers.png 690w,
+/static/d56e558fb6fb04394871a039493d31ec/e3189/communicating-with-servers.png 1035w,
+/static/d56e558fb6fb04394871a039493d31ec/60b3a/communicating-with-servers.png 1179w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span><a href="https://acloudguru.com/">Image Credit - Acloud guru</a></p>
+<p>Security groups are virtual firewalls for your EC2 instance. By default, everything is blocked. So when a new EC2 instance is created and if no security groups are attached, you won't be able to SSH into it. To let everything in:</p>
+<div class="gatsby-highlight" data-language="json"><pre class="language-cppjson"><code class="language-cppjson"><span class="token number">0.0</span>.<span class="token number">0.0</span>/<span class="token number">0</span></code></pre></div>
+<p>In order to be able to communicate to your EC2 instances via SSH, RDP, HTTP and HTTPS, you'll need to open up the correct ports. In a production environment, you'd open up <code class="language-cpptext">0.0.0.0/0</code> to only HTTP and HTTPS methods (ie port 80 and port 443).</p>
+<p>A few points to remember:</p>
+<ul>
+<li>Changes to security groups take effect immediately</li>
+<li>All inbound traffic into the instance is blocked by default</li>
+<li>All outbound traffix out the instance is allowed by default</li>
+</ul>
+<h2 id="bootstrap-scripts" style="position:relative;"><a href="#bootstrap-scripts" aria-label="bootstrap scripts permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Bootstrap scripts</h2>
+<p>Bootstrap scripts are scripts that run at root level when the instance first launches. An example bootstrap script could be:</p>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-cppbash"><code class="language-cppbash"><span class="token comment">#below is a path to our interpreter</span>
+<span class="token comment">#!/bin/bash</span>
+<span class="token comment">#updates yum</span>
+yum update -y
+<span class="token comment">#installs apache</span>
+yum <span class="token function">install</span> httpd -y
+<span class="token comment">#starting apache</span>
+systemctl start httpd
+<span class="token comment">#set apache to run when the system boots</span>
+systemctl <span class="token builtin class-name">enable</span> httpd
+<span class="token comment">#go to dir shown</span>
+<span class="token builtin class-name">cd</span> /var/www/html
+<span class="token comment">#create an index.html file there</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"&lt;html>&lt;body>&lt;h1>Hello my friends! Gurus&lt;/h1>&lt;/body>&lt;/html>"</span> <span class="token operator">></span> index.html</code></pre></div>
+<p>Using the bootstrap script helps you to setup your instance without having to log in to the instance! You can then open up port 80 (enable HTTP) on your instance that'll then allow you to view the <code class="language-cpptext">index.html</code> file using HTTP. All you need to do is visit the public IPv4 address of your instance via HTTP. To add your bootstrap script, simply paste it in the <code class="language-cpptext">User Data</code> section as you configure your EC2 instance:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/7724e4b4a8ae244d0d75ca4d401a195a/e4900/user-data-for-bootstrap-script.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 18.497109826589593%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAECAYAAACOXx+WAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAhklEQVQY031OXQuDMAzs//+He9rLnNV2DKy17ZrkRropTmEHRxLugxgRgUKncw5hmhCWgsu1gx09Bv9EPzxw60d01uFuPUIsWDJhTi+USlteadZjDzWmXMACqLJXdScWMEsrU++pcDPLJx5zRSyEVKh9cuJXm1P9KVSYtflIIm6f/CeDD7k31Dg6ULM1N8cAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Bootstrap-config"
+        title="Bootstrap-config"
+        src="/static/7724e4b4a8ae244d0d75ca4d401a195a/1e043/user-data-for-bootstrap-script.png"
+        srcset="/static/7724e4b4a8ae244d0d75ca4d401a195a/991de/user-data-for-bootstrap-script.png 173w,
+/static/7724e4b4a8ae244d0d75ca4d401a195a/e4d6b/user-data-for-bootstrap-script.png 345w,
+/static/7724e4b4a8ae244d0d75ca4d401a195a/1e043/user-data-for-bootstrap-script.png 690w,
+/static/7724e4b4a8ae244d0d75ca4d401a195a/e4900/user-data-for-bootstrap-script.png 988w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+  </a>
+    </span></p>
+<h2 id="ec2-metadata-and-user-data" style="position:relative;"><a href="#ec2-metadata-and-user-data" aria-label="ec2 metadata and user data permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>EC2 Metadata and User data</h2>
+<p>EC2 metadata is data about your EC2 instance. This can be things such as public/private IP addresses, hostnames, security groups etc. To get your metadata, all you need to do is run this command from your EC2 command line (after you've logged into your EC2 instance:</p>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-cppbash"><code class="language-cppbash"><span class="token function">curl</span> http://169.254.169.254/latest/meta-data</code></pre></div>
+<p>Here're the complete commands that I ran:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 603px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/bd7005ca724145067ab30869dde73f6a/9128f/terminal-metadata.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 106.9364161849711%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAVCAYAAABG1c6oAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB4UlEQVQ4y61UaY+qQBAENREcUFA8XkSQQ40G7zveMX7R//9zht7UvPCy2ezuc3E/VGaYGSrdXdUt6X9cXgxGXPOHvFy3uOO0uOM43PPaPAxD7rout22bVyoVHkURD3xfnNdqNa4qCmeMccYK/yBJkkSArjFSVZXyikKKqpJpmqQoCmmaJoC75O1/IMWAZVkxY0xA1/W4Wq2K1TTN2DAMAbyTZTlO/vkUhmFQuVwmy7Ko0WhQvV6nUqlEOGeMUaFQEOuT0ZG0WCzocrnQ7Xaj+XxOj8eDNpsN7fd7cT6dTmm73dJ4PCbHcajZbJLv+1+XYDgcUhRFtFwuqdPp0Gg0EiRBEFC/36dWqyXW1Wol7kHabrcFKfa2bZPneeS6rthLvV5PHCRpZ7PZL9ORZVncA7lc7tO9hHSQ2uFwoOv1SrvdTtTt6Zp9BOqGdFCbRBgIkpqw2+3SZDL5m39akvdYr9ciVaiIaMMwFJGmJhwMBgTS2Wwm1ENXZDKZ9ISwB6yD1KE2osvn8+kJERkUPp1Owo8v1xCCoN2KxeLviAJjoxN+1K/fAX17v99/zzaoIfoXkUIgzMCXCKEwvIeB8IMh+n3Kx+ORzuczYZS9ZBkAYwiiwOCwDb6TUZSMJ3gThn+G8A1AZt/opQyeGwAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Terminal-Metadata"
+        title="Terminal-Metadata"
+        src="/static/bd7005ca724145067ab30869dde73f6a/9128f/terminal-metadata.png"
+        srcset="/static/bd7005ca724145067ab30869dde73f6a/991de/terminal-metadata.png 173w,
+/static/bd7005ca724145067ab30869dde73f6a/e4d6b/terminal-metadata.png 345w,
+/static/bd7005ca724145067ab30869dde73f6a/9128f/terminal-metadata.png 603w"
+        sizes="(max-width: 603px) 100vw, 603px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+  </a>
+    </span></p>
+<p>Another option is to actually use the User data section and add the same command to your bootstrap script. Here's what you'd then add to your user data section as you configure your EC2 instance:</p>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-cppbash"><code class="language-cppbash"><span class="token function">curl</span> http://169.254.169.254/latest/meta-data <span class="token operator">></span> myIP.txt</code></pre></div>
+<h2 id="networking-with-ec2" style="position:relative;"><a href="#networking-with-ec2" aria-label="networking with ec2 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Networking with EC2</h2>
+<p>You can attach 3 different types of virtual networking cards to your EC2 instances: ENI, EN and EFA.</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 33.52601156069364%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAHCAYAAAAIy204AAAACXBIWXMAAAsTAAALEwEAmpwYAAABvElEQVQozx2PXU/TUABA+wNMgPXeft3e220d+2iHECGCgu5FRUME2rGtK9vYxqKQqCTIg4nP/u6j7unkvJzkWJG85EV0Rrb7jm54Ts25JLTPqbg5ws+RyRC3N0HoPkLl2CIjqIxQYsyOeeCw8RsjJ2uXmzmWt5WzZz6T772nHVzgbPapuRfYwQDxLMNJC4JsiXSusDcy3HBEUBkjt/oc1H/R6/yh5i0QmzlKlFiJOuO084FP6SknjY8ocYFxzrHdK4TIEUcl9usSkRZUNi5x1Qh/a4RXKdg1P9mLnqg6S8RGTmCXWIEcYtwBbZURygFKDql7GdIfoVVJs3tL+/mKuD0n8As8NcaIKdov6Dbv2G19Y7s+RzljtJxgxWZCN71nf/+BNLmjrq+J/T4iKGjGC94cPfL2+InD/R9odY2vS6renJcH3zk5fuTV0QO93hOt+BbtzLC0O1zXo+Aa5Y757w01RIYTavGKJL2n2VqRdL4Qmim+mWKcBdv1FUnrjm77nk7zK9VgSejcYCWmZDsc01DFmqkpqbsTlH9DFC3Q4YxIz6jqGXF1jnGnxN6ShrdCOwu0XKwZeUuCf8t/ARDT4MiZgqGqAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="EC2-Networking"
+        title="EC2-Networking"
+        src="/static/08ce5af5aa4d9b384198948d4770ff04/1e043/networking-ec2.png"
+        srcset="/static/08ce5af5aa4d9b384198948d4770ff04/991de/networking-ec2.png 173w,
+/static/08ce5af5aa4d9b384198948d4770ff04/e4d6b/networking-ec2.png 345w,
+/static/08ce5af5aa4d9b384198948d4770ff04/1e043/networking-ec2.png 690w,
+/static/08ce5af5aa4d9b384198948d4770ff04/e3189/networking-ec2.png 1035w,
+/static/08ce5af5aa4d9b384198948d4770ff04/077b7/networking-ec2.png 1166w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span><a href="https://acloudguru.com/">Image Credit: Acloudguru</a></p>
+<ul>
+<li><strong>ENI</strong></li>
+</ul>
+<p>Elastic network interface or network interface is for basic day-to-day networking. Common use cases include:</p>
+<ul>
+<li>
+<p>Create a management network</p>
+</li>
+<li>
+<p>Use network and security applicances in your VPCs</p>
+</li>
+<li>
+<p>Create a low budget high availability solution</p>
+</li>
+<li>
+<p><strong>EN</strong></p>
+</li>
+</ul>
+<p>Enhanced networking is to provide high performance.</p>
+<ul>
+<li><strong>EFA</strong></li>
+</ul>
+<p>Accelerates high performance computing and ML applications. It can use OS-Bypass which makes it a lot faster with much lower latency.</p>
+<h2 id="ec2-placement-groups" style="position:relative;"><a href="#ec2-placement-groups" aria-label="ec2 placement groups permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>EC2 Placement Groups</h2>
+<p>When you launch a new EC2 instance, the EC2 service attempts to place the instance in such a way that all of your instances are spread out across underlying hardware to minimize correlated failures. You can use placement groups to influence the placement of a group of interdependent instances to meet the needs of your workload. Depending on the type of workload, you can create a placement group using one of the following placement strategies:</p>
+<ul>
+<li><strong>Cluster</strong></li>
+</ul>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 292px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 93.0635838150289%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAATCAYAAACQjC21AAAACXBIWXMAAAsTAAALEwEAmpwYAAACf0lEQVQ4y6VTW08TQRTu/zCov0BLfTIagR/AgyHeAsVCRDRRE6O8+eaDT/4KowkmaBtQpFBpoaVQSrGAIlBuLUu73d3S7pZt99J+5gyXIKWG4km+fOecmflmzpkZi6OjEw+7u/Ggq4txR2cnWu12tNnbT0RrRWxH+30Hbt2+g7oLF2ERRAmfnP1wj4zC1f8V8ws/oaoqcrkcgyzLkHMyY4oVRflrjDifz4PjOFyut8Ey6vOjuaUNz3teoeVeB959+AiyYrHI2DBMmKYJTdNQKpWgqgWWL5fL0HUdhmGwAywvr8Bqs8ESnJxG95MXeP3mLR49fYmBQTdb4B52Y8QzCpfLiW+DQ3A6P2MmHIbX64PH8x3R6BwOzNB1xGIxWOmEvvEJNLe04vGzHty868D73j42iUoRJQmCKECSJGQyGcaUl6QMZEU5FNSPCq6tb6C3z4VBtwd9ri9YXFrBaY3KrhCk+qtNPOofzR3EJwrSrdEFUMOp+cRkZqmEZCoNPi2CTwug10DxdopHZidb/YQkSInju5JgcHoW4dk5TIQi+PV7rxVFTUMyxR9ufGpBsmFvAClewHRkDl7/JLaTPMtTrmbBUrmMwNQMApNhbCY4xLc4+MaDzE/x6doFqbQEl8TaehxDnjGEZn4gv7sLr38Km/Gt2ntYLGrYTqWZv7K6gej8IvMj0YWzCWq6jsWlGHZ2ssjmcgiGIqynYxMhxBPcv59NpeAeK0oesqwwqIXCHtQCCvv/vKogffD/sQpB+i0kehw0sRoOxg3TREFVEYutwmq7AgsleZ6HKIpngiAIyGaziCcSuGSth+VGYyMYGva5VjQ0oqGpCVevXce5uvP4AzJNI/D+QfE7AAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Cluster-Placement-Group"
+        title="Cluster-Placement-Group"
+        src="/static/fbe9579aa8190ec5524811d28d9093de/2e9f9/cluster-pg.png"
+        srcset="/static/fbe9579aa8190ec5524811d28d9093de/991de/cluster-pg.png 173w,
+/static/fbe9579aa8190ec5524811d28d9093de/2e9f9/cluster-pg.png 292w"
+        sizes="(max-width: 292px) 100vw, 292px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html">Image Credit: AWS Docs</a></p>
+<p><strong>For low latency high network throughput use cases</strong></p>
+<p>This placement group packs instances close together inside an Availability Zone. This strategy enables workloads to achieve the low-latency network performance necessary for tightly-coupled node-to-node communication that is typical of HPC applications.</p>
+<p>Cluster placement groups are recommended for applications that benefit from low network latency, high network throughput, or both. They are also recommended when the majority of the network traffic is between the instances in the group. To provide the lowest latency and the highest packet-per-second network performance for your placement group, choose an instance type that supports enhanced networking.</p>
+<ul>
+<li><strong>Spread</strong></li>
+</ul>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 683px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 32.947976878612714%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAHCAYAAAAIy204AAAACXBIWXMAAAsTAAALEwEAmpwYAAABMUlEQVQoz6VRy07DMBDML3PihpCQ+BHgRKo2OTQ9lV+ooA19CNqm6SsPJ7GT2EkaDfKWigMnhKXRzM6Odm3ZuL27x8PjE2zbRrfbg2XZ6DsOnMHgT+j3HQyHLzCurm8wcacQnCMIQggh8J9jMJYgzTgVbdtCVRVOpxOUUihLSVqzlOpbl6jqGk3TIC8KYl1rTQPDiGF/CPC58uBv94SNvyPW/srzsd0dsNsfsVxvyNf1crXB4RgSa2/t+eAih/Gx9Og27mxxNrmAO11QWAdGby5YkiKKGUavE2QZp4Vjd4a6aTB+n9PSiDGEMYNRNy2CiCEvShSlRBgnUFWNlAuwlEOqCizJkGYCUlaIWIq8kJTXWhQl6SCMz0/WP2uaJuFZc6dzZrNDuHi/+z/+pdezLHwBds/2JcKWYj8AAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Spread-Placement-Group"
+        title="Spread-Placement-Group"
+        src="/static/8f22fac6282befcbbf01b6f5a5769631/bca35/spread-pg.png"
+        srcset="/static/8f22fac6282befcbbf01b6f5a5769631/991de/spread-pg.png 173w,
+/static/8f22fac6282befcbbf01b6f5a5769631/e4d6b/spread-pg.png 345w,
+/static/8f22fac6282befcbbf01b6f5a5769631/bca35/spread-pg.png 683w"
+        sizes="(max-width: 683px) 100vw, 683px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html">Image Credit: AWS Docs</a></p>
+<p><strong>For use cases with need for individual critical EC2 instances</strong></p>
+<p>This placement gorup strictly places a small group of instances across distinct underlying hardware to reduce correlated failures. Groups of instances are each placed on distinct racks, with each rack having its own network and power source.</p>
+<p>Spread placement groups are recommended for applications that have a small number of critical instances that should be kept separate from each other. Launching instances in a spread placement group reduces the risk of simultaneous failures that might occur when instances share the same racks. Spread placement groups provide access to distinct racks, and are therefore suitable for mixing instance types or launching instances over time.</p>
+<p>A spread placement group can span multiple Availability Zones in the same Region.</p>
+<ul>
+<li><strong>Partition</strong></li>
+</ul>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 460px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 61.849710982658955%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAYAAABiDJ37AAAACXBIWXMAAAsTAAALEwEAmpwYAAACR0lEQVQoz42TS2/TUBCF/StZsWQFiBVsYAVJuiCwqUBiVYpEk+5aqS20cuMgEIlIKrdJ7LxwYjt13m3id5LGzkF3GlKQKsFIR75zPPfz3CsPF4lGsbd/gI9bCewfHCCd/gIhnb5+CmlapwQBx8fH4PnbdXh0hEw2i/sPHoLb2PyA1+vv8OTpc+TyIlg4tg3HduD7PlzXxdXVFf4nXsbj4NbfvMWjx89w5+49fDrkoesaTvI5iKIIWZYhSRIajQY8z8disUAYhqQgCFaaz+cEfBGJgNt4v4n01+/Y3fuMTrf/zy4YdLG4/V0kGgOXTCYpsS0Tuq5D1zSYpokgCGlzp9NBQ1FgGG2MRqNVl4ZhoNloot2+9q+BUXBbiQQlvV4ParMJTdMwHA4JyGIwHEBVVaiajm63hzBkwADdbhca+Sr6/f4NMLm9TUm5+hNiQUa704Pn+3BcF7btoFxVUJAqGAwv4Hoe3SXTWamMQqmC0djC2LSogdja2g3wR/6Uik6LMvqDC8xmM1yOxsiLRZTkGsSCRBt9fwLX9fAtk0OhVEZRqsA0LbqGv4Ato0MwrWWgUlMI5no+dVySqtDP25ArdZiWTR+rKU1U6wqaWgtFuUqMaGwNXCKZxDwICKC3DOqE6eJyBMuyYTsONP185TOg47gYj03UFRUnZyWcnBapQ7rDnZ1dorOjBGGI6WwGfzJd/QosZ/5kOqP175hMpuSz2smyPh5/BY6dO5PJ0AilUikaM2E5akwsZ76w9PmlL/zh8zyP7HL0fgFUm1WpLUXrGAAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Partition-Placement-Group"
+        title="Partition-Placement-Group"
+        src="/static/1b445b15d3e357052ef8b3438b3be98e/08a84/partition-pg.png"
+        srcset="/static/1b445b15d3e357052ef8b3438b3be98e/991de/partition-pg.png 173w,
+/static/1b445b15d3e357052ef8b3438b3be98e/e4d6b/partition-pg.png 345w,
+/static/1b445b15d3e357052ef8b3438b3be98e/08a84/partition-pg.png 460w"
+        sizes="(max-width: 460px) 100vw, 460px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html">Image Credit: AWS Docs</a></p>
+<p>This placement group spreads your instances across logical partitions such that groups of instances in one partition do not share the underlying hardware with groups of instances in different partitions. This strategy is typically used by large distributed and replicated workloads, such as Hadoop, Cassandra, and Kafka.</p>
+<p>Partition placement groups help reduce the likelihood of correlated hardware failures for your application. Amazon EC2 ensures that each partition within a placement group has its own set of racks. Each rack has its own network and power source. No two partitions within a placement group share the same racks, allowing you to isolate the impact of hardware failure within your application.</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 49.13294797687862%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAAAsTAAALEwEAmpwYAAACDElEQVQoz1XO11MaURTH8X3LjIbO0tkGrHQbZRHlRWdiiYlSFgVMoqElk0Rsf/83sxej8eEzv3PPuffOkcz0gB1rTq0yoV6dUt0eY9VmZM0RmfSAtHFJLvuFTGqAmRmiKTbJeJdkvIOu2iRibdRkD7/nmJV3B0hKvEdKuyClXmCoF2hJm4w+QEv2BWeuJmwMtU8k+Bmf61g89rmP8LoP8XmOlrXrEM/7D0hm6ortDWe7uVCrzKhXZyKz5pWwlhmhxLvEo210rS82cjZ1Uleds42m9FEVG0n2twkFOoSCbcJyh0ioixxoi4yGu6LnzFwrJ7hXP+JePfmvXvK6Tl9Ihew1G6UxpfwNm+V/ORGKuWvWi2Ny5le05EDQ1SHGM6dWEpf43Z/wPZOicpeYs428FJE7REPLXiTYIRntk4jYohbEnVfhYIeA94yAZ0nKZb5Rzo8p579T2/rBVnn6YqM4Iezv4HedEfScE3CfE3S/ptNzyN72C0mJXqJGB6ixIXpihJ4YYogcocWHxGSbSKBHJGC/Efb33vItU0rrN+SzU6pbv6ls/sKq3dJs3GFV/2BV74Sd2i271oK9+oJm/ZZycU4xP6OQm1IqzCnkZqyXfop/pEblnl3rnlplQbPxQKv5yF51QWvnkVbjif3GE63Kgn3rgQNH84m9+j2b5ow1Y4yZmpAxxqylJxjKNX8BoeVCIUeELAkAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Placement-Groups-Summary"
+        title="Placement-Groups-Summary"
+        src="/static/3c6d748bbb5d791bbd9399874580b729/1e043/pg-summary.png"
+        srcset="/static/3c6d748bbb5d791bbd9399874580b729/991de/pg-summary.png 173w,
+/static/3c6d748bbb5d791bbd9399874580b729/e4d6b/pg-summary.png 345w,
+/static/3c6d748bbb5d791bbd9399874580b729/1e043/pg-summary.png 690w,
+/static/3c6d748bbb5d791bbd9399874580b729/e3189/pg-summary.png 1035w,
+/static/3c6d748bbb5d791bbd9399874580b729/cd536/pg-summary.png 1114w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span><a href="https://acloudguru.com/">Image-Credit: Acloudguru</a></p>
+<h2 id="using-ec2-roles-and-instance-profiles" style="position:relative;"><a href="#using-ec2-roles-and-instance-profiles" aria-label="using ec2 roles and instance profiles permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Using EC2 Roles and Instance profiles</h2>
+<p>Applications that run on EC2 instances must include AWS credentials in their API requests. You could have your developers store AWS credentials directly within the EC2 instance and allow applications within that instance to use those credentials. But developers would then have to manage their credentials and ensure that credentials are passed securely to each instance and update each instance when it's time to rotate the credentials. This is too cumbersome and unsafe! Enter, <code class="language-cpptext">Instance Profile</code>.</p>
+<p>An instance profile is an entity or a container that can be used for connecting an IAM role to an EC2 instance. Think of a role as answering the question <code class="language-cpptext">what can I do?</code>. An instance profile will answer the question <code class="language-cpptext">who am I?</code>. Instance profiles provide temporary credentials that are rotated automatically.</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 53.17919075144509%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAACXBIWXMAAAsTAAALEwEAmpwYAAACTklEQVQoz4XO2U8aYRTG4bnohsAAwzILiyKLLAKyiIjVttaitpTUIouCG2oM9sZEaU2kprUu/a9/DUO0SRPTiyfny3tO3nzCRH4Jp/wa1buA6nuFRVzEbPxLNL3FaikhGpcxGd4x8mwRw9NFXjx5g/H5EmZDCfNI6WEK0WKJxFyDYGSLsdFD/N4jxu/5unjUDjZxBZu4iiSWCYztEAl1iIb3cSsNrMYVrKbVIeMqwnh4l+X5Cz5lz6ikzymmrphK3JFJ3jI99Zv4RB+r+SOSWMFlq5FKfqUwc0Gx0CfgP8IuVrAaK1hNFSRTBWFU7ZKLX5OIXpKM9llI95hLn5NNfmc2fUkudorbUWFMXkOTKgRNJXwjJRyG94RtZVT7ZzSxTNBa1ouFcU+X6dQ1kchPCjO3VMu3lJeuyCX7zGUumYmf6WUBpUrQXeVD8YCF9C4hT41cqIVqWyMZbPE6s4/iWEfwe79QSN+RSfwiN3XD8ssfzOZuSE3ekEvdEQ/3kSw1nNYmir1JfvqYfLaLLNXRXJs4LQ00xwZ+zxaK1EDwKofEQufEgz0igR752AmToTNiwR7x0DeCoyfIthqqvalziOs4xRqK1EQdsG/gMNewmwZ5HUF11lHsNZ1LqjPhrqI5a8j2OrKeD37S0MsUW2NYIjX1Qp2t8VA+mIImt9DkNm65jeJqMxmu49M2UV1tPde5WqiO/2nrU9Bc29xzy9vEsy38/i1Uxzbuf3aP23l4Cx55D6/cwe3cI+A7YL54SjJ6jObc1fPB/nEd/WZ4N/QHO+dfZ68zBxkAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Instance-Profile"
+        title="Instance-Profile"
+        src="/static/591d465ce276a7f08c352685adedc4bb/1e043/instance-profile.png"
+        srcset="/static/591d465ce276a7f08c352685adedc4bb/991de/instance-profile.png 173w,
+/static/591d465ce276a7f08c352685adedc4bb/e4d6b/instance-profile.png 345w,
+/static/591d465ce276a7f08c352685adedc4bb/1e043/instance-profile.png 690w,
+/static/591d465ce276a7f08c352685adedc4bb/40601/instance-profile.png 945w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span><a href="https://acloudguru.com/">Image Credit: Acloudguru</a></p>
+<p>When you create and attach the role to an EC2 instance, the creation and use of instance profile is actually handled behind the scenes. We'll create a role for our EC2 instance via CLI and also through management console.</p>
 <h2 id="best-practices" style="position:relative;"><a href="#best-practices" aria-label="best practices permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Best Practices</h2>
-<p>CHECK HERE: VERY INFORMATIVE! <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-best-practices.html">https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-best-practices.html</a></p></div><div class="post-module--post-meta--2SNYO"><div class="PostTags-module--tag-container--2fM2Y"><a href="/tags/blog"><span>blog</span></a><a href="/tags/aws"><span>AWS</span></a></div></div><hr/></div><nav><ul class="post-module--pagination--2K15k"><li><a rel="prev" href="/react-js-notes">← <!-- -->ReactJS Notes</a></li><li><a rel="next" href="/aws-s-3">AWS - S3<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--1ScUQ"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2Iyp5">Copyright © 2021. All rights reserved.</div></div></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
+<p>Check <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-best-practices.html">here</a> for best practices.</p></div><div class="post-module--post-meta--2SNYO"><div class="PostTags-module--tag-container--2fM2Y"><a href="/tags/blog"><span>blog</span></a><a href="/tags/aws"><span>AWS</span></a></div></div><hr/></div><nav><ul class="post-module--pagination--2K15k"><li><a rel="prev" href="/react-js-notes">← <!-- -->ReactJS Notes</a></li><li><a rel="next" href="/aws-s-3">AWS - S3<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--1ScUQ"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2Iyp5">Copyright © 2021. All rights reserved.</div></div></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
   
   
   if(true) {
