@@ -1,4 +1,110 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Iqbal Khan]]></title><description><![CDATA[My personal blog]]></description><link>https://iqbalyarkhan.github.io/</link><image><url>https://iqbalyarkhan.github.io//logos/logo-48.png</url><title>Iqbal Khan</title><link>https://iqbalyarkhan.github.io/</link></image><generator>GatsbyJS Advanced Starter</generator><lastBuildDate>Sun, 26 Dec 2021 08:03:43 GMT</lastBuildDate><atom:link href="https://iqbalyarkhan.github.io//rss.xml" rel="self" type="application/rss+xml"/><copyright><![CDATA[Copyright © 2021. All rights reserved.]]></copyright><item><title><![CDATA[AWS - DynamoDB]]></title><description><![CDATA[Table of Contents What is DynamoDB? Features DynamoDB Transactions DynamoDB On-Demand Backup and Restore Point in time recovery DynamoDB…]]></description><link>https://iqbalyarkhan.github.io//aws-dynamo-db</link><guid isPermaLink="false">https://iqbalyarkhan.github.io//aws-dynamo-db</guid><category><![CDATA[blog]]></category><category><![CDATA[AWS]]></category><pubDate>Sat, 25 Dec 2021 06:00:00 GMT</pubDate><content:encoded>&lt;h3 id=&quot;table-of-contents&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#table-of-contents&quot; aria-label=&quot;table of contents permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Table of Contents&lt;/h3&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Iqbal Khan]]></title><description><![CDATA[My personal blog]]></description><link>https://iqbalyarkhan.github.io/</link><image><url>https://iqbalyarkhan.github.io//logos/logo-48.png</url><title>Iqbal Khan</title><link>https://iqbalyarkhan.github.io/</link></image><generator>GatsbyJS Advanced Starter</generator><lastBuildDate>Mon, 27 Dec 2021 05:59:19 GMT</lastBuildDate><atom:link href="https://iqbalyarkhan.github.io//rss.xml" rel="self" type="application/rss+xml"/><copyright><![CDATA[Copyright © 2021. All rights reserved.]]></copyright><item><title><![CDATA[AWS - VPC]]></title><description><![CDATA[Table of Contents What is VPC? Intro Key Concepts 3 tier architecture Network diagram for VPC What is VPC? Amazon Virtual Private Cloud…]]></description><link>https://iqbalyarkhan.github.io//aws-vpc</link><guid isPermaLink="false">https://iqbalyarkhan.github.io//aws-vpc</guid><category><![CDATA[blog]]></category><category><![CDATA[AWS]]></category><pubDate>Sun, 26 Dec 2021 06:00:00 GMT</pubDate><content:encoded>&lt;h3 id=&quot;table-of-contents&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#table-of-contents&quot; aria-label=&quot;table of contents permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Table of Contents&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#what-is-vpc&quot;&gt;What is VPC?&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#intro&quot;&gt;Intro&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#key-concepts&quot;&gt;Key Concepts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#3-tier-architecture&quot;&gt;3 tier architecture&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#network-diagram-for-vpc&quot;&gt;Network diagram for VPC&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;what-is-vpc&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#what-is-vpc&quot; aria-label=&quot;what is vpc permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;What is &lt;a href=&quot;https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html&quot;&gt;VPC&lt;/a&gt;?&lt;/h2&gt;
+&lt;p&gt;Amazon Virtual Private Cloud (Amazon VPC) enables you to launch AWS resources into a virtual network that you&apos;ve defined. This virtual network closely resembles a traditional network that you&apos;d operate in your own data center, with the benefits of using the scalable infrastructure of AWS.&lt;/p&gt;
+&lt;h3 id=&quot;intro&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#intro&quot; aria-label=&quot;intro permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Intro&lt;/h3&gt;
+&lt;p&gt;Amazon VPC is the networking layer for Amazon EC2. You can think of a VPC as a virtual data center in the cloud. We&apos;ve already been using VPCs as seen in the EC2 section where we were provisioning our EC2s into the &lt;code class=&quot;language-cpptext&quot;&gt;default&lt;/code&gt; VPC. Every AWS account has a default VPC that&apos;s set up automatically.&lt;/p&gt;
+&lt;p&gt;VPC is logically isolated part of AWS cloud where you can define your own network. You have complete control of the virtual network including your own IP address range, subnets, route tables and network gateways. VPC is basically a fully customizable network.&lt;/p&gt;
+&lt;h3 id=&quot;key-concepts&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#key-concepts&quot; aria-label=&quot;key concepts permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Key Concepts&lt;/h3&gt;
+&lt;p&gt;The following are the key concepts for VPCs:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Virtual private cloud (VPC)&lt;/strong&gt; — A virtual network dedicated to your AWS account.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Subnet&lt;/strong&gt; — A range of IP addresses in your VPC. When you create a subnet, you&apos;ll choose a range of IP addresses that you want associated with that subnet. 1 subnet is always in 1 availability zone.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Route table&lt;/strong&gt; — A set of rules, called routes, that are used to determine where network traffic is directed. This allows us to communicate between subnets.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Internet gateway&lt;/strong&gt; — A gateway that you attach to your VPC to enable communication between resources in your VPC and the internet.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;VPC endpoint&lt;/strong&gt; — Enables you to privately connect your VPC to supported AWS services and VPC endpoint services powered by PrivateLink without requiring an internet gateway, NAT device, VPN connection, or AWS Direct Connect connection. Instances in your VPC do not require public IP addresses to communicate with resources in the service. Traffic between your VPC and the other service does not leave the Amazon network.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;CIDR block&lt;/strong&gt; — Classless Inter-Domain Routing. An internet protocol address allocation and route aggregation methodology. For CIDR visualization, check out this website: &lt;a href=&quot;https://cidr.xyz/&quot;&gt;cidr.xyz&lt;/a&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;NACLs&lt;/strong&gt; - Network access control lists that allow us to block specific IP addresses.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;3-tier-architecture&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#3-tier-architecture&quot; aria-label=&quot;3 tier architecture permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;3 tier architecture&lt;/h3&gt;
+&lt;p&gt;Usually we have a 3 tier architecture (web servers, application and DB). In such an architecture, our web servers are in a public facing subnet meaning these are accessible via port 80 or 443 (HTTP or HTTPS). The application tier is in a private subnet that handles our business logic (rendering the webpage, routing requests for backend, authN and authZ logic etc). The application tier is NOT accessible via the internet and can only speakw ith the web tier or the DB tier. Finally we have the database tier which is also in a private subnet and is responsible for maintaining our data. It can only speak with the application and nothing else.&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; &quot;
+    &gt;
+      &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 36.41618497109826%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAHCAYAAAAIy204AAAACXBIWXMAAAsTAAALEwEAmpwYAAABqklEQVQozz3OX2/SUACG8X4DgXJOT3t6eqB0DIwyMVumcdEZjReOwYABpdAW2OL/aPwExmj82o+RJV788ua5ex3tDonVgEhcEopLIjEg9gbUKyNcb4IrxrhygivHdy3HiMoEvzbHq17jVWd7qjpHVqY4TTVCVsesTs75/vKMvr3YdySuEE/XqLcb1JsS71WBel1S7y0wIufs8Ccvur857/7hWfsHzzu/sLLEaXhD3HtjWt6AbnBBWB8iKyOsuqJmZ7jxjJq5vqOnuGaKlhlWbGjIHU15s9+Wd4uur3ASf0wg5kg3RdRSpPvvwZRGMEVHK5KgoBmsiXVOSxf4JsV4OUYtMcGC0E/Rao7xlxixxkmCKc2o5CDe0o63HMQ7rFrQ1DOCxprjR595cvqN05OvPOi8w7cZxi952H3P46NPHPe/0O99pHf/A1aVOO1wTqRStFwSypRALkn0HKtTpM3xVY6JSiJT4HsZymZEwRYtCjw3Q9VXKHe1b6t2OEm4pRNmJDqjpZcc6IyuXhHJHKM3xNGWhimJTUliN7R0iZUFh/4tsX+D9Xf/aZnzF8b73jdk+EwMAAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;3-Tier&quot;
+        title=&quot;3-Tier&quot;
+        src=&quot;/static/b014df5efa2143fbf8d5406679806775/1e043/3-tier.png&quot;
+        srcset=&quot;/static/b014df5efa2143fbf8d5406679806775/991de/3-tier.png 173w,
+/static/b014df5efa2143fbf8d5406679806775/e4d6b/3-tier.png 345w,
+/static/b014df5efa2143fbf8d5406679806775/1e043/3-tier.png 690w,
+/static/b014df5efa2143fbf8d5406679806775/e3189/3-tier.png 1035w,
+/static/b014df5efa2143fbf8d5406679806775/d43b4/3-tier.png 1202w&quot;
+        sizes=&quot;(max-width: 690px) 100vw, 690px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+    &lt;/span&gt;&lt;a href=&quot;https://acloudguru.com&quot;&gt;Image Credit - Acloudguru&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;For applications that already exist in a corporate data center, we can create a hardware virtual private network (VPN) connection between the corporate data center and AWS and leverage AWS cloud as an extension of the corporate data center.&lt;/p&gt;
+&lt;h2 id=&quot;network-diagram-for-vpc&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#network-diagram-for-vpc&quot; aria-label=&quot;network diagram for vpc permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Network diagram for VPC&lt;/h2&gt;
+&lt;p&gt;Here&apos;s how we&apos;d usually go about creating a VPC network for a typical use-case:&lt;/p&gt;
+&lt;p&gt;(1) We first need to choose the region we want to deploy to&lt;/p&gt;
+&lt;p&gt;(2) Next we need to choose the IP address range which could be one of three:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;10.0.0.0 (we&apos;ll use this)&lt;/li&gt;
+&lt;li&gt;172.16.0.0&lt;/li&gt;
+&lt;li&gt;192.168.0.0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;(3) Create a route table, network acl and a router&lt;/p&gt;
+&lt;p&gt;(4) Creat a public subnet (10.0.1.0/24 IP address range), add an instance to it and configure security group&lt;/p&gt;
+&lt;p&gt;(5) Attach internet gateway to our VPC making our instance in our public subnet internet accessible&lt;/p&gt;
+&lt;p&gt;(6) Build a private subnet (10.0.2.0/24 IP address range) and attach a security group to it&lt;/p&gt;
+&lt;p&gt;(7) Optional: We can attach a virtual private gateway to our VPC that&apos;ll allow us to connect our corporate data center to our private subnet&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; &quot;
+    &gt;
+      &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 50.28901734104046%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAAAsTAAALEwEAmpwYAAACoUlEQVQoz0XP7U9SCwDH8bO2rAQiIA96OIAcOAQoAs5KChVR5HAMEBQ0QB7iQbfccj1pZa31sLX6J6p7e3nvdh9e3PsHtNaa9h/cf+V7Z2v14rPvu9/2E4xn0pgGM99pnDX8ZDJomI0aA6d0YnKSL7vTHD1c4nAvxdGBztFBlsOHGp/vzvPf/hQ78TiCJBYJKNfxuyuMSiWGrTojVh3J9tP5c9eYci/wdv0SvzSTvK8leLeZ5G0jxYfmLL+2F/mwOcvq+AyCXy4w6UwzIWeIOTOMjWQYlzJIlmVE8zKSRcdu1rAYdUyDWU4PZDl9KovFkGHgpMa0O0kxpiGcyGEcXD4eLOO1b3LV28Yjtgk4WgSlCh6xgEdcwWIqE5bz3JpLMq3o7C0kuJ2cwWhYwWYuYD+XZ8xdZMhSxGbOI1xwVlHsJd6s6pw1rXF3fo6vByk+PVjk9+5Vhi0l8vEmfz2osTm3zr97ef6+V2R0tI1hsIjNVEAW1zCbVjEb8gghVw2XWEOW+0hDddThClHXGhHnGmG5jGipc9FT4kVBIxXI8zK3yNN8lliww0KohNfVpJrYYCrYIuDrIoQ8TZSRJiuRCg6xzaRSJxPeYCl8nflQlRHxBtNqhRfLKdKhIq9zszzTUySifaoXc3hdNyhf3iA+0ePS5C5CSOmgynWerJSxWRvcW1ji8NESH/ez/NZN4hiqU0j0+XO/RWO+wT/3V/njdpnx0A6XozdxSw3SkSqR0DY+TxchqnYJqLv4xx5zQb2D33sL1b2NR2qhONo4hnvE/TWe5XKkx9Z5VUjzPKcxZG0S9G4T9PbZSVcopPeZubJ3fLlPVO0T8fWIHFfdYkLdJvLDFlG1R8zX+daor0vU1yGi9ggrHSa8HRTnFnZrG8nW4n/BaWAXcQhtpQAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Network-Diagram&quot;
+        title=&quot;Network-Diagram&quot;
+        src=&quot;/static/a4ea53019f641f925a374b228c23f3a4/1e043/network-diagram.png&quot;
+        srcset=&quot;/static/a4ea53019f641f925a374b228c23f3a4/991de/network-diagram.png 173w,
+/static/a4ea53019f641f925a374b228c23f3a4/e4d6b/network-diagram.png 345w,
+/static/a4ea53019f641f925a374b228c23f3a4/1e043/network-diagram.png 690w,
+/static/a4ea53019f641f925a374b228c23f3a4/e3189/network-diagram.png 1035w,
+/static/a4ea53019f641f925a374b228c23f3a4/b1001/network-diagram.png 1380w,
+/static/a4ea53019f641f925a374b228c23f3a4/387f2/network-diagram.png 1518w&quot;
+        sizes=&quot;(max-width: 690px) 100vw, 690px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+    &lt;/span&gt;&lt;a href=&quot;https://acloudguru.com&quot;&gt;Image Credit: acloudguru&lt;/a&gt;&lt;/p&gt;</content:encoded><author>iqbalyarkhan@icloud.com</author></item><item><title><![CDATA[AWS - DynamoDB]]></title><description><![CDATA[Table of Contents What is DynamoDB? Features DynamoDB Transactions DynamoDB On-Demand Backup and Restore Point in time recovery DynamoDB…]]></description><link>https://iqbalyarkhan.github.io//aws-dynamo-db</link><guid isPermaLink="false">https://iqbalyarkhan.github.io//aws-dynamo-db</guid><category><![CDATA[blog]]></category><category><![CDATA[AWS]]></category><pubDate>Sat, 25 Dec 2021 06:00:00 GMT</pubDate><content:encoded>&lt;h3 id=&quot;table-of-contents&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#table-of-contents&quot; aria-label=&quot;table of contents permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Table of Contents&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;#what-is-dynamodb&quot;&gt;What is DynamoDB?&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;#features&quot;&gt;Features&lt;/a&gt;&lt;/li&gt;
