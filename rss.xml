@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Iqbal Khan]]></title><description><![CDATA[My personal blog]]></description><link>https://iqbalyarkhan.github.io/</link><image><url>https://iqbalyarkhan.github.io//logos/logo-48.png</url><title>Iqbal Khan</title><link>https://iqbalyarkhan.github.io/</link></image><generator>GatsbyJS Advanced Starter</generator><lastBuildDate>Mon, 27 Dec 2021 05:59:19 GMT</lastBuildDate><atom:link href="https://iqbalyarkhan.github.io//rss.xml" rel="self" type="application/rss+xml"/><copyright><![CDATA[Copyright © 2021. All rights reserved.]]></copyright><item><title><![CDATA[AWS - VPC]]></title><description><![CDATA[Table of Contents What is VPC? Intro Key Concepts 3 tier architecture Network diagram for VPC What is VPC? Amazon Virtual Private Cloud…]]></description><link>https://iqbalyarkhan.github.io//aws-vpc</link><guid isPermaLink="false">https://iqbalyarkhan.github.io//aws-vpc</guid><category><![CDATA[blog]]></category><category><![CDATA[AWS]]></category><pubDate>Sun, 26 Dec 2021 06:00:00 GMT</pubDate><content:encoded>&lt;h3 id=&quot;table-of-contents&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#table-of-contents&quot; aria-label=&quot;table of contents permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Table of Contents&lt;/h3&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Iqbal Khan]]></title><description><![CDATA[My personal blog]]></description><link>https://iqbalyarkhan.github.io/</link><image><url>https://iqbalyarkhan.github.io//logos/logo-48.png</url><title>Iqbal Khan</title><link>https://iqbalyarkhan.github.io/</link></image><generator>GatsbyJS Advanced Starter</generator><lastBuildDate>Thu, 30 Dec 2021 06:45:41 GMT</lastBuildDate><atom:link href="https://iqbalyarkhan.github.io//rss.xml" rel="self" type="application/rss+xml"/><copyright><![CDATA[Copyright © 2021. All rights reserved.]]></copyright><item><title><![CDATA[AWS - VPC]]></title><description><![CDATA[Table of Contents What is VPC? Intro Key Concepts 3 tier architecture Network diagram for VPC IP address ranges Default Options Public…]]></description><link>https://iqbalyarkhan.github.io//aws-vpc</link><guid isPermaLink="false">https://iqbalyarkhan.github.io//aws-vpc</guid><category><![CDATA[blog]]></category><category><![CDATA[AWS]]></category><pubDate>Sun, 26 Dec 2021 06:00:00 GMT</pubDate><content:encoded>&lt;h3 id=&quot;table-of-contents&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#table-of-contents&quot; aria-label=&quot;table of contents permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Table of Contents&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;#what-is-vpc&quot;&gt;What is VPC?&lt;/a&gt;
 &lt;ul&gt;
@@ -7,7 +7,31 @@
 &lt;li&gt;&lt;a href=&quot;#3-tier-architecture&quot;&gt;3 tier architecture&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#network-diagram-for-vpc&quot;&gt;Network diagram for VPC&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#network-diagram-for-vpc&quot;&gt;Network diagram for VPC&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#ip-address-ranges&quot;&gt;IP address ranges&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#default-options&quot;&gt;Default Options&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#public-subnet-creation&quot;&gt;Public Subnet Creation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#private-subnet-creation&quot;&gt;Private Subnet Creation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#public-subnet-config&quot;&gt;Public Subnet Config&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#route-table-for-public-subnet&quot;&gt;Route Table for Public Subnet&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#add-public-subnet-to-new-route-table&quot;&gt;Add Public Subnet to New Route Table&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#create-ec2s&quot;&gt;Create EC2s&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#private-ec2-security-groups&quot;&gt;Private EC2 Security Groups&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#nat-gateways&quot;&gt;NAT Gateways&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#security-groups&quot;&gt;Security Groups&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#nacls&quot;&gt;NACLs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#vpc-endpoints&quot;&gt;VPC Endpoints&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#interface-endpoints&quot;&gt;Interface endpoints&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#gateway-endpoints&quot;&gt;Gateway endpoints&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#vpc-peering&quot;&gt;VPC Peering&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#sharing-applications-across-vpcs&quot;&gt;Sharing Applications across VPCs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#connect-data-center-to-aws&quot;&gt;Connect Data Center to AWS&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&quot;what-is-vpc&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#what-is-vpc&quot; aria-label=&quot;what is vpc permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;What is &lt;a href=&quot;https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html&quot;&gt;VPC&lt;/a&gt;?&lt;/h2&gt;
 &lt;p&gt;Amazon Virtual Private Cloud (Amazon VPC) enables you to launch AWS resources into a virtual network that you&apos;ve defined. This virtual network closely resembles a traditional network that you&apos;d operate in your own data center, with the benefits of using the scalable infrastructure of AWS.&lt;/p&gt;
@@ -69,16 +93,133 @@
 &lt;h2 id=&quot;network-diagram-for-vpc&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#network-diagram-for-vpc&quot; aria-label=&quot;network diagram for vpc permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Network diagram for VPC&lt;/h2&gt;
 &lt;p&gt;Here&apos;s how we&apos;d usually go about creating a VPC network for a typical use-case:&lt;/p&gt;
 &lt;p&gt;(1) We first need to choose the region we want to deploy to&lt;/p&gt;
+&lt;h3 id=&quot;ip-address-ranges&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#ip-address-ranges&quot; aria-label=&quot;ip address ranges permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;IP address ranges&lt;/h3&gt;
 &lt;p&gt;(2) Next we need to choose the IP address range which could be one of three:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;10.0.0.0 (we&apos;ll use this)&lt;/li&gt;
+&lt;li&gt;10.0.0.0 (we&apos;ll use this with /16 option. Only two valid options are /16 and /28)&lt;/li&gt;
 &lt;li&gt;172.16.0.0&lt;/li&gt;
 &lt;li&gt;192.168.0.0&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;(3) Create a route table, network acl and a router&lt;/p&gt;
-&lt;p&gt;(4) Creat a public subnet (10.0.1.0/24 IP address range), add an instance to it and configure security group&lt;/p&gt;
-&lt;p&gt;(5) Attach internet gateway to our VPC making our instance in our public subnet internet accessible&lt;/p&gt;
-&lt;p&gt;(6) Build a private subnet (10.0.2.0/24 IP address range) and attach a security group to it&lt;/p&gt;
+&lt;h3 id=&quot;default-options&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#default-options&quot; aria-label=&quot;default options permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Default Options&lt;/h3&gt;
+&lt;p&gt;(3) You&apos;ll be asked about tenancy. This is the same tenancy we discussed in the VPC section. You can run instances in your VPC on single-tenant, dedicated hardware. Select Dedicated to ensure that instances launched in this VPC are dedicated tenancy instances, regardless of the tenancy attribute specified at launch. Select Default to ensure that instances launched in this VPC use the tenancy attribute specified at launch. &lt;code class=&quot;language-cpptext&quot;&gt;Dedicated&lt;/code&gt; are more expensive! We&apos;ll use &lt;code class=&quot;language-cpptext&quot;&gt;Default&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;(4) As soon as we create our VPC, a main route table is created automatically for us, along with main network acl. In addition, a default security group is also created for our VPC.&lt;/p&gt;
+&lt;p&gt;(5) Go ahead and exmaine the route table associated with our VPC. Notice that there&apos;re routes associated with it but no subnets as shown under &lt;code class=&quot;language-cpptext&quot;&gt;Subnet associations&lt;/code&gt; section.&lt;/p&gt;
+&lt;p&gt;(6) However, going to the subnets section, you&apos;ll find subnets present. These are associated with our default VPC and not with the new VPC that you created.&lt;/p&gt;
+&lt;h3 id=&quot;public-subnet-creation&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#public-subnet-creation&quot; aria-label=&quot;public subnet creation permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Public Subnet Creation&lt;/h3&gt;
+&lt;p&gt;(7) Next, we&apos;ll create a public subnet (10.0.1.0/24 IP address range), add an instance to it and configure security group. To do so, click on &lt;code class=&quot;language-cpptext&quot;&gt;Create Subnet&lt;/code&gt;. You&apos;ll be asked to choose a VPC. We&apos;ll obviously choose the VPC we created earlier. Provide a region, &lt;code class=&quot;language-cpptext&quot;&gt;us-east-1a&lt;/code&gt; and name for your subnet. We&apos;ll name it using the convention: &lt;code class=&quot;language-cpptext&quot;&gt;&amp;lt;IP ADDRESS RANGE&amp;gt; - &amp;lt;REGION&amp;gt;&lt;/code&gt; which would translate to: &lt;code class=&quot;language-cpptext&quot;&gt;10.0.1.0 - us-east-1a&lt;/code&gt;. Next, we&apos;ll specify the IPv4 CIDR block: 10.0.1.0/24. We&apos;ll then click on &lt;code class=&quot;language-cpptext&quot;&gt;Create Subnet&lt;/code&gt;. You can see that this subnet is associated with the VPC you created in the steps above.&lt;/p&gt;
+&lt;p&gt;Notice under the Available IPv4 addresses, you&apos;ll see 251. If you go to &lt;a href=&quot;https://cidr.xyz/&quot;&gt;cidr.xyz&lt;/a&gt; and type in the CIDR block address you provided, it&apos;ll return 256. Why does AWS give us 5 fewer addresses? The first four IP addresses and the last IP address in each subnet CIDR block are not available for you to use, and cannot be assigned to an instance. For example, in a subnet with CIDR block 10.0.0.0/24, the following five IP addresses are reserved:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;10.0.0.0: Network address.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;10.0.0.1: Reserved by AWS for the VPC router.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;10.0.0.2: Reserved by AWS. The IP address of the DNS server is the base of the VPC network range plus two. For VPCs with multiple CIDR blocks, the IP address of the DNS server is located in the primary CIDR. We also reserve the base of each subnet range plus two for all CIDR blocks in the VPC. For more information, see Amazon DNS server.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;10.0.0.3: Reserved by AWS for future use.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;10.0.0.255: Network broadcast address. We do not support broadcast in a VPC, therefore we reserve this address.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;private-subnet-creation&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#private-subnet-creation&quot; aria-label=&quot;private subnet creation permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Private Subnet Creation&lt;/h3&gt;
+&lt;p&gt;(8) Similar to our public subnet, we&apos;ll create a private subnet. We&apos;ll place this private subnet in us-east-1b region. Therefore, we&apos;ll name this subnet as: &lt;code class=&quot;language-cpptext&quot;&gt;10.0.2.0 - us-east-1b&lt;/code&gt;. Now go to subnets tab to make sure both new subnets are available.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Side Note&lt;/strong&gt;: Just by creating the two subnets and giving them IP addresses, we haven&apos;t made them public or private yet! We&apos;ll do that in the steps below. Here&apos;s what we&apos;ve created so far (note the labelled subnets are not actually private or public as stated):&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; &quot;
+    &gt;
+      &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 49.71098265895954%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAAAsTAAALEwEAmpwYAAACXElEQVQoz43MyU5TARjF8bsT6MSdp5ZLpVBaAYEWMCKKKYUW2tJKy6W3AygBNCAsjEaMEl251MRXkJj4BLpwpw/gwjdAExc+w98wbNy5+OV8ycn5BF/HHL5LFzrmCHTOn/FfOL27OuZR/Bm+7Vzlz8txTp6N8etogp8v0mdOnqf4/TTJ94cjCIZaIdrj0RN2sY0qilhEEUvoUhFDPqdJJSLqIm+Lk3xsTHC8NsGxN8X7+hTH9dOc5NhN8a6YRhgIL5OO5s6MO3mSZpZhO4uj5LDEHPYFLZRHDeaQAzlCvjx6aAEtuIAjZdmduYmlVujsyJ8+rDISecCos0+f3kTvLqMGl+j2FQj5igR8y1hiAS+VYXZggWw8w2HmOkZoiZCvhBgokbCL9BpVuv0lhHjExZLraGKNzq4a928s8PXxbb48yvJp9xYJq8BY3OPDvsthxeVVtcyP10vMjDYJBFcJ+cuElTKO6SIFKwiDEY+w0sCU6+hSi8noCrV0gTupEpWxAra8QiJS4427yPZsif1Mns97M0yPbnBt0MPRXfosl6jlIYeqCEmnRURbx1LbhLV1FLGFv6tOwFcn4PfQuutYkkvCWqFPrxHTawxbZRyjyc5MiemRTRK96/RZTXRxDSEZ3cDWmmiii6k0Cevr2KqHrTbOmEoDQ2mgSk00+ZwitTBkj35rFUNaI2rUiUU20CQPYejyPWKxJ8TiRzg9B5jKBoZ8Omj/w1RamPIF5bzX5Taa1KbfbhJ3NjGVNsJo/w5TV/aYHDpgIrlHKr5NamDr/8TPMz24RSyyRVi9y1+i406dghwP2QAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;VPC-Part-1&quot;
+        title=&quot;VPC-Part-1&quot;
+        src=&quot;/static/2340cac4d78b64628686ca5af0fe7d06/1e043/vpc-creation-part-1.png&quot;
+        srcset=&quot;/static/2340cac4d78b64628686ca5af0fe7d06/991de/vpc-creation-part-1.png 173w,
+/static/2340cac4d78b64628686ca5af0fe7d06/e4d6b/vpc-creation-part-1.png 345w,
+/static/2340cac4d78b64628686ca5af0fe7d06/1e043/vpc-creation-part-1.png 690w,
+/static/2340cac4d78b64628686ca5af0fe7d06/e3189/vpc-creation-part-1.png 1035w,
+/static/2340cac4d78b64628686ca5af0fe7d06/b1001/vpc-creation-part-1.png 1380w,
+/static/2340cac4d78b64628686ca5af0fe7d06/b0de5/vpc-creation-part-1.png 1517w&quot;
+        sizes=&quot;(max-width: 690px) 100vw, 690px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+    &lt;/span&gt;&lt;a href=&quot;https://acloudguru.com&quot;&gt;Image Credit - Acloudguru&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;public-subnet-config&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#public-subnet-config&quot; aria-label=&quot;public subnet config permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Public Subnet Config&lt;/h3&gt;
+&lt;p&gt;(9) Alright, let&apos;s make our public subnet public:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;We&apos;ll first enable &lt;code class=&quot;language-cpptext&quot;&gt;Auto-assign public IPv4 address&lt;/code&gt; for the subnet 10.0.1.0-us-east-1a. That&apos;s because we want EC2s in that subnet to be public. To do so, choose the public subnet and click on Actions and then click on &lt;code class=&quot;language-cpptext&quot;&gt;Edit subnet settings&lt;/code&gt;. Then all we need to do is enable &lt;code class=&quot;language-cpptext&quot;&gt;Enable auto-assign public IPv4 addressInfo&lt;/code&gt;. This will make our subnet public.&lt;/li&gt;
+&lt;li&gt;Next, we&apos;ll create an internet gateway. Simply go to Internet Gateway and create one. Next, we need to attach it to your VPC by choosing your VPC name. &lt;strong&gt;You can only have 1 IGW attached to a VPC&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;Attaching an IGW is not enough. We need to add entries to our Route Table. So go to Route Tables and choose the VPC that you created. Go to routes tab and you&apos;ll see that a route already exists: 10.0.0.0/16. This route will ONLY allow our subnets to communicate with each other. Go ahead and click on Subnet Associations and you&apos;ll see this message:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;&quot;The following subnets have not been explicitly associated with any route tables and are therefore associated with the main route table:&quot;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In that table you&apos;ll see our public and private subnets. Any new subnets created are &lt;strong&gt;automatically associated with the main route table&lt;/strong&gt;. This is why you wouldn&apos;t want your main route table to have a route out to the internet, otherwise, any new subnets created and any EC2s in that subnet will always be internet accessible. Best practice is to create a new route table that&apos;s accessible via the internet. That&apos;s exactly what we&apos;ll do in the next section:&lt;/p&gt;
+&lt;h3 id=&quot;route-table-for-public-subnet&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#route-table-for-public-subnet&quot; aria-label=&quot;route table for public subnet permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Route Table for Public Subnet&lt;/h3&gt;
+&lt;p&gt;So let&apos;s create the route table for our public subnet. Go ahead and click on create route table and call it &lt;code class=&quot;language-cpptext&quot;&gt;InternetRT&lt;/code&gt; and choose our VPC. With the newly created route table selected, go back to routes and click on edit. We&apos;ll add a route to the internet. To do so, clik on add route and provide the following as destination:
+&lt;code class=&quot;language-cpptext&quot;&gt;0.0.0.0/0&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;and for Target, choose the internet gateway that you created. This will create a route out to the internet! What this does is that for destination &lt;code class=&quot;language-cpptext&quot;&gt;0.0.0.0/0&lt;/code&gt; (ie destination internet), forward requests to internet gateway that&apos;s attached to this VPC.&lt;/p&gt;
+&lt;h3 id=&quot;add-public-subnet-to-new-route-table&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#add-public-subnet-to-new-route-table&quot; aria-label=&quot;add public subnet to new route table permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Add Public Subnet to New Route Table&lt;/h3&gt;
+&lt;p&gt;Next, go back to your public subnet, click on Route table and then on edit route table association. Next, you can choose the internet route table that you created to be associated with your public subnet. Now if you go back to Route Tables and look under Subnet Associations, you&apos;ll now only see your private subnet under the message saying subnet not associated with any route table. You&apos;ll see your public subnet associated with the new route table.&lt;/p&gt;
+&lt;h3 id=&quot;create-ec2s&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#create-ec2s&quot; aria-label=&quot;create ec2s permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Create EC2s&lt;/h3&gt;
+&lt;p&gt;(10) We&apos;ll create 2 EC2 instances. One will be placed in our public subnet while the other will be placed in our private subnet. We&apos;ll create a standard EC2 instance and in configuration details provide our custom VPC for network instead of our default VPC. Additionally, we&apos;ll also provide the subnet where we want our EC2 instance launched. Remember, one will go into public subnet and the other in our private subnet. Add a tag to each EC2 for easy identification (WebServer for public and DBServer for private).&lt;/p&gt;
+&lt;p&gt;Notice that when public web server is created, it&apos;ll automatically be assigned a public IPv4 address. To test whether your WebServer is actually public, try to SSH into it and perform a &lt;code class=&quot;language-cpptext&quot;&gt;yum update&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id=&quot;private-ec2-security-groups&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#private-ec2-security-groups&quot; aria-label=&quot;private ec2 security groups permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Private EC2 Security Groups&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;IMPORTANT&lt;/strong&gt;: For your private DBServer, you don&apos;t want internet access for now. You only want access from to DBServer from WebServer:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;To allow MySQL traffic into DBServer. To do so, we&apos;ll set Inbound Rules. Since our DBServer is &lt;code class=&quot;language-cpptext&quot;&gt;MySQL/Aurora&lt;/code&gt;, we&apos;ll set the type as MySQL/Aurora and the source as &lt;code class=&quot;language-cpptext&quot;&gt;10.0.1.0/24&lt;/code&gt;. Remember, this is the CIDR block we chose for our WebServer. Therefore, we&apos;re saying that allow inbound traffic from that IP address range.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We also want to be able to ping our DBServer. To make that possible, we&apos;ll add another inbound rule with type &lt;code class=&quot;language-cpptext&quot;&gt;All ICMP - IPv4&lt;/code&gt;. Again, the source CIDR block would be the WebServer CIDR block: &lt;code class=&quot;language-cpptext&quot;&gt;10.0.1.0/24&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We also want HTTP access to our DBServer. To make that possible, we&apos;ll add another inbound rule with type &lt;code class=&quot;language-cpptext&quot;&gt;HTTP&lt;/code&gt;. Again, the source CIDR block would be the WebServer CIDR block: &lt;code class=&quot;language-cpptext&quot;&gt;10.0.1.0/24&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We also want SSH access to our DBServer. To make that possible, we&apos;ll add another inbound rule with type &lt;code class=&quot;language-cpptext&quot;&gt;SSH&lt;/code&gt;. Again, the source CIDR block would be the WebServer CIDR block: &lt;code class=&quot;language-cpptext&quot;&gt;10.0.1.0/24&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;NOTICE: we&apos;re adding SSH Inbound Rule ONLY from WebServer for demo purposes.&lt;/p&gt;
+&lt;p&gt;Now, let&apos;s grab the private IPv4 address for our DBServer and from our connected WebServer terminal, see if we&apos;re able to ping our DBServer. To do so, we&apos;ll run:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-cppbash&quot;&gt;&lt;code class=&quot;language-cppbash&quot;&gt;&lt;span class=&quot;token function&quot;&gt;ping&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt;DB_SERVER_IP_ADDRESS&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now, try to connect to the DBServer in another terminal where you&apos;re not SSHed into your WebServer. That won&apos;t be possible since our security groups do not allow that!&lt;/p&gt;
+&lt;p&gt;Now SSH into your DBServer via the WebServer using:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-cppbash&quot;&gt;&lt;code class=&quot;language-cppbash&quot;&gt;&lt;span class=&quot;token function&quot;&gt;ssh&lt;/span&gt; -i &lt;span class=&quot;token string&quot;&gt;&quot;kvPair.pem&quot;&lt;/span&gt; ec2-user@&lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt;DBServerPrivateIP&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Once in, elevate yourself to &lt;code class=&quot;language-cpptext&quot;&gt;su&lt;/code&gt; and try running &lt;code class=&quot;language-cpptext&quot;&gt;yum update -y&lt;/code&gt;. You&apos;ll get a timeout! This is obviously not what we want! We want no internet traffic coming in but at the same time we want our servers to be up to date with latest security patches. We&apos;ll look at how to enable this outflow in the next section.&lt;/p&gt;
+&lt;p&gt;Here&apos;s a demo showing what we&apos;ve done so far:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Create a VPC in a region&lt;/li&gt;
+&lt;li&gt;Create 2 subnets in that region. Use CIDR block &lt;code class=&quot;language-cpptext&quot;&gt;10.0.1.0/24&lt;/code&gt; for public subnet and &lt;code class=&quot;language-cpptext&quot;&gt;10.0.2.0/24&lt;/code&gt; for private subnet&lt;/li&gt;
+&lt;li&gt;For public subnet:
+&lt;ul&gt;
+&lt;li&gt;Create Internet Gateway&lt;/li&gt;
+&lt;li&gt;Enable auto-assign public IPv4 address&lt;/li&gt;
+&lt;li&gt;Add route out to the internet using &lt;code class=&quot;language-cpptext&quot;&gt;0.0.0.0/0&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;For private subnet:
+&lt;ul&gt;
+&lt;li&gt;Do nothing for now!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Create 2 EC2 instances, one for public subnet and one for private subnet&lt;/li&gt;
+&lt;li&gt;For public subnet EC2, add SSH, HTTP and HTTPS security group rules&lt;/li&gt;
+&lt;li&gt;For private subnet EC2, add HTTP, PING and MySQL/Aurora Inbound Rules from our public subnet CIDR block&lt;/li&gt;
+&lt;li&gt;Ping private subnet EC2 from public subnet EC2&lt;/li&gt;
+&lt;li&gt;SSH into DBServer from WebServer&lt;/li&gt;
+&lt;li&gt;Try yum update for DBServer (which will timeout)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- copy and paste. Modify height and width if desired. --&gt;
+&lt;div class=&quot;gatsby-resp-iframe-wrapper&quot; style=&quot;padding-bottom: 52.859135285913524%; position: relative; height: 0; overflow: hidden; &quot; &gt; &lt;iframe class=&quot;embeddedObject shadow resizable&quot; name=&quot;embedded_content&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; type=&quot;text/html&quot; style=&quot;overflow:hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; &quot; src=&quot;https://www.screencast.com/users/IqbalKhan8502/folders/Capture/media/f12d64a9-219c-4e09-ade9-1b5fe11f7c21/embed&quot; webkitallowfullscreen=&quot;&quot; mozallowfullscreen=&quot;&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt; &lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;SIDE NOTE&lt;/strong&gt;:  SSH should be disabled by default but for demo purposes, I&apos;ve added SSH access to DBServer security group.&lt;/p&gt;
 &lt;p&gt;(7) Optional: We can attach a virtual private gateway to our VPC that&apos;ll allow us to connect our corporate data center to our private subnet&lt;/p&gt;
 &lt;p&gt;&lt;span
       class=&quot;gatsby-resp-image-wrapper&quot;
@@ -104,7 +245,264 @@
         loading=&quot;lazy&quot;
         decoding=&quot;async&quot;
       /&gt;
-    &lt;/span&gt;&lt;a href=&quot;https://acloudguru.com&quot;&gt;Image Credit: acloudguru&lt;/a&gt;&lt;/p&gt;</content:encoded><author>iqbalyarkhan@icloud.com</author></item><item><title><![CDATA[AWS - DynamoDB]]></title><description><![CDATA[Table of Contents What is DynamoDB? Features DynamoDB Transactions DynamoDB On-Demand Backup and Restore Point in time recovery DynamoDB…]]></description><link>https://iqbalyarkhan.github.io//aws-dynamo-db</link><guid isPermaLink="false">https://iqbalyarkhan.github.io//aws-dynamo-db</guid><category><![CDATA[blog]]></category><category><![CDATA[AWS]]></category><pubDate>Sat, 25 Dec 2021 06:00:00 GMT</pubDate><content:encoded>&lt;h3 id=&quot;table-of-contents&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#table-of-contents&quot; aria-label=&quot;table of contents permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Table of Contents&lt;/h3&gt;
+    &lt;/span&gt;&lt;a href=&quot;https://acloudguru.com&quot;&gt;Image Credit: acloudguru&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&quot;nat-gateways&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#nat-gateways&quot; aria-label=&quot;nat gateways permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;NAT Gateways&lt;/h2&gt;
+&lt;p&gt;From the previous demo, you can see that DBServer was not able to perfrom a yum update. To prevent outside traffic from reaching our DBServer BUT at the same time, enabling DBServer to reach out to the internet would require something called a NAT gateway. A NAT gateway is a Network Address Translation (NAT) service. You can use a NAT gateway so that instances in a private subnet can connect to services outside your VPC but external services cannot initiate a connection with those instances.&lt;/p&gt;
+&lt;p&gt;When you create a NAT gateway, you specify one of the following connectivity types:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Public – (Default)&lt;/strong&gt; Instances in private subnets can connect to the internet through a public NAT gateway, but cannot receive unsolicited inbound connections from the internet. You create a public NAT gateway in a public subnet and must associate an elastic IP address with the NAT gateway at creation. You route traffic from the NAT gateway to the internet gateway for the VPC. Alternatively, you can use a public NAT gateway to connect to other VPCs or your on-premises network. In this case, you route traffic from the NAT gateway through a transit gateway or a virtual private gateway.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Private&lt;/strong&gt; – Instances in private subnets can connect to other VPCs or your on-premises network through a private NAT gateway. You can route traffic from the NAT gateway through a transit gateway or a virtual private gateway. You cannot associate an elastic IP address with a private NAT gateway. You can attach an internet gateway to a VPC with a private NAT gateway, but if you route traffic from the private NAT gateway to the internet gateway, the internet gateway drops the traffic.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;When our DBServer tries to reach out to the internet, it is unable to do so. That&apos;s because there&apos;s no route in the route table that allows traffic out to the internet. Similarly, no traffic from the internet can acccess our private subnet.&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; &quot;
+    &gt;
+      &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 43.35260115606936%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAAAsTAAALEwEAmpwYAAACTklEQVQoz0XJy04TARjF8Uk0QaTQDh06nemFaenQAi0tpYEELIiGttP7jUlb6IW7hRJ1wUJJUEyMLl35GK5cmvgW7PQdTNz/jYBx8cv5zvkE/2QLzdNA8zZR5SqSWMBhL+K0F5Hv0in9p/y7734uRwm7Lc/IgxSjw2mEuJYjoWVZ8mWJuAzm1RS6I41qM3CLBi4xg2y9pVgzSKMGii1zszutaU6Tj4lOFhkeyiFacgi6s0XEtUvY1WNa6RJ07qCIdSTrFhNWE4d1i0oshbmYZsVv8D67StybxfKwgs1SYspZZtpVxTpSwj5WRrDbmpys52klDL4/T/L7s8G7TJJ7Q3VksYZib3Cxuc5VZo3mksGPTzXy0Rz3h0zEsRqyfQuXw8QyXEYcrSL45W1m9WPC/l36jwq8ytXJzFWxjXVwS23c9iaX1SofmiaVmMG3wQoboQIhtUZIrRJQTIqJBjP6IQFvB8Gr9Ej4Gsx5thmz7qFKbfxKm7C3hU/t4hzf5rJc4WOjTm4uy5fOMquBCvlIkfXpMiF3k0GqxdLiS+ZDxwjyRI9nayU250yWtRLXFytcv3nKz6skveUsk9oZV9kMb3Npzp6Y/DI1KuEi0vgObqmFV26jKW1ESwNZbCGEfH0i86+ZnT1H106Ih/pEfF0iWpsptYvfc8iLjQLnm0Xq8RpfawukZmtIYg/3RBvd1SHi30WVungcXYTFmT4LoVPif80MmA8OiOj9G7Fgn2jgkAV9n7h+QDRwQDR4SEw/IBa47fHpI4KTR7gn9vDK+/wBFcowMVYusV8AAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Private-Subnet-Internet-Connection&quot;
+        title=&quot;Private-Subnet-Internet-Connection&quot;
+        src=&quot;/static/2f563e51320eea0889b401d02b499b4a/1e043/private-subnet.png&quot;
+        srcset=&quot;/static/2f563e51320eea0889b401d02b499b4a/991de/private-subnet.png 173w,
+/static/2f563e51320eea0889b401d02b499b4a/e4d6b/private-subnet.png 345w,
+/static/2f563e51320eea0889b401d02b499b4a/1e043/private-subnet.png 690w,
+/static/2f563e51320eea0889b401d02b499b4a/e3189/private-subnet.png 1035w,
+/static/2f563e51320eea0889b401d02b499b4a/b1001/private-subnet.png 1380w,
+/static/2f563e51320eea0889b401d02b499b4a/c0566/private-subnet.png 1544w&quot;
+        sizes=&quot;(max-width: 690px) 100vw, 690px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+    &lt;/span&gt;&lt;a href=&quot;https://acloudguru.com&quot;&gt;Image Credit: acloudguru&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The solution to this issue is to provision a NAT Gateway in the public subnet.&lt;/strong&gt; You can use a public NAT gateway to enable instances in a private subnet to send outbound traffic to the internet, but the internet cannot establish connections to the private instances. Once the NAT gateway is created in the public subnet, our private DBServer instance can reach out to the NAT Gateway (remember, our private DBServer can speak with other subnets in our VPC). Once DBServer connects to NAT Gateway, the request is sent to network ACL, to route table, the router and then the internet gateway!&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; &quot;
+    &gt;
+      &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 44.50867052023121%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAAAsTAAALEwEAmpwYAAACVklEQVQoz03Qz0+SAQDGcY6pMOB9QUBe4BXhRcEXBaTXavNn+r4YvxXBF4EETMXcsk6tttpcrXlo1dba2ry1tS6dOrb1R3Tq2j/ybbq2Ojz7HJ7T81j83i3CcpOQ1CDorzMqlnALRTxiEa/4V1cRn+ufl/m/dwslbMMG1iEdSzxQJCvrzMk6qaBBYmwd1b9GQMjhc+SQnAY+h4HLZuC1G4i2HC5bjoCgI1pzLEeWaM3rDA+XcYxsYJmSaiieFqq0R8Rzl4i7hSTUcI5U8AubOK014r48bW2NpHSHnrZAJ7vE0LUyTlsZn6NAaryMaK8i2EpYJsaapEJVnhgFTpdW+f1qnR8PliloJmd5naDXpKrt8HFLo66V+f64wpejHHanicO2hdNWQRqtIdhrOKyVy8kmitRGjR1SnC7wpmXyormPpg6YnxkQDuxjzNS46Fcopatc7K7wrr6GOnVAOlRhzL2DPtsgEW4xHuhgicttxr0tMnKDYOiYaPQEn9hCdteRR01ER4fbiU0+nZgUUpu8Li5wtrHC9XiX/s08SuSQ0w2T9fkDbmiPsChyj5S8zctiHo+nx/vNBX49X+LnszW+9hZwCR10dZsPW4vkp4t8e1jl81EFh7VBzF/H42xweZvX1cLj3MGSnOgTjZwyM/sUSTohPXnErekemrJLJtzEJfZYjpuclwz0RI231UXOS6vY7Xt4xQ4+sU0y3CHo6+J3t7GkYwdk4wPSkwOyiWNSU/dRowPUyCFJ5YjM5AFzSg8t1r1y7souaaV/lYzSYzZ6j6C3T2C0yx/d7DP0v1xBgwAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;NAT-Gateway&quot;
+        title=&quot;NAT-Gateway&quot;
+        src=&quot;/static/c66566e17fdae9a9d138a2eacedcc89f/1e043/nat-gateway.png&quot;
+        srcset=&quot;/static/c66566e17fdae9a9d138a2eacedcc89f/991de/nat-gateway.png 173w,
+/static/c66566e17fdae9a9d138a2eacedcc89f/e4d6b/nat-gateway.png 345w,
+/static/c66566e17fdae9a9d138a2eacedcc89f/1e043/nat-gateway.png 690w,
+/static/c66566e17fdae9a9d138a2eacedcc89f/e3189/nat-gateway.png 1035w,
+/static/c66566e17fdae9a9d138a2eacedcc89f/b1001/nat-gateway.png 1380w,
+/static/c66566e17fdae9a9d138a2eacedcc89f/fb4e7/nat-gateway.png 1519w&quot;
+        sizes=&quot;(max-width: 690px) 100vw, 690px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+    &lt;/span&gt;&lt;a href=&quot;https://acloudguru.com&quot;&gt;Image Credit: acloudguru&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As you might remember from the previous section, we&apos;re not able to SSH into our DBServer apart from our WebServer. We enabled SSH from &lt;code class=&quot;language-cpptext&quot;&gt;10.0.1.0/24&lt;/code&gt; to our Inbound Rule for security group that&apos;s attaced to our DBServer. Next, we SSHed into our WebServer, imported the .pem file into that EC2 instance, and SSHed into our DBServer. We saw that we aren&apos;t able to perform a &lt;code class=&quot;language-cpptext&quot;&gt;yum update -y&lt;/code&gt; from the DBServer.&lt;/p&gt;
+&lt;p&gt;To enable internet access from private subnet, we&apos;ll now create a NAT Gateway. To do so, we&apos;ll follow these steps:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Go to NAT Gateways and create NAT gateway&lt;/li&gt;
+&lt;li&gt;Call it DBServerNatGateway&lt;/li&gt;
+&lt;li&gt;It&apos;ll ask you to choose a subnet, choose your public subnet&lt;/li&gt;
+&lt;li&gt;Connectivity type: Public&lt;/li&gt;
+&lt;li&gt;Choose to Allocate Elastic IP address&lt;/li&gt;
+&lt;li&gt;We also need to create a route out to the internet for requests originating from our private subnet. To do so, follow these steps:
+&lt;ul&gt;
+&lt;li&gt;Go to your route tables and look for the main route table associated with our VPC. Why main route table? Because remember that the main route table is used for unassociated subnets. We never associated our private subnet with any specific route table.&lt;/li&gt;
+&lt;li&gt;Once chosen, go ahead and add the following route: &lt;code class=&quot;language-cpptext&quot;&gt;0.0.0.0/0&lt;/code&gt; and target as the NAT gateway you created.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Run &lt;code class=&quot;language-cpptext&quot;&gt;yum update -y&lt;/code&gt; in your DBServer to make sure that the DBServer is able to perform the update!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- copy and paste. Modify height and width if desired. --&gt;
+&lt;div class=&quot;gatsby-resp-iframe-wrapper&quot; style=&quot;padding-bottom: 52.64623955431755%; position: relative; height: 0; overflow: hidden; &quot; &gt; &lt;iframe class=&quot;embeddedObject shadow resizable&quot; name=&quot;embedded_content&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; type=&quot;text/html&quot; style=&quot;overflow:hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; &quot; src=&quot;https://www.screencast.com/users/IqbalKhan8502/folders/Capture/media/e56e526c-03b6-4c78-9f22-5d83234f3569/embed&quot; webkitallowfullscreen=&quot;&quot; mozallowfullscreen=&quot;&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt; &lt;/div&gt;
+&lt;h2 id=&quot;security-groups&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#security-groups&quot; aria-label=&quot;security groups permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Security Groups&lt;/h2&gt;
+&lt;p&gt;Here&apos;s what our VPC setup looks like right now (minus the VP Gateway):&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; &quot;
+    &gt;
+      &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 46.24277456647399%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAAAsTAAALEwEAmpwYAAACcklEQVQozyWOzUuTAQDGB0llUMvPudd9uHcfus1tpfv0Yx9MpnPf2+vcllPfpU4neggs0oNopJQUdOyDCCrpEp0i6FjXbhFFB7tE9A94/oV2+PEcnh8Pj6K7dZKYM4tLzNNvkHCIBVxGiSumKby2MnZ9DpVyEpUyzsclH9+243y5GeXH7iTfT9iJ83VrjKNNP49SPhS6y+MsjYzSJ0qYeyS0QgFVZ54WZYpzZ8dpuZTA0hWj4BzhfsLNq9kh3skedpJh7maj3ElHeCCNcZCPMOMOoehpT2PQSdRCudNHt5MJ3q5neFZL8qQcZNiSQB5JwHMnm/EYT8tBfm55USqnaGpKcqYpRXdrmgvnUzQ3Z1CYVHlETYGyP4fYlWN7LMCn9SE+NMJ8XgsQdySQg1l4GWQvN8FhPcmv/RhOaw1Np0SbMotDV0Boy9F6MYNC7JzCaigy7qly1VLBZSjgN2fxGDMEzBk0qiIpa5S/twwseEPsx7y8n7FiNdeoj6awiDKL0SKlSA2v5waKPqGESVtmIzKBXSjwoujn+OEQf+5FOD7wMuNLIoen4XWY/Xyaw+UMR3sxBmx1xgeqaDoq+EQJpziDzVxHYVFXcPXOMeTfYMC1dipNj1TI+UrE+9OYdbM0Ill43Mt+Js4beYzfu3606nnsfQ1MplXq0RLXYg1Cwc2TwSrefplUeIV0ZIVRT4NQYJVB5zJCl4xemMfVU2ZqMI3bWGK0VyLuyKFXV+lRV9ELc7iNFfr0MhaxjsLWLRMyzjIsVk+xaeawauawaeex62rYdDV6tdfRqZcwaxYwdS9gEBax6f93J2nX1tB0yAjt8/wDTkVPM/Wio7AAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Security-1&quot;
+        title=&quot;Security-1&quot;
+        src=&quot;/static/28f258107b7493dc44a5c58d947caa19/1e043/security-1.png&quot;
+        srcset=&quot;/static/28f258107b7493dc44a5c58d947caa19/991de/security-1.png 173w,
+/static/28f258107b7493dc44a5c58d947caa19/e4d6b/security-1.png 345w,
+/static/28f258107b7493dc44a5c58d947caa19/1e043/security-1.png 690w,
+/static/28f258107b7493dc44a5c58d947caa19/e3189/security-1.png 1035w,
+/static/28f258107b7493dc44a5c58d947caa19/b1001/security-1.png 1380w,
+/static/28f258107b7493dc44a5c58d947caa19/8b84a/security-1.png 1531w&quot;
+        sizes=&quot;(max-width: 690px) 100vw, 690px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+    &lt;/span&gt;&lt;a href=&quot;https://acloudguru.com&quot;&gt;Image Credit: acloudguru&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;When a request comes in from the internet, it hits our router that defers to our route table. The request then goes through NACL and then finally to our security group. The security group is our last line of defense. If you have internet connectivity issues in your VPC, check to see if the route table has correct entry, check if NACL rules are correct (we&apos;ll discuss this later) and finally check your security groups.&lt;/p&gt;
+&lt;p&gt;Security groups are stateful: if you send a request from your instance, the response traffic for that request is allowed to flow in both directions. If port 80 is open, requests can come in via that port and can go out through that port as well. &lt;strong&gt;Responses to allowed inbound traffic are allowed to flow out, regardless of outbound rules&lt;/strong&gt;. So if you open port 80 to the world for inbound and try to block outbound at port 80, it won&apos;t work.&lt;/p&gt;
+&lt;h2 id=&quot;nacls&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#nacls&quot; aria-label=&quot;nacls permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;NACLs&lt;/h2&gt;
+&lt;p&gt;A NACL is a layer of security for your VPC that acts as a firewall for controlling traffic in and out of one or more subnets.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Default NACLs ALLOW all inbound and outbound traffic.&lt;/li&gt;
+&lt;li&gt;If you create a custom NACL, it&apos;ll DENY all inbound and outbound traffic until you add rules.&lt;/li&gt;
+&lt;li&gt;Each subnet in your VPC must be associated with a NACL. A single NACL can be tied to multiple subnets but each subnet must only have 1 NACL associated&lt;/li&gt;
+&lt;li&gt;If you don&apos;t explicitly associate a subnet with a NACL, the subnet is automatically associated with default NACL.&lt;/li&gt;
+&lt;li&gt;Best practice is to block IP addresses using NACLs and not security groups&lt;/li&gt;
+&lt;li&gt;NACLs contain a numbered list of rules that are evaluated in order, starting with the lowest numbered rule.&lt;/li&gt;
+&lt;li&gt;NACLs have separate inbound and outbound rules and each rule can be either allow or deny&lt;/li&gt;
+&lt;li&gt;NACLs are stateless: responses to allowed inbound traffic are subject to the rules for outbound traffic and vice versa&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Let&apos;s look at a demo:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ssh into the WebServer and install apache: &lt;code class=&quot;language-cpptext&quot;&gt;sudo yum install httpd&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;run &lt;code class=&quot;language-cpptext&quot;&gt;sudo service httpd start&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-cpptext&quot;&gt;cd /var/www/html&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;create a index.html file: echo &quot;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Hello!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&quot; &gt; index.html&lt;/li&gt;
+&lt;li&gt;Now visit the public address of your WebServer and you should see hello! Close this tab&lt;/li&gt;
+&lt;li&gt;Now go to Network ACLs in AWS console and check Inbound Rules for your test VPC: You&apos;ll see it allows all traffic with rule number 100 and a deny rule after that.&lt;/li&gt;
+&lt;li&gt;Let&apos;s create a new NACL and choose our VPC.&lt;/li&gt;
+&lt;li&gt;Looking at the rules of the newly created NACL, you&apos;ll see it denies both inboud and outbound traffic&lt;/li&gt;
+&lt;li&gt;Try associating our public subnet with this NACL and hit save. Re-open the public EC2&apos;s URl page and you&apos;ll see there&apos;s an error now!&lt;/li&gt;
+&lt;li&gt;Edit NACLs inbound rule. Start with a rule number of 100 and increment by 100 for each new rule. Rule number 100 will be checked first, then 200 and so on. Items below show what I&apos;ve added (Rule number -&gt; Type -&gt; Source -&gt; Allow/Deny)
+&lt;ul&gt;
+&lt;li&gt;100 -&gt; HTTP -&gt; 0.0.0.0/0 -&gt; ALLOW&lt;/li&gt;
+&lt;li&gt;200 -&gt; SSH -&gt; 0.0.0.0/0 -&gt; ALLOW&lt;/li&gt;
+&lt;li&gt;Since NACLs are stateless, we need to add similar rules to outbound rules as well&lt;/li&gt;
+&lt;li&gt;100 -&gt; HTTP -&gt; 0.0.0.0/0 -&gt; ALLOW&lt;/li&gt;
+&lt;li&gt;200 -&gt; SSH -&gt; 0.0.0.0/0 -&gt; ALLOW&lt;/li&gt;
+&lt;li&gt;We also need to add ephemeral ports:
+&lt;ul&gt;
+&lt;li&gt;300 -&gt; Custom TCP -&gt; 1024-65535 (This is the port range) -&gt; 0.0.0.0/0 -&gt; ALLOW&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Refresh the webpage and you should see the same Hello page again!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- copy and paste. Modify height and width if desired. --&gt;
+&lt;div class=&quot;gatsby-resp-iframe-wrapper&quot; style=&quot;padding-bottom: 53.546592489568845%; position: relative; height: 0; overflow: hidden; &quot; &gt; &lt;iframe class=&quot;embeddedObject shadow resizable&quot; name=&quot;embedded_content&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; type=&quot;text/html&quot; style=&quot;overflow:hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; &quot; src=&quot;https://www.screencast.com/users/IqbalKhan8502/folders/Capture/media/ec8549ff-76cb-465c-ba83-c986ba0f611a/embed&quot; webkitallowfullscreen=&quot;&quot; mozallowfullscreen=&quot;&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt; &lt;/div&gt;
+&lt;p&gt;A few caveats:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If there&apos;re two conflicting rules, the rule that shows first in sorted order is one that&apos;s applied. Example:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-cppbash&quot;&gt;&lt;code class=&quot;language-cppbash&quot;&gt;&lt;span class=&quot;token number&quot;&gt;50&lt;/span&gt; HTTP&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;80&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; Deny
+&lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt; HTTP&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;80&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; Allow&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Deny will remain in effect even though there&apos;s an allow!&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;To deny an IP address, say you have the following rules:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-cppbash&quot;&gt;&lt;code class=&quot;language-cppbash&quot;&gt;&lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt; HTTP&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;80&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; Allow&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;You&apos;ll have to add the deny with a lower rule number than that of HTTP(80) Allow:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-cppbash&quot;&gt;&lt;code class=&quot;language-cppbash&quot;&gt;&lt;span class=&quot;token number&quot;&gt;99&lt;/span&gt; HTTP&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;80&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; Deny
+&lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt; HTTP&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;80&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; Allow&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;vpc-endpoints&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#vpc-endpoints&quot; aria-label=&quot;vpc endpoints permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;VPC Endpoints&lt;/h2&gt;
+&lt;p&gt;A VPC endpoint enables connections between a virtual private cloud (VPC) and supported services, without requiring that you use an internet gateway, NAT device, VPN connection, or AWS Direct Connect connection. Therefore, your VPC is not exposed to the public internet. Traffic between your VPC and the other service does not leave the Amazon network.&lt;/p&gt;
+&lt;p&gt;VPC endpoints are virtual devices. They are horizontally scaled, redundant, and highly available VPC components. The following are the different types of VPC endpoints. You create the type of VPC endpoint that&apos;s required by the supported service.&lt;/p&gt;
+&lt;h3 id=&quot;interface-endpoints&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#interface-endpoints&quot; aria-label=&quot;interface endpoints permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Interface endpoints&lt;/h3&gt;
+&lt;p&gt;An interface endpoint is an elastic network interface with a private IP address from the IP address range of your subnet. It serves as an entry point for traffic destined to a service that is owned by AWS or owned by an AWS customer or partner.&lt;/p&gt;
+&lt;h3 id=&quot;gateway-endpoints&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#gateway-endpoints&quot; aria-label=&quot;gateway endpoints permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Gateway endpoints&lt;/h3&gt;
+&lt;p&gt;A gateway endpoint is a gateway that is a target for a route in your route table used for traffic destined to either Amazon S3 or DynamoDB.&lt;/p&gt;
+&lt;p&gt;For the next demo, we&apos;ll have our DBServer EC2 instance communicate with S3 via a VPC endpoint of type gateway endpoint:&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; &quot;
+    &gt;
+      &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 50.28901734104046%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAAAsTAAALEwEAmpwYAAACi0lEQVQoz0XKb08SAQCA8XtXKiiHwIGHB3gcHP/BVWptFMJh2hHggQJygJniKLU/a7VeVGur3tZcvewr1Ddo62P0BfoYT6u1evF78+wRROcGerRDUuuSTfZJxnqk4ntkkjYpfY98Zkgw0GD6QhnntPGPY+qvaYOZi+V/hHlXjZQ+IhkfkYgNCMktFLlFZLFFJNhCVdrIUgP3nIlHNPn9u+dq+NwmktvE+7uJt3FMbeCYqiKE/E3SCwb5YIWcXEb3lUn7y4TEKpJzA8lZRXYZZBYMNF+VhFSmIK+z4NrAO7vJFWUde3UTx3QN18wWgiZbqL4uicA+Mf+IiGeI4u4wP2sRcFm4nW2SQYt3ZpHdZYNXtSpfx9fxidvMzjTwu26zEm3gmWsgOuoIcaWLJHZ5XKnTv7TF90cVfrw2aOYMTkq3uJFoUtCGnLdL3Lm2xYeRxbdnJvn0IfOuHRxTTcKBXXyihThrIehKj7C3R04fs6J1eWHWedvewUjvkNEnJNQxiYDF55MBdyu7nF69yqf6MgV9n0mpQTRyh+NKh+3iXYrFpwjJsM2iNKAQ6rAkj/B4DlClHkFvn9Voh1jQJr+0x/tWheGayZtWky+TLa6kD6mkLIJSn7V4j4TSJyyPENJLI/zeAQ9KJqXsgPXlAx5Xtzm7ZfPzY5uXtRq52CHn7QrjYoNze5vvT26S1I7wiDZeV4+4MmTB08cn9hCy6j7x8DGFwnMS8Yfo2imF3BNS0SNWsve4lD3lsrpPN9/kstrhutakka0he/ZQfDZBr01OHRH2D5G9QwQ9fMSyPiEfv0dBv/9HTpuQjR6TUcdkUmecFce8WO0TUY5ILY2JhY7JRQ//08Yo/gMWpQN+ATYdUng3H1x3AAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;VPC-Gateway-Endpoint&quot;
+        title=&quot;VPC-Gateway-Endpoint&quot;
+        src=&quot;/static/af16e40525140832e1fd8dd93f54af8f/1e043/vpc-endpoint-s3.png&quot;
+        srcset=&quot;/static/af16e40525140832e1fd8dd93f54af8f/991de/vpc-endpoint-s3.png 173w,
+/static/af16e40525140832e1fd8dd93f54af8f/e4d6b/vpc-endpoint-s3.png 345w,
+/static/af16e40525140832e1fd8dd93f54af8f/1e043/vpc-endpoint-s3.png 690w,
+/static/af16e40525140832e1fd8dd93f54af8f/e3189/vpc-endpoint-s3.png 1035w,
+/static/af16e40525140832e1fd8dd93f54af8f/b1001/vpc-endpoint-s3.png 1380w,
+/static/af16e40525140832e1fd8dd93f54af8f/8b84a/vpc-endpoint-s3.png 1531w&quot;
+        sizes=&quot;(max-width: 690px) 100vw, 690px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+    &lt;/span&gt;&lt;a href=&quot;https://acloudguru.com&quot;&gt;Image Credit: acloudguru&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Here&apos;s what we&apos;ll go through:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;For DBServer EC2 instance to communicate with S3, it needs to have the relevant permissions. To do so, we&apos;ll add the S3 role&lt;/li&gt;
+&lt;li&gt;We&apos;ll first go to IAM and create an S3_FULL_ACCESS role for EC2 service&lt;/li&gt;
+&lt;li&gt;We&apos;ll then go to EC2 console and add the role to our DBServer&lt;/li&gt;
+&lt;li&gt;Next, we&apos;ll go back to VPC console and Click on Endpoints -&gt; Choose service as s3&lt;/li&gt;
+&lt;li&gt;We&apos;ll get back the option of choosing a Gateway or Interface. We&apos;ll choose gateway&lt;/li&gt;
+&lt;li&gt;Choose our VPC&lt;/li&gt;
+&lt;li&gt;Choose route table where you want this gateway to be palced. Look at the diagram above again: route table should be our private instance&apos;s route table&lt;/li&gt;
+&lt;li&gt;Create endpoint!&lt;/li&gt;
+&lt;li&gt;SSH into our DBServer via WebServer and run S3 comands to confirm&lt;/li&gt;
+&lt;li&gt;Commands could be: &lt;code class=&quot;language-cpptext&quot;&gt;aws s3 ls&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- copy and paste. Modify height and width if desired. --&gt;
+&lt;div class=&quot;gatsby-resp-iframe-wrapper&quot; style=&quot;padding-bottom: 52.932960893854755%; position: relative; height: 0; overflow: hidden; &quot; &gt; &lt;iframe class=&quot;embeddedObject shadow resizable&quot; name=&quot;embedded_content&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; type=&quot;text/html&quot; style=&quot;overflow:hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; &quot; src=&quot;https://www.screencast.com/users/IqbalKhan8502/folders/Capture/media/d9e2cfe1-28e0-461f-af5c-5f05e463c9cf/embed&quot; webkitallowfullscreen=&quot;&quot; mozallowfullscreen=&quot;&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt; &lt;/div&gt;
+&lt;h2 id=&quot;vpc-peering&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#vpc-peering&quot; aria-label=&quot;vpc peering permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;VPC Peering&lt;/h2&gt;
+&lt;p&gt;You may need to connect multiple VPCs together for various reasons.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;VPC peering allows you to connect one VPC with another using private IP addresses.&lt;/li&gt;
+&lt;li&gt;VPC can be peered in the same account or a different account.&lt;/li&gt;
+&lt;li&gt;Peering is in a star config: 1 central VPC with 4 others.&lt;/li&gt;
+&lt;li&gt;Peering can&apos;t be transitive. If A -&gt; B and B -&gt; C, then A is NOT connected to C.&lt;/li&gt;
+&lt;li&gt;Peering can be done between regions&lt;/li&gt;
+&lt;li&gt;Can&apos;t have overlapping CIDR address ranges between Accepter and Requester VPCs&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;sharing-applications-across-vpcs&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#sharing-applications-across-vpcs&quot; aria-label=&quot;sharing applications across vpcs permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Sharing Applications across VPCs&lt;/h2&gt;
+&lt;p&gt;To share data between 2 VPCs one could create a VPC Peering or make the resources publicly available. Best approach is to use PrivateLink! To use this, you need:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Network Load Balancer on service VPC&lt;/li&gt;
+&lt;li&gt;Elastic Network Interface or ENI on customer VPC&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; &quot;
+    &gt;
+      &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 28.323699421965316%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAGCAYAAADDl76dAAAACXBIWXMAAAsTAAALEwEAmpwYAAABuElEQVQY0x3OTWvTAADG8XwKQexb0iZNk6a1Sbd2ymbGLrqiTkXqTsPSl7Vp0ia+sCHzsE13mEp1ogPFKr6cFMXDRFR220BhKDg8DPwAHjwInv9iD8/p/zs8wqhWQRNrZBM15GgLMdwmEXWQIm00sYmdPs+YXqGYqqLEWsQj/5szcGqsSSZeRRdrDCsVJjIVhIvHyoybLhPmLMOpOjm5jiY1UcUmQ8kaWXkWU2lwSKuSkhw0qYWlNMjJDUb0GqVCE9vqMDN6joXSFEKvt8GHnT3ebe4yOX6VaLjL+pVV+strmOlLJEUXVfIw1ICH80vc8pcGRgy1mDp6jffbe3z6+pN7vbdI+6sIdx9t8eDLH7Z+/B6AcOwyn5/eZ/f1Y/LWAmnZI5Pskk3P8e35HT6ur3EgdIFY2GX61Covtn/x8vtfnj3ZJLSvjnCytMLK9TcEXp9cqktKDjh7+iYnjt/A0v3BO0X0sItzlMu3mS73GMrNI0VcrHRA1+2zvPiKM5OLJGNtBD3uYGkdDNklrzoUtDZ2PsC2fIqaQ0bpDHbYcBkzfY5YPiOGR0FzMJMORqLNQdXDSDiocsA/A2z0o7Pb4p4AAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Private-Link&quot;
+        title=&quot;Private-Link&quot;
+        src=&quot;/static/bd1e9dd31be6bc342f2b120428584dfb/1e043/private-link.png&quot;
+        srcset=&quot;/static/bd1e9dd31be6bc342f2b120428584dfb/991de/private-link.png 173w,
+/static/bd1e9dd31be6bc342f2b120428584dfb/e4d6b/private-link.png 345w,
+/static/bd1e9dd31be6bc342f2b120428584dfb/1e043/private-link.png 690w,
+/static/bd1e9dd31be6bc342f2b120428584dfb/e3189/private-link.png 1035w,
+/static/bd1e9dd31be6bc342f2b120428584dfb/b1001/private-link.png 1380w,
+/static/bd1e9dd31be6bc342f2b120428584dfb/2dab4/private-link.png 1461w&quot;
+        sizes=&quot;(max-width: 690px) 100vw, 690px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+    &lt;/span&gt;&lt;a href=&quot;https://acloudguru.com&quot;&gt;Image Credit: acloudguru&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&quot;connect-data-center-to-aws&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#connect-data-center-to-aws&quot; aria-label=&quot;connect data center to aws permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Connect Data Center to AWS&lt;/h2&gt;
+&lt;p&gt;We can use AWS DirectConnect to establish a connection from your premises to AWS. There are 2 types of connections: dedicated vs hosted.&lt;/p&gt;
+&lt;p&gt;Talking about all the ways to connect VPCs to VPCs, our network topology can become quite complicated! To simplify it, we can use &lt;strong&gt;AWS Transit Gateway&lt;/strong&gt;.&lt;/p&gt;</content:encoded><author>iqbalyarkhan@icloud.com</author></item><item><title><![CDATA[AWS - DynamoDB]]></title><description><![CDATA[Table of Contents What is DynamoDB? Features DynamoDB Transactions DynamoDB On-Demand Backup and Restore Point in time recovery DynamoDB…]]></description><link>https://iqbalyarkhan.github.io//aws-dynamo-db</link><guid isPermaLink="false">https://iqbalyarkhan.github.io//aws-dynamo-db</guid><category><![CDATA[blog]]></category><category><![CDATA[AWS]]></category><pubDate>Sat, 25 Dec 2021 06:00:00 GMT</pubDate><content:encoded>&lt;h3 id=&quot;table-of-contents&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#table-of-contents&quot; aria-label=&quot;table of contents permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Table of Contents&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;#what-is-dynamodb&quot;&gt;What is DynamoDB?&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;#features&quot;&gt;Features&lt;/a&gt;&lt;/li&gt;
