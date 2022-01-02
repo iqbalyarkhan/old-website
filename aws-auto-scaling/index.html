@@ -103,6 +103,22 @@ void function() {
 <li><a href="#asg-demo">ASG demo</a></li>
 </ul>
 </li>
+<li><a href="#when-are-we-going-to-scale">When are we going to scale?</a></li>
+<li><a href="#scaling-policies">Scaling Policies</a>
+<ul>
+<li><a href="#rules">Rules</a></li>
+<li><a href="#change-1">Change 1</a></li>
+<li><a href="#change-2">Change 2</a></li>
+<li><a href="#change-3">Change 3</a></li>
+<li><a href="#change-4">Change 4</a></li>
+<li><a href="#change-5">Change 5</a></li>
+<li><a href="#change-6">Change 6</a></li>
+<li><a href="#reactive-scaling">Reactive Scaling</a></li>
+<li><a href="#scheduled-scaling">Scheduled Scaling</a></li>
+<li><a href="#predictive-scaling">Predictive Scaling</a></li>
+<li><a href="#steady-state-asg">Steady state ASG</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="what-is-scaling" style="position:relative;"><a href="#what-is-scaling" aria-label="what is scaling permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What is Scaling?</h2>
 <p>Scaling, as the name implies, means to increase your resources to handle extra load. There're 2 types of scaling: vertical and horizontal</p>
@@ -165,7 +181,6 @@ void function() {
 <li>ASGs are vital to creating a highly available application.</li>
 <li>We should consider spreading out resources across AZs</li>
 <li>We should utilize load balancers (more on this below)</li>
-<li></li>
 </ul>
 <h3 id="reqs-for-asgs" style="position:relative;"><a href="#reqs-for-asgs" aria-label="reqs for asgs permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Reqs for ASGs</h3>
 <p>You first need a <strong>launch template</strong> for ASGs. Launch templates tell ASG the settings required to created our EC2 architecture</p>
@@ -208,9 +223,9 @@ void function() {
 <ul>
 <li>Open EC2, find ASG and click create ASG</li>
 <li>Provide a name for the ASG and provide an existing template</li>
+<li>Choose a VPC and <strong>select 2 subnets</strong> for higher availability</li>
 <li>For config settings, you can mix and match EC2 capacity: You can choose on-demand and spot capacity</li>
 <li>Choose adhere to launch template</li>
-<li>Choose a VPC and <strong>select 2 subnets</strong> for higher availability</li>
 <li>For now, choose no LB</li>
 <li>For health checks, stick with EC2 but note you can choose ELB health check as we discussed earlier</li>
 <li>Set min to 2, max to 10 and desired to 2</li>
@@ -220,7 +235,88 @@ void function() {
 </ul>
 <p>Initially, instances tab will show 0 and desired will show 2. Now if you click on instance management, you'll see that 2 are in pending state. If you update the desired capacity to say 5, ASG will add 3 more instances (2 running add 3 more to take to desired count). If now again you reduce desired to 2, ASG will remove 3 instances (5 running remove 3 to take to desired count of 2).</p>
 <!-- copy and paste. Modify height and width if desired. -->
-<div class="gatsby-resp-iframe-wrapper" style="padding-bottom: 53.13807531380753%; position: relative; height: 0; overflow: hidden; " > <iframe class="embeddedObject shadow resizable" name="embedded_content" scrolling="no" frameborder="0" type="text/html" style="overflow:hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; " src="https://www.screencast.com/users/IqbalKhan8502/folders/Capture/media/0efb9b7b-cbc9-4e0b-be7c-f2edf3f58f6c/embed" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe> </div></div><div class="post-module--post-meta--2SNYO"><div class="PostTags-module--tag-container--2fM2Y"><a href="/tags/blog"><span>blog</span></a><a href="/tags/aws"><span>AWS</span></a></div></div><hr/></div><nav><ul class="post-module--pagination--2K15k"><li><a rel="prev" href="/react-js-notes">← <!-- -->ReactJS Notes</a></li><li><a rel="next" href="/aws-cloud-watch">AWS - CloudWatch<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--1ScUQ"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2Iyp5">Copyright © 2021. All rights reserved.</div></div></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
+<div class="gatsby-resp-iframe-wrapper" style="padding-bottom: 53.13807531380753%; position: relative; height: 0; overflow: hidden; " > <iframe class="embeddedObject shadow resizable" name="embedded_content" scrolling="no" frameborder="0" type="text/html" style="overflow:hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; " src="https://www.screencast.com/users/IqbalKhan8502/folders/Capture/media/0efb9b7b-cbc9-4e0b-be7c-f2edf3f58f6c/embed" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe> </div>
+<h2 id="when-are-we-going-to-scale" style="position:relative;"><a href="#when-are-we-going-to-scale" aria-label="when are we going to scale permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>When are we going to scale?</h2>
+<p>Now we'll answer the questin of when do we scale using our <strong>scaling policies</strong>.</p>
+<h2 id="scaling-policies" style="position:relative;"><a href="#scaling-policies" aria-label="scaling policies permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Scaling Policies</h2>
+<p>Say we have this scenario: We have determined through trial and error that our memory utilization can be broken down as follows:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 67.6300578034682%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAOCAYAAAAvxDzwAAAACXBIWXMAAAsTAAALEwEAmpwYAAADIUlEQVQ4y1WQ224bVRSG5xFo8Glm9syes2dsx6nbtBQlpE2kBsQNtDnIcTz2xPb4mFPVhlQI1BZ4lD4BV1whuECIp/rQ7FZIXPzaa+211rcOmlXrUsioHGPXegTGAM84xdVPiERGYKS4eg9ZPVE5RuUIvXxEee2A0ifPqZUO/1O1dIhmG6c45ilC7xLbE3YaP7LbesPT9s/sJD+w23zLXvMtj6Ib9PKhguqlIwKnRyPqUysfU75zQGXtgOraIVoSjnCtPr4c4skUaXWxRRfLOMbUD7GtLo59gif7eHaKK/qEbsbO1iX7u1f4wRJLTKne+RZRO0GL3DOqnx4jaqdIc4ArhjjmAFHrYVZ62MYAxxxi6X30clflSpGy/eicVjxAr2b49Ru86BxLTtAaYa5gRYFtpirZtQYEckgoz5QckX6IGylmtYcvM+5tzImDAcLMCeLXBM1bLDtHi8MxtfIJZrWP+FhkGSnSLNYb4NkZgTzDtYYIPcWonCp/d+cF9zcmOM4K6V5QXTtSMW1z/ZrQztUEamVr+D8VQL+Y1B3jiKFqXNh3WzNCb4gtxuiVFL3cQ6/00C6+/o3xzq9UKgc4ZjHJGb4c4ZgZ0hjiiAxHnBE4Y3w5xtJTZT/efsG99hRpTXHlVN1amhna62d/cfX0D0ql5wpYfBaAD6BMNfDskYJEXq6gzfqczx9c0Y4nxPFLmq1bdWfXHqHdfPMnl/u/I6weib+g7s+IgzlJuCQJC39K3Zuqt/CTYMl6cs7+3ndsPTwn8M5Z77yjtfkTYf0K7ftn//Dyq78xzT51uSB05kTekshdELpzfDtXCp0ZkTvHERPiYEFnfUnkZbjOirB+i6gNsPQhWvble9K99zSSGRuNSzaal2qCQo1oQbO+YD1Zcb99TTtZkYQzknDOk+1XPOgscb1rPPcSqzbAlzlaszEnCiY87FxT93M67QviIKfTWhD7YzY3Vgq09dkrdbtmPP94lmL9BZ41Q5oTHGOMKyZovpzjiymuWaw2w5czEnfJk+QXHsfv+CJ5Q8Nb4Vk5tj7CrGZY+kjlqxorV/WemSv9C0we1iXsKyU+AAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Scaling-Thresholds"
+        title="Scaling-Thresholds"
+        src="/static/f87b8a3c095c5a01a940f75ec9e99a66/1e043/Scaling-in-vs-out.png"
+        srcset="/static/f87b8a3c095c5a01a940f75ec9e99a66/991de/Scaling-in-vs-out.png 173w,
+/static/f87b8a3c095c5a01a940f75ec9e99a66/e4d6b/Scaling-in-vs-out.png 345w,
+/static/f87b8a3c095c5a01a940f75ec9e99a66/1e043/Scaling-in-vs-out.png 690w,
+/static/f87b8a3c095c5a01a940f75ec9e99a66/7608e/Scaling-in-vs-out.png 735w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span><a href="https://acloudguru.com">Image Credit: acloudguru.com</a></p>
+<h3 id="rules" style="position:relative;"><a href="#rules" aria-label="rules permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Rules</h3>
+<p>We notice from the image above that when our best memory utilization occurs when utilization is between 40% and 60%. We want to be in this range!</p>
+<p>If we hit the 40% mark, it is best to scale in. For scaling in, we'll terminate 10 instances when memory is between 40% and 20%. We'll terminate 15 instances when memory is between 20% and 0%.</p>
+<p>If we hit 60% mark, it is best to scale out. For scaling out, we'll add 10 instances when memory is between 60% and 80%. We'll add 15 instances when memory is between 80% and 100%.</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 633px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 80.34682080924856%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAQCAYAAAAWGF8bAAAACXBIWXMAAAsTAAALEwEAmpwYAAADZ0lEQVQ4y1WTW1McRRhA5zlVBoFd5tpz3zsCG2EhpAC5BaUSIDHZS9id2dnZmSWiVsTgg1U++qL+UH+CVT4caxqk9OFUX6e/833TrSzOXbDw+ILS/CsW584lC4/PqWonrJj7NI19atoBTeOAlnnIin1MRT9lYe7iP/vPmP/kjOIsxTa6eKKLuvg1Qh8gtB5q6S1HrRPe7+6QbO8Sbe3S3Tig1zkg39lhv3GCWurKvULvoZfe4Jg9ibK5PuOr4xuqXkSjMiV0x4RujCNihDVGWDG2KIiwxQjTGOGISO4JnH+JOPziA+vtHGWp1Gdx/i21MMVQL1FLffTy4J4+WqmHtthDXSiy6D2wdN+W57tY2iXN6vjOUF8aopbf0azPCP0pnj2+Q8T4doxrjR7wRIRrRbLv3M855lDOH+/f0HkyKw4srN5RDTN0dYhaGqCVL1HLQ7T7taWFvjQpWFoozPoSrTSQrSsiAmeEuthF0cvFBwOatZzQTaTBneEE107x3AzfzQjdlNCdUPEmVP30f9SDKa/Pf2G78y2KpY0w1SGt+hXCSnGsMb6d4IoE2xwj9DGWkcg1V6T4dkrgTPDtCa4o6hZTD3NCZ4xRHqAETopnp2ysXrPXTvisltOoXNGozKiFuaTiZ3jOVNqG/oxqMJNzvjPBEwkVL+Xl6c+sLecogZ3w6XzMcH/EX7/7nKx1UbUU14oRevRAkYmlRVh6gjCKTKY41gRTi2RGq60ZvohRlmsZW09/ZLg/4O/fBCerbygvTfDMWEaXqZljbCOWfTm2CrPCcIbv5tL4cO+WlcYMpeZPWO98JDq8hD9MTttdVDXDFwmhmxE4GZ5I8awE3ynqN5V19O2izfDsnEbtOzaefKDqT1FsPebRoyG9vZg/f13mxUaEY7+nGc6o+hlVP6cW5NSDjGZRVz+jHl7JYLWill5Os3bN9tatvA1KUKhbGY0g42j7mkaYs7v9Uf6Up50faK9c06h9w1r7Bte9orN5i+9MOdz7SV6ljfb3LNevWGldE3gzlMDKCUSOZxavJMMxU2kl9ITQmWJoCc/qr+hvfsnz1nPOPn9JaPSkjaXG2MWV0sfo5aI/RSnsfGt6d6CZEoipHIdOTlAEsDLaQZ+j5gt262c8q5xTFUMMNcE2JjKwY0woxHwz4x+OuQ/De/V5fgAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Instance-Count"
+        title="Instance-Count"
+        src="/static/235444fcf3b61adf81f0706f5d589a0d/bce72/Instance-count.png"
+        srcset="/static/235444fcf3b61adf81f0706f5d589a0d/991de/Instance-count.png 173w,
+/static/235444fcf3b61adf81f0706f5d589a0d/e4d6b/Instance-count.png 345w,
+/static/235444fcf3b61adf81f0706f5d589a0d/bce72/Instance-count.png 633w"
+        sizes="(max-width: 633px) 100vw, 633px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span><a href="https://acloudguru.com">Image Credit: acloudguru.com</a></p>
+<p>From the image above, we can see that our min count is 10,max is 50 and we're currently using 20 instances.</p>
+<h3 id="change-1" style="position:relative;"><a href="#change-1" aria-label="change 1 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Change 1</h3>
+<p><strong>Say our average memory utilization (MU) moves UP from 60% to 70%. Currently we have 20 instances running</strong>.</p>
+<p>Using the rules we described above, we'll add 10 instances when memory is between 60% and 80%. So, we'll add 10 instances to the existing 20 instances to go to a total of 30 instances. One thing to note here is that these instances will NOT immediately come online. You'd have setup taking place, packages being installed. This is called <strong>warmup period</strong>. ASG is aware that these instances are not ready yet so they'll not be added behind the ELB immediately. We can set a window where we can configure this warm-up period of waiting for the instances to come online.</p>
+<h3 id="change-2" style="position:relative;"><a href="#change-2" aria-label="change 2 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Change 2</h3>
+<p><strong>Say our average memory utilization (MU) moves UP from 70% to 75%. Currently we have 20 instances running and 10 are in warmup</strong>.</p>
+<p>Let's say, while we're in the warmup period we get another burst of traffic and our MU goes up a notch to 75%. We're still in that 60% to 80% range. Do we add another 10 instances? NO! Auto scaling is smart enough to understand that the load is still within that threshold and we've got 10 in the warmup window and will come live soon! So we do NOTHING!</p>
+<h3 id="change-3" style="position:relative;"><a href="#change-3" aria-label="change 3 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Change 3</h3>
+<p><strong>Say our average memory utilization (MU) moves UP from 75% to 90%. Currently we have 20 instances running and 10 are in warmup</strong>.</p>
+<p>Now what do we do? The rule says add 15 instance between 80% and 100%. Do we add 15 more instances? NO! we add 5! Why 5 and not 15? Because we already have 10 coming in from warmup period and we need to get to 15. So we need to add 5 more!</p>
+<h3 id="change-4" style="position:relative;"><a href="#change-4" aria-label="change 4 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Change 4</h3>
+<p><strong>Say our average memory utilization (MU) moves DOWN from 90% to 45%. Currently we have 35 instances running</strong>.</p>
+<p>This drop in MU happened because the warmup period expired and we have 35 instances that are running. We're currently in that range we like the most! 40% to 60% memory utilization!</p>
+<h3 id="change-5" style="position:relative;"><a href="#change-5" aria-label="change 5 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Change 5</h3>
+<p><strong>Our MU goes from 45% to 30%. Currently we have 35 instances running</strong>.</p>
+<p>What do we do? Rule says termiante 10 instances. That's what we'll do: go down from 35 to 25 instances. Terminating instances is faster than getting them online. Termination is instantaneous.</p>
+<h3 id="change-6" style="position:relative;"><a href="#change-6" aria-label="change 6 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Change 6</h3>
+<p><strong>Our MU goes from 30% to 10%. Currently we have 25 instances running</strong>.</p>
+<p>Rule says terminate 15 instances in this window. That's what we'll do! We'll remove 15 to go down to 10 instances.</p>
+<p>All actions described above take place automatically using our AS policies. We prevent thrashing (hearbeat like instance counts!) using warmup and cool down periods. We were reactively scaling to our load.</p>
+<h3 id="reactive-scaling" style="position:relative;"><a href="#reactive-scaling" aria-label="reactive scaling permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Reactive Scaling</h3>
+<p>Reactive scaling is when you're playing catch up. Once the load is there, you measure it and then determine if you need to create more resources.</p>
+<h3 id="scheduled-scaling" style="position:relative;"><a href="#scheduled-scaling" aria-label="scheduled scaling permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Scheduled Scaling</h3>
+<p>If you have a predictable workload, create a scaling event to get your resources ready to go before they're actually needed.</p>
+<h3 id="predictive-scaling" style="position:relative;"><a href="#predictive-scaling" aria-label="predictive scaling permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Predictive Scaling</h3>
+<p>AWS uses ML algos to determine when you'll need to scale. They are re-evaluated every 24 hours to create a forecast for the next 48.</p>
+<h3 id="steady-state-asg" style="position:relative;"><a href="#steady-state-asg" aria-label="steady state asg permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Steady state ASG</h3>
+<p>If you have desired capacity, min capacity and max capacity ALL as the same value that equals 1 and if your instance terminates, it'll be re-launched in a new AZ! This is useful when you can't duplicate your LEGACY code base to multiple EC2s, this will allow you to be highly available.</p></div><div class="post-module--post-meta--2SNYO"><div class="PostTags-module--tag-container--2fM2Y"><a href="/tags/blog"><span>blog</span></a><a href="/tags/aws"><span>AWS</span></a></div></div><hr/></div><nav><ul class="post-module--pagination--2K15k"><li><a rel="prev" href="/react-js-notes">← <!-- -->ReactJS Notes</a></li><li><a rel="next" href="/aws-cloud-watch">AWS - CloudWatch<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--1ScUQ"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2Iyp5">Copyright © 2021. All rights reserved.</div></div></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
   
   
   if(true) {
