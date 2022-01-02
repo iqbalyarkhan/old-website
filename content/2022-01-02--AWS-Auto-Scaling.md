@@ -26,6 +26,19 @@ tags:
   - [Reqs for ASGs](#reqs-for-asgs)
   - [Restrictions for Auto scaling](#restrictions-for-auto-scaling)
   - [ASG demo](#asg-demo)
+- [When are we going to scale?](#when-are-we-going-to-scale)
+- [Scaling Policies](#scaling-policies)
+  - [Rules](#rules)
+  - [Change 1](#change-1)
+  - [Change 2](#change-2)
+  - [Change 3](#change-3)
+  - [Change 4](#change-4)
+  - [Change 5](#change-5)
+  - [Change 6](#change-6)
+  - [Reactive Scaling](#reactive-scaling)
+  - [Scheduled Scaling](#scheduled-scaling)
+  - [Predictive Scaling](#predictive-scaling)
+  - [Steady state ASG](#steady-state-asg)
 
 
 
@@ -96,7 +109,7 @@ Auto scaling groups or ASG is a collection of EC2 instances that are treated as 
 - ASGs are vital to creating a highly available application. 
 - We should consider spreading out resources across AZs 
 - We should utilize load balancers (more on this below)
-- 
+
 
 ### Reqs for ASGs
 
@@ -128,9 +141,9 @@ Next, you need a **networking space and purchasing options**. This is the reason
 
  - Open EC2, find ASG and click create ASG
  - Provide a name for the ASG and provide an existing template
+ - Choose a VPC and **select 2 subnets** for higher availability
  - For config settings, you can mix and match EC2 capacity: You can choose on-demand and spot capacity
  - Choose adhere to launch template
- - Choose a VPC and **select 2 subnets** for higher availability
  - For now, choose no LB
  - For health checks, stick with EC2 but note you can choose ELB health check as we discussed earlier
  - Set min to 2, max to 10 and desired to 2
@@ -144,3 +157,77 @@ Initially, instances tab will show 0 and desired will show 2. Now if you click o
 <!-- copy and paste. Modify height and width if desired. -->
 <iframe class="embeddedObject shadow resizable" name="embedded_content" scrolling="no" frameborder="0" type="text/html" 
         style="overflow:hidden;" src="https://www.screencast.com/users/IqbalKhan8502/folders/Capture/media/0efb9b7b-cbc9-4e0b-be7c-f2edf3f58f6c/embed" height="762" width="1434" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+## When are we going to scale?
+
+Now we'll answer the questin of when do we scale using our **scaling policies**. 
+
+## Scaling Policies
+Say we have this scenario: We have determined through trial and error that our memory utilization can be broken down as follows:
+
+![Scaling-Thresholds](./images/aws/Scaling-in-vs-out.png)[Image Credit: acloudguru.com](https://acloudguru.com) 
+
+### Rules
+We notice from the image above that when our best memory utilization occurs when utilization is between 40% and 60%. We want to be in this range!
+
+If we hit the 40% mark, it is best to scale in. For scaling in, we'll terminate 10 instances when memory is between 40% and 20%. We'll terminate 15 instances when memory is between 20% and 0%.
+
+If we hit 60% mark, it is best to scale out. For scaling out, we'll add 10 instances when memory is between 60% and 80%. We'll add 15 instances when memory is between 80% and 100%.
+
+![Instance-Count](./images/aws/Instance-count.png)[Image Credit: acloudguru.com](https://acloudguru.com) 
+
+From the image above, we can see that our min count is 10,max is 50 and we're currently using 20 instances. 
+
+### Change 1
+
+**Say our average memory utilization (MU) moves UP from 60% to 70%. Currently we have 20 instances running**.
+
+Using the rules we described above, we'll add 10 instances when memory is between 60% and 80%. So, we'll add 10 instances to the existing 20 instances to go to a total of 30 instances. One thing to note here is that these instances will NOT immediately come online. You'd have setup taking place, packages being installed. This is called **warmup period**. ASG is aware that these instances are not ready yet so they'll not be added behind the ELB immediately. We can set a window where we can configure this warm-up period of waiting for the instances to come online.
+
+### Change 2
+
+**Say our average memory utilization (MU) moves UP from 70% to 75%. Currently we have 20 instances running and 10 are in warmup**.
+
+Let's say, while we're in the warmup period we get another burst of traffic and our MU goes up a notch to 75%. We're still in that 60% to 80% range. Do we add another 10 instances? NO! Auto scaling is smart enough to understand that the load is still within that threshold and we've got 10 in the warmup window and will come live soon! So we do NOTHING!
+
+### Change 3
+
+**Say our average memory utilization (MU) moves UP from 75% to 90%. Currently we have 20 instances running and 10 are in warmup**.
+
+Now what do we do? The rule says add 15 instance between 80% and 100%. Do we add 15 more instances? NO! we add 5! Why 5 and not 15? Because we already have 10 coming in from warmup period and we need to get to 15. So we need to add 5 more! 
+
+### Change 4
+
+**Say our average memory utilization (MU) moves DOWN from 90% to 45%. Currently we have 35 instances running**.
+
+This drop in MU happened because the warmup period expired and we have 35 instances that are running. We're currently in that range we like the most! 40% to 60% memory utilization!
+
+### Change 5
+
+**Our MU goes from 45% to 30%. Currently we have 35 instances running**.
+
+What do we do? Rule says termiante 10 instances. That's what we'll do: go down from 35 to 25 instances. Terminating instances is faster than getting them online. Termination is instantaneous. 
+
+### Change 6
+
+**Our MU goes from 30% to 10%. Currently we have 25 instances running**.
+
+Rule says terminate 15 instances in this window. That's what we'll do! We'll remove 15 to go down to 10 instances. 
+
+All actions described above take place automatically using our AS policies. We prevent thrashing (hearbeat like instance counts!) using warmup and cool down periods. We were reactively scaling to our load. 
+
+### Reactive Scaling
+
+Reactive scaling is when you're playing catch up. Once the load is there, you measure it and then determine if you need to create more resources.
+
+### Scheduled Scaling
+
+If you have a predictable workload, create a scaling event to get your resources ready to go before they're actually needed. 
+
+### Predictive Scaling
+
+AWS uses ML algos to determine when you'll need to scale. They are re-evaluated every 24 hours to create a forecast for the next 48.
+
+### Steady state ASG
+
+If you have desired capacity, min capacity and max capacity ALL as the same value that equals 1 and if your instance terminates, it'll be re-launched in a new AZ! This is useful when you can't duplicate your LEGACY code base to multiple EC2s, this will allow you to be highly available.
