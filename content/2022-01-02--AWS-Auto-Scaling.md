@@ -292,4 +292,3 @@ You want to use on-demand for sporadic workload. To choose this model, all you n
 
 - You'll be asked about cost
 - For predictable, use provisioned. Otherwise, use on-demand
-- 
