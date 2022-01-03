@@ -119,6 +119,19 @@ void function() {
 <li><a href="#steady-state-asg">Steady state ASG</a></li>
 </ul>
 </li>
+<li><a href="#scaling-relational-dbs">Scaling Relational DBs</a>
+<ul>
+<li><a href="#rds-scaling">RDS Scaling</a></li>
+</ul>
+</li>
+<li><a href="#scaling-non-relational-dbs">Scaling Non-Relational DBs</a>
+<ul>
+<li><a href="#provisioned">Provisioned</a></li>
+<li><a href="#on-demand">On-Demand</a></li>
+<li><a href="#dynamodb-scaling-demo">DynamoDB Scaling Demo</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="what-is-scaling" style="position:relative;"><a href="#what-is-scaling" aria-label="what is scaling permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What is Scaling?</h2>
 <p>Scaling, as the name implies, means to increase your resources to handle extra load. There're 2 types of scaling: vertical and horizontal</p>
@@ -316,7 +329,53 @@ void function() {
 <h3 id="predictive-scaling" style="position:relative;"><a href="#predictive-scaling" aria-label="predictive scaling permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Predictive Scaling</h3>
 <p>AWS uses ML algos to determine when you'll need to scale. They are re-evaluated every 24 hours to create a forecast for the next 48.</p>
 <h3 id="steady-state-asg" style="position:relative;"><a href="#steady-state-asg" aria-label="steady state asg permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Steady state ASG</h3>
-<p>If you have desired capacity, min capacity and max capacity ALL as the same value that equals 1 and if your instance terminates, it'll be re-launched in a new AZ! This is useful when you can't duplicate your LEGACY code base to multiple EC2s, this will allow you to be highly available.</p></div><div class="post-module--post-meta--2SNYO"><div class="PostTags-module--tag-container--2fM2Y"><a href="/tags/blog"><span>blog</span></a><a href="/tags/aws"><span>AWS</span></a></div></div><hr/></div><nav><ul class="post-module--pagination--2K15k"><li><a rel="prev" href="/react-js-notes">← <!-- -->ReactJS Notes</a></li><li><a rel="next" href="/aws-cloud-watch">AWS - CloudWatch<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--1ScUQ"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2Iyp5">Copyright © 2021. All rights reserved.</div></div></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
+<p>If you have desired capacity, min capacity and max capacity ALL as the same value that equals 1 and if your instance terminates, it'll be re-launched in a new AZ! This is useful when you can't duplicate your LEGACY code base to multiple EC2s, this will allow you to be highly available.</p>
+<h2 id="scaling-relational-dbs" style="position:relative;"><a href="#scaling-relational-dbs" aria-label="scaling relational dbs permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Scaling Relational DBs</h2>
+<p>There're 4 main ways to scale relational DBs:</p>
+<ul>
+<li>vertical scaling</li>
+<li>scaling storage</li>
+<li>creating read replicas (for read heavy workloads)</li>
+<li>Aurora serverless!</li>
+</ul>
+<h3 id="rds-scaling" style="position:relative;"><a href="#rds-scaling" aria-label="rds scaling permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>RDS Scaling</h3>
+<ul>
+<li>Create MySQL Aurora instance</li>
+<li>Once created, go to Databases inside RDS and click on modify</li>
+<li>We can change the DB instance class to something else to scale vertically.</li>
+<li>Now, to scale horizontally using read replicas, go ahead and create the Reader first</li>
+<li>Open the reader that you created and you can edit it to create a cross region read replica</li>
+</ul>
+<h2 id="scaling-non-relational-dbs" style="position:relative;"><a href="#scaling-non-relational-dbs" aria-label="scaling non relational dbs permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Scaling Non-Relational DBs</h2>
+<p>There're 2 main ways to handle capacity within DynamoDB:</p>
+<ul>
+<li>provisioned</li>
+<li>on-demand</li>
+</ul>
+<h3 id="provisioned" style="position:relative;"><a href="#provisioned" aria-label="provisioned permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Provisioned</h3>
+<p>You want to use provisioned instances for predictable workloads. With this model, you set how many reads and writes you need. You can also set auto-scaling where you set a min units, max units and "target utilization" instead of desired capacity. As soon as your utilization hits that threshold, DynamoDB will start to scale automatically. There's also an initial provisioned units that need to be set that'll be between min and max units. You can set these for both read and writes.</p>
+<p>To set upper and lower bounds for scaling, you need to review past usage. Provisioned is CHEAPER than on-demand.</p>
+<h3 id="on-demand" style="position:relative;"><a href="#on-demand" aria-label="on demand permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>On-Demand</h3>
+<p>You want to use on-demand for sporadic workload. To choose this model, all you need to do is simply select on-demand! You pay per read and write which is not as cost-effective as provisioned.</p>
+<h3 id="dynamodb-scaling-demo" style="position:relative;"><a href="#dynamodb-scaling-demo" aria-label="dynamodb scaling demo permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>DynamoDB Scaling Demo</h3>
+<ul>
+<li>We'll create a table and choose customized settings.</li>
+<li>In that menu, you'll be asked for Read/Write capacity settings.</li>
+<li>For on-demand, all we need to do is choose on-demand! That's it for On-demand!!! Amazon handles everything for us</li>
+<li>Once created, you can see that read capacity and write capacity mode is on-demand</li>
+<li>You can then change on-demand to provisioned as well! BUT you can't switch back to on-demand for 24 hours! We'll do that to see provisioned in action</li>
+<li>Open the table, click Actions, Edit capacity, choose provisioned</li>
+<li>Keep auto-scaling on.</li>
+<li>Choose min, max, and target utilization</li>
+</ul>
+<!-- copy and paste. Modify height and width if desired. -->
+<div class="gatsby-resp-iframe-wrapper" style="padding-bottom: 53.13807531380753%; position: relative; height: 0; overflow: hidden; " > <iframe class="embeddedObject shadow resizable" name="embedded_content" scrolling="no" frameborder="0" type="text/html" style="overflow:hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; " src="https://www.screencast.com/users/IqbalKhan8502/folders/Capture/media/abd9bb45-8b97-422e-9ee7-2c0153910d51/embed" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe> </div>
+<h3 id="conclusion" style="position:relative;"><a href="#conclusion" aria-label="conclusion permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Conclusion</h3>
+<ul>
+<li>You'll be asked about cost</li>
+<li>For predictable, use provisioned. Otherwise, use on-demand</li>
+<li></li>
+</ul></div><div class="post-module--post-meta--2SNYO"><div class="PostTags-module--tag-container--2fM2Y"><a href="/tags/blog"><span>blog</span></a><a href="/tags/aws"><span>AWS</span></a></div></div><hr/></div><nav><ul class="post-module--pagination--2K15k"><li><a rel="prev" href="/react-js-notes">← <!-- -->ReactJS Notes</a></li><li><a rel="next" href="/aws-cloud-watch">AWS - CloudWatch<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--1ScUQ"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2Iyp5">Copyright © 2021. All rights reserved.</div></div></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
   
   
   if(true) {
