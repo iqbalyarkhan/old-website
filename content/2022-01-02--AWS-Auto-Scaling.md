@@ -39,6 +39,13 @@ tags:
   - [Scheduled Scaling](#scheduled-scaling)
   - [Predictive Scaling](#predictive-scaling)
   - [Steady state ASG](#steady-state-asg)
+- [Scaling Relational DBs](#scaling-relational-dbs)
+  - [RDS Scaling](#rds-scaling)
+- [Scaling Non-Relational DBs](#scaling-non-relational-dbs)
+  - [Provisioned](#provisioned)
+  - [On-Demand](#on-demand)
+  - [DynamoDB Scaling Demo](#dynamodb-scaling-demo)
+  - [Conclusion](#conclusion)
 
 
 
@@ -231,3 +238,58 @@ AWS uses ML algos to determine when you'll need to scale. They are re-evaluated 
 ### Steady state ASG
 
 If you have desired capacity, min capacity and max capacity ALL as the same value that equals 1 and if your instance terminates, it'll be re-launched in a new AZ! This is useful when you can't duplicate your LEGACY code base to multiple EC2s, this will allow you to be highly available.
+
+## Scaling Relational DBs
+
+There're 4 main ways to scale relational DBs:
+
+- vertical scaling
+- scaling storage
+- creating read replicas (for read heavy workloads)
+- Aurora serverless!
+
+### RDS Scaling
+
+- Create MySQL Aurora instance
+- Once created, go to Databases inside RDS and click on modify
+- We can change the DB instance class to something else to scale vertically. 
+- Now, to scale horizontally using read replicas, go ahead and create the Reader first
+- Open the reader that you created and you can edit it to create a cross region read replica
+
+## Scaling Non-Relational DBs
+
+There're 2 main ways to handle capacity within DynamoDB:
+
+- provisioned
+- on-demand
+
+### Provisioned
+
+You want to use provisioned instances for predictable workloads. With this model, you set how many reads and writes you need. You can also set auto-scaling where you set a min units, max units and "target utilization" instead of desired capacity. As soon as your utilization hits that threshold, DynamoDB will start to scale automatically. There's also an initial provisioned units that need to be set that'll be between min and max units. You can set these for both read and writes.
+
+To set upper and lower bounds for scaling, you need to review past usage. Provisioned is CHEAPER than on-demand.
+
+### On-Demand
+
+You want to use on-demand for sporadic workload. To choose this model, all you need to do is simply select on-demand! You pay per read and write which is not as cost-effective as provisioned.
+
+### DynamoDB Scaling Demo
+
+- We'll create a table and choose customized settings. 
+- In that menu, you'll be asked for Read/Write capacity settings. 
+- For on-demand, all we need to do is choose on-demand! That's it for On-demand!!! Amazon handles everything for us
+- Once created, you can see that read capacity and write capacity mode is on-demand
+- You can then change on-demand to provisioned as well! BUT you can't switch back to on-demand for 24 hours! We'll do that to see provisioned in action
+- Open the table, click Actions, Edit capacity, choose provisioned
+- Keep auto-scaling on. 
+- Choose min, max, and target utilization
+
+<!-- copy and paste. Modify height and width if desired. -->
+<iframe class="embeddedObject shadow resizable" name="embedded_content" scrolling="no" frameborder="0" type="text/html" 
+        style="overflow:hidden;" src="https://www.screencast.com/users/IqbalKhan8502/folders/Capture/media/abd9bb45-8b97-422e-9ee7-2c0153910d51/embed" height="762" width="1434" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+### Conclusion
+
+- You'll be asked about cost
+- For predictable, use provisioned. Otherwise, use on-demand
+- 
