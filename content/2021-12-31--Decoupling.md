@@ -1,5 +1,5 @@
 ---
-date: 2022-01-03
+date: 2021-12-31
 draft: false
 thumbnail: /post-images/decoupled.png
 title: AWS - Decoupled Workflows

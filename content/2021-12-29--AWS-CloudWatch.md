@@ -1,5 +1,5 @@
 ---
-date: 2022-01-01
+date: 2021-12-29
 draft: false
 thumbnail: /post-images/aws-cloudwatch.png
 title: AWS - CloudWatch

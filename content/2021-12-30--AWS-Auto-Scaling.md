@@ -1,5 +1,5 @@
 ---
-date: 2022-01-02
+date: 2021-12-30
 draft: false
 thumbnail: /post-images/aws-scaling.png
 title: AWS - Auto Scaling
