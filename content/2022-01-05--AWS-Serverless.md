@@ -23,6 +23,10 @@ tags:
 - [What is a Container?](#what-is-a-container)
   - [Terminology](#terminology)
   - [What is ECS?](#what-is-ecs)
+- [What is Fargate?](#what-is-fargate)
+- [What is Amazon EventBridge?](#what-is-amazon-eventbridge)
+  - [Usage](#usage)
+  - [EventBridge Demo](#eventbridge-demo)
 
 ## What is serverless?
 
@@ -102,8 +106,104 @@ A running copy of the image that has been created
 
 In the AWS world, you create your containers on EC2 instances. Now managing all these containers can be cumbersome if we have a lot of containers. Enter, ECS:
 
-### What is [ECS]()?
+### What is [ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html)?
 
 Amazon Elastic Container Service (Amazon ECS) is a highly scalable, fast container management service that makes it easy to run, stop, and manage containers on a cluster. Your containers are defined in a task definition that you use to run individual tasks or tasks within a service. In this context, a service is a configuration that enables you to run and maintain a specified number of tasks simultaneously in a cluster. You can run your tasks and services on a serverless infrastructure that is managed by AWS Fargate. Alternatively, for more control over your infrastructure, you can run your tasks and services on a cluster of Amazon EC2 instances that you manage.
 
 Amazon ECS enables you to launch and stop your container-based applications by using simple API calls. You can also retrieve the state of your cluster from a centralized service and have access to many familiar Amazon EC2 features.
+
+ECS allows you to:
+
+- Manage containers at scale
+- Integrates with ELB
+- Easy intergration with roles
+
+## What is Fargate?
+
+AWS Fargate is a technology that provides on-demand, right-sized compute capacity for containers. With AWS Fargate, you don't have to provision, configure, or scale groups of virtual machines on your own to run containers. You also don't need to choose server types, decide when to scale your node groups, or optimize cluster packing. You can control which pods start on Fargate and how they run with Fargate profiles.
+
+When using Fargate, you delegate the infra setup to AWS and you focus only on the task at hand! Fargate requires use of ECS or EKS. You pay based on resources allocated and time ran. Fargate is great for short-running tasks. It is like lambda for ECS! Fargate is a serverless compute option.
+
+## What is [Amazon EventBridge](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html)?
+Amazon EventBridge is a serverless event bus service that you can use to connect your applications with data from a variety of sources. EventBridge delivers a stream of real-time data from your applications, software as a service (SaaS) applications, and AWS services to targets such as AWS Lambda functions, HTTP invocation endpoints using API destinations, or event buses in other AWS accounts.
+
+EventBridge receives an event, an indicator of a change in environment, and applies a rule to route the event to a target. Rules match events to targets based on either the structure of the event, called an event pattern, or on a schedule. For example, when an Amazon EC2 instance changes from pending to running, you can have a rule that sends the event to a Lambda function.
+
+All events that come to EventBridge are associated with an event bus. Rules are tied to a single event bus, so they can only be applied to events on that event bus. Your account has a default event bus which receives events from AWS services, and you can create custom event buses to send or receive events from a different account or Region.
+
+### Usage
+
+To use EventBridge, you need the following:
+
+- Define Pattern
+
+This is where you define when the "rule" gets triggered: When something happens or at a particular time?
+
+- Select Event
+
+Is this going to be an AWS-based event? A custome event or a partner event?
+
+- Target
+
+What happens when this event kicks off? Do you trigger a lmabda function, post to SQS or send an email? 
+
+
+### EventBridge Demo
+
+In this demo we'll use an eventbridge, EB, that keeps an eye on EC2 instances. As soon as an instance is stopped, we'll trigger an event that gets to EB and triggers a lambda that turns that instance back on! Here's the lambda function:
+
+```python
+#!/usr/bin/python
+import boto3
+import logging
+
+#setup simple logging for INFO
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+#define the connection
+ec2 = boto3.resource('ec2')
+
+def lambda_handler(event, context):
+    # Use the filter() method of the instances collection to retrieve
+    # all running EC2 instances.
+    filters = [
+        {
+            'Name': 'instance-state-name',
+            'Values': ['stopped']
+        }
+    ]
+
+    #filter the instances
+    instances = ec2.instances.filter(Filters=filters)
+
+    #locate all running instances
+    stoppedInstances = [instance.id for instance in instances]
+
+    #print the instances for logging purposes
+    #print stoppedInstances
+
+    #make sure there are actually instances to shut down.
+    if len(stoppedInstances) > 0:
+        #perform the shutdown
+        startingUp = ec2.instances.filter(InstanceIds=stoppedInstances).start()
+        print (startingUp)
+    else:
+        print ("Nothing to see here")
+```
+
+Remember to add EC2 permissions and BasicExecution permissions to the lambda that you create. 
+
+- Go to EventBridge -> Events -> Rules -> Create Rule
+- Choose Event pattern
+- Choose pre-defined pattern by service, select AWS and choose EC2
+- For event type choose EC2 Instance State-change Notification
+- Choose specific states and choose stopped
+- For Target, choose a lambda function that you created (as pasted above!).
+- Go to EC2 and stop a running EC2 instance
+
+<!-- copy and paste. Modify height and width if desired. -->
+<iframe class="embeddedObject shadow resizable" name="embedded_content" scrolling="no" frameborder="0" type="text/html" 
+        style="overflow:hidden;" src="https://www.screencast.com/users/IqbalKhan8502/folders/Capture/media/a15dcf4b-9954-42e4-99ab-e0a5cc1afa7b/embed" height="932" width="1916" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+You can kick off the lambda function for any API call you want! 
