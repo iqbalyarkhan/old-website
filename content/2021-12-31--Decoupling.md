@@ -35,5 +35,5 @@ As discussed in the intro, we want our arch to be loosely coupled. To convert ou
 
 In our example, ELB implies that our backend services have an open line of communication with our front-end. There might be use-cases where we wouldn't want that. We can have SQS that holds our messages and when the backend resources are ready, they can poll SQS for messages. If you want to push out notifications, you can use SNS. SNS allows you to take one notification and proactively deliver it to your customers.
 
-To look at some of AWS services that allow loosely coupled architectures, check out blog posts on [SQS](/aws-sqs) and SNS.
+To look at some of AWS services that allow loosely coupled architectures, check out blog posts on [SQS](/aws-sqs), [SNS](/aws-sns) and [API Gateway](/aws-api-gateway).
 
