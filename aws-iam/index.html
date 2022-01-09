@@ -116,6 +116,7 @@ void function() {
 </li>
 </ul>
 </li>
+<li><a href="#cross-account-role-access">Cross Account Role Access</a></li>
 <li><a href="#resources">Resources</a></li>
 </ul>
 <h2 id="building-blocks" style="position:relative;"><a href="#building-blocks" aria-label="building blocks permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Building Blocks</h2>
@@ -575,6 +576,44 @@ You can read more on well architected frameworks using white-papers <a href="htt
     <span class="token property">"Resource"</span><span class="token operator">:</span> <span class="token string">"arn:aws:s3:::example_bucket"</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre></div>
+<h2 id="cross-account-role-access" style="position:relative;"><a href="#cross-account-role-access" aria-label="cross account role access permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Cross Account Role Access</h2>
+<p>Cross Account roles allow you to assume roles that have policies attached that let you perform certain actions in another account. First step is to create the role, grant access via policies and then check to see if access is granted:</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 52.02312138728323%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAAAsTAAALEwEAmpwYAAACaklEQVQozy2M224TVwBF5x2kBseeM7cz58zFM+MbJjhBqEVNTOMmxkBCbJoKFbsZO3ZMbEpSi0TimUf+gF/oN67KaR/32kvLqNn7/LM8oZ10iOVrntTf8ijrs5X10eYB8kEHb6PNfPdXvudvUJsdtrIBreqAx5U+9egIWdhHFToEm/sYkThEma946HWoWs+piD2azi5N52d2VBtZ7BKJA2ruAaJwRNXpkIk9UrNNXHpOKn4hNLvcv3dMWRxiJFYPt3BE2eqR2l1icUhqvyBzemT2C/zia+rOITWni9h4w9pff2s/MnvE4iWh+Qq3cEzF7mH4xQGR6ONvHhO470jKM9T/W5X6qOIRWTQmjXICc81O8IvHhM4pWTIndE/vnNDs45cGGNb2BNv7A0uMkeE1MvqETm/x1JLCDye4/hIZ/Y3Uf6GSL2xunFIsDnH1FTK8wg9vEHJFwz3lt7SP4TpDXDFEeROUf44jhtjiT6Q7xhMjfH+ClmNUcklSWRCHOWk4I4nmSOuMbOt3mrt93I33xNY7DLc4wnswJOp8pXzyjZ3aBc9+ukZ5Z0j7nDCeEuic1tMV1fqCrPaBH5/cUElmOGEXFQ+I0vc4hRFOaYQhzRzfzIkbK9LWZx41lrQeXxHpOb4zJbByAjGisX1Ntbpku7Ig8GZob8LO9pxEz/BKM6R5xrpl+CJHOxMSOWGnuaS9d0Ozfkmipyj7nNi/IJRTWk9vaTy8JlNTtDulHC6oZQuS+BLtXbDuKGuM4dtjfHuCcsYEwUfi9DOBvrzb60/JOXF6S1ReoeQHXJHfca0/oqMVOviE70z4rzPmX7y+RPfzR/+BAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Cross-Account"
+        title="Cross-Account"
+        src="/static/929aaff67f837c56d62ed922c27a5135/1e043/cross-account-role.png"
+        srcset="/static/929aaff67f837c56d62ed922c27a5135/991de/cross-account-role.png 173w,
+/static/929aaff67f837c56d62ed922c27a5135/e4d6b/cross-account-role.png 345w,
+/static/929aaff67f837c56d62ed922c27a5135/1e043/cross-account-role.png 690w,
+/static/929aaff67f837c56d62ed922c27a5135/e3189/cross-account-role.png 1035w,
+/static/929aaff67f837c56d62ed922c27a5135/b1001/cross-account-role.png 1380w,
+/static/929aaff67f837c56d62ed922c27a5135/82c1e/cross-account-role.png 1398w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span><a href="https://acloudguru.com">Image Credit: ACloudguru</a></p>
+<p>Let's say we have 2 accounts, A and B . Go to IAM for account A and follow these steps:</p>
+<ul>
+<li>Choose Another AWS Account</li>
+<li>Provide B's ID</li>
+<li>For permissions, provide S3 full access</li>
+<li>Call the role cross-account-role</li>
+<li>Switch to other AWS account:  B</li>
+<li>Click on switch role from dropdown</li>
+<li>Provide Account ID for account A and role name as cross-account-role</li>
+<li>Tada!</li>
+</ul>
 <h2 id="resources" style="position:relative;"><a href="#resources" aria-label="resources permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Resources</h2>
 <p><a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/resources.html">Here're</a> some great resources for diving deep into IAM.</p></div><div class="post-module--post-meta--2SNYO"><div class="PostTags-module--tag-container--2fM2Y"><a href="/tags/blog"><span>blog</span></a><a href="/tags/aws"><span>AWS</span></a></div></div><hr/></div><nav><ul class="post-module--pagination--2K15k"><li><a rel="prev" href="/aws-s-3">← <!-- -->AWS - S3</a></li><li><a rel="next" href="/micro-frontend">Micro Frontend<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--1ScUQ"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--2Iyp5">Copyright © 2021. All rights reserved.</div></div></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
   
