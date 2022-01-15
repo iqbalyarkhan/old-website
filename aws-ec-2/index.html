@@ -166,7 +166,7 @@ void function() {
 <li>These are good for applications that have flexible start and end times. This can be for applications such as big data, CI/CD, high performance computing and other test and development workloads.</li>
 <li>Can't be used for web servers since the instance gets terminated as price moves.</li>
 <li>Good for apps that are feasible at very low compute prices. Such as in the middle of night on a Sunday morning!</li>
-<li>Use thse when you have an urgent need for large amounts of additional computing capacity</li>
+<li>Use these when you have an urgent need for large amounts of additional computing capacity</li>
 <li>Scenarios: image rendering, genomic sequencing, algo trading engines.</li>
 </ul>
 <p>To use spot instances, you must first decide on your max spot price. As long as the price &#x3C; your max price, your instance will be in provisioned state. As soon as it crosses the max, you'll have 2 minutes to choose if you terminate or stop your instance.</p>
@@ -203,7 +203,8 @@ void function() {
 <p>For example:</p>
 <div class="gatsby-highlight" data-language="bash"><pre class="language-cppbash"><code class="language-cppbash">aws s3 <span class="token function">ls</span></code></pre></div>
 <p>If you do so, you'll get an error saying:</p>
-<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">Unable to locate credentials. You can configure credentials by running &quot;aws configure&quot;.</code></pre></div>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">Unable to locate credentials. 
+You can configure credentials by running &quot;aws configure&quot;.</code></pre></div>
 <p>As the error says, you need to run <code class="language-cpptext">aws configure</code>. When you do so, you'll see this:</p>
 <div class="gatsby-highlight" data-language="bash"><pre class="language-cppbash"><code class="language-cppbash"><span class="token punctuation">[</span>root@ip-172-31-83-150 ec2-user<span class="token punctuation">]</span><span class="token comment"># aws configure</span>
 AWS Access Key ID <span class="token punctuation">[</span>None<span class="token punctuation">]</span>:</code></pre></div>
@@ -227,8 +228,7 @@ AWS Access Key ID <span class="token punctuation">[</span>None<span class="token
 <p>From the above, after we hit create user, we'll get our Access Key ID and Secret Access key. We'll use that in the command line to authenticate our user. Once completed, we can now re-run:</p>
 <div class="gatsby-highlight" data-language="bash"><pre class="language-cppbash"><code class="language-cppbash">aws s3 <span class="token function">ls</span></code></pre></div>
 <p>and get back the buckets we have. We can also create a bucket from the command line like so:</p>
-<div class="gatsby-highlight" data-language="bash"><pre class="language-cppbash"><code class="language-cppbash"><span class="token punctuation">[</span>root@ip-172-31-83-150 ec2-user<span class="token punctuation">]</span><span class="token comment"># clear</span>
-<span class="token punctuation">[</span>root@ip-172-31-83-150 ec2-user<span class="token punctuation">]</span><span class="token comment"># aws s3 mb s3://letsmakethisbucketforourtestingshallwe</span>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-cppbash"><code class="language-cppbash">$ aws s3 mb s3://letsmakethisbucketforourtestingshallwe
 make_bucket: letsmakethisbucketforourtestingshallwe</code></pre></div>
 <p>That's it for CLI!</p>
 <h2 id="ec2-and-assuming-roles" style="position:relative;"><a href="#ec2-and-assuming-roles" aria-label="ec2 and assuming roles permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>EC2 and Assuming Roles</h2>
@@ -280,7 +280,7 @@ make_bucket: letsmakethisbucketforourtestingshallwe</code></pre></div>
 <ul>
 <li>Changes to security groups take effect immediately</li>
 <li>All inbound traffic into the instance is blocked by default</li>
-<li>All outbound traffix out the instance is allowed by default</li>
+<li>All outbound traffic out the instance is allowed by default</li>
 </ul>
 <h2 id="bootstrap-scripts" style="position:relative;"><a href="#bootstrap-scripts" aria-label="bootstrap scripts permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Bootstrap scripts</h2>
 <p>Bootstrap scripts are scripts that run at root level when the instance first launches. An example bootstrap script could be:</p>
