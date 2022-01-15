@@ -101,6 +101,7 @@ void function() {
 </li>
 <li><a href="#access-management">Access Management</a>
 <ul>
+<li><a href="#arns">ARNs</a></li>
 <li><a href="#policy-documents">Policy Documents</a></li>
 <li><a href="#iam-permissions-boundaries">IAM Permissions boundaries</a></li>
 <li><a href="#access-contorl-lists-acls">Access contorl lists (ACLs)</a></li>
@@ -292,6 +293,16 @@ You can read more on well architected frameworks using white-papers <a href="htt
 <p>An identity is used to identify and group entities within IAM. From our venn diagram above, we can see that groups are exclusively an identity. A group is not a principal and as such can’t take action in an AWS account. Action here means making a call to an API Gateway endpoint etc.</p>
 <p>A principal on the other hand, is a person or application that can make a request for an action or operation on an AWS resource. The principal is authenticated as the AWS account root user or an IAM entity to make requests to AWS.</p>
 <p>When a principal makes a request in AWS, the AWS enforcement code checks whether the principal is authenticated (signed in) and authorized (has permissions). You manage access in AWS by creating policies and attaching them to IAM identities or AWS resources. Policies (more on policies in the next section) are JSON documents in AWS that, when attached to an identity or resource, define their permissions.</p>
+<h4 id="arns" style="position:relative;"><a href="#arns" aria-label="arns permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ARNs</h4>
+<p>In order to differentiate resources, AWS uses the concept of ARNs (Amazon Resource Names). ARNs uniquely identify resources within accounts. ARN generally follow this format:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">arn:partition:service:region:account-id:resource-id
+arn:partition:service:region:account-id:resource-type/resource-id
+arn:partition:service:region:account-id:resource-type:resource-id</code></pre></div>
+<p><strong>partition</strong>: almost always aws unless it is china aws-cn
+<strong>region</strong>: can be a double colon (::) if that doesn't matter
+<strong>account-id</strong>: the account that owns the resource (EC2 needs this, S3 does not need account-id because its globally unique)
+<strong>resource-type/id</strong>: changes based on the resource</p>
+<h4 id="policy-documents" style="position:relative;"><a href="#policy-documents" aria-label="policy documents permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Policy Documents</h4>
 <p><span
       class="gatsby-resp-image-wrapper"
       style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
@@ -316,7 +327,6 @@ You can read more on well architected frameworks using white-papers <a href="htt
       />
     </span><a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access.html">Image Credit - AWS-Docs</a></p>
 <p>In order to manage access for identities listed above, we use something called a policy. A policy is defined in something called a policy document:</p>
-<h4 id="policy-documents" style="position:relative;"><a href="#policy-documents" aria-label="policy documents permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Policy Documents</h4>
 <p>PDs are used to assign permissions using IAM. PDs are JSON files. Here's an example:</p>
 <div class="gatsby-highlight" data-language="json"><pre class="language-cppjson"><code class="language-cppjson"><span class="token punctuation">{</span>
   <span class="token property">"Version"</span><span class="token operator">:</span> <span class="token string">"2012-10-17"</span><span class="token punctuation">,</span>
