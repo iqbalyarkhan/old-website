@@ -101,6 +101,7 @@ void function() {
 <li><a href="#public-subnet-config">Public Subnet Config</a></li>
 <li><a href="#route-table-for-public-subnet">Route Table for Public Subnet</a></li>
 <li><a href="#add-public-subnet-to-new-route-table">Add Public Subnet to New Route Table</a></li>
+<li><a href="#summary-for-public-subnet-creation">Summary for public subnet creation</a></li>
 <li><a href="#create-ec2s">Create EC2s</a></li>
 <li><a href="#private-ec2-security-groups">Private EC2 Security Groups</a></li>
 </ul>
@@ -149,7 +150,7 @@ void function() {
 </li>
 </ul>
 <h3 id="3-tier-architecture" style="position:relative;"><a href="#3-tier-architecture" aria-label="3 tier architecture permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>3 tier architecture</h3>
-<p>Usually we have a 3 tier architecture (web servers, application and DB). In such an architecture, our web servers are in a public facing subnet meaning these are accessible via port 80 or 443 (HTTP or HTTPS). The application tier is in a private subnet that handles our business logic (rendering the webpage, routing requests for backend, authN and authZ logic etc). The application tier is NOT accessible via the internet and can only speakw ith the web tier or the DB tier. Finally we have the database tier which is also in a private subnet and is responsible for maintaining our data. It can only speak with the application and nothing else.</p>
+<p>Usually we have a 3 tier architecture (web servers, application and DB). In such an architecture, our web servers are in a public facing subnet meaning these are accessible via port 80 or 443 (HTTP or HTTPS). The application tier is in a private subnet that handles our business logic (rendering the webpage, routing requests for backend, authN and authZ logic etc). The application tier is NOT accessible via the internet and can only speak with the web tier or the DB tier. Finally we have the database tier which is also in a private subnet and is responsible for maintaining our data. It can only speak with the application and nothing else.</p>
 <p><span
       class="gatsby-resp-image-wrapper"
       style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
@@ -176,7 +177,7 @@ void function() {
     </span><a href="https://acloudguru.com">Image Credit - Acloudguru</a></p>
 <p>For applications that already exist in a corporate data center, we can create a hardware virtual private network (VPN) connection between the corporate data center and AWS and leverage AWS cloud as an extension of the corporate data center.</p>
 <h2 id="network-diagram-for-vpc" style="position:relative;"><a href="#network-diagram-for-vpc" aria-label="network diagram for vpc permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Network diagram for VPC</h2>
-<p>Here's how we'd usually go about creating a VPC network for a typical use-case:</p>
+<p>Here's how we'd usually go about creating a VPC network for a typical use-case (we'll complete these steps in a demo!):</p>
 <p>(1) We first need to choose the region we want to deploy to</p>
 <h3 id="ip-address-ranges" style="position:relative;"><a href="#ip-address-ranges" aria-label="ip address ranges permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>IP address ranges</h3>
 <p>(2) Next we need to choose the IP address range which could be one of three:</p>
@@ -186,9 +187,9 @@ void function() {
 <li>192.168.0.0</li>
 </ul>
 <h3 id="default-options" style="position:relative;"><a href="#default-options" aria-label="default options permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Default Options</h3>
-<p>(3) You'll be asked about tenancy. This is the same tenancy we discussed in the VPC section. You can run instances in your VPC on single-tenant, dedicated hardware. Select Dedicated to ensure that instances launched in this VPC are dedicated tenancy instances, regardless of the tenancy attribute specified at launch. Select Default to ensure that instances launched in this VPC use the tenancy attribute specified at launch. <code class="language-cpptext">Dedicated</code> are more expensive! We'll use <code class="language-cpptext">Default</code></p>
+<p>(3) You'll be asked about tenancy: You can run instances in your VPC on single-tenant, dedicated hardware. Select Dedicated to ensure that instances launched in this VPC are dedicated tenancy instances, regardless of the tenancy attribute specified at launch. Select Default to ensure that instances launched in this VPC use the tenancy attribute specified at launch. <code class="language-cpptext">Dedicated</code> are more expensive! We'll use <code class="language-cpptext">Default</code></p>
 <p>(4) As soon as we create our VPC, a main route table is created automatically for us, along with main network acl. In addition, a default security group is also created for our VPC.</p>
-<p>(5) Go ahead and exmaine the route table associated with our VPC. Notice that there're routes associated with it but no subnets as shown under <code class="language-cpptext">Subnet associations</code> section.</p>
+<p>(5) If you exmaine the route table associated with our VPC, you'll notice that there're routes associated with it but no subnets as shown under <code class="language-cpptext">Subnet associations</code> section.</p>
 <p>(6) However, going to the subnets section, you'll find subnets present. These are associated with our default VPC and not with the new VPC that you created.</p>
 <h3 id="public-subnet-creation" style="position:relative;"><a href="#public-subnet-creation" aria-label="public subnet creation permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Public Subnet Creation</h3>
 <p>(7) Next, we'll create a public subnet (10.0.1.0/24 IP address range), add an instance to it and configure security group. To do so, click on <code class="language-cpptext">Create Subnet</code>. You'll be asked to choose a VPC. We'll obviously choose the VPC we created earlier. Provide a region, <code class="language-cpptext">us-east-1a</code> and name for your subnet. We'll name it using the convention: <code class="language-cpptext">&lt;IP ADDRESS RANGE&gt; - &lt;REGION&gt;</code> which would translate to: <code class="language-cpptext">10.0.1.0 - us-east-1a</code>. Next, we'll specify the IPv4 CIDR block: 10.0.1.0/24. We'll then click on <code class="language-cpptext">Create Subnet</code>. You can see that this subnet is associated with the VPC you created in the steps above.</p>
@@ -212,7 +213,7 @@ void function() {
 </ul>
 <h3 id="private-subnet-creation" style="position:relative;"><a href="#private-subnet-creation" aria-label="private subnet creation permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Private Subnet Creation</h3>
 <p>(8) Similar to our public subnet, we'll create a private subnet. We'll place this private subnet in us-east-1b region. Therefore, we'll name this subnet as: <code class="language-cpptext">10.0.2.0 - us-east-1b</code>. Now go to subnets tab to make sure both new subnets are available.</p>
-<p><strong>Side Note</strong>: Just by creating the two subnets and giving them IP addresses, we haven't made them public or private yet! We'll do that in the steps below. Here's what we've created so far (note the labelled subnets are not actually private or public as stated):</p>
+<p><strong>Side Note</strong>: Just by creating the two subnets and giving them IP addresses, we have NOT made them public or private yet! We'll do that in the steps below. Here's what we've created so far (note the labelled subnets are not actually private or public as stated):</p>
 <p><span
       class="gatsby-resp-image-wrapper"
       style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
@@ -241,18 +242,28 @@ void function() {
 <h3 id="public-subnet-config" style="position:relative;"><a href="#public-subnet-config" aria-label="public subnet config permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Public Subnet Config</h3>
 <p>(9) Alright, let's make our public subnet public:</p>
 <ul>
-<li>We'll first enable <code class="language-cpptext">Auto-assign public IPv4 address</code> for the subnet 10.0.1.0-us-east-1a. That's because we want EC2s in that subnet to be public. To do so, choose the public subnet and click on Actions and then click on <code class="language-cpptext">Edit subnet settings</code>. Then all we need to do is enable <code class="language-cpptext">Enable auto-assign public IPv4 addressInfo</code>. This will make our subnet public.</li>
+<li>We'll first enable <code class="language-cpptext">Auto-assign public IPv4 address</code> for the subnet 10.0.1.0-us-east-1a. That's because we want EC2s in that subnet to be public. To do so, choose the public subnet and click on Actions and then click on <code class="language-cpptext">Edit subnet settings</code>. Then all we need to do is click <code class="language-cpptext">Enable auto-assign public IPv4 addressInfo</code>. This will make our subnet public.</li>
 <li>Next, we'll create an internet gateway. Simply go to Internet Gateway and create one. Next, we need to attach it to your VPC by choosing your VPC name. <strong>You can only have 1 IGW attached to a VPC</strong>.</li>
 <li>Attaching an IGW is not enough. We need to add entries to our Route Table. So go to Route Tables and choose the VPC that you created. Go to routes tab and you'll see that a route already exists: 10.0.0.0/16. This route will ONLY allow our subnets to communicate with each other. Go ahead and click on Subnet Associations and you'll see this message:</li>
 </ul>
 <p><strong>"The following subnets have not been explicitly associated with any route tables and are therefore associated with the main route table:"</strong></p>
-<p>In that table you'll see our public and private subnets. Any new subnets created are <strong>automatically associated with the main route table</strong>. This is why you wouldn't want your main route table to have a route out to the internet, otherwise, any new subnets created and any EC2s in that subnet will always be internet accessible. Best practice is to create a new route table that's accessible via the internet. That's exactly what we'll do in the next section:</p>
+<p>In that table you'll see our public and private subnets. Any new subnets created are <strong>automatically associated with the main route table</strong>. This is why you wouldn't want your main route table to have a route out to the internet, otherwise, any new subnets created and any EC2s in that subnet will always be internet accessible. <strong>Best practice is to create a new route table that's accessible via the internet. That's exactly what we'll do in the next section</strong>:</p>
 <h3 id="route-table-for-public-subnet" style="position:relative;"><a href="#route-table-for-public-subnet" aria-label="route table for public subnet permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Route Table for Public Subnet</h3>
 <p>So let's create the route table for our public subnet. Go ahead and click on create route table and call it <code class="language-cpptext">InternetRT</code> and choose our VPC. With the newly created route table selected, go back to routes and click on edit. We'll add a route to the internet. To do so, clik on add route and provide the following as destination:
 <code class="language-cpptext">0.0.0.0/0</code></p>
 <p>and for Target, choose the internet gateway that you created. This will create a route out to the internet! What this does is that for destination <code class="language-cpptext">0.0.0.0/0</code> (ie destination internet), forward requests to internet gateway that's attached to this VPC.</p>
 <h3 id="add-public-subnet-to-new-route-table" style="position:relative;"><a href="#add-public-subnet-to-new-route-table" aria-label="add public subnet to new route table permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Add Public Subnet to New Route Table</h3>
 <p>Next, go back to your public subnet, click on Route table and then on edit route table association. Next, you can choose the internet route table that you created to be associated with your public subnet. Now if you go back to Route Tables and look under Subnet Associations, you'll now only see your private subnet under the message saying subnet not associated with any route table. You'll see your public subnet associated with the new route table.</p>
+<h3 id="summary-for-public-subnet-creation" style="position:relative;"><a href="#summary-for-public-subnet-creation" aria-label="summary for public subnet creation permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Summary for public subnet creation</h3>
+<p>To summarize all the steps above, here's what we did to make our subnet public:</p>
+<ul>
+<li>Create a subnet with CIDR block (we chose 10.0.1.0/24)</li>
+<li>Enable auto assign public IPv4 address</li>
+<li>Create internet gateway called <code class="language-cpptext">PublicIGW</code></li>
+<li>Create a new internet route table, called <code class="language-cpptext">InternetRT</code> and attach to VPC</li>
+<li>Add route out to internet in <code class="language-cpptext">InternetRT</code> where destination is <code class="language-cpptext">0.0.0.0/0</code> and destination is <code class="language-cpptext">PublicIGW</code></li>
+<li>Edit public subnet route table association to point to <code class="language-cpptext">InternetRT</code></li>
+</ul>
 <h3 id="create-ec2s" style="position:relative;"><a href="#create-ec2s" aria-label="create ec2s permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Create EC2s</h3>
 <p>(10) We'll create 2 EC2 instances. One will be placed in our public subnet while the other will be placed in our private subnet. We'll create a standard EC2 instance and in configuration details provide our custom VPC for network instead of our default VPC. Additionally, we'll also provide the subnet where we want our EC2 instance launched. Remember, one will go into public subnet and the other in our private subnet. Add a tag to each EC2 for easy identification (WebServer for public and DBServer for private).</p>
 <p>Notice that when public web server is created, it'll automatically be assigned a public IPv4 address. To test whether your WebServer is actually public, try to SSH into it and perform a <code class="language-cpptext">yum update</code>.</p>
@@ -260,7 +271,7 @@ void function() {
 <p><strong>IMPORTANT</strong>: For your private DBServer, you don't want internet access for now. You only want access from to DBServer from WebServer:</p>
 <ul>
 <li>
-<p>To allow MySQL traffic into DBServer. To do so, we'll set Inbound Rules. Since our DBServer is <code class="language-cpptext">MySQL/Aurora</code>, we'll set the type as MySQL/Aurora and the source as <code class="language-cpptext">10.0.1.0/24</code>. Remember, this is the CIDR block we chose for our WebServer. Therefore, we're saying that allow inbound traffic from that IP address range.</p>
+<p>We'll allow MySQL traffic into DBServer. To do so, we'll set Inbound Rules. Since our DBServer is <code class="language-cpptext">MySQL/Aurora</code>, we'll set the type as MySQL/Aurora and the source as <code class="language-cpptext">10.0.1.0/24</code>. Remember, this is the CIDR block we chose for our WebServer. Therefore, we're saying that allow inbound traffic from that IP address range.</p>
 </li>
 <li>
 <p>We also want to be able to ping our DBServer. To make that possible, we'll add another inbound rule with type <code class="language-cpptext">All ICMP - IPv4</code>. Again, the source CIDR block would be the WebServer CIDR block: <code class="language-cpptext">10.0.1.0/24</code>.</p>
@@ -278,7 +289,7 @@ void function() {
 <p>Now, try to connect to the DBServer in another terminal where you're not SSHed into your WebServer. That won't be possible since our security groups do not allow that!</p>
 <p>Now SSH into your DBServer via the WebServer using:</p>
 <div class="gatsby-highlight" data-language="bash"><pre class="language-cppbash"><code class="language-cppbash"><span class="token function">ssh</span> -i <span class="token string">"kvPair.pem"</span> ec2-user@<span class="token operator">&lt;</span>DBServerPrivateIP<span class="token operator">></span></code></pre></div>
-<p>Once in, elevate yourself to <code class="language-cpptext">su</code> and try running <code class="language-cpptext">yum update -y</code>. You'll get a timeout! This is obviously not what we want! We want no internet traffic coming in but at the same time we want our servers to be up to date with latest security patches. We'll look at how to enable this outflow in the next section.</p>
+<p>Once in, elevate yourself to <code class="language-cpptext">su</code> and try running <code class="language-cpptext">yum update -y</code>. You'll get a timeout! This is obviously not what we want! We want no internet traffic coming in but at the same time we want our DBServers to be up to date with latest security patches. We'll look at how to enable this outflow in the next section.</p>
 <p>Here's a demo showing what we've done so far:</p>
 <ul>
 <li>Create a VPC in a region</li>
@@ -304,8 +315,10 @@ void function() {
 </ul>
 <!-- copy and paste. Modify height and width if desired. -->
 <div class="gatsby-resp-iframe-wrapper" style="padding-bottom: 52.859135285913524%; position: relative; height: 0; overflow: hidden; " > <iframe class="embeddedObject shadow resizable" name="embedded_content" scrolling="no" frameborder="0" type="text/html" style="overflow:hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; " src="https://www.screencast.com/users/IqbalKhan8502/folders/Capture/media/f12d64a9-219c-4e09-ade9-1b5fe11f7c21/embed" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe> </div>
+<br/>
 <p><strong>SIDE NOTE</strong>:  SSH should be disabled by default but for demo purposes, I've added SSH access to DBServer security group.</p>
 <p>(7) Optional: We can attach a virtual private gateway to our VPC that'll allow us to connect our corporate data center to our private subnet</p>
+<p>Here's a network diagram of what we've created so far:</p>
 <p><span
       class="gatsby-resp-image-wrapper"
       style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
@@ -394,7 +407,7 @@ void function() {
         decoding="async"
       />
     </span><a href="https://acloudguru.com">Image Credit: acloudguru</a></p>
-<p>As you might remember from the previous section, we're not able to SSH into our DBServer apart from our WebServer. We enabled SSH from <code class="language-cpptext">10.0.1.0/24</code> to our Inbound Rule for security group that's attaced to our DBServer. Next, we SSHed into our WebServer, imported the .pem file into that EC2 instance, and SSHed into our DBServer. We saw that we aren't able to perform a <code class="language-cpptext">yum update -y</code> from the DBServer.</p>
+<p>As you might remember from the previous section, we're not able to SSH into our DBServer apart from our WebServer. We enabled SSH from <code class="language-cpptext">10.0.1.0/24</code> to our Inbound Rule for security group that's attached to our DBServer. Next, we SSHed into our WebServer, imported the .pem file into that EC2 instance, and SSHed into our DBServer. We saw that we aren't able to perform a <code class="language-cpptext">yum update -y</code> from the DBServer.</p>
 <p>To enable internet access from private subnet, we'll now create a NAT Gateway. To do so, we'll follow these steps:</p>
 <ul>
 <li>Go to NAT Gateways and create NAT gateway</li>
@@ -458,7 +471,10 @@ void function() {
 <li>ssh into the WebServer and install apache: <code class="language-cpptext">sudo yum install httpd</code></li>
 <li>run <code class="language-cpptext">sudo service httpd start</code></li>
 <li><code class="language-cpptext">cd /var/www/html</code></li>
-<li>create a index.html file: echo "<html><body><h1>Hello!</h1></body></html>" > index.html</li>
+<li>create a index.html file:</li>
+</ul>
+<p><code class="language-cpptext">echo &quot;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Hello!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&quot; &gt; index.html</code></p>
+<ul>
 <li>Now visit the public address of your WebServer and you should see hello! Close this tab</li>
 <li>Now go to Network ACLs in AWS console and check Inbound Rules for your test VPC: You'll see it allows all traffic with rule number 100 and a deny rule after that.</li>
 <li>Let's create a new NACL and choose our VPC.</li>
@@ -537,7 +553,7 @@ void function() {
 <li>Next, we'll go back to VPC console and Click on Endpoints -> Choose service as s3</li>
 <li>We'll get back the option of choosing a Gateway or Interface. We'll choose gateway</li>
 <li>Choose our VPC</li>
-<li>Choose route table where you want this gateway to be palced. Look at the diagram above again: route table should be our private instance's route table</li>
+<li>Choose route table where you want this gateway to be placed. Look at the diagram above again: route table should be our private instance's route table</li>
 <li>Create endpoint!</li>
 <li>SSH into our DBServer via WebServer and run S3 comands to confirm</li>
 <li>Commands could be: <code class="language-cpptext">aws s3 ls</code></li>

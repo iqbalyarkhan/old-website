@@ -121,12 +121,8 @@ void function() {
 <p>Amazon Elastic Block Store (Amazon EBS) provides block level storage volumes for use with EC2 instances. EBS volumes behave like raw, unformatted block devices. EBS volumes that are attached to an instance are exposed as storage volumes that persist independently from the life of the instance. You can create a file system on top of these volumes, or use them in any way you would use a block device (such as a hard drive). You can dynamically change the configuration of a volume attached to an instance.</p>
 <p>Amazon EBS should be used for data that must be quickly accessible and requires long-term persistence. EBS volumes are particularly well-suited for use as the primary storage for file systems, databases, or for any applications that require fine granular updates and access to raw, unformatted, block-level storage. Amazon EBS is well suited to both database-style applications that rely on random reads and writes, and to throughput-intensive applications that perform long, continuous reads and writes.</p>
 <h2 id="volumes" style="position:relative;"><a href="#volumes" aria-label="volumes permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Volumes</h2>
-<p>Volumes are virtual hard disks where essential software can be installed that'll then be run on our EC2 instance. You need a minimum of 1 volume per instance which comes with the EC2 instance that you launched which is called <strong>root device volume</strong>. When you launch an instance, the root device volume contains the image used to boot the instance. On this volume is your OS is installed when you launch an instance.</p>
-<p>Some facts:
-- You create an EBS volume in a specific Availability Zone, and then attach it to an instance in that same Availability Zone.
-- Your EBS volumes will ALWAYS be in the same AZ as the EC2 instance to which it is attached
-- EBS volumes can be resized on the fly
-- You can change volume types on the fly as well!</p>
+<p>Volumes are virtual hard disks where essential software can be installed that'll then be run on our EC2 instance. You need a minimum of 1 volume per instance. The default volume that comes with EC2 instance that you launch is called <strong>root device volume</strong>. When you launch an instance, the root device volume contains the image used to boot the instance. On this volume your OS is installed.</p>
+<p>You create an EBS volume in a specific Availability Zone, and then attach it to an instance in that same Availability Zone.  Your EBS volumes will ALWAYS be in the same AZ as the EC2 instance to which it is attached. EBS volumes can be resized on the fly. You can change volume types on the fly as well!</p>
 <h2 id="snapshots" style="position:relative;"><a href="#snapshots" aria-label="snapshots permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Snapshots</h2>
 <p>Snapshots are literally snaps of point in time of a volume where time is the time at which you initiated the snap.  Your snapshots are automatically replicated in the AZ where you created the volume. To make a volume available outside of the Availability Zone, you can create a snapshot (backup) and restore that snapshot to a new volume anywhere in that Region. You can copy snapshots to other Regions and then restore them to new volumes there, making it easier to leverage multiple AWS Regions for geographical expansion, data center migration, and disaster recovery.</p>
 <p>You can create point-in-time snapshots of EBS volumes, which are persisted to Amazon S3. Snapshots protect data for long-term durability, and they can be used as the starting point for new EBS volumes. The same snapshot can be used to instantiate as many volumes as you wish. These snapshots can be copied across AWS Regions.Here're some facts about snapshots:</p>
@@ -165,14 +161,19 @@ void function() {
 <p>General purpose volumes  balance price and performance for a wide variety of transactional workloads. These volumes are ideal for use cases such as boot volumes, medium-size single instance databases, and development and test environments.</p>
 <p>Use cases include:</p>
 <ul>
-<li>GP2:
+<li>
+<p>GP2:</p>
 <ul>
 <li>Good for <strong>boot volumes</strong> or development and test applications that are not latency sensitive</li>
 </ul>
 </li>
+<li>
+<p>GP3:</p>
+<ul>
+<li>Good for high performance at a low cost (MySQL, Cassandra, Virtual desktop, hadoop etc)</li>
 </ul>
-<p>-GP3:
-- Good for high performance at a low cost (MySQL, Cassandra, Virtual desktop, hadoop etc)</p>
+</li>
+</ul>
 <h3 id="provisioned-iops-ssd-io1-and-io2" style="position:relative;"><a href="#provisioned-iops-ssd-io1-and-io2" aria-label="provisioned iops ssd io1 and io2 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Provisioned IOPS SSD (io1 and io2)</h3>
 <p>IOPS SSD volumes are designed to meet the needs of I/O-intensive workloads that are sensitive to storage performance and consistency. They provide a consistent IOPS rate that you specify when you create the volume. This enables you to predictably scale to tens of thousands of IOPS per instance. Additionally, io2 volumes provide the highest levels of volume durability.</p>
 <p>Use cases include:</p>
