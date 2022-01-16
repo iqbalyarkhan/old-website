@@ -35,7 +35,7 @@ DynamoDB automatically spreads the data and traffic for your tables over a suffi
 DynamoDB is:
 - Stored on SSD storage
 - Spread across 3 geographically distinct data centers
-- Eventual consistent reads by default but can be changed to strongly consistent reads
+- Eventually consistent reads by default but can be changed to strongly consistent reads
 - Comes with a fully managed caching service called DynamoDB Accelerator or DAX. Usually, when applications have a caching layer, caches are queried first to check if data resides in cache. If so, the result is returned, otherwise, the DB is queried. In the case of DAX, DAX sits between DB and application and updates itself based off a cache hit or miss.
 - Uses encryption at rest using KMS
 - Can connect using Direct Connect (DX)
