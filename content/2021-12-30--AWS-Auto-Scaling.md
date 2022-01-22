@@ -128,7 +128,7 @@ Next, you need a **networking space and purchasing options**. This is the reason
 
  Next, we need to set **scaling policies**: these are the min, max and desired capacity needs that ensure we don't have too many or too little resources.
 
- **Notifications** via SNS are also required to be set for notifications when scaling event occurs.
+ **Notifications** via SNS are also required so that we're notified when scaling event occurs.
 
  ![ASG-Reqs](./images/aws/asg-reqs.png)[Image Credit: acloudguru.com](https://acloudguru.com)
 
@@ -203,11 +203,13 @@ Let's say, while we're in the warmup period we get another burst of traffic and 
 
 Now what do we do? The rule says add 15 instance between 80% and 100%. Do we add 15 more instances? NO! we add 5! Why 5 and not 15? Because we already have 10 coming in from warmup period and we need to get to 15. So we need to add 5 more! 
 
+Let's say now that the warmup period is over and our 35 instances are up and running!
+
 ### Change 4
 
 **Say our average memory utilization (MU) moves DOWN from 90% to 45%. Currently we have 35 instances running**.
 
-This drop in MU happened because the warmup period expired and we have 35 instances that are running. We're currently in that range we like the most! 40% to 60% memory utilization!
+This drop in MU happened because the warmup period expired and we have 35 instances that are running. We're currently in that range we like the most! 40% to 60% memory utilization. We do nothing and leave the 35 instances up.
 
 ### Change 5
 

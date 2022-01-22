@@ -1,5 +1,5 @@
 ---
-date: 2022-01-02
+date: 2022-01-04
 draft: false
 thumbnail: /post-images/big-data.png
 title: AWS - Big Data
@@ -128,7 +128,7 @@ AWS Glue is a fully managed ETL (extract, transform, and load) service that make
 
 ## Athena and Glue?
 
-Say you're getting a bunch of data that's landing S3 buckets BUT the data is not structure the way you want it. It is all over the place. You can use AWS Glue Crawlers to run on these buckets and create a structured version of this data called data catalog. Once the data is more structured, you can then use Athena to query S3 and visualize your results using Quicksight:
+Say you're getting a bunch of data that's landing in S3 buckets BUT the data is not structured the way you want it. It is all over the place. You can use AWS Glue Crawlers to run on these buckets and create a structured version of this data called data catalog. Once the data is more structured, you can then use Athena to query S3 and visualize your results using Quicksight:
 
 ![Athena-And-Glue](./images/aws/athena-and-glue.png)[Image Credit: Acloudguru](https://acloudguru.com)
 

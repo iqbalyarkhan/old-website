@@ -1,5 +1,5 @@
 ---
-date: 2022-01-02
+date: 2022-01-03
 draft: false
 thumbnail: /post-images/aws-api-gateway.png
 title: AWS - API Gateway
@@ -37,4 +37,4 @@ Let's look at a sample architecture using API GW:
 
 ![API-GW](./images/aws/api-gw.png)[Image Credit: acloudguru](https://acloudguru.com)
 
-In the diagram above, we have the user hit the URL and the request is forwarded to a URL. The static content is delivered by S3. For dynamic content (update profile, make comment etc), the request gets routed to an API gateway. That triggers a lambda which then updates an Aurora instance inside a VPC.
+In the diagram above, we have the user hit the URL and the request is forwarded to a CloudFront distribution. The static content is delivered by S3. For dynamic content (update profile, make comment etc), the request gets routed to an API gateway. That triggers a lambda which then updates an Aurora instance inside a VPC.
