@@ -19,6 +19,21 @@ tags:
 - [Layer 2 - Data Link Layer](#layer-2---data-link-layer)
 - [Layer 3 - Network](#layer-3---network)
   - [Packets](#packets)
+  - [IP Addressing (v4) - IPv4](#ip-addressing-v4---ipv4)
+  - [Default Gateway](#default-gateway)
+  - [Subnet Mask](#subnet-mask)
+  - [Route Table](#route-table)
+- [Layer 4 & 5 - Transport & Session](#layer-4--5---transport--session)
+  - [UDP](#udp)
+  - [TCP](#tcp)
+  - [TCP and transferring data](#tcp-and-transferring-data)
+  - [TCP 3-way handshakes](#tcp-3-way-handshakes)
+  - [TCP security](#tcp-security)
+- [Network Address Translation](#network-address-translation)
+  - [Static NAT](#static-nat)
+  - [Dynamic NAT](#dynamic-nat)
+  - [Port Address Translation](#port-address-translation)
+- [Security](#security)
 
 
 
@@ -83,3 +98,115 @@ There're 2 versions of IP packet structures: IPv4 and IPv6. Similar to frames, t
 - protocol: this is the protocol provided by layer 4. Example could be ICMP (pings!), TCP or UDP. The destination layer 3 would then know which layer 4 data protocol to pass the data into.
 - ttl or hop limit in IPv6: time to live determines how many hops the packet is allowed to make from network to network in case the packets hops around the world for some reason.
 - data! 
+
+Remember, Layer 3 packets have no ordering, no error checking and no association with other packets whatsoever.
+
+### IP Addressing (v4) - IPv4
+
+An example IP address: `133.33.3.7`. You could send a packet to this address. Now there could be firewalls or that the destination IP address is offline but you could get the ball rolling on sending this destination a packet. This is known as dotted decimal notation that is 4 numbers separated by dots where each number can be in the range 0-255. The first two numbers, `133.33` define the network and the last two, `3.7` define the host or a device on that network. 
+
+These IP addresses are not how they're used in an actual network. They're converted to decimal for our ease of use. In a network, they're used as an 8-bit representation:
+
+```text
+133 = 10000101
+33  = 00100001
+3   = 00000011
+7   = 00000111
+```
+
+Therefore we'll have 4 sets of 8 bits which means an IP address is 32 bits long. 
+
+This IP address, `133.33.3.7` , has a /16 prefix. Meaning, the first 16 bits, or the first octect, represents the network. The remaining bits are for the hosts. IP addresses on the same network will have the same first 16 bits. 
+
+### Default Gateway
+
+An item configured on network interfaces is a default gateway. Default gateway is nothing but an IP address on the local network to whcih packets are fowarded to generally if the destination is not a local IP address. 
+
+### Subnet Mask
+
+Another item configured is a subnet mask. These are configured on layer 3 interfaces. Subnet masks allow an IP device to know if an IP address which it is communicating with is on the same network or not. A subnet mask is configured on a host device. For example, `255.255.0.0` is the same as `/16` prefix or meaning that the first 16 bits represent the network. Why is this `/16`? Because `255.255.0.0` converted to binary is `11111111.11111111.00000000.00000000`. This is the number of 1s in this adddress = 16. It is called a subnet mask because if you AND it with the subnet mask, you get the network IP address. So, using our example earlier (binary representation of 133.33.3.7 and subnet mask /16):
+
+```text
+10000101.00100001.00000011.00000111
+11111111.11111111.00000000.00000000(AND)
+-----------------------------------
+10000101.00100001.00000000.00000000 
+
+Network IP:
+133.33.0.0
+```
+
+The subnet mask allows the device to figure out whether to communicate directly on the local network or if it needs to use the default gateway. In your home network, your internet router is likely set as your default gateway. When you try to visit youtube.com from your laptop, and since youtube's IP address is not local, your request packets are forwarded to your router. 
+
+### Route Table
+
+When a request created on your laptop for AWS us-east-1 s3 endpoint, it first goes to your home router and next to your ISP where it encounters a route table. The route table has specific `Next Hop/Target` fields for `Destinations`. Meaning, if the packet is for a particular destination, it needs to be sent to the `Next Hop/Target` address. This is where the packet is wrapped in a frame and is forwarded! 
+
+## Layer 4 & 5 - Transport & Session
+
+Transport layer runs on top of networking layer. In layer 3 we assumed packet order and delivery is guaranteed! Which is not the case. At times when there's a network outage, the packet could go missing. Also layer 3 has no way of differentiating packets by app or channel. Layer 3 also has no flow control (source emitting faster than destination consuming). 
+
+Layer 4 adds transmission control protocol (TCP) and UDP (User Datagram Protocol) to layer 3. Both of these protocols run on top of IP and both add a collection of features depending on which one is used. 
+
+### UDP
+
+UDP is faster as compared to TCP because it doesn't bother with data order or reliability. 
+
+### TCP
+
+TCP allows for reliable, error free and ordered data delivery. It is used for important application layer protocols such as HTTP, HTTPS and SSH. TCP is a connection oriented protocol, meaning that you need to first establish a connection between two devices and once set up, it creates a bi-directional channel of communications.
+
+TCP is a connection based protocol where a "connection" is established between 2 devices using a port on the client and the server. Once established, this connection is bi-directional. Port on the client is said to be random. It is an ephemeral (short-lived), temporary port. However, on the server receiving the TCP connection, the port must be 443. 
+
+Using TCP, we introduce the idea of a "segment". Segment is similar to frames and segments are encapsulated within IP packets. Packets carry segments from their source to their destination. Segments don't have source or destination IP addresses because they use IP packets for transit. However, TCP segments add more capabilities to IP pacjets. 
+
+- source and destination ports: allows for multiple connection types: ssh, https (port 443), http etc!
+- sequence number: for ordering
+- acknowledgements: one side can ack that it has received up to and including up to a certain sequence number. This helps ensure reliability of TCP.
+- window: # of bytes you agree to receive bytes from the sender
+
+### TCP and transferring data
+
+Layer 4 takes the data and divides it into segments. These segments contain sequence numbers to maintain order and lost segments can be re-transmitted. Now using the ephemeral port on sender and 443 on receiver, we can establish "communication". The receiver port can then send communication back to sender with now 443 as sender port and ephemeral port as the receiver port. Therefore, from a layer 4 perspective, you have 2 sets of segment communication:
+
+```text
+source      destination
+----------------------
+ephemeral -> 443
+443       -> ephemeral
+```
+This is hwy you need 2 sets of rules on NACL in AWS (more on this in VPC section). 
+
+### TCP 3-way handshakes
+
+1. Client creates a segment with SYN and informing server what sequence number (call it cs) it is going to start with
+2. Server returns a SYN-ACK segment back to client and a separate sequence number (call it ss) where ss = cs + 1
+3. Client then creates a new segment with ACK, increments ss and cs and sends it back to server.
+
+At this point, the connection is established and communication can proceed! 
+
+### TCP security
+
+With TCP communcation, you want to have some sort of security around your sender. You need a firewall for that. You can have a stateless firewall which doesn't understand that you're in a 2 way communication. Therefore, for stateless firewalls, you need to setup rules for both outbound and inbound traffic. This is nothing but NACL in AWS world!
+
+Another firewall you can have is stateful: it understands that the connection is of type TCP and it understands the state of our TCP segment. So, if you allow outbound traffic from a port, it'll automatically allow inbound traffic to that port. This is a security group in AWS world.
+
+## Network Address Translation
+
+NAT is used to allow private devices to gain internet access by translating private IP addresses into public IP addresses so that packets can flow over the public internet and then back in from the internet to the private service. Private services have IP addresses usually starting with `10.0.0.<X>`. NAT only makes sense for IPv4 since there's a shortage of public IP addresses. There are multiple different types of NATs:
+
+### Static NAT
+
+This is where you have a network of private IPv4 addresses and you can allocate a public IP address for each private IP. This gives the private address access to the public address in both directions. This in AWS world is the Internet Gateway. This allows you to have consisten mapping from private to public.
+
+### Dynamic NAT
+
+Here, you use a pool of public IP addresses to use. In this scenario, there's a shortage of public IP addresses because we're using IPv4. 
+
+### Port Address Translation
+
+This is where we have MANY private IP addresses translated to a single public IP address. This is what NAT gateways are in the AWS world! 
+
+## Security
+
+Secure Sockets Layer (SSL) and Transport Layer Security (TLS) are what provides encrypted communications for HTTPS and other encrypted connection oriented protocols. This encryption allows for privacy (encrypted communication) and data integrity between client and server. 
