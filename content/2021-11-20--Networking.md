@@ -1,5 +1,5 @@
 ---
-date: 2021-12-11
+date: 2021-11-20
 draft: false
 thumbnail: /post-images/networking.png
 title: Networking Basics
