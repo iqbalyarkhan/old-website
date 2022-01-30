@@ -2,8 +2,8 @@
 date: 2021-12-29
 draft: false
 thumbnail: /post-images/aws-cloudwatch.png
-title: AWS - CloudWatch
-extract: Notes for AWS CloudWatch
+title: AWS - CloudWatch & CloudTrail
+extract: Notes for AWS CloudWatch & CloudTrail
 categories:
     - AWS
 tags:
@@ -16,6 +16,7 @@ tags:
 
 - [What is CloudWatch?](#what-is-cloudwatch)
 - [Metrics](#metrics)
+- [CW Logs](#cw-logs)
 
 
 
@@ -37,3 +38,12 @@ With AWS CW, you have 2 types of metrics:
 The standard reporting interval for metrics is 5 minutes whereas detailed is 1 minute. 
 
 To allow your logs to flow into CW, you need to associate a role with an EC2 instance.
+
+## CW Logs
+
+CW Logs allow you to store, monitor and access logging data of services. CW logs have built-in integration with many AWS services such as EC2, lambda, CloudTrail etc. You can use IAM roles or service roles to allow logs to flow to CW. You can use a cloudwatch agent to transfer logs from outside services into cloudwatch.
+
+CW logs are aggregated into **log streams** where a log stream is a sequence of CW logs from the same source. Log streams are distinguished by timestamps.
+
+CW log streams are aggregated within **log groups** where each source of logs (DB, EC2 etc) has its own log group. Log groups have setting associated with them such as retention periods and permissions. You can then create metrics on top of these log groups and can create alarms using metrics. 
+
