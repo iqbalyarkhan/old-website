@@ -17,6 +17,10 @@ tags:
 - [What is CloudWatch?](#what-is-cloudwatch)
 - [Metrics](#metrics)
 - [CW Logs](#cw-logs)
+- [CloudTrail](#cloudtrail)
+  - [Management Events](#management-events)
+  - [Data Events](#data-events)
+  - [Trail](#trail)
 
 
 
@@ -46,4 +50,26 @@ CW Logs allow you to store, monitor and access logging data of services. CW logs
 CW logs are aggregated into **log streams** where a log stream is a sequence of CW logs from the same source. Log streams are distinguished by timestamps.
 
 CW log streams are aggregated within **log groups** where each source of logs (DB, EC2 etc) has its own log group. Log groups have setting associated with them such as retention periods and permissions. You can then create metrics on top of these log groups and can create alarms using metrics. 
+
+## CloudTrail
+
+AWS CloudTrail is an AWS service that helps you enable governance, compliance, and operational and risk auditing of your AWS account. Actions taken by a user, role, or an AWS service are recorded as events in CloudTrail. A CloudTrail event is the record captured of any activity occurring in an AWS account. Activities include action taken by a service, role or user. Here're some more facts:
+
+By default, 90 days of events are stored by CloudTrail. If you need to store data for more than 90 days, you need to create a trail. 
+
+CloudTrail events can be of two types: **management** or **data** events.
+
+### Management Events
+Management events are **control plane** operations such as creating an EC2 instance, creating a VPC, stopping an EC2 instance, uploading an object to S3, lambda invocation etc. Management events are logged by default. 
+
+### Data Events
+
+Data events provide information about the resource operations performed on or in a resource. These are also known as data plane operations. Data events are often high-volume activities. The following data types are recorded: Amazon S3 object-level API activity (for example, GetObject, DeleteObject, and PutObject API operations) on buckets and objects in buckets, AWS Lambda function execution activity (the Invoke API) etc.
+
+### Trail
+
+A CT trail is a unit of config in CT which helps you to use a trail to to enable delivery of CT events to an S3 bucket, cloudwatch logs etc. A trail can be used to track a single region OR it can be used to track all regions. Global services( IAM, SS, CloudFront) will publish their logs to trails in us-east-1. These are called Global Service Events that will need to be enabled on a trail. 
+
+
+
 
