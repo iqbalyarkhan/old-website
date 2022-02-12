@@ -23,6 +23,8 @@ tags:
   - [Rendering Lists](#rendering-lists)
   - [Responding to Events](#responding-to-events)
 - [React State](#react-state)
+- [Using Hooks](#using-hooks)
+- [Sharing data between components](#sharing-data-between-components)
     - [Arrow Functions](#arrow-functions)
     - [Functional Programming](#functional-programming)
     - [Template Literals](#template-literals)
@@ -422,7 +424,160 @@ class App extends Component {
 export default App;
 ```
 
-Notice how each button “remembers” its own count state and doesn’t affect other buttons.
+Notice how each button “remembers” its own count state and doesn’t affect other buttons. More [here](https://beta.reactjs.org/apis/usestate) on `[useState]`.
+
+## Using Hooks
+
+Functions starting with use are called Hooks. useState is a built-in Hook provided by React. You can find other built-in Hooks in the [React API reference](https://beta.reactjs.org/apis). You can also write your own Hooks by combining existing ones.
+
+Hooks are more restrictive than regular functions. You can only call Hooks at the top level of your components (or other Hooks). If you want to `useState` in a condition or a loop, extract a new component and put it there.
+
+## Sharing data between components
+
+In the previous example, each button had its own independent counter, but what if you wanted all buttons to always show the sum of all clicks? This is where you'd want to share data between buttons and would want them to always update together.
+
+To make all buttons display the same count and update together, you need to move the state from the individual buttons “upwards” to the closest component containing all of them. In this example, it is `App`. This means, you'd have to move state up from `MyButton` to `App`. If, however, you tried adding state to your `App` component as is:
+
+```jsx
+class App extends Component {
+  render() {
+    const [count, setCount] = useState(0);
+    return (
+      <div className="App">
+        <h1>Welcome to React</h1>
+        <MyButton />
+        <MyButton />
+        <MyButton />
+        <MyButton />
+      </div>
+    );
+  }
+```
+
+you'd see this error (more on it [here](https://reactjs.org/docs/hooks-rules.html)):
+
+```text
+React Hook useState cannot be called in a class component.
+React Hooks must be called in a React function component or
+a custom React Hook function.
+```
+
+We'd have to convert our `App` from:
+
+```jsx
+class App extends Component{...}
+```
+
+to
+
+```jsx
+export default function App(){...}
+```
+
+and remove `render()`. Here's the new `App` component:
+
+```jsx
+import { useState } from "react";
+
+function MyButton() {
+  const [count, setCount] = useState(0);
+  function handleClick() {
+    setCount(count + 1);
+  }
+  return <button onClick={handleClick}>Clicked count: {count}</button>;
+}
+
+export default function App() {
+  return (
+    <div className="App">
+      <h1>Welcome to React</h1>
+      <MyButton />
+      <MyButton />
+      <MyButton />
+      <MyButton />
+    </div>
+  );
+}
+```
+
+Now, we can add state to `App`:
+
+```jsx
+export default function App() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <div className="App">
+      <h1>Welcome to React</h1>
+      <MyButton />
+      <MyButton />
+      <MyButton />
+    </div>
+  );
+}
+```
+
+Then, pass the state down from `App` to each `MyButton`, together with the shared click handler. You can pass information to MyButton using the JSX curly braces:
+
+```jsx
+export default function App() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <div className="App">
+      <h1>Welcome to React</h1>
+      <MyButton count={count} onClick={handleClick} />
+      <MyButton count={count} onClick={handleClick} />
+      <MyButton count={count} onClick={handleClick} />
+    </div>
+  );
+}
+```
+
+Finally, `MyButton` will take in the count and handler and update itself accordingly (also note how I had to define the type as any for `count` and `onClick`):
+
+```jsx
+function MyButton({ count, onClick }: { count: any, onClick: any }) {
+  return <button onClick={onClick}>Clicked count: {count}</button>;
+}
+```
+
+Here's the complete code:
+
+```jsx
+import { useState } from "react";
+
+function MyButton({ count, onClick }: { count: any, onClick: any }) {
+  return <button onClick={onClick}>Clicked count: {count}</button>;
+}
+
+export default function App() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <div className="App">
+      <h1>Welcome to React</h1>
+      <MyButton count={count} onClick={handleClick} />
+      <MyButton count={count} onClick={handleClick} />
+      <MyButton count={count} onClick={handleClick} />
+    </div>
+  );
+}
+```
+
+When you click the button, the `onClick` handler fires. Each button’s onClick prop was set to the handleClick function inside `App`, so the code inside of it runs. That code calls setCount(count + 1), incrementing the count state variable. The new count value is passed as a prop to each button, so they all show the new value. This is called “lifting state up”. By moving state up, we’ve shared it between components.
 
 ✋ 🚧 Sections below are WIP 🚧 ✋
 As your classes grow, they may have multiple properties. For example, say we add age, location, height and weight to our person class:
