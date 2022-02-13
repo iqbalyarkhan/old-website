@@ -25,6 +25,10 @@ tags:
 - [React State](#react-state)
 - [Using Hooks](#using-hooks)
 - [Sharing data between components](#sharing-data-between-components)
+- [Let's Design!](#lets-design)
+  - [Break UI into a component hierarchy](#break-ui-into-a-component-hierarchy)
+  - [Create a static version in React](#create-a-static-version-in-react)
+- [ENDED HERE](#ended-here)
     - [Arrow Functions](#arrow-functions)
     - [Functional Programming](#functional-programming)
     - [Template Literals](#template-literals)
@@ -578,6 +582,206 @@ export default function App() {
 ```
 
 When you click the button, the `onClick` handler fires. Each button’s onClick prop was set to the handleClick function inside `App`, so the code inside of it runs. That code calls setCount(count + 1), incrementing the count state variable. The new count value is passed as a prop to each button, so they all show the new value. This is called “lifting state up”. By moving state up, we’ve shared it between components.
+
+## Let's Design!
+
+Let's walk through the thought process of building a searchable product data table with React. Imaging we have a JSON API configured that returns this data when queried:
+
+```jsx
+[
+  { category: "Fruits", price: "$1", stocked: true, name: "Apple" },
+  { category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit" },
+  { category: "Fruits", price: "$2", stocked: false, name: "Passionfruit" },
+  { category: "Vegetables", price: "$2", stocked: true, name: "Spinach" },
+  { category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin" },
+  { category: "Vegetables", price: "$1", stocked: true, name: "Peas" },
+];
+```
+
+Here's what it should be displayed as:
+
+![Mock-up](./images/react/mockup.png)
+
+### Break UI into a component hierarchy
+
+We'll start by drawing boxes around every component and subcomponent in the mockup and naming them. If your JSON is well-structured, you’ll often find that it naturally maps to the component structure of your UI. That’s because UI and data models often have the same information architecture—that is, the same shape. Separate your UI into components, where each component matches one piece of your data model.
+
+There are five components on this screen:
+
+![BreakDown](./images/react/breakdown.png)
+
+Here's how we'll label each component:
+
+- `FilterableProductTable` (grey) contains the entire app.
+- `SearchBar` (blue) receives the user input.
+- `ProductTable` (lavender) displays and filters the list according to the user input.
+- `ProductCategoryRow` (green) displays a heading for each category.
+- `ProductRow` (yellow) displays a row for each product.
+
+If you look at `ProductTable` (lavender), you’ll see that the table header (containing the “Name” and “Price” labels) isn’t its own component. This is a matter of preference, and you could go either way. For this example, it is a part of `ProductTable` because it appears inside the `ProductTable’s` list. However, if this header grows to be complex (e.g., if you add sorting), it would make sense to make this its own `ProductTableHeader` component.
+
+Now that you’ve identified the components in the mockup, arrange them into a hierarchy. Components that appear within another component in the mockup should appear as a child in the hierarchy:
+
+- `FilterableProductTable`
+  - `SearchBar`
+  - `ProductTable`
+    - `ProductCategoryRow`
+    - `ProductRow`
+
+### Create a static version in React
+
+Now that you have your component hierarchy, it’s time to implement your app. The most straightforward approach is to build a version that renders the UI from your data model without adding any interactivity… yet! It’s often easier to build the static version first and then add interactivity separately. Building a static version requires a lot of typing and no thinking, but adding interactivity requires a lot of thinking and not a lot of typing.
+
+To build a static version of your app that renders your data model, you’ll want to build components that reuse other components and pass data using props. Props are a way of passing data from parent to child. (If you’re familiar with the concept of state, don’t use state at all to build this static version. State is reserved only for interactivity, that is, data that changes over time. Since this is a static version of the app, you don’t need it.)
+
+You can either build “top down” by starting with building the components higher up in the hierarchy (like FilterableProductTable) or “bottom up” by working from components lower down (like ProductRow). In simpler examples, it’s usually easier to go top-down, and on larger projects, it’s easier to go bottom-up.
+
+Let's have a look at the code for creating a "staic only" version of our product.
+
+- Let's start with the smallest element: `ProductRow`:
+
+`ProductRow` is the row that displays our product's name as red if it is not stocked and its price. In order to display this information, it'd need access to the current product that's being processed. For example:
+
+```jsx
+{ category: "Vegetables", price: "$1", stocked: true, name: "Peas" },
+```
+
+Once it is determined whether the item is stocked or not, we create a table tow and add the name (with the right color) and price to the table:
+
+```jsx
+function ProductRow({ product }: { product: any }) {
+  const name = product.stocked ? (
+    product.name
+  ) : (
+    <span style={{ color: "red" }}>{product.name}</span>
+  );
+
+  return (
+    <div>
+      <tr>
+        <td>{name}</td>
+        <td>{product.price}</td>
+      </tr>
+    </div>
+  );
+}
+```
+
+- Let's next see `ProductCategoryRow`:
+
+This is a special case of a row which ONLY displays what the category name is. To perform its function, all it needs is the category for the current item being processed. Notice however that in the final table, this category is only listed ONCE: when the category type changes. This special condition will be handled elsewhere. This is what our `ProductCategoryRow` looks like:
+
+```jsx
+function ProductCategoryRow({ category }: { category: string }) {
+  return (
+    <tr>
+      <th colSpan={2}>{category}</th>
+    </tr>
+  );
+}
+```
+
+- `ProductTable`
+
+This is where we need to display the two headers: `Name` and `Price` and display our list of items. For this, we need the list of products. This is also where we'll add the logic for displaying category name (using a simple `lastCategory` check). We'll aggregate all our rows in a list called `rows` and then finally return it from this component:
+
+```jsx
+function ProductTable({ products }: { products: [any] }) {
+  const rows: any[] = [];
+  let lastCategory = "";
+  products.forEach((product, i) => {
+    if (product.category !== lastCategory) {
+      rows.push(
+        <ProductCategoryRow
+          category={product.category}
+          key={product.category}
+        />
+      );
+    }
+    rows.push(<ProductRow product={product} key={product.name} />);
+    lastCategory = product.category;
+  });
+
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th colSpan={2}>Name</th>
+          <th colSpan={2}>Price</th>
+        </tr>
+        <tbody>{rows}</tbody>
+      </thead>
+    </table>
+  );
+}
+```
+
+- `SearchBar`
+
+This one is simple: all we need here is a search bar with some pre-populate text and a checkbox with some text:
+
+```jsx
+function SearchBar() {
+  return (
+    <div>
+      <div>
+        <form>
+          <label>
+            <input type="text" placeholder="Search..." />
+          </label>
+        </form>
+      </div>
+      <br />
+      <div>
+        <label>
+          <input type="checkbox" />
+          Only show products in stock
+        </label>
+      </div>
+    </div>
+  );
+}
+```
+
+- `FilterableProductTable`
+
+The top level component receives the products array and is responsible for calling all the components for this info:
+
+```jsx
+function FilterableProductTable({ products }: { products: any }) {
+  return (
+    <div>
+      <SearchBar />
+      <ProductTable products={products} />
+    </div>
+  );
+}
+```
+
+Final `App` component that gets rendered is setup like so:
+
+```jsx
+const PRODUCTS = [
+  { category: "Fruits", price: "$1", stocked: true, name: "Apple" },
+  { category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit" },
+  { category: "Fruits", price: "$2", stocked: false, name: "Passionfruit" },
+  { category: "Vegetables", price: "$2", stocked: true, name: "Spinach" },
+  { category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin" },
+  { category: "Vegetables", price: "$1", stocked: true, name: "Peas" },
+];
+
+export default function App() {
+  return (
+    <div className="App">
+      <FilterableProductTable products={PRODUCTS} />
+    </div>
+  );
+}
+```
+
+Our static table is now completed!
+
+## ENDED HERE
 
 ✋ 🚧 Sections below are WIP 🚧 ✋
 As your classes grow, they may have multiple properties. For example, say we add age, location, height and weight to our person class:
