@@ -47,7 +47,7 @@
     "react-twitter-widgets": "^1.10.0",
     "react-typography": "^0.16.20",
     "sass": "^1.49.7",
-    "trim-newlines": "3.0.0",
+    "trim-newlines": "3.0.1",
     "typography": "^0.16.21",
     "typography-theme-stow-lake": "^0.16.19",
     "url-join": "^4.0.1",
