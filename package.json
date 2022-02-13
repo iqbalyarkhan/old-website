@@ -49,7 +49,8 @@
     "sass": "^1.49.7",
     "typography": "^0.16.21",
     "typography-theme-stow-lake": "^0.16.19",
-    "url-join": "^4.0.1"
+    "url-join": "^4.0.1",
+    "ws": "7.4.6"
   },
   "devDependencies": {
     "cli-glob": "^0.1.0",
