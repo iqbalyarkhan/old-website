@@ -646,7 +646,7 @@ Let's have a look at the code for creating a "staic only" version of our product
 { category: "Vegetables", price: "$1", stocked: true, name: "Peas" },
 ```
 
-Once it is determined whether the item is stocked or not, we create a table tow and add the name (with the right color) and price to the table:
+Once it is determined whether the item is stocked or not, we create a table row and add the name (with the right color) and price to the table:
 
 ```jsx
 function ProductRow({ product }: { product: any }) {
@@ -718,7 +718,7 @@ function ProductTable({ products }: { products: [any] }) {
 
 - `SearchBar`
 
-This one is simple: all we need here is a search bar with some pre-populate text and a checkbox with some text:
+This one is simple: all we need here is a search bar with some pre-populated text and a checkbox with some text:
 
 ```jsx
 function SearchBar() {
@@ -745,7 +745,7 @@ function SearchBar() {
 
 - `FilterableProductTable`
 
-The top level component receives the products array and is responsible for calling all the components for this info:
+The top level component receives the products array and is responsible for calling all the components with this info:
 
 ```jsx
 function FilterableProductTable({ products }: { products: any }) {
@@ -757,6 +757,8 @@ function FilterableProductTable({ products }: { products: any }) {
   );
 }
 ```
+
+Most logical approach is to first display the `SearchBar` and then display the `ProductTable` because that's how our UI is designed.
 
 Final `App` component that gets rendered is setup like so:
 
@@ -780,6 +782,111 @@ export default function App() {
 ```
 
 Our static table is now completed! We still need to take of the checkbox and searchbox functionalities.
+
+Before moving on, let's see the static UI code in its entirety:
+
+```jsx
+function FilterableProductTable({ products }: { products: any }) {
+  return (
+    <div>
+      <SearchBar />
+      <ProductTable products={products} />
+    </div>
+  );
+}
+
+function ProductRow({ product }: { product: any }) {
+  const name = product.stocked ? (
+    product.name
+  ) : (
+    <span style={{ color: "red" }}>{product.name}</span>
+  );
+
+  return (
+    <div>
+      <tr>
+        <td>{name}</td>
+        <td>{product.price}</td>
+      </tr>
+    </div>
+  );
+}
+
+function ProductCategoryRow({ category }: { category: string }) {
+  return (
+    <tr>
+      <th colSpan={2}>{category}</th>
+    </tr>
+  );
+}
+
+function ProductTable({ products }: { products: [any] }) {
+  const rows: any[] = [];
+  let lastCategory = "";
+  products.forEach((product, i) => {
+    if (product.category !== lastCategory) {
+      rows.push(
+        <ProductCategoryRow
+          category={product.category}
+          key={product.category}
+        />
+      );
+    }
+    rows.push(<ProductRow product={product} key={product.name} />);
+    lastCategory = product.category;
+  });
+
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th colSpan={2}>Name</th>
+          <th colSpan={2}>Price</th>
+        </tr>
+        <tbody>{rows}</tbody>
+      </thead>
+    </table>
+  );
+}
+
+function SearchBar() {
+  return (
+    <div>
+      <div>
+        <form>
+          <label>
+            <input type="text" placeholder="Search..." />
+          </label>
+        </form>
+      </div>
+      <br />
+      <div>
+        <label>
+          <input type="checkbox" />
+          Only show products in stock
+        </label>
+      </div>
+    </div>
+  );
+}
+
+const PRODUCTS = [
+  { category: "Fruits", price: "$1", stocked: true, name: "Apple" },
+  { category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit" },
+  { category: "Fruits", price: "$2", stocked: false, name: "Passionfruit" },
+  { category: "Vegetables", price: "$2", stocked: true, name: "Spinach" },
+  { category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin" },
+  { category: "Vegetables", price: "$1", stocked: true, name: "Peas" },
+];
+
+export default function App() {
+  return (
+    <div className="App">
+      <FilterableProductTable products={PRODUCTS} />
+    </div>
+  );
+}
+```
 
 ## ENDED HERE
 
