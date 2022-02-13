@@ -779,7 +779,7 @@ export default function App() {
 }
 ```
 
-Our static table is now completed!
+Our static table is now completed! We still need to take of the checkbox and searchbox functionalities.
 
 ## ENDED HERE
 
