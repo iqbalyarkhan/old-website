@@ -23,11 +23,16 @@ tags:
   - [Rendering Lists](#rendering-lists)
   - [Responding to Events](#responding-to-events)
 - [React State](#react-state)
+  - [Props vs States](#props-vs-states)
 - [Using Hooks](#using-hooks)
 - [Sharing data between components](#sharing-data-between-components)
 - [Let's Design!](#lets-design)
   - [Break UI into a component hierarchy](#break-ui-into-a-component-hierarchy)
   - [Create a static version in React](#create-a-static-version-in-react)
+  - [Static to Interactive](#static-to-interactive)
+  - [Identify Where State Should live](#identify-where-state-should-live)
+  - [Inverse Data Flow](#inverse-data-flow)
+  - [Final Design](#final-design)
 - [ENDED HERE](#ended-here)
     - [Arrow Functions](#arrow-functions)
     - [Functional Programming](#functional-programming)
@@ -430,6 +435,16 @@ export default App;
 
 Notice how each button “remembers” its own count state and doesn’t affect other buttons. More [here](https://beta.reactjs.org/apis/usestate) on `[useState]`.
 
+### Props vs States
+
+The two are very different:
+
+- Props are like arguments you pass to a function. They let a parent component pass data to a child component and customize its appearance. For example, a Form can pass a color prop to a Button.
+
+- State is like a component’s memory. It lets a component keep track of some information and change it in response to interactions. For example, a Button might keep track of isHovered state.
+
+Props and state are different, but they work together. A parent component will often keep some information in state (so that it can change it), and pass it down to child components as their props. It’s okay if the difference still feels fuzzy on the first read. It takes a bit of practice for it to really stick!
+
 ## Using Hooks
 
 Functions starting with use are called Hooks. useState is a built-in Hook provided by React. You can find other built-in Hooks in the [React API reference](https://beta.reactjs.org/apis). You can also write your own Hooks by combining existing ones.
@@ -723,22 +738,14 @@ This one is simple: all we need here is a search bar with some pre-populated tex
 ```jsx
 function SearchBar() {
   return (
-    <div>
-      <div>
-        <form>
-          <label>
-            <input type="text" placeholder="Search..." />
-          </label>
-        </form>
-      </div>
+    <form>
+      <input type="text" placeholder="Search..." />
       <br />
-      <div>
-        <label>
-          <input type="checkbox" />
-          Only show products in stock
-        </label>
-      </div>
-    </div>
+      <br />
+      <label>
+        <input type="checkbox" /> Only show products in stock
+      </label>
+    </form>
   );
 }
 ```
@@ -851,22 +858,433 @@ function ProductTable({ products }: { products: [any] }) {
 
 function SearchBar() {
   return (
-    <div>
-      <div>
-        <form>
-          <label>
-            <input type="text" placeholder="Search..." />
-          </label>
-        </form>
-      </div>
+    <form>
+      <input type="text" placeholder="Search..." />
       <br />
-      <div>
-        <label>
-          <input type="checkbox" />
-          Only show products in stock
-        </label>
-      </div>
+      <br />
+      <label>
+        <input type="checkbox" /> Only show products in stock
+      </label>
+    </form>
+  );
+}
+
+const PRODUCTS = [
+  { category: "Fruits", price: "$1", stocked: true, name: "Apple" },
+  { category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit" },
+  { category: "Fruits", price: "$2", stocked: false, name: "Passionfruit" },
+  { category: "Vegetables", price: "$2", stocked: true, name: "Spinach" },
+  { category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin" },
+  { category: "Vegetables", price: "$1", stocked: true, name: "Peas" },
+];
+
+export default function App() {
+  return (
+    <div className="App">
+      <FilterableProductTable products={PRODUCTS} />
     </div>
+  );
+}
+```
+
+### Static to Interactive
+
+To make the UI interactive, you need to let users change your underlying data model. You will use state for this.
+
+Think of [state](#react-state) as the minimal set of changing data that your app needs to remember. The most important principle for structuring state is to keep it DRY (Don’t Repeat Yourself). Figure out the absolute minimal representation of the state your application needs and compute everything else on-demand. For example, if you’re building a shopping list, you can store the items as an array in state. If you want to also display the number of items in the list, don’t store the number of items as another state value—instead, read the length of your array.
+
+Now think of all of the pieces of data in this example application:
+
+- The original list of products
+- The search text the user has entered
+- The value of the checkbox
+- The filtered list of products
+
+Which of these are state? Identify the ones that are not:
+
+- **Does it remain unchanged over time? If so, it isn’t state.**
+- **Is it passed in from a parent via props? If so, it isn’t state.**
+- **Can you compute it based on existing state or props in your component? If so, it definitely isn’t state!**
+- What’s left is probably state.
+
+Let’s go through them one by one again:
+
+- The original list of products
+
+This is passed from parent, so it is a prop and not a state (`filterText`)
+
+- The search text the user has entered
+
+Seems to be state since it changes over time and can’t be computed from anything
+
+- The value of the checkbox (`inStockOnly`)
+  Seems to be state since it changes over time and can’t be computed from anything
+
+- The filtered list of products
+  Can be calculated from the state, so not state!
+
+Therefore, our two pieces of states are: `filterText` and `inStockOnly`
+
+### Identify Where State Should live
+
+Which component should be responsible for storing and updating the two states? ie who **_owns_** the state. Remember: React uses one-way data flow, passing data down the component hierarchy from parent to child component. It may not be immediately clear which component should own what state.
+
+You can figure it out by following these steps:
+
+For each piece of state in your application:
+
+1. Identify every component that renders something based on that state.
+2. Find their closest common parent component—a component above them all in the hierarchy.
+3. Decide where the state should live:
+   1. Often, you can put the state directly into their common parent.
+   2. You can also put the state into some component above their common parent.
+   3. If you can’t find a component where it makes sense to own the state, create a new component solely for holding the state and add it somewhere in the hierarchy above the common parent component.
+
+In the previous step, you found two pieces of state in this application: the search input text, and the value of the checkbox. In this example, they always appear together, so it is easier to think of them as a single piece of state.
+
+As a refresher, here's what our component hierarchy looks like:
+
+- `FilterableProductTable`
+  - `SearchBar` ---> Both pieces of state are here
+  - `ProductTable`
+    - `ProductCategoryRow`
+    - `ProductRow`
+
+Since both states appear in the same component, we can use it as a single piece of state. Now let’s run through our strategy for this state:
+
+1. Identify every component that renders something based on that state.
+
+`ProductTable` component needs it to filter the table
+`SearchBar` component needs to display that state: we will display `filterText` in the search bar and show a checked mark if `inStockOnly` is checked or not.
+
+2. Find their closest common parent component—a component above them all in the hierarchy.
+
+Closest common parent would be `FilterableProductTable`
+
+3. Decide where the state should live: --> `FilterableProductTable`
+   1. Often, you can put the state directly into their common parent.
+   2. You can also put the state into some component above their common parent.
+   3. If you can’t find a component where it makes sense to own the state, create a new component solely for holding the state and add it somewhere in the hierarchy above the common parent component.
+
+So it is decided! We'll add the two states in `FilterableProductTable`!
+
+Let's update our `FilterableProductTable` to setup our 2 states and pass both to `SearchBar` and `ProductTable`:
+
+```jsx
+import React from "react";
+
+function FilterableProductTable({ products }: { products: any }) {
+  const [filterText, setFilterText] = React.useState("");
+  const [inStockOnly, setInStockOnly] = React.useState(false);
+
+  return (
+    <div>
+      <SearchBar filterText={filterText} inStockOnly={inStockOnly} />
+      <ProductTable
+        products={products}
+        filterText={filterText}
+        inStockOnly={inStockOnly}
+      />
+    </div>
+  );
+}
+```
+
+Next, update `SearchBar` to show the passed `filterText` value as placeholder and `inStockOnly` to determine if we need to show a check-mark or not:
+
+```jsx
+function SearchBar({
+  filterText,
+  inStockOnly,
+}: {
+  filterText: string,
+  inStockOnly: boolean,
+}) {
+  return (
+    <form>
+      <input type="text" value={filterText} placeholder="Search..." />
+      <br />
+      <br />
+      <label>
+        <input type="checkbox" checked={inStockOnly} /> Only show products in
+        stock
+      </label>
+    </form>
+  );
+}
+```
+
+We're just passing the values from parent to children, we're not updating anything as of now. To help us change the state according to userinput, we need to support inverse data flow:
+
+### Inverse Data Flow
+
+Currently your app renders correctly with props and state flowing down the hierarchy. But to change the state according to user input, you will need to support data flowing the other way: the form components deep in the hierarchy need to update the state in `FilterableProductTable`.
+
+If you try to type or check the box in the example above, you’ll see that React ignores your input. This is intentional. By writing `value={filterText}`, you’ve set the value prop of the input to always be equal to the `filterText` state passed in from FilterableProductTable. Since filterText state is never set, the input never changes.
+
+You want to make it so whenever the user changes the form inputs, the state updates to reflect those changes. The state is owned by `FilterableProductTable`, so only it can call `setFilterText` and `setInStockOnly`. To let `SearchBar` update the `FilterableProductTable’s` state, you need to pass these functions down to `SearchBar`. Notice how only `SearchBar` needs to update the state and NOT `ProductTable` so we pass functions to only `SearchBar` and NOT `ProductTable`:
+
+```jsx
+import React from "react";
+
+function FilterableProductTable({ products }: { products: any }) {
+  const [filterText, setFilterText] = React.useState("");
+  const [inStockOnly, setInStockOnly] = React.useState(false);
+
+  return (
+    <div>
+      <SearchBar
+        filterText={filterText}
+        inStockOnly={inStockOnly}
+        onFilterTextChange={setFilterText}
+        onInStockOnlyChange={setInStockOnly}
+      />
+      <ProductTable
+        products={products}
+        filterText={filterText}
+        inStockOnly={inStockOnly}
+      />
+    </div>
+  );
+}
+
+function SearchBar({
+  filterText,
+  inStockOnly,
+  onFilterTextChange,
+  onInStockOnlyChange,
+}: {
+  filterText: string,
+  inStockOnly: boolean,
+  onFilterTextChange: any,
+  onInStockOnlyChange: any,
+}) {
+  return (
+    <form>
+      <input
+        type="text"
+        value={filterText}
+        placeholder="Search..."
+        onChange={(e) => onFilterTextChange(e.target.value)}
+      />
+      <br />
+      <br />
+      <label>
+        <input
+          type="checkbox"
+          checked={inStockOnly}
+          onChange={(e) => onFilterTextChange(e.target.value)}
+        />
+        Only show products in stock
+      </label>
+    </form>
+  );
+}
+```
+
+Notice how we're sending update back up to `FilterableProductTable` using the callback function. Also notice HOW we do that:
+
+To send back search term:
+
+```jsx
+onChange={(e) => onFilterTextChange(e.target.value)}
+```
+
+To send back if checked or not:
+
+```jsx
+onChange={(e) => onFilterTextChange(e.target.value)}
+```
+
+Finally, we need to update `ProductTable` logic to check what the state is and update the table accordingly:
+
+- To check and see if we're going to show in stock items only, we'll add this simple test at the start of our processing of the products array:
+
+```jsx
+if (inStockOnly && !product.stocked) return;
+```
+
+- To check and see if the `filterText` needs to be used to filter our list, we'll this:
+
+An example here:
+
+```jsx
+if (product.name.toLowerCase().indexOf(filterText.toLowerCase()) === -1) {
+  return;
+}
+```
+
+The test above checks if the input is present anywhere in the product's name. For example, if I type `a`, any product that has the character `a` in it will be displayed. Here's what ProductTable looks like when completed:
+
+```jsx
+function ProductTable({
+  products,
+  filterText,
+  inStockOnly,
+}: {
+  products: [any],
+  filterText: string,
+  inStockOnly: boolean,
+}) {
+  const rows: any[] = [];
+  let lastCategory = "";
+  products.forEach((product, i) => {
+    if (inStockOnly && !product.stocked) return;
+    if (product.name.toLowerCase().indexOf(filterText.toLowerCase()) === -1) {
+      return;
+    }
+
+    if (product.category !== lastCategory) {
+      rows.push(
+        <ProductCategoryRow
+          category={product.category}
+          key={product.category}
+        />
+      );
+    }
+    rows.push(<ProductRow product={product} key={product.name} />);
+    lastCategory = product.category;
+  });
+
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th colSpan={2}>Name</th>
+          <th colSpan={2}>Price</th>
+        </tr>
+        <tbody>{rows}</tbody>
+      </thead>
+    </table>
+  );
+}
+```
+
+### Final Design
+
+Here's what our code will look like in its entirety:
+
+```jsx
+import React from "react";
+
+function FilterableProductTable({ products }: { products: any }) {
+  const [filterText, setFilterText] = React.useState("");
+  const [inStockOnly, setInStockOnly] = React.useState(false);
+
+  return (
+    <div>
+      <SearchBar
+        filterText={filterText}
+        inStockOnly={inStockOnly}
+        onFilterTextChange={setFilterText}
+        onInStockOnlyChange={setInStockOnly}
+      />
+      <ProductTable
+        products={products}
+        filterText={filterText}
+        inStockOnly={inStockOnly}
+      />
+    </div>
+  );
+}
+
+function SearchBar({
+  filterText,
+  inStockOnly,
+  onFilterTextChange,
+  onInStockOnlyChange,
+}: {
+  filterText: string,
+  inStockOnly: boolean,
+  onFilterTextChange: any,
+  onInStockOnlyChange: any,
+}) {
+  return (
+    <form>
+      <input
+        type="text"
+        value={filterText}
+        placeholder="Search..."
+        onChange={(e) => onFilterTextChange(e.target.value)}
+      />
+      <br />
+      <br />
+      <label>
+        <input
+          type="checkbox"
+          checked={inStockOnly}
+          onChange={(e) => onInStockOnlyChange(e.target.checked)}
+        />
+        Only show products in stock
+      </label>
+    </form>
+  );
+}
+
+function ProductRow({ product }: { product: any }) {
+  const name = product.stocked ? (
+    product.name
+  ) : (
+    <span style={{ color: "red" }}>{product.name}</span>
+  );
+
+  return (
+    <div>
+      <tr>
+        <td>{name}</td>
+        <td>{product.price}</td>
+      </tr>
+    </div>
+  );
+}
+
+function ProductCategoryRow({ category }: { category: string }) {
+  return (
+    <tr>
+      <th colSpan={2}>{category}</th>
+    </tr>
+  );
+}
+
+function ProductTable({
+  products,
+  filterText,
+  inStockOnly,
+}: {
+  products: [any],
+  filterText: string,
+  inStockOnly: boolean,
+}) {
+  const rows: any[] = [];
+  let lastCategory = "";
+  products.forEach((product, i) => {
+    if (inStockOnly && !product.stocked) return;
+    if (product.name.toLowerCase().indexOf(filterText.toLowerCase()) === -1) {
+      return;
+    }
+
+    if (product.category !== lastCategory) {
+      rows.push(
+        <ProductCategoryRow
+          category={product.category}
+          key={product.category}
+        />
+      );
+    }
+    rows.push(<ProductRow product={product} key={product.name} />);
+    lastCategory = product.category;
+  });
+
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th colSpan={2}>Name</th>
+          <th colSpan={2}>Price</th>
+        </tr>
+        <tbody>{rows}</tbody>
+      </thead>
+    </table>
   );
 }
 
