@@ -67,7 +67,7 @@ tags:
 
 ## Introduction
 
-React is a JavaScript-based UI development library. Facebook and an open-source developer community run it. Although React is a library rather than a language, it is widely used in web development. At its very core, React maintains a HTML tree for you. This tree is able to do efficient diff computations on the nodes that you create.
+React is a JavaScript-based UI development library. Facebook and an open-source developer community run it. Although React is a library rather than a language, it is widely used in web development. At its very core, React is a library for rendering user interfaces (UI). UI is built from small units like buttons, text, and images. React lets you combine them into reusable, nestable components.From web sites to phone apps, everything on the screen can be broken down into components.
 
 When you write something like:
 
@@ -224,9 +224,9 @@ Notice that `<MyButton />` starts with a capital letter. That’s how you know i
 
 ### JSX
 
-The markup syntax you’ve seen above is called JSX. It is optional, but most React projects use JSX for its convenience. All of the tools we recommend for local development support JSX out of the box.
+The markup syntax you’ve seen above is called JSX. It is optional, but most React projects use JSX for its convenience.
 
-JSX is stricter than HTML. You have to close tags like <br />. Your component also can’t return multiple JSX tags. You have to wrap them into a shared parent, like a <div>...</div> or an empty <>...</> wrapper.
+JSX is stricter than HTML. You have to close tags like `<br />`. Your component also can’t return multiple JSX tags. You have to wrap them into a shared parent, like a `<div>...</div>` or an empty `<>...</>` wrapper.
 
 JSX lets you put markup into JavaScript. Curly braces let you “escape back” into JavaScript so that you can embed some variable from your code and display it to the user. For example, this will display user.name:
 
@@ -600,7 +600,7 @@ When you click the button, the `onClick` handler fires. Each button’s onClick 
 
 ## Let's Design!
 
-Let's walk through the thought process of building a searchable product data table with React. Imaging we have a JSON API configured that returns this data when queried:
+Let's walk through the thought process of building a searchable product data table with React. Imagine we have a JSON API configured that returns this data when queried:
 
 ```jsx
 [
