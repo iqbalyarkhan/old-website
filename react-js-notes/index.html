@@ -97,13 +97,21 @@ void function() {
 <li><a href="#responding-to-events">Responding to Events</a></li>
 </ul>
 </li>
-<li><a href="#react-state">React State</a></li>
+<li><a href="#react-state">React State</a>
+<ul>
+<li><a href="#props-vs-states">Props vs States</a></li>
+</ul>
+</li>
 <li><a href="#using-hooks">Using Hooks</a></li>
 <li><a href="#sharing-data-between-components">Sharing data between components</a></li>
 <li><a href="#lets-design">Let's Design!</a>
 <ul>
 <li><a href="#break-ui-into-a-component-hierarchy">Break UI into a component hierarchy</a></li>
 <li><a href="#create-a-static-version-in-react">Create a static version in React</a></li>
+<li><a href="#static-to-interactive">Static to Interactive</a></li>
+<li><a href="#identify-where-state-should-live">Identify Where State Should live</a></li>
+<li><a href="#inverse-data-flow">Inverse Data Flow</a></li>
+<li><a href="#final-design">Final Design</a></li>
 </ul>
 </li>
 <li><a href="#ended-here">ENDED HERE</a>
@@ -145,7 +153,7 @@ void function() {
 </li>
 </ul>
 <h2 id="introduction" style="position:relative;"><a href="#introduction" aria-label="introduction permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Introduction</h2>
-<p>React is a JavaScript-based UI development library. Facebook and an open-source developer community run it. Although React is a library rather than a language, it is widely used in web development. At its very core, React maintains a HTML tree for you. This tree is able to do efficient diff computations on the nodes that you create.</p>
+<p>React is a JavaScript-based UI development library. Facebook and an open-source developer community run it. Although React is a library rather than a language, it is widely used in web development. At its very core, React is a library for rendering user interfaces (UI). UI is built from small units like buttons, text, and images. React lets you combine them into reusable, nestable components.From web sites to phone apps, everything on the screen can be broken down into components.</p>
 <p>When you write something like:</p>
 <div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">const</span> tag <span class="token operator">=</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">Hello</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token punctuation">;</span></code></pre></div>
 <p>what you're essentially doing is this:</p>
@@ -245,8 +253,8 @@ React apps are made out of components. A component is a piece of the UI (user in
 <p>Snippet above shows 2 common methods to create a component in react: class (App) vs functions (MyButton). The export default keywords specify the main component in the file which is <code class="language-cpptext">App</code> in our example.</p>
 <p>Notice that <code class="language-cpptext">&lt;MyButton /></code> starts with a capital letter. That’s how you know it’s a React component. React component names must always start with a capital letter, while HTML tags must be lowercase.</p>
 <h3 id="jsx" style="position:relative;"><a href="#jsx" aria-label="jsx permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>JSX</h3>
-<p>The markup syntax you’ve seen above is called JSX. It is optional, but most React projects use JSX for its convenience. All of the tools we recommend for local development support JSX out of the box.</p>
-<p>JSX is stricter than HTML. You have to close tags like <br />. Your component also can’t return multiple JSX tags. You have to wrap them into a shared parent, like a <div>...</div> or an empty &#x3C;>...&#x3C;/> wrapper.</p>
+<p>The markup syntax you’ve seen above is called JSX. It is optional, but most React projects use JSX for its convenience.</p>
+<p>JSX is stricter than HTML. You have to close tags like <code class="language-cpptext">&lt;br /></code>. Your component also can’t return multiple JSX tags. You have to wrap them into a shared parent, like a <code class="language-cpptext">&lt;div>...&lt;/div></code> or an empty <code class="language-cpptext">&lt;>...&lt;/></code> wrapper.</p>
 <p>JSX lets you put markup into JavaScript. Curly braces let you “escape back” into JavaScript so that you can embed some variable from your code and display it to the user. For example, this will display user.name:</p>
 <div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token punctuation">{</span>user<span class="token punctuation">.</span>name<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token punctuation">;</span></code></pre></div>
 <p>You can also “escape into JavaScript” from JSX attributes, but you have to use curly braces instead of quotes. For example, className="avatar" passes the "avatar" string as the CSS class, but src={user.imageUrl} reads the JavaScript user.imageUrl variable value, and then passes that value as the src attribute:</p>
@@ -393,6 +401,17 @@ React apps are made out of components. A component is a piece of the UI (user in
 
 <span class="token keyword">export</span> <span class="token keyword">default</span> App<span class="token punctuation">;</span></code></pre></div>
 <p>Notice how each button “remembers” its own count state and doesn’t affect other buttons. More <a href="https://beta.reactjs.org/apis/usestate">here</a> on <code class="language-cpptext">[useState]</code>.</p>
+<h3 id="props-vs-states" style="position:relative;"><a href="#props-vs-states" aria-label="props vs states permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Props vs States</h3>
+<p>The two are very different:</p>
+<ul>
+<li>
+<p>Props are like arguments you pass to a function. They let a parent component pass data to a child component and customize its appearance. For example, a Form can pass a color prop to a Button.</p>
+</li>
+<li>
+<p>State is like a component’s memory. It lets a component keep track of some information and change it in response to interactions. For example, a Button might keep track of isHovered state.</p>
+</li>
+</ul>
+<p>Props and state are different, but they work together. A parent component will often keep some information in state (so that it can change it), and pass it down to child components as their props. It’s okay if the difference still feels fuzzy on the first read. It takes a bit of practice for it to really stick!</p>
 <h2 id="using-hooks" style="position:relative;"><a href="#using-hooks" aria-label="using hooks permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Using Hooks</h2>
 <p>Functions starting with use are called Hooks. useState is a built-in Hook provided by React. You can find other built-in Hooks in the <a href="https://beta.reactjs.org/apis">React API reference</a>. You can also write your own Hooks by combining existing ones.</p>
 <p>Hooks are more restrictive than regular functions. You can only call Hooks at the top level of your components (or other Hooks). If you want to <code class="language-cpptext">useState</code> in a condition or a loop, extract a new component and put it there.</p>
@@ -505,7 +524,7 @@ a custom React Hook function.</code></pre></div>
 <span class="token punctuation">}</span></code></pre></div>
 <p>When you click the button, the <code class="language-cpptext">onClick</code> handler fires. Each button’s onClick prop was set to the handleClick function inside <code class="language-cpptext">App</code>, so the code inside of it runs. That code calls setCount(count + 1), incrementing the count state variable. The new count value is passed as a prop to each button, so they all show the new value. This is called “lifting state up”. By moving state up, we’ve shared it between components.</p>
 <h2 id="lets-design" style="position:relative;"><a href="#lets-design" aria-label="lets design permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Let's Design!</h2>
-<p>Let's walk through the thought process of building a searchable product data table with React. Imaging we have a JSON API configured that returns this data when queried:</p>
+<p>Let's walk through the thought process of building a searchable product data table with React. Imagine we have a JSON API configured that returns this data when queried:</p>
 <div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token punctuation">[</span>
   <span class="token punctuation">{</span> <span class="token literal-property property">category</span><span class="token operator">:</span> <span class="token string">"Fruits"</span><span class="token punctuation">,</span> <span class="token literal-property property">price</span><span class="token operator">:</span> <span class="token string">"$1"</span><span class="token punctuation">,</span> <span class="token literal-property property">stocked</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Apple"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
   <span class="token punctuation">{</span> <span class="token literal-property property">category</span><span class="token operator">:</span> <span class="token string">"Fruits"</span><span class="token punctuation">,</span> <span class="token literal-property property">price</span><span class="token operator">:</span> <span class="token string">"$1"</span><span class="token punctuation">,</span> <span class="token literal-property property">stocked</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Dragonfruit"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
@@ -676,22 +695,14 @@ a custom React Hook function.</code></pre></div>
 <p>This one is simple: all we need here is a search bar with some pre-populated text and a checkbox with some text:</p>
 <div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">function</span> <span class="token function">SearchBar</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
   <span class="token keyword">return</span> <span class="token punctuation">(</span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
-      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
-        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span><span class="token punctuation">></span></span><span class="token plain-text">
-          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
-            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">placeholder</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Search...<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
-          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
-        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span><span class="token plain-text">
-      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">placeholder</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Search...<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
       </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span><span class="token plain-text">
-      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
-        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
-          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>checkbox<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
-          Only show products in stock
-        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
-      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
-    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>checkbox<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><span class="token plain-text"> Only show products in stock
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span>
   <span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre></div>
 <ul>
@@ -791,22 +802,399 @@ a custom React Hook function.</code></pre></div>
 
 <span class="token keyword">function</span> <span class="token function">SearchBar</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
   <span class="token keyword">return</span> <span class="token punctuation">(</span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
-      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
-        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span><span class="token punctuation">></span></span><span class="token plain-text">
-          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
-            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">placeholder</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Search...<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
-          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
-        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span><span class="token plain-text">
-      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">placeholder</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Search...<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
       </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span><span class="token plain-text">
-      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
-        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
-          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>checkbox<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
-          Only show products in stock
-        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
-      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>checkbox<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><span class="token plain-text"> Only show products in stock
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> <span class="token constant">PRODUCTS</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">category</span><span class="token operator">:</span> <span class="token string">"Fruits"</span><span class="token punctuation">,</span> <span class="token literal-property property">price</span><span class="token operator">:</span> <span class="token string">"$1"</span><span class="token punctuation">,</span> <span class="token literal-property property">stocked</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Apple"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">category</span><span class="token operator">:</span> <span class="token string">"Fruits"</span><span class="token punctuation">,</span> <span class="token literal-property property">price</span><span class="token operator">:</span> <span class="token string">"$1"</span><span class="token punctuation">,</span> <span class="token literal-property property">stocked</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Dragonfruit"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">category</span><span class="token operator">:</span> <span class="token string">"Fruits"</span><span class="token punctuation">,</span> <span class="token literal-property property">price</span><span class="token operator">:</span> <span class="token string">"$2"</span><span class="token punctuation">,</span> <span class="token literal-property property">stocked</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Passionfruit"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">category</span><span class="token operator">:</span> <span class="token string">"Vegetables"</span><span class="token punctuation">,</span> <span class="token literal-property property">price</span><span class="token operator">:</span> <span class="token string">"$2"</span><span class="token punctuation">,</span> <span class="token literal-property property">stocked</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Spinach"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">category</span><span class="token operator">:</span> <span class="token string">"Vegetables"</span><span class="token punctuation">,</span> <span class="token literal-property property">price</span><span class="token operator">:</span> <span class="token string">"$4"</span><span class="token punctuation">,</span> <span class="token literal-property property">stocked</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Pumpkin"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">category</span><span class="token operator">:</span> <span class="token string">"Vegetables"</span><span class="token punctuation">,</span> <span class="token literal-property property">price</span><span class="token operator">:</span> <span class="token string">"$1"</span><span class="token punctuation">,</span> <span class="token literal-property property">stocked</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Peas"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>App<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">FilterableProductTable</span></span> <span class="token attr-name">products</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token constant">PRODUCTS</span><span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
     </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="static-to-interactive" style="position:relative;"><a href="#static-to-interactive" aria-label="static to interactive permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Static to Interactive</h3>
+<p>To make the UI interactive, you need to let users change your underlying data model. You will use state for this.</p>
+<p>Think of <a href="#react-state">state</a> as the minimal set of changing data that your app needs to remember. The most important principle for structuring state is to keep it DRY (Don’t Repeat Yourself). Figure out the absolute minimal representation of the state your application needs and compute everything else on-demand. For example, if you’re building a shopping list, you can store the items as an array in state. If you want to also display the number of items in the list, don’t store the number of items as another state value—instead, read the length of your array.</p>
+<p>Now think of all of the pieces of data in this example application:</p>
+<ul>
+<li>The original list of products</li>
+<li>The search text the user has entered</li>
+<li>The value of the checkbox</li>
+<li>The filtered list of products</li>
+</ul>
+<p>Which of these are state? Identify the ones that are not:</p>
+<ul>
+<li><strong>Does it remain unchanged over time? If so, it isn’t state.</strong></li>
+<li><strong>Is it passed in from a parent via props? If so, it isn’t state.</strong></li>
+<li><strong>Can you compute it based on existing state or props in your component? If so, it definitely isn’t state!</strong></li>
+<li>What’s left is probably state.</li>
+</ul>
+<p>Let’s go through them one by one again:</p>
+<ul>
+<li>The original list of products</li>
+</ul>
+<p>This is passed from parent, so it is a prop and not a state (<code class="language-cpptext">filterText</code>)</p>
+<ul>
+<li>The search text the user has entered</li>
+</ul>
+<p>Seems to be state since it changes over time and can’t be computed from anything</p>
+<ul>
+<li>
+<p>The value of the checkbox (<code class="language-cpptext">inStockOnly</code>)
+Seems to be state since it changes over time and can’t be computed from anything</p>
+</li>
+<li>
+<p>The filtered list of products
+Can be calculated from the state, so not state!</p>
+</li>
+</ul>
+<p>Therefore, our two pieces of states are: <code class="language-cpptext">filterText</code> and <code class="language-cpptext">inStockOnly</code></p>
+<h3 id="identify-where-state-should-live" style="position:relative;"><a href="#identify-where-state-should-live" aria-label="identify where state should live permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Identify Where State Should live</h3>
+<p>Which component should be responsible for storing and updating the two states? ie who <strong><em>owns</em></strong> the state. Remember: React uses one-way data flow, passing data down the component hierarchy from parent to child component. It may not be immediately clear which component should own what state.</p>
+<p>You can figure it out by following these steps:</p>
+<p>For each piece of state in your application:</p>
+<ol>
+<li>Identify every component that renders something based on that state.</li>
+<li>Find their closest common parent component—a component above them all in the hierarchy.</li>
+<li>Decide where the state should live:
+<ol>
+<li>Often, you can put the state directly into their common parent.</li>
+<li>You can also put the state into some component above their common parent.</li>
+<li>If you can’t find a component where it makes sense to own the state, create a new component solely for holding the state and add it somewhere in the hierarchy above the common parent component.</li>
+</ol>
+</li>
+</ol>
+<p>In the previous step, you found two pieces of state in this application: the search input text, and the value of the checkbox. In this example, they always appear together, so it is easier to think of them as a single piece of state.</p>
+<p>As a refresher, here's what our component hierarchy looks like:</p>
+<ul>
+<li><code class="language-cpptext">FilterableProductTable</code>
+<ul>
+<li><code class="language-cpptext">SearchBar</code> ---> Both pieces of state are here</li>
+<li><code class="language-cpptext">ProductTable</code>
+<ul>
+<li><code class="language-cpptext">ProductCategoryRow</code></li>
+<li><code class="language-cpptext">ProductRow</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Since both states appear in the same component, we can use it as a single piece of state. Now let’s run through our strategy for this state:</p>
+<ol>
+<li>Identify every component that renders something based on that state.</li>
+</ol>
+<p><code class="language-cpptext">ProductTable</code> component needs it to filter the table
+<code class="language-cpptext">SearchBar</code> component needs to display that state: we will display <code class="language-cpptext">filterText</code> in the search bar and show a checked mark if <code class="language-cpptext">inStockOnly</code> is checked or not.</p>
+<ol start="2">
+<li>Find their closest common parent component—a component above them all in the hierarchy.</li>
+</ol>
+<p>Closest common parent would be <code class="language-cpptext">FilterableProductTable</code></p>
+<ol start="3">
+<li>Decide where the state should live: --> <code class="language-cpptext">FilterableProductTable</code>
+<ol>
+<li>Often, you can put the state directly into their common parent.</li>
+<li>You can also put the state into some component above their common parent.</li>
+<li>If you can’t find a component where it makes sense to own the state, create a new component solely for holding the state and add it somewhere in the hierarchy above the common parent component.</li>
+</ol>
+</li>
+</ol>
+<p>So it is decided! We'll add the two states in <code class="language-cpptext">FilterableProductTable</code>!</p>
+<p>Let's update our <code class="language-cpptext">FilterableProductTable</code> to setup our 2 states and pass both to <code class="language-cpptext">SearchBar</code> and <code class="language-cpptext">ProductTable</code>:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">"react"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">FilterableProductTable</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> products <span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">products</span><span class="token operator">:</span> any <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>filterText<span class="token punctuation">,</span> setFilterText<span class="token punctuation">]</span> <span class="token operator">=</span> React<span class="token punctuation">.</span><span class="token function">useState</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>inStockOnly<span class="token punctuation">,</span> setInStockOnly<span class="token punctuation">]</span> <span class="token operator">=</span> React<span class="token punctuation">.</span><span class="token function">useState</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SearchBar</span></span> <span class="token attr-name">filterText</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>filterText<span class="token punctuation">}</span></span> <span class="token attr-name">inStockOnly</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>inStockOnly<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ProductTable</span></span>
+        <span class="token attr-name">products</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>products<span class="token punctuation">}</span></span>
+        <span class="token attr-name">filterText</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>filterText<span class="token punctuation">}</span></span>
+        <span class="token attr-name">inStockOnly</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>inStockOnly<span class="token punctuation">}</span></span>
+      <span class="token punctuation">/></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>Next, update <code class="language-cpptext">SearchBar</code> to show the passed <code class="language-cpptext">filterText</code> value as placeholder and <code class="language-cpptext">inStockOnly</code> to determine if we need to show a check-mark or not:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">function</span> <span class="token function">SearchBar</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span>
+  filterText<span class="token punctuation">,</span>
+  inStockOnly<span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">filterText</span><span class="token operator">:</span> string<span class="token punctuation">,</span>
+  <span class="token literal-property property">inStockOnly</span><span class="token operator">:</span> boolean<span class="token punctuation">,</span>
+<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>filterText<span class="token punctuation">}</span></span> <span class="token attr-name">placeholder</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Search...<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>checkbox<span class="token punctuation">"</span></span> <span class="token attr-name">checked</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>inStockOnly<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text"> Only show products in
+        stock
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>We're just passing the values from parent to children, we're not updating anything as of now. To help us change the state according to userinput, we need to support inverse data flow:</p>
+<h3 id="inverse-data-flow" style="position:relative;"><a href="#inverse-data-flow" aria-label="inverse data flow permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Inverse Data Flow</h3>
+<p>Currently your app renders correctly with props and state flowing down the hierarchy. But to change the state according to user input, you will need to support data flowing the other way: the form components deep in the hierarchy need to update the state in <code class="language-cpptext">FilterableProductTable</code>.</p>
+<p>If you try to type or check the box in the example above, you’ll see that React ignores your input. This is intentional. By writing <code class="language-cpptext">value={filterText}</code>, you’ve set the value prop of the input to always be equal to the <code class="language-cpptext">filterText</code> state passed in from FilterableProductTable. Since filterText state is never set, the input never changes.</p>
+<p>You want to make it so whenever the user changes the form inputs, the state updates to reflect those changes. The state is owned by <code class="language-cpptext">FilterableProductTable</code>, so only it can call <code class="language-cpptext">setFilterText</code> and <code class="language-cpptext">setInStockOnly</code>. To let <code class="language-cpptext">SearchBar</code> update the <code class="language-cpptext">FilterableProductTable’s</code> state, you need to pass these functions down to <code class="language-cpptext">SearchBar</code>. Notice how only <code class="language-cpptext">SearchBar</code> needs to update the state and NOT <code class="language-cpptext">ProductTable</code> so we pass functions to only <code class="language-cpptext">SearchBar</code> and NOT <code class="language-cpptext">ProductTable</code>:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">"react"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">FilterableProductTable</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> products <span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">products</span><span class="token operator">:</span> any <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>filterText<span class="token punctuation">,</span> setFilterText<span class="token punctuation">]</span> <span class="token operator">=</span> React<span class="token punctuation">.</span><span class="token function">useState</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>inStockOnly<span class="token punctuation">,</span> setInStockOnly<span class="token punctuation">]</span> <span class="token operator">=</span> React<span class="token punctuation">.</span><span class="token function">useState</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SearchBar</span></span>
+        <span class="token attr-name">filterText</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>filterText<span class="token punctuation">}</span></span>
+        <span class="token attr-name">inStockOnly</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>inStockOnly<span class="token punctuation">}</span></span>
+        <span class="token attr-name">onFilterTextChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>setFilterText<span class="token punctuation">}</span></span>
+        <span class="token attr-name">onInStockOnlyChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>setInStockOnly<span class="token punctuation">}</span></span>
+      <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ProductTable</span></span>
+        <span class="token attr-name">products</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>products<span class="token punctuation">}</span></span>
+        <span class="token attr-name">filterText</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>filterText<span class="token punctuation">}</span></span>
+        <span class="token attr-name">inStockOnly</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>inStockOnly<span class="token punctuation">}</span></span>
+      <span class="token punctuation">/></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">SearchBar</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span>
+  filterText<span class="token punctuation">,</span>
+  inStockOnly<span class="token punctuation">,</span>
+  onFilterTextChange<span class="token punctuation">,</span>
+  onInStockOnlyChange<span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">filterText</span><span class="token operator">:</span> string<span class="token punctuation">,</span>
+  <span class="token literal-property property">inStockOnly</span><span class="token operator">:</span> boolean<span class="token punctuation">,</span>
+  <span class="token literal-property property">onFilterTextChange</span><span class="token operator">:</span> any<span class="token punctuation">,</span>
+  <span class="token literal-property property">onInStockOnlyChange</span><span class="token operator">:</span> any<span class="token punctuation">,</span>
+<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span>
+        <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span>
+        <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>filterText<span class="token punctuation">}</span></span>
+        <span class="token attr-name">placeholder</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Search...<span class="token punctuation">"</span></span>
+        <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">onFilterTextChange</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+      <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span>
+          <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>checkbox<span class="token punctuation">"</span></span>
+          <span class="token attr-name">checked</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>inStockOnly<span class="token punctuation">}</span></span>
+          <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">onFilterTextChange</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+        <span class="token punctuation">/></span></span><span class="token plain-text">
+        Only show products in stock
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>Notice how we're sending update back up to <code class="language-cpptext">FilterableProductTable</code> using the callback function. Also notice HOW we do that:</p>
+<p>To send back search term:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx">onChange<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">onFilterTextChange</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">}</span></code></pre></div>
+<p>To send back if checked or not:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx">onChange<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">onFilterTextChange</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">}</span></code></pre></div>
+<p>Finally, we need to update <code class="language-cpptext">ProductTable</code> logic to check what the state is and update the table accordingly:</p>
+<ul>
+<li>To check and see if we're going to show in stock items only, we'll add this simple test at the start of our processing of the products array:</li>
+</ul>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">if</span> <span class="token punctuation">(</span>inStockOnly <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>product<span class="token punctuation">.</span>stocked<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span></code></pre></div>
+<ul>
+<li>To check and see if the <code class="language-cpptext">filterText</code> needs to be used to filter our list, we'll this:</li>
+</ul>
+<p>An example here:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">if</span> <span class="token punctuation">(</span>product<span class="token punctuation">.</span>name<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span>filterText<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>The test above checks if the input is present anywhere in the product's name. For example, if I type <code class="language-cpptext">a</code>, any product that has the character <code class="language-cpptext">a</code> in it will be displayed. Here's what ProductTable looks like when completed:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">function</span> <span class="token function">ProductTable</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span>
+  products<span class="token punctuation">,</span>
+  filterText<span class="token punctuation">,</span>
+  inStockOnly<span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">products</span><span class="token operator">:</span> <span class="token punctuation">[</span>any<span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">filterText</span><span class="token operator">:</span> string<span class="token punctuation">,</span>
+  <span class="token literal-property property">inStockOnly</span><span class="token operator">:</span> boolean<span class="token punctuation">,</span>
+<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token literal-property property">rows</span><span class="token operator">:</span> any<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token keyword">let</span> lastCategory <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">;</span>
+  products<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">product<span class="token punctuation">,</span> i</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>inStockOnly <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>product<span class="token punctuation">.</span>stocked<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>product<span class="token punctuation">.</span>name<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span>filterText<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>product<span class="token punctuation">.</span>category <span class="token operator">!==</span> lastCategory<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      rows<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ProductCategoryRow</span></span>
+          <span class="token attr-name">category</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>product<span class="token punctuation">.</span>category<span class="token punctuation">}</span></span>
+          <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>product<span class="token punctuation">.</span>category<span class="token punctuation">}</span></span>
+        <span class="token punctuation">/></span></span>
+      <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    rows<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ProductRow</span></span> <span class="token attr-name">product</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>product<span class="token punctuation">}</span></span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>product<span class="token punctuation">.</span>name<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    lastCategory <span class="token operator">=</span> product<span class="token punctuation">.</span>category<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>table</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>thead</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>tr</span><span class="token punctuation">></span></span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>th</span> <span class="token attr-name">colSpan</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">2</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Name</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>th</span><span class="token punctuation">></span></span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>th</span> <span class="token attr-name">colSpan</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">2</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Price</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>th</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>tr</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>tbody</span><span class="token punctuation">></span></span><span class="token punctuation">{</span>rows<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>tbody</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>thead</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>table</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="final-design" style="position:relative;"><a href="#final-design" aria-label="final design permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Final Design</h3>
+<p>Here's what our code will look like in its entirety:</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-cppjsx"><code class="language-cppjsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">"react"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">FilterableProductTable</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> products <span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">products</span><span class="token operator">:</span> any <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>filterText<span class="token punctuation">,</span> setFilterText<span class="token punctuation">]</span> <span class="token operator">=</span> React<span class="token punctuation">.</span><span class="token function">useState</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>inStockOnly<span class="token punctuation">,</span> setInStockOnly<span class="token punctuation">]</span> <span class="token operator">=</span> React<span class="token punctuation">.</span><span class="token function">useState</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SearchBar</span></span>
+        <span class="token attr-name">filterText</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>filterText<span class="token punctuation">}</span></span>
+        <span class="token attr-name">inStockOnly</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>inStockOnly<span class="token punctuation">}</span></span>
+        <span class="token attr-name">onFilterTextChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>setFilterText<span class="token punctuation">}</span></span>
+        <span class="token attr-name">onInStockOnlyChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>setInStockOnly<span class="token punctuation">}</span></span>
+      <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ProductTable</span></span>
+        <span class="token attr-name">products</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>products<span class="token punctuation">}</span></span>
+        <span class="token attr-name">filterText</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>filterText<span class="token punctuation">}</span></span>
+        <span class="token attr-name">inStockOnly</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>inStockOnly<span class="token punctuation">}</span></span>
+      <span class="token punctuation">/></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">SearchBar</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span>
+  filterText<span class="token punctuation">,</span>
+  inStockOnly<span class="token punctuation">,</span>
+  onFilterTextChange<span class="token punctuation">,</span>
+  onInStockOnlyChange<span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">filterText</span><span class="token operator">:</span> string<span class="token punctuation">,</span>
+  <span class="token literal-property property">inStockOnly</span><span class="token operator">:</span> boolean<span class="token punctuation">,</span>
+  <span class="token literal-property property">onFilterTextChange</span><span class="token operator">:</span> any<span class="token punctuation">,</span>
+  <span class="token literal-property property">onInStockOnlyChange</span><span class="token operator">:</span> any<span class="token punctuation">,</span>
+<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span>
+        <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span>
+        <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>filterText<span class="token punctuation">}</span></span>
+        <span class="token attr-name">placeholder</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Search...<span class="token punctuation">"</span></span>
+        <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">onFilterTextChange</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+      <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span>
+          <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>checkbox<span class="token punctuation">"</span></span>
+          <span class="token attr-name">checked</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>inStockOnly<span class="token punctuation">}</span></span>
+          <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">onInStockOnlyChange</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>checked<span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+        <span class="token punctuation">/></span></span><span class="token plain-text">
+        Only show products in stock
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">ProductRow</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> product <span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">product</span><span class="token operator">:</span> any <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> name <span class="token operator">=</span> product<span class="token punctuation">.</span>stocked <span class="token operator">?</span> <span class="token punctuation">(</span>
+    product<span class="token punctuation">.</span>name
+  <span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">style</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span> <span class="token literal-property property">color</span><span class="token operator">:</span> <span class="token string">"red"</span> <span class="token punctuation">}</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>product<span class="token punctuation">.</span>name<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>tr</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>td</span><span class="token punctuation">></span></span><span class="token punctuation">{</span>name<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>td</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>td</span><span class="token punctuation">></span></span><span class="token punctuation">{</span>product<span class="token punctuation">.</span>price<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>td</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>tr</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">ProductCategoryRow</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> category <span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">category</span><span class="token operator">:</span> string <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>tr</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>th</span> <span class="token attr-name">colSpan</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">2</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>category<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>th</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>tr</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">ProductTable</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span>
+  products<span class="token punctuation">,</span>
+  filterText<span class="token punctuation">,</span>
+  inStockOnly<span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">products</span><span class="token operator">:</span> <span class="token punctuation">[</span>any<span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">filterText</span><span class="token operator">:</span> string<span class="token punctuation">,</span>
+  <span class="token literal-property property">inStockOnly</span><span class="token operator">:</span> boolean<span class="token punctuation">,</span>
+<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token literal-property property">rows</span><span class="token operator">:</span> any<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token keyword">let</span> lastCategory <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">;</span>
+  products<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">product<span class="token punctuation">,</span> i</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>inStockOnly <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>product<span class="token punctuation">.</span>stocked<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>product<span class="token punctuation">.</span>name<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span>filterText<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>product<span class="token punctuation">.</span>category <span class="token operator">!==</span> lastCategory<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      rows<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ProductCategoryRow</span></span>
+          <span class="token attr-name">category</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>product<span class="token punctuation">.</span>category<span class="token punctuation">}</span></span>
+          <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>product<span class="token punctuation">.</span>category<span class="token punctuation">}</span></span>
+        <span class="token punctuation">/></span></span>
+      <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    rows<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ProductRow</span></span> <span class="token attr-name">product</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>product<span class="token punctuation">}</span></span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>product<span class="token punctuation">.</span>name<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    lastCategory <span class="token operator">=</span> product<span class="token punctuation">.</span>category<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>table</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>thead</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>tr</span><span class="token punctuation">></span></span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>th</span> <span class="token attr-name">colSpan</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">2</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Name</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>th</span><span class="token punctuation">></span></span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>th</span> <span class="token attr-name">colSpan</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">2</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">Price</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>th</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>tr</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>tbody</span><span class="token punctuation">></span></span><span class="token punctuation">{</span>rows<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>tbody</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>thead</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>table</span><span class="token punctuation">></span></span>
   <span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 
