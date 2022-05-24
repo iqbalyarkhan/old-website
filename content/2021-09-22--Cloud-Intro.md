@@ -1,5 +1,5 @@
 ---
-date: 2021-11-21
+date: 2021-09-22
 draft: false
 thumbnail: /post-images/cloud.webp
 title: Cloud Intro
@@ -20,6 +20,7 @@ tags:
 - [Fault Tolerance](#fault-tolerance)
 - [Disaster Recovery](#disaster-recovery)
 - [Well Architected Framework](#well-architected-framework)
+  - [AWS Accounts](#aws-accounts)
 
 ## Building Blocks
 
@@ -74,3 +75,7 @@ Well architected framework consists of 6 pillars:
 
 It is suggested to re-visit these once you're done with familiarizing yourself with common AWS services.
 You can read more on well architected frameworks using white-papers [here](https://aws.amazon.com/whitepapers/?whitepapers-main.sort-by=item.additionalFields.sortDate&whitepapers-main.sort-order=desc&awsf.whitepapers-content-type=*all&awsf.whitepapers-tech-category=*all&awsf.whitepapers-industries=*all&awsf.whitepapers-business-category=*all&awsf.whitepapers-global-methodology=methodology%23well-arch-framework) and [here](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html?did=wp_card&trk=wp_card).
+
+### AWS Accounts
+
+An AWS account is a container for identities (users) and resources (services offered by AWS). When you create a new account, a new root usre is created. Root user will have access to everything in that account. You should use MFA to secure the root account.
