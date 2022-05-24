@@ -160,7 +160,7 @@ void function() {
 </li>
 </ul>
 <h2 id="what-is-s3" style="position:relative;"><a href="#what-is-s3" aria-label="what is s3 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What is <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html">S3</a>?</h2>
-<p>Simple Storage Service, or S3, provides object storage in the cloud. It is a durable and highly scalable service. S3 is object based storage: meaning it manages data as objects rather than file system. S3 is a key value store where key is the name you give your object and value is the object itself. You can upload any file type to S3 (image, text, videos, HTML files etc). You however, cannot run OSs or DBs on S3! You store your static files in S3.</p>
+<p>Simple Storage Service, or S3, provides object storage in the cloud. It is a durable and highly scalable service. S3 is object based storage: meaning it manages data as objects rather than file system. S3 is a key value store where key is the name you give your object and value is the object itself. You can upload any file type to S3 (image, text, videos, HTML files etc). You however, cannot run OSs or DBs on S3! You store your static files in S3. Everything is private by default in S3 which means that only the account root user can access, delete or update objects.</p>
 <h2 id="s3-basics" style="position:relative;"><a href="#s3-basics" aria-label="s3 basics permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>S3 Basics</h2>
 <p>You can store unlimited number of objects in S3. Objects can be from 0B to 5TB in size. Files are stored in a bucket.</p>
 <p><span
@@ -227,7 +227,7 @@ void function() {
 <h2 id="s3-versioning" style="position:relative;"><a href="#s3-versioning" aria-label="s3 versioning permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>S3 Versioning</h2>
 <p>You can use S3 Versioning to keep multiple variants of an object in the same bucket. With S3 Versioning, you can preserve, retrieve, and restore every version of every object stored in your buckets. You can easily recover from both unintended user actions and application failures. <strong>Versioning helps you recover accidental overwrites and deletes along with MFA.</strong></p>
 <p>It is recommend to use versioning as a best practice to recover objects from being deleted or overwritten by mistake. For example, if you delete an object, Amazon S3 inserts a delete marker instead of removing the object permanently. The delete marker becomes the current object version. If you overwrite an object, it results in a new object version in the bucket. You can always restore the previous version. <strong>By default, S3 Versioning is disabled on buckets, and you must explicitly enable it.</strong></p>
-<p>Buckets can be in one of three states: Unversioned (the default), versioning-enabled or versioning-suspended. You enable and suspend versioning at the bucket level. After you version-enable a bucket, it can never return to an unversioned state. But you can suspend versioning on that bucket.  When you enable versioning in a bucket, all new objects are versioned and given a unique version ID. Objects that already existed in the bucket at the time versioning was enabled will thereafter always be versioned and given a unique version ID when they are modified by future requests.</p>
+<p>Buckets can be in one of three states: Unversioned (the default), versioning-enabled or versioning-suspended. You enable and suspend versioning at the bucket level. After you version-enable a bucket, it can never return to an unversioned state. But you can suspend versioning on that bucket. When you enable versioning in a bucket, all new objects are versioned and given a unique version ID. Objects that already existed in the bucket at the time versioning was enabled will thereafter always be versioned and given a unique version ID when they are modified by future requests.</p>
 <p>Let's say you uploaded a file and then uploaded a 2nd version with some changes. With <code class="language-cpptext">Show Versions</code> enabled, you'll see this in the bucket:</p>
 <p><span
       class="gatsby-resp-image-wrapper"
@@ -369,7 +369,7 @@ void function() {
       />
   </a>
     </span></p>
-<p>Notice how the file now has something called  a delete marker. The file is not deleted, it is just marked as deleted. Now what if I want to bring back this deleted file? Just delete the delete marker! Which is delete the <code class="language-cpptext">index.html</code> file again.</p>
+<p>Notice how the file now has something called a delete marker. The file is not deleted, it is just marked as deleted. Now what if I want to bring back this deleted file? Just delete the delete marker! Which is delete the <code class="language-cpptext">index.html</code> file again.</p>
 <p>If you delete an object, instead of removing it permanently, Amazon S3 inserts a delete marker, which becomes the current object version. You can then restore the previous version.</p>
 <h2 id="s3-object-lock" style="position:relative;"><a href="#s3-object-lock" aria-label="s3 object lock permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>S3 Object Lock</h2>
 <p>With S3 Object Lock, you can store objects using a write-once-read-many (WORM) model. This means that you write your object "ONCE" and then that object is to be read many many times.</p>
@@ -450,21 +450,22 @@ void function() {
 <p>When you use server-side encryption with AWS KMS (SSE-KMS), you can use the default AWS managed key, or you can specify a customer managed key that you have already created. The data keys used to encrypt your data are also encrypted and stored alongside the data that they protect.</p>
 <p>If you don't specify a customer managed key, Amazon S3 automatically creates an AWS KMS key in your AWS account the first time that you add an object encrypted with SSE-KMS to a bucket. By default, Amazon S3 uses this KMS key for SSE-KMS. To require server-side encryption of all objects in a particular Amazon S3 bucket, you can use a policy. For example, the following bucket policy denies upload object (s3:PutObject) permission to everyone if the request does not include the x-amz-server-side-encryption header requesting server-side encryption with SSE-KMS:</p>
 <div class="gatsby-highlight" data-language="json"><pre class="language-cppjson"><code class="language-cppjson"><span class="token punctuation">{</span>
-   <span class="token property">"Version"</span><span class="token operator">:</span><span class="token string">"2012-10-17"</span><span class="token punctuation">,</span>
-   <span class="token property">"Id"</span><span class="token operator">:</span><span class="token string">"PutObjectPolicy"</span><span class="token punctuation">,</span>
-   <span class="token property">"Statement"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span>
-         <span class="token property">"Sid"</span><span class="token operator">:</span><span class="token string">"DenyUnEncryptedObjectUploads"</span><span class="token punctuation">,</span>
-         <span class="token property">"Effect"</span><span class="token operator">:</span><span class="token string">"Deny"</span><span class="token punctuation">,</span>
-         <span class="token property">"Principal"</span><span class="token operator">:</span><span class="token string">"*"</span><span class="token punctuation">,</span>
-         <span class="token property">"Action"</span><span class="token operator">:</span><span class="token string">"s3:PutObject"</span><span class="token punctuation">,</span>
-         <span class="token property">"Resource"</span><span class="token operator">:</span><span class="token string">"arn:aws:s3:::DOC-EXAMPLE-BUCKET1/*"</span><span class="token punctuation">,</span>
-         <span class="token property">"Condition"</span><span class="token operator">:</span><span class="token punctuation">{</span>
-            <span class="token property">"StringNotEquals"</span><span class="token operator">:</span><span class="token punctuation">{</span>
-               <span class="token property">"s3:x-amz-server-side-encryption"</span><span class="token operator">:</span><span class="token string">"aws:kms"</span>
-            <span class="token punctuation">}</span>
-         <span class="token punctuation">}</span>
+  <span class="token property">"Version"</span><span class="token operator">:</span> <span class="token string">"2012-10-17"</span><span class="token punctuation">,</span>
+  <span class="token property">"Id"</span><span class="token operator">:</span> <span class="token string">"PutObjectPolicy"</span><span class="token punctuation">,</span>
+  <span class="token property">"Statement"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"Sid"</span><span class="token operator">:</span> <span class="token string">"DenyUnEncryptedObjectUploads"</span><span class="token punctuation">,</span>
+      <span class="token property">"Effect"</span><span class="token operator">:</span> <span class="token string">"Deny"</span><span class="token punctuation">,</span>
+      <span class="token property">"Principal"</span><span class="token operator">:</span> <span class="token string">"*"</span><span class="token punctuation">,</span>
+      <span class="token property">"Action"</span><span class="token operator">:</span> <span class="token string">"s3:PutObject"</span><span class="token punctuation">,</span>
+      <span class="token property">"Resource"</span><span class="token operator">:</span> <span class="token string">"arn:aws:s3:::DOC-EXAMPLE-BUCKET1/*"</span><span class="token punctuation">,</span>
+      <span class="token property">"Condition"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"StringNotEquals"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"s3:x-amz-server-side-encryption"</span><span class="token operator">:</span> <span class="token string">"aws:kms"</span>
+        <span class="token punctuation">}</span>
       <span class="token punctuation">}</span>
-   <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
 <span class="token punctuation">}</span></code></pre></div>
 <h3 id="userver-side-encryption-with-customer-provided-keys-sse-cu" style="position:relative;"><a href="#userver-side-encryption-with-customer-provided-keys-sse-cu" aria-label="userver side encryption with customer provided keys sse cu permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><u>Server-Side Encryption with Customer-Provided Keys (SSE-C)</u></h3>
 <p>With Server-Side Encryption with Customer-Provided Keys (SSE-C), you manage the encryption keys and Amazon S3 manages the encryption, as it writes to disks, and decryption, when you access your objects.</p>
@@ -612,9 +613,9 @@ void function() {
 </ul>
 <p>These actions define when objects transition to another storage class. For example, you might choose to transition objects to the S3 Standard-IA storage class 30 days after creating them, or archive objects to the S3 Glacier Flexible Retrieval storage class one year after creating them. There are costs associated with lifecycle transition requests.</p>
 <ul>
-<li><strong>Expiration actions</strong></li>
+<li><strong>Expiration actions</strong>
+These actions define when objects expire. Amazon S3 deletes expired objects on your behalf. Lifecycle expiration costs depend on when you choose to expire objects.</li>
 </ul>
-<p>These actions define when objects expire. Amazon S3 deletes expired objects on your behalf. Lifecycle expiration costs depend on when you choose to expire objects.</p>
 <p>Define S3 Lifecycle configuration rules for objects that have a well-defined lifecycle. For example:</p>
 <ul>
 <li>If you upload periodic logs to a bucket, your application might need them for a week or a month. After that, you might want to delete them.</li>
@@ -692,17 +693,19 @@ void function() {
     </span></p>
 <h2 id="securing-your-data" style="position:relative;"><a href="#securing-your-data" aria-label="securing your data permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Securing your data</h2>
 <ul>
-<li><strong>Server side encryption</strong>:</li>
+<li>
+<p><strong>Server side encryption</strong>:
+You can set default encryption on a bucket to encrypt all new objects when they are stored in the bucket.</p>
+</li>
+<li>
+<p><strong>ACLs</strong>:
+Define which AWS accounts or groups are granted access and the type of access on your buckets. You can attach S3 ACLs to individul objects within a bucket. Much more fine grained access policies!</p>
+</li>
+<li>
+<p><strong>Bucket Policies</strong>:
+S3 bucket policies that specify what action are allowed or denied (example user A can PUT but not DELETE). Bucket policies are obviously bucket wide. These are IAM policies for S3 buckets. This is more general as compared to ACLs. Bucket policies are resource policies. Resource policies control what entities can access this particular resource.In contrast, identity policies control what resources an identity can access.</p>
+</li>
 </ul>
-<p>You can set default encryption on a bucket to encrypt all new objects when they are stored in the bucket.</p>
-<ul>
-<li><strong>ACLs</strong>:</li>
-</ul>
-<p>Define which AWS accounts or groups are granted access and the type of access on your buckets. You can attach S3 ACLs to individul objects within a bucket. Much more fine grained access policies!</p>
-<ul>
-<li><strong>Bucket Policies</strong>:</li>
-</ul>
-<p>S3 bucket policies that specify what action are allowed or denied (example user A can PUT but not DELETE). Bucket policies are obviously bucket wide. These are IAM policies for S3 buckets. This is more general as compared to ACLs.</p>
 <p>Here's how bucket policies compare to ACLs:</p>
 <p><span
       class="gatsby-resp-image-wrapper"
@@ -880,34 +883,30 @@ void function() {
 <h4 id="configuring-an-index-document" style="position:relative;"><a href="#configuring-an-index-document" aria-label="configuring an index document permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Configuring an index document</h4>
 <p>When you enable website hosting, you must also configure and upload an index document. An index document is a webpage that Amazon S3 returns when a request is made to the root of a website or any subfolder. For example, if a user enters <code class="language-cpptext">http://www.example.com</code> in the browser, the user is not requesting any specific page. In that case, Amazon S3 serves up the index document, which is sometimes referred to as the default page.</p>
 <p>When you enable static website hosting for your bucket, you enter the name of the index document (for example, index.html). After you enable static website hosting for your bucket, you upload an HTML file with the index document name to your bucket. Here's waht a sample <code class="language-cpptext">index.html</code> file could look like:</p>
-<div class="gatsby-highlight" data-language="html"><pre class="language-cpphtml"><code class="language-cpphtml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">xmlns</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.w3.org/1999/xhtml<span class="token punctuation">"</span></span> <span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">></span></span>
+<div class="gatsby-highlight" data-language="html"><pre class="language-cpphtml"><code class="language-cpphtml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">xmlns</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.w3.org/1999/xhtml<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">></span></span>My Website Home Page<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Welcome to my website<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Now hosted on Amazon S3!<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Welcome to my website<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Now hosted on Amazon S3!<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">></span></span></code></pre></div>
 <h4 id="configuring-a-custom-error-document" style="position:relative;"><a href="#configuring-a-custom-error-document" aria-label="configuring a custom error document permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Configuring a custom error document</h4>
 <p>After you configure your bucket as a static website, when an error occurs, Amazon S3 returns an HTML error document. You can optionally configure your bucket with a custom error document so that Amazon S3 returns that document when an error occurs. You can provide a custom error document that contains a user-friendly error message and additional help. Amazon S3 returns your custom error document for only the HTTP 4XX class of error codes. After you enable static website hosting for the bucket, you upload an HTML file with this error document name to your bucket. The error document should reside in a file called <code class="language-cpptext">4XX.html</code>. So for example, if you're returning a custom error on 404 (not found error), your document should be called <code class="language-cpptext">404.html</code>.</p>
 <h4 id="setting-permissions-for-website-access" style="position:relative;"><a href="#setting-permissions-for-website-access" aria-label="setting permissions for website access permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Setting permissions for website access</h4>
 <p>When you configure a bucket as a static website, if you want your website to be public, you can grant public read access. To make your bucket publicly readable, you must disable block public access settings for the bucket and write a bucket policy that grants public read access. If your bucket contains objects that are not owned by the bucket owner, you might also need to add an object access control list (ACL) that grants everyone read access. We've already discussed how to enable/disable bucket level public access. Let's look at the bucket policy for website hosting:</p>
 <div class="gatsby-highlight" data-language="json"><pre class="language-cppjson"><code class="language-cppjson"><span class="token punctuation">{</span>
-    <span class="token property">"Version"</span><span class="token operator">:</span> <span class="token string">"2012-10-17"</span><span class="token punctuation">,</span>
-    <span class="token property">"Statement"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-        <span class="token punctuation">{</span>
-            <span class="token property">"Sid"</span><span class="token operator">:</span> <span class="token string">"PublicReadGetObject"</span><span class="token punctuation">,</span>
-            <span class="token property">"Effect"</span><span class="token operator">:</span> <span class="token string">"Allow"</span><span class="token punctuation">,</span>
-            <span class="token property">"Principal"</span><span class="token operator">:</span> <span class="token string">"*"</span><span class="token punctuation">,</span>
-            <span class="token property">"Action"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-                <span class="token string">"s3:GetObject"</span>
-            <span class="token punctuation">]</span><span class="token punctuation">,</span>
-            <span class="token property">"Resource"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-                <span class="token string">"arn:aws:s3:::Bucket-Name/*"</span>
-            <span class="token punctuation">]</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">]</span>
+  <span class="token property">"Version"</span><span class="token operator">:</span> <span class="token string">"2012-10-17"</span><span class="token punctuation">,</span>
+  <span class="token property">"Statement"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"Sid"</span><span class="token operator">:</span> <span class="token string">"PublicReadGetObject"</span><span class="token punctuation">,</span>
+      <span class="token property">"Effect"</span><span class="token operator">:</span> <span class="token string">"Allow"</span><span class="token punctuation">,</span>
+      <span class="token property">"Principal"</span><span class="token operator">:</span> <span class="token string">"*"</span><span class="token punctuation">,</span>
+      <span class="token property">"Action"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"s3:GetObject"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">"Resource"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"arn:aws:s3:::Bucket-Name/*"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
 <span class="token punctuation">}</span></code></pre></div>
 <p>In the preceding example bucket policy, Bucket-Name is a placeholder for the bucket name. To use this bucket policy with your own bucket, you must update this name to match your bucket name. With public access allowed and bucket policy specified, your bucket permissions should look like so:</p>
 <p><span
@@ -1245,42 +1244,42 @@ MyBucket4/USA/Washington/Seattle</code></pre></div>
     </span></p>
 <p>Under permissions for the same role, you'll see a policy is also created and if you click on it, you'll be taken to the permissions that were attached to that policy:</p>
 <div class="gatsby-highlight" data-language="json"><pre class="language-cppjson"><code class="language-cppjson"><span class="token punctuation">{</span>
-    <span class="token property">"Version"</span><span class="token operator">:</span> <span class="token string">"2012-10-17"</span><span class="token punctuation">,</span>
-    <span class="token property">"Statement"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-        <span class="token punctuation">{</span>
-            <span class="token property">"Action"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-                <span class="token string">"s3:ListBucket"</span><span class="token punctuation">,</span>
-                <span class="token string">"s3:GetReplicationConfiguration"</span><span class="token punctuation">,</span>
-                <span class="token string">"s3:GetObjectVersionForReplication"</span><span class="token punctuation">,</span>
-                <span class="token string">"s3:GetObjectVersionAcl"</span><span class="token punctuation">,</span>
-                <span class="token string">"s3:GetObjectVersionTagging"</span><span class="token punctuation">,</span>
-                <span class="token string">"s3:GetObjectRetention"</span><span class="token punctuation">,</span>
-                <span class="token string">"s3:GetObjectLegalHold"</span>
-            <span class="token punctuation">]</span><span class="token punctuation">,</span>
-            <span class="token property">"Effect"</span><span class="token operator">:</span> <span class="token string">"Allow"</span><span class="token punctuation">,</span>
-            <span class="token property">"Resource"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-                <span class="token string">"arn:aws:s3:::mysourcebucket"</span><span class="token punctuation">,</span>
-                <span class="token string">"arn:aws:s3:::mysourcebucket/*"</span><span class="token punctuation">,</span>
-                <span class="token string">"arn:aws:s3:::mydestbucket"</span><span class="token punctuation">,</span>
-                <span class="token string">"arn:aws:s3:::mydestbucket/*"</span>
-            <span class="token punctuation">]</span>
-        <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token punctuation">{</span>
-            <span class="token property">"Action"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-                <span class="token string">"s3:ReplicateObject"</span><span class="token punctuation">,</span>
-                <span class="token string">"s3:ReplicateDelete"</span><span class="token punctuation">,</span>
-                <span class="token string">"s3:ReplicateTags"</span><span class="token punctuation">,</span>
-                <span class="token string">"s3:ObjectOwnerOverrideToBucketOwner"</span>
-            <span class="token punctuation">]</span><span class="token punctuation">,</span>
-            <span class="token property">"Effect"</span><span class="token operator">:</span> <span class="token string">"Allow"</span><span class="token punctuation">,</span>
-            <span class="token property">"Resource"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-                <span class="token string">"arn:aws:s3:::mysourcebucket/*"</span><span class="token punctuation">,</span>
-                <span class="token string">"arn:aws:s3:::mydestbucket/*"</span>
-            <span class="token punctuation">]</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">]</span>
+  <span class="token property">"Version"</span><span class="token operator">:</span> <span class="token string">"2012-10-17"</span><span class="token punctuation">,</span>
+  <span class="token property">"Statement"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"Action"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"s3:ListBucket"</span><span class="token punctuation">,</span>
+        <span class="token string">"s3:GetReplicationConfiguration"</span><span class="token punctuation">,</span>
+        <span class="token string">"s3:GetObjectVersionForReplication"</span><span class="token punctuation">,</span>
+        <span class="token string">"s3:GetObjectVersionAcl"</span><span class="token punctuation">,</span>
+        <span class="token string">"s3:GetObjectVersionTagging"</span><span class="token punctuation">,</span>
+        <span class="token string">"s3:GetObjectRetention"</span><span class="token punctuation">,</span>
+        <span class="token string">"s3:GetObjectLegalHold"</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">"Effect"</span><span class="token operator">:</span> <span class="token string">"Allow"</span><span class="token punctuation">,</span>
+      <span class="token property">"Resource"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"arn:aws:s3:::mysourcebucket"</span><span class="token punctuation">,</span>
+        <span class="token string">"arn:aws:s3:::mysourcebucket/*"</span><span class="token punctuation">,</span>
+        <span class="token string">"arn:aws:s3:::mydestbucket"</span><span class="token punctuation">,</span>
+        <span class="token string">"arn:aws:s3:::mydestbucket/*"</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"Action"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"s3:ReplicateObject"</span><span class="token punctuation">,</span>
+        <span class="token string">"s3:ReplicateDelete"</span><span class="token punctuation">,</span>
+        <span class="token string">"s3:ReplicateTags"</span><span class="token punctuation">,</span>
+        <span class="token string">"s3:ObjectOwnerOverrideToBucketOwner"</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">"Effect"</span><span class="token operator">:</span> <span class="token string">"Allow"</span><span class="token punctuation">,</span>
+      <span class="token property">"Resource"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"arn:aws:s3:::mysourcebucket/*"</span><span class="token punctuation">,</span>
+        <span class="token string">"arn:aws:s3:::mydestbucket/*"</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
 <span class="token punctuation">}</span></code></pre></div>
-<p>Going back to S3, we've now got versioning enabeled for both buckets and have enabled CRR. However, the initial file that we uploaded to source WILL NOT be in destination. However, any new  files added to source will be.</p></div><div class="post-module--post-meta--b8vC1"><div class="PostTags-module--tag-container--YPLV+"><a href="/tags/blog"><span>blog</span></a><a href="/tags/aws"><span>AWS</span></a></div></div><hr/></div><nav><ul class="post-module--pagination--Y3rfk"><li><a rel="prev" href="/aws-ec-2">← <!-- -->AWS - EC2</a></li><li><a rel="next" href="/aws-iam">AWS - IAM<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--0c9rU"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--v7mXx">Copyright © 2021. All rights reserved.</div></div></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
+<p>Going back to S3, we've now got versioning enabeled for both buckets and have enabled CRR. However, the initial file that we uploaded to source WILL NOT be in destination. However, any new files added to source will be.</p></div><div class="post-module--post-meta--b8vC1"><div class="PostTags-module--tag-container--YPLV+"><a href="/tags/blog"><span>blog</span></a><a href="/tags/aws"><span>AWS</span></a></div></div><hr/></div><nav><ul class="post-module--pagination--Y3rfk"><li><a rel="prev" href="/aws-ec-2">← <!-- -->AWS - EC2</a></li><li><a rel="next" href="/aws-iam">AWS - IAM<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--0c9rU"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--v7mXx">Copyright © 2021. All rights reserved.</div></div></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
   
   
   if(true) {

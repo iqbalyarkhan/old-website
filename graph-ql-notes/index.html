@@ -101,6 +101,15 @@ void function() {
 </li>
 <li><a href="#mutations">Mutations</a></li>
 <li><a href="#pagination">Pagination</a></li>
+<li><a href="#schema">Schema</a>
+<ul>
+<li><a href="#scalar-types">Scalar Types</a></li>
+<li><a href="#object-types">Object Types</a></li>
+<li><a href="#enum-types">Enum Types</a></li>
+<li><a href="#union-types">Union Types</a></li>
+<li><a href="#interface-types">Interface Types</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="introduction" style="position:relative;"><a href="#introduction" aria-label="introduction permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Introduction</h2>
 <p>GraphQL is a query language and server-side runtime for APIs that prioritizes giving clients exactly the data they request and no more. GraphQL is designed to make APIs fast, flexible, and developer-friendly. It can even be deployed within an IDE known as GraphiQL. As an alternative to REST, GraphQL lets developers construct requests that pull data from multiple data sources in a single API call.</p>
@@ -512,7 +521,221 @@ void function() {
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre></div>
-<p>In the previous result, only the second item is retrieved, as well as a new third item. The first item isn’t retrieved because you have used its cursor as after argument to retrieve all items after it.</p></div><div class="post-module--post-meta--b8vC1"><div class="PostTags-module--tag-container--YPLV+"><a href="/tags/blog"><span>blog</span></a><a href="/tags/react"><span>React</span></a></div></div><hr/></div><nav><ul class="post-module--pagination--Y3rfk"><li><a rel="prev" href="/micro-frontend">← <!-- -->Micro Frontend</a></li><li><a rel="next" href="/react-js-notes">ReactJS Notes<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--0c9rU"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--v7mXx">Copyright © 2021. All rights reserved.</div></div></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
+<p>In the previous result, the second item is retrieved, as well as a new third item. The first item isn’t retrieved because you have used its cursor as after argument to retrieve all items after it.</p>
+<h2 id="schema" style="position:relative;"><a href="#schema" aria-label="schema permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Schema</h2>
+<p>So far we've been using a schema that's already defined. It is the schema exporsed by Github. We'll now see how to create our own schema. Your GraphQL server uses a schema to describe the shape of your available data. This schema defines a hierarchy of types with fields that are populated from your back-end data stores. The schema also specifies exactly which queries and mutations are available for clients to execute.</p>
+<p>The GraphQL specification defines a human-readable schema definition language (or SDL) that you use to define your schema and store it as a string.</p>
+<p>Here's a short example schema that defines two object types: <code class="language-cpptext">Book</code> and <code class="language-cpptext">Author</code>:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">type</span> <span class="token class-name">Book</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">title</span><span class="token punctuation">:</span> <span class="token scalar">String</span>
+  <span class="token attr-name">author</span><span class="token punctuation">:</span> <span class="token class-name">Author</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">type</span> <span class="token class-name">Author</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">name</span><span class="token punctuation">:</span> <span class="token scalar">String</span>
+  <span class="token attr-name">books</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token class-name">Book</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>A schema defines a collection of types and the relationships between those types. In the example schema above, a <code class="language-cpptext">Book</code> can have an associated <code class="language-cpptext">author</code>, and an <code class="language-cpptext">Author</code> can have a list of <code class="language-cpptext">book</code>s. Note that the schema is not responsible for defining where data comes from or how it's stored. It is entirely implementation-agnostic.</p>
+<p>Most of the schema types you define have one or more fields:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token comment"># This Book type has two fields: title and author</span>
+<span class="token keyword">type</span> <span class="token class-name">Book</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">title</span><span class="token punctuation">:</span> <span class="token scalar">String</span> <span class="token comment"># returns a String</span>
+  <span class="token attr-name">author</span><span class="token punctuation">:</span> <span class="token class-name">Author</span> <span class="token comment"># returns an Author</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>Each field returns data of the type specified. A field's return type can be a <code class="language-cpptext">scalar</code>, <code class="language-cpptext">object</code>, <code class="language-cpptext">enum</code>, <code class="language-cpptext">union</code>, or <code class="language-cpptext">interface</code>. Let's look at each one:</p>
+<h3 id="scalar-types" style="position:relative;"><a href="#scalar-types" aria-label="scalar types permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Scalar Types</h3>
+<p>Scalar types are similar to primitive types in your favorite programming language. They always resolve to concrete data.</p>
+<p>GraphQL's default scalar types are:</p>
+<ul>
+<li>Int: A signed 32‐bit integer</li>
+<li>Float: A signed double-precision floating-point value</li>
+<li>String: A UTF‐8 character sequence</li>
+<li>Boolean: true or false</li>
+<li>ID (serialized as a String): A unique identifier that's often used to refetch an object or as the key for a cache.</li>
+</ul>
+<p>Although it's serialized as a String, an ID is not intended to be human‐readable. These primitive types cover the majority of use cases.</p>
+<h3 id="object-types" style="position:relative;"><a href="#object-types" aria-label="object types permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Object Types</h3>
+<p>Most of the types you define in a GraphQL schema are object types. An object type contains a collection of fields, each of which has its own type.</p>
+<p>Two object types can include each other as fields, as is the case in our example schema from earlier:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">type</span> <span class="token class-name">Book</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">title</span><span class="token punctuation">:</span> <span class="token scalar">String</span>
+  <span class="token attr-name">author</span><span class="token punctuation">:</span> <span class="token class-name">Author</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">type</span> <span class="token class-name">Author</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">name</span><span class="token punctuation">:</span> <span class="token scalar">String</span>
+  <span class="token attr-name">books</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token class-name">Book</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="enum-types" style="position:relative;"><a href="#enum-types" aria-label="enum types permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Enum Types</h3>
+<p>An enum is similar to a scalar type, but its legal values are defined in the schema. Here's an example definition:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql">
+```<span class="token keyword">enum</span> <span class="token class-name">AllowedColor</span> <span class="token punctuation">{</span>
+  <span class="token constant">RED</span>
+  <span class="token constant">GREEN</span>
+  <span class="token constant">BLUE</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>An enum can appear anywhere a scalar is valid (including as a field argument), because they serialize as strings:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">type</span> <span class="token class-name">Query</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">favoriteColor</span><span class="token punctuation">:</span> <span class="token class-name">AllowedColor</span> <span class="token comment"># enum return value</span>
+  <span class="token attr-name">avatar</span><span class="token punctuation">(</span><span class="token attr-name">borderColor</span><span class="token punctuation">:</span> <span class="token class-name">AllowedColor</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token scalar">String</span> <span class="token comment"># enum argument</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>A query might then look like this:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">query</span> <span class="token definition-query function">GetAvatar</span> <span class="token punctuation">{</span>
+  <span class="token property-query">avatar</span><span class="token punctuation">(</span><span class="token attr-name">borderColor</span><span class="token punctuation">:</span> <span class="token constant">RED</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="union-types" style="position:relative;"><a href="#union-types" aria-label="union types permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Union Types</h3>
+<p>When you define a union type, you declare which object types are included in the union:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">union</span> <span class="token class-name">Media</span> <span class="token operator">=</span> <span class="token property">Book</span> <span class="token operator">|</span> <span class="token property">Movie</span></code></pre></div>
+<p>A field can have a union (or a list of that union) as its return type. In this case, it can return any object type that's included in the union:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">type</span> <span class="token class-name">Query</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">allMedia</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token class-name">Media</span><span class="token punctuation">]</span> <span class="token comment"># This list can include both Book and Movie objects</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>All of a union's included types must be object types (not scalars, input types, etc.). Included types do not need to share any fields. The following schema defines a <code class="language-cpptext">SearchResult</code> union type that can return either a <code class="language-cpptext">Book</code> or an <code class="language-cpptext">Author</code>:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">union</span> <span class="token class-name">SearchResult</span> <span class="token operator">=</span> <span class="token property">Book</span> <span class="token operator">|</span> <span class="token property">Author</span>
+
+<span class="token keyword">type</span> <span class="token class-name">Book</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">title</span><span class="token punctuation">:</span> <span class="token scalar">String</span><span class="token operator">!</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">type</span> <span class="token class-name">Author</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">name</span><span class="token punctuation">:</span> <span class="token scalar">String</span><span class="token operator">!</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">type</span> <span class="token class-name">Query</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">search</span><span class="token punctuation">(</span><span class="token attr-name">contains</span><span class="token punctuation">:</span> <span class="token scalar">String</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token class-name">SearchResult</span><span class="token operator">!</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>GraphQL clients don't know which object type a field will return if the field's return type is a union. To account for this, a query can include the subfields of multiple possible types.</p>
+<p>Here's a valid query for the schema above:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">query</span> <span class="token definition-query function">GetSearchResults</span> <span class="token punctuation">{</span>
+  <span class="token property-query">search</span><span class="token punctuation">(</span><span class="token attr-name">contains</span><span class="token punctuation">:</span> <span class="token string">"Shakespeare"</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment"># Querying for __typename is almost always recommended,</span>
+    <span class="token comment"># but it's even more important when querying a field that</span>
+    <span class="token comment"># might return one of multiple types.</span>
+    <span class="token property">__typename</span>
+    <span class="token operator">...</span> <span class="token keyword">on</span> <span class="token class-name">Book</span> <span class="token punctuation">{</span>
+      <span class="token property">title</span>
+    <span class="token punctuation">}</span>
+    <span class="token operator">...</span> <span class="token keyword">on</span> <span class="token class-name">Author</span> <span class="token punctuation">{</span>
+      <span class="token property">name</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>Every object type in your schema automatically has a field named <code class="language-cpptext">__typename</code> (you don't need to define it). The <code class="language-cpptext">__typename</code> field returns the object type's name as a String (e.g., Book or Author).</p>
+<p>GraphQL clients use an object's <code class="language-cpptext">__typename</code> for many purposes, such as to determine which type was returned by a field that can return multiple types (i.e., a union or interface). Apollo Client relies on <code class="language-cpptext">__typename</code> when caching results, so it automatically includes <code class="language-cpptext">__typename</code> in every object of every query.</p>
+<p>This query uses inline fragments to fetch a <code class="language-cpptext">Result</code>'s title (if it's a <code class="language-cpptext">Book</code>) or its name (if it's an <code class="language-cpptext">Author</code>).</p>
+<p>To fully resolve a union, Apollo Server needs to specify which of the union's types is being returned. To achieve this, you define a <code class="language-cpptext">__resolveType</code> function for the union in your resolver map.</p>
+<p>The <code class="language-cpptext">__resolveType</code> function is responsible for determining an object's corresponding GraphQL type and returning the name of that type as a string. It can use any logic to do so, such as:</p>
+<p>Checking for the presence or absence of fields that are unique to a particular type in the union
+Using instanceof, if the JavaScript object's type is related to its GraphQL object type
+Here's a basic <code class="language-cpptext">__resolveType</code> function for the SearchResult union defined above:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token property">const</span> <span class="token property">resolvers</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">SearchResult</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token property-query">__resolveType</span><span class="token punctuation">(</span><span class="token property">obj</span><span class="token punctuation">,</span> <span class="token property">context</span><span class="token punctuation">,</span> <span class="token property">info</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+      // <span class="token property">Only</span> <span class="token property">Author</span> <span class="token property">has</span> <span class="token property">a</span> <span class="token property">name</span> <span class="token property">field</span>
+      <span class="token property-query">if</span><span class="token punctuation">(</span><span class="token property">obj</span>.<span class="token property">name</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token property">return</span> '<span class="token property">Author</span>';
+      <span class="token punctuation">}</span>
+      // <span class="token property">Only</span> <span class="token property">Book</span> <span class="token property">has</span> <span class="token property">a</span> <span class="token property">title</span> <span class="token property">field</span>
+      <span class="token property-query">if</span><span class="token punctuation">(</span><span class="token property">obj</span>.<span class="token property">title</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token property">return</span> '<span class="token property">Book</span>';
+      <span class="token punctuation">}</span>
+      <span class="token property">return</span> <span class="token property">null</span>; // <span class="token property">GraphQLError</span> <span class="token property">is</span> <span class="token property">thrown</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token attr-name">Query</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token attr-name">search</span><span class="token punctuation">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span>> <span class="token punctuation">{</span> <span class="token operator">...</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>;
+
+<span class="token property">const</span> <span class="token property">server</span> <span class="token operator">=</span> <span class="token property">new</span> <span class="token property-query">ApolloServer</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token property">typeDefs</span><span class="token punctuation">,</span>
+  <span class="token property">resolvers</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>;
+
+<span class="token property">server</span>.<span class="token property-query">listen</span><span class="token punctuation">(</span><span class="token punctuation">)</span>.<span class="token property-query">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token property">url</span> <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span>> <span class="token punctuation">{</span>
+  <span class="token property">console</span>.<span class="token property-query">log</span><span class="token punctuation">(</span>`🚀 <span class="token property">Server</span> <span class="token property">ready</span> <span class="token property">at</span> $<span class="token punctuation">{</span><span class="token property">url</span><span class="token punctuation">}</span>`<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>;</code></pre></div>
+<p>If a <code class="language-cpptext">__resolveType</code> function returns any value that isn't the name of a valid type, the associated operation produces a GraphQL error.</p>
+<h3 id="interface-types" style="position:relative;"><a href="#interface-types" aria-label="interface types permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Interface Types</h3>
+<p>An interface specifies a set of fields that multiple object types can include:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">interface</span> <span class="token class-name">Book</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">title</span><span class="token punctuation">:</span> <span class="token scalar">String</span><span class="token operator">!</span>
+  <span class="token attr-name">author</span><span class="token punctuation">:</span> <span class="token class-name">Author</span><span class="token operator">!</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>If an object type <code class="language-cpptext">implements</code> an interface, it must include all of that interface's fields:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">type</span> <span class="token class-name">Textbook</span> <span class="token keyword">implements</span> <span class="token class-name">Book</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">title</span><span class="token punctuation">:</span> <span class="token scalar">String</span><span class="token operator">!</span> <span class="token comment"># Must be present</span>
+  <span class="token attr-name">author</span><span class="token punctuation">:</span> <span class="token class-name">Author</span><span class="token operator">!</span> <span class="token comment"># Must be present</span>
+  <span class="token attr-name">courses</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token class-name">Course</span><span class="token operator">!</span><span class="token punctuation">]</span><span class="token operator">!</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>The following schema defines a Book interface, along with two object types that implement it:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">interface</span> <span class="token class-name">Book</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">title</span><span class="token punctuation">:</span> <span class="token scalar">String</span><span class="token operator">!</span>
+  <span class="token attr-name">author</span><span class="token punctuation">:</span> <span class="token class-name">Author</span><span class="token operator">!</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">type</span> <span class="token class-name">Textbook</span> <span class="token keyword">implements</span> <span class="token class-name">Book</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">title</span><span class="token punctuation">:</span> <span class="token scalar">String</span><span class="token operator">!</span>
+  <span class="token attr-name">author</span><span class="token punctuation">:</span> <span class="token class-name">Author</span><span class="token operator">!</span>
+  <span class="token attr-name">courses</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token class-name">Course</span><span class="token operator">!</span><span class="token punctuation">]</span><span class="token operator">!</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">type</span> <span class="token class-name">ColoringBook</span> <span class="token keyword">implements</span> <span class="token class-name">Book</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">title</span><span class="token punctuation">:</span> <span class="token scalar">String</span><span class="token operator">!</span>
+  <span class="token attr-name">author</span><span class="token punctuation">:</span> <span class="token class-name">Author</span><span class="token operator">!</span>
+  <span class="token attr-name">colors</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token scalar">String</span><span class="token operator">!</span><span class="token punctuation">]</span><span class="token operator">!</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">type</span> <span class="token class-name">Query</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">books</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token class-name">Book</span><span class="token operator">!</span><span class="token punctuation">]</span><span class="token operator">!</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>In this schema, Query.books returns a list that can include both Textbooks and ColoringBooks. If a field's return type is an interface, clients can query that field for any subfields included in the interface:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">query</span> <span class="token definition-query function">GetBooks</span> <span class="token punctuation">{</span>
+  <span class="token object">books</span> <span class="token punctuation">{</span>
+    <span class="token property">title</span>
+    <span class="token property">author</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>Clients can also query for subfields that aren't included in the interface:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token keyword">query</span> <span class="token definition-query function">GetBooks</span> <span class="token punctuation">{</span>
+  <span class="token object">books</span> <span class="token punctuation">{</span>
+    <span class="token comment"># Querying for __typename is almost always recommended,</span>
+    <span class="token comment"># but it's even more important when querying a field that</span>
+    <span class="token comment"># might return one of multiple types.</span>
+    <span class="token property">__typename</span>
+    <span class="token property">title</span>
+    <span class="token operator">...</span> <span class="token keyword">on</span> <span class="token class-name">Textbook</span> <span class="token punctuation">{</span>
+      <span class="token object">courses</span> <span class="token punctuation">{</span>
+        <span class="token comment"># Only present in Textbook</span>
+        <span class="token property">name</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token operator">...</span> <span class="token keyword">on</span> <span class="token class-name">ColoringBook</span> <span class="token punctuation">{</span>
+      <span class="token property">colors</span> <span class="token comment"># Only present in ColoringBook</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>As with union types, Apollo Server requires interfaces to define a __resolveType function to determine which implementing object type is being returned.</p>
+<p>Here's an example __resolveType function for the Book interface defined above:</p>
+<div class="gatsby-highlight" data-language="graphql"><pre class="language-cppgraphql"><code class="language-cppgraphql"><span class="token property">const</span> <span class="token property">resolvers</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token attr-name">Book</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token property-query">__resolveType</span><span class="token punctuation">(</span><span class="token property">book</span><span class="token punctuation">,</span> <span class="token property">context</span><span class="token punctuation">,</span> <span class="token property">info</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+      // <span class="token property">Only</span> <span class="token property">Textbook</span> <span class="token property">has</span> <span class="token property">a</span> <span class="token property">courses</span> <span class="token property">field</span>
+      <span class="token property-query">if</span><span class="token punctuation">(</span><span class="token property">book</span>.<span class="token property">courses</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token property">return</span> '<span class="token property">Textbook</span>';
+      <span class="token punctuation">}</span>
+      // <span class="token property">Only</span> <span class="token property">ColoringBook</span> <span class="token property">has</span> <span class="token property">a</span> <span class="token property">colors</span> <span class="token property">field</span>
+      <span class="token property-query">if</span><span class="token punctuation">(</span><span class="token property">book</span>.<span class="token property">colors</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token property">return</span> '<span class="token property">ColoringBook</span>';
+      <span class="token punctuation">}</span>
+      <span class="token property">return</span> <span class="token property">null</span>; // <span class="token property">GraphQLError</span> <span class="token property">is</span> <span class="token property">thrown</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token attr-name">Query</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token attr-name">books</span><span class="token punctuation">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span>> <span class="token punctuation">{</span> <span class="token operator">...</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>;</code></pre></div>
+<p>For a complete project that utilizes Apollo Server to run queries against your schema, checkout this tutorial.</p></div><div class="post-module--post-meta--b8vC1"><div class="PostTags-module--tag-container--YPLV+"><a href="/tags/blog"><span>blog</span></a><a href="/tags/react"><span>React</span></a></div></div><hr/></div><nav><ul class="post-module--pagination--Y3rfk"><li><a rel="prev" href="/apollo-server-tutorial">← <!-- -->Apollo Server Tutorial</a></li><li><a rel="next" href="/react-js-notes">ReactJS Notes<!-- --> →</a></li></ul></nav></main><footer><div class="Footer-module--container--0c9rU"><div><a href="https://twitter.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">Twitter</a><a href="https://github.com/iqbalyarkhan" target="_blank" rel="noopener noreferrer">GitHub</a></div><div class="Footer-module--copyright--v7mXx">Copyright © 2021. All rights reserved.</div></div></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
   
   
   if(true) {
