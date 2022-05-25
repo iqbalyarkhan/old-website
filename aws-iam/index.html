@@ -112,6 +112,13 @@ void function() {
 <li><a href="#when-to-use-iam-roles">When to use IAM Roles</a></li>
 </ul>
 </li>
+<li><a href="#policy-evaluation-logic">Policy Evaluation Logic</a>
+<ul>
+<li><a href="#setup">Setup</a></li>
+<li><a href="#bucket-policy">Bucket Policy</a></li>
+<li><a href="#cross-account-role">Cross Account Role</a></li>
+</ul>
+</li>
 <li><a href="#limitations">Limitations</a></li>
 <li><a href="#resources">Resources</a></li>
 </ul>
@@ -336,7 +343,7 @@ Resource-based policies are JSON policy documents that you attach to an Amazon r
 <span class="token punctuation">}</span></code></pre></div>
 <p>The resource-based policy above can be attached to an Amazon S3 bucket. The policy allows members (or identities) of a specific AWS account to perform any Amazon S3 actions in the bucket named mybucket. It allows any action that can be performed on a bucket or the objects within it. (Because the policy grants trust only to the account, individual users in the account must still be granted permissions for the specified Amazon S3 actions.)</p>
 <h3 id="iam-permissions-boundaries" style="position:relative;"><a href="#iam-permissions-boundaries" aria-label="iam permissions boundaries permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>IAM Permissions boundaries</h3>
-<p>A permissions boundary is an advanced feature in which you set the maximum permissions that an identity-based policy can grant to an IAM entity. When you set a permissions boundary for an entity, the entity can perform only the actions that are allowed by both its identity-based policies and its permissions boundaries.</p>
+<p>A permissions boundary is an advanced feature in which you set the maximum permissions that an identity-based policy can grant to an IAM entity. Permissions boundaries can ONLY be applied to idenitity-based policies. When you set a permissions boundary for an entity, the entity can perform only the actions that are allowed by both its identity-based policies and its permissions boundaries.</p>
 <p>You can use a permissions boundary on Zhang to make sure that he is never given access to the <code class="language-cpptext">CompanyConfidential</code> S3 bucket. To do this, determine the maximum permissions that you want Zhang to have. In this case, you control what he does using his permissions policies. Here, you only care that he doesn't access the confidential bucket. So you use the following policy to define Zhang's boundary to allow all AWS actions for Amazon S3 and a few other services but deny access to the <code class="language-cpptext">CompanyConfidential</code> S3 bucket. Because the permissions boundary does not allow any IAM actions, it prevents Zhang from deleting his (or anyone's) boundary.</p>
 <div class="gatsby-highlight" data-language="json"><pre class="language-cppjson"><code class="language-cppjson"><span class="token punctuation">{</span>
   <span class="token property">"Version"</span><span class="token operator">:</span> <span class="token string">"2012-10-17"</span><span class="token punctuation">,</span>
@@ -358,6 +365,7 @@ Resource-based policies are JSON policy documents that you attach to an Amazon r
     <span class="token punctuation">}</span>
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span></code></pre></div>
+<p>PBs are used when you need to delegate permissions. In our console, we use the policy conceptually as a boundary by naming it as such. We then attach the boundary policy to a user.</p>
 <h3 id="access-contorl-lists-acls" style="position:relative;"><a href="#access-contorl-lists-acls" aria-label="access contorl lists acls permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Access contorl lists (ACLs)</h3>
 <p>Access control lists (ACLs) are service policies that allow you to control which principals in another account can access a resource. ACLs cannot be used to control access for a principal within the same account. ACLs are similar to resource-based policies, although they are the only policy type that does not use the JSON policy document format.</p>
 <h3 id="policy-documents-deep-dive" style="position:relative;"><a href="#policy-documents-deep-dive" aria-label="policy documents deep dive permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Policy Documents Deep Dive</h3>
@@ -631,6 +639,55 @@ A role that grants access to resources in one account to a trusted principal in 
 <li>Provide Account ID for account A and role name as cross-account-role</li>
 <li>Tada!</li>
 </ul>
+<h2 id="policy-evaluation-logic" style="position:relative;"><a href="#policy-evaluation-logic" aria-label="policy evaluation logic permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Policy Evaluation Logic</h2>
+<p>For a single account, the following process is used:</p>
+<p><a href="./images/aws/same-account-pel.png">Same-Account-Policy-Evaluation-Logic</a><a href="https://learn.cantrill.io/courses/895720/lectures/16844886">Image Credit: Cantrill</a></p>
+<p>For multi-account setup, consider the following scenario: an identity in account A is trying to access a resource in account B. To make this possible, we need an explicit allow from both accounts: A &#x26; B. There're 3 methods we can use to access an S3 resource in one account from another: Bucket Policy and sts:AssumeRole. More on this <a href="https://aws.amazon.com/premiumsupport/knowledge-center/cross-account-access-s3/">here</a>.</p>
+<h3 id="setup" style="position:relative;"><a href="#setup" aria-label="setup permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Setup</h3>
+<p>I've got 2 accounts: a burner account and my dev account. I've created 2 buckets in my burner:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-cpptext"><code class="language-cpptext">iqbalkhanmytestbucketnumber1
+iqbalkhanmytestbucketnumber2</code></pre></div>
+<p>If I switch to my dev account and try to access the burner bucket via the URL, I won't be able to do so and see this error: <code class="language-cpptext">Insufficient permissions to list objects</code>. Let's step through each method and see how we can use it to access the bucket from my dev account:</p>
+<h3 id="bucket-policy" style="position:relative;"><a href="#bucket-policy" aria-label="bucket policy permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Bucket Policy</h3>
+<p>We want bucket1 to be accessible from another AWS account. Here's the sample AWS policy we can use:</p>
+<div class="gatsby-highlight" data-language="json"><pre class="language-cppjson"><code class="language-cppjson"><span class="token punctuation">{</span>
+  <span class="token property">"Version"</span><span class="token operator">:</span> <span class="token string">"2012-10-17"</span><span class="token punctuation">,</span>
+  <span class="token property">"Statement"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"Effect"</span><span class="token operator">:</span> <span class="token string">"Allow"</span><span class="token punctuation">,</span>
+      <span class="token property">"Principal"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"AWS"</span><span class="token operator">:</span> <span class="token string">"arn:aws:iam::${REPLACEMEMANAGEMENTACCOUNTID}:user/${USER_NAME}"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"Action"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"s3:GetObject"</span><span class="token punctuation">,</span>
+        <span class="token string">"s3:PutObject"</span><span class="token punctuation">,</span>
+        <span class="token string">"s3:PutObjectAcl"</span><span class="token punctuation">,</span>
+        <span class="token string">"s3:ListBucket"</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">"Resource"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"arn:aws:s3:::${REPLACEME_BUCKETNAME}/*"</span><span class="token punctuation">,</span>
+        <span class="token string">"arn:aws:s3:::${REPLACEME_BUCKETNAME}"</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>We'll go into the burner (account that owns bucket1) → S3 → Bucket Policy and paste the above policy. Don't forget to replace the account ID with your dev account and replace the bucket and user names. Now move back to your dev account and reload the S3 bucket URL and you should be able to see the empty bucket.</p>
+<h3 id="cross-account-role" style="position:relative;"><a href="#cross-account-role" aria-label="cross account role permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Cross Account Role</h3>
+<p>Not all AWS services support resource-based policies. Therefore, you can use cross-account IAM roles to centralize permission management when providing cross-account access to multiple services. Using cross-account IAM roles simplifies provisioning cross-account access to S3 objects that are stored in multiple S3 buckets. As a result, you don't need to manage multiple policies for S3 buckets. This method allows cross-account access to objects owned or uploaded by another AWS account or AWS services.</p>
+<p>Let's pick bucket2 now and log in to the burner (account that owns bucket2). Create an IAM role in the burner. Then, grant the role permissions to perform required S3 operations. In the role's trust policy, grant a role or user from dev account permissions to assume the role in the burner. Let's call the role <code class="language-cpptext">XACCDEMO</code> and attach the following <code class="language-cpptext">TRUST RELATIONSHIP</code> to it:</p>
+<div class="gatsby-highlight" data-language="json"><pre class="language-cppjson"><code class="language-cppjson"><span class="token punctuation">{</span>
+  <span class="token property">"Version"</span><span class="token operator">:</span> <span class="token string">"2012-10-17"</span><span class="token punctuation">,</span>
+  <span class="token property">"Statement"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"Effect"</span><span class="token operator">:</span> <span class="token string">"Allow"</span><span class="token punctuation">,</span>
+      <span class="token property">"Principal"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"AWS"</span><span class="token operator">:</span> <span class="token string">"arn:aws:iam::$DEVACCOUNT:user/DEVACCOUNTUSER"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"Action"</span><span class="token operator">:</span> <span class="token string">"sts:AssumeRole"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>Next, attach the relevant S3 permissions policy to this role.</p>
 <h2 id="limitations" style="position:relative;"><a href="#limitations" aria-label="limitations permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Limitations</h2>
 <p>Let's talk about some limits set in IAM:</p>
 <ul>
