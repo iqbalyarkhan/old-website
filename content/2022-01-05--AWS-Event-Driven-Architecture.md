@@ -22,7 +22,11 @@ tags:
 - [What is Lambda?](#what-is-lambda)
   - [Lambda Function](#lambda-function)
   - [Lambda Concurrency](#lambda-concurrency)
-  - [Synch vs Asynch Invocation](#synch-vs-asynch-invocation)
+  - [Lambda Invocations](#lambda-invocations)
+  - [Lambda Permissions](#lambda-permissions)
+  - [Lambda Logging](#lambda-logging)
+  - [Lambda Version and Aliases](#lambda-version-and-aliases)
+  - [Lambda Startup Times](#lambda-startup-times)
   - [Lambda Demo](#lambda-demo)
 - [What is a Container?](#what-is-a-container)
   - [Terminology](#terminology)
@@ -106,15 +110,97 @@ Use concurrency settings to ensure that your production applications are highly 
 
 To enable functions to scale without fluctuations in latency, use provisioned concurrency. For functions that take a long time to initialize, or that require extremely low latency for all invocations, provisioned concurrency enables you to pre-initialize instances of your function and keep them running at all times. Lambda integrates with Application Auto Scaling to support autoscaling for provisioned concurrency based on utilization.
 
-### Synch vs Asynch Invocation
+### Lambda Invocations
 
-When you invoke a function, you can choose to invoke it synchronously or asynchronously. With synchronous invocation, you wait for the function to process the event and return a response. With asynchronous invocation, Lambda queues the event for processing and returns a response immediately.
+When you invoke a function, you can choose to invoke it synchronously, asynchronously or via event source mappings. Let's take a look at each:
 
-For asynchronous invocations, Lambda handles retries if the function returns an error or is throttled. To customize this behavior, you can configure error handling settings on a function, version, or alias. You can also configure Lambda to send events that failed processing to a dead-letter queue, or to send a record of any invocation to a destination.
+**Synchronous**
+
+With synchronous invocation, you wait for the function to process the event and return a response. Examples include lambda invocations via CLI or clients making requests via API Gateway and the API Gateway directly calls our lambda. This implies that any failures or errors need to be handled on client side.
+
+![Lambda Synchronous Calls](./images/aws/lambda-synch.png)[Image Credit: learn.cantrill.io](https://learn.cantrill.io/courses/730712/lectures/36049040)
+
+**Asynchronous**
+
+With asynchronous invocation, Lambda queues the event for processing and returns a response immediately. This type of invocations occurs when AWS services invoke lambda functions on your behalf. For asynchronous invocations, Lambda handles retries if the function returns an error or is throttled. To make this possible your function needs to be idempotent: meaning that your function shouldn't be additive or subtractive, it should just provide a specific task.
+
+To customize retries, you can configure error handling settings on a function, version, or alias. You can also configure Lambda to send events that failed processing to a dead-letter queue, or to send a record of any invocation to a destination.
+
+![Lambda Asynchronous Calls](./images/aws/lambda-asynch.png)[Image Credit: learn.cantrill.io](https://learn.cantrill.io/courses/730712/lectures/36049040)
+
+**Event Source Mapping**
+
+What if an event is not generated when something happens in our service? What if we're pushing data to Kinesis Data Stream that doesn't generate an event when data is added? Event Source Mappings (ESMs) can be used on streams or queues which don't support event generation to invoke lambda. We can use ESMs to poll sources and get batches of source's data that can be processed by our lambda. Lambda can then process the batch.
+
+One thing to note is that the batch would either be ENTIRELY successful or fail ENTIRELY. Lambda will fail the entire batch if a single transaction fails. The lambda execution role needs data source permissions to be able to process batches from said source.
+
+Any failed batches can be sent SQS or SNS for further processing.
+
+![Lambda Event Source Mapping](./images/aws/lambda-esm.png)[Image Credit: learn.cantrill.io](https://learn.cantrill.io/courses/730712/lectures/36049040)
+
+### Lambda Permissions
+
+**[AWS Lambda Execution Role](https://docs.aws.amazon.com/lambda/latest/dg/lambda-intro-execution-role.html)**
+
+A Lambda function's execution role is an AWS Identity and Access Management (IAM) role that grants the function permission to access AWS services and resources. You provide this role when you create a function, and Lambda assumes the role when your function is invoked. You can create an execution role for development that has permission to send logs to Amazon CloudWatch and to upload trace data to AWS X-Ray.
+
+Here's a sample creating lambda function and adding policy to its role:
+
+```typescript
+import { Function } from "monocdk/aws-lambda";
+
+const lambdaFunction = new Function(this, lambdaFunctionName, {
+  functionName: lambdaFunctionName,
+  runtime: Runtime.NODEJS_12_X,
+  memorySize: 512,
+  timeout: Duration.seconds(5),
+  deadLetterQueue: this.dlq,
+  //Lambda insights
+  insightsVersion: lambda.LambdaInsightsVersion.VERSION_1_0_98_0,
+  //Xray Tracing
+  tracing: lambda.Tracing.ACTIVE,
+});
+
+lambdaFunction.addToRolePolicy(
+  new PolicyStatement({
+    actions: ["s3:GetObject", "s3:ListBucket"],
+    resources: [
+      `arn:aws:s3:::${myBucketName}*`,
+      `arn:aws:s3:::${myBucketName}/*`,
+    ],
+  })
+);
+```
+
+**[AWS Lambda Resource Based Policy](https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html)**
+
+You use a resource-based policy to allow an AWS service to invoke your function on your behalf.
+
+### Lambda Logging
+
+Lambda uses Cloudwatch (for metrics), Cloudwatch logs (for logs) and X-ray (for distributed tracing) for logging purposes. But remember, cloudwatch logs requires permissions via execution role
+
+### Lambda Version and Aliases
+
+Lambda functions have versions (v1, v2, etc) where a version refers to lambda code and configuration of the lambda function. Once published, a lambda version is immutable and has its own ARN. `$Latest` points to the latest version.
+
+Lambda functions have aliases (dev, stage, prod) that point to a version. These can be changed.
+
+### Lambda Startup Times
+
+When a lambda is invoked, the environment is created (physical hardware is allocated), then any run-times required are downloaded and installed. The function package is downloaded and installed. This process is known as **cold start**.It is the process of creation and configuration of our lambda function including function code download.
+
+If the same lambda is executed again, lambda doesn't need to setup the environment or download function code since all that info is already present in the execution context. This reduces lambda execution time. This is called a warm start.
+
+To remedy this:
+
+- We can use **provisioned concurrency** where AWS will create and keep a certain number of contexts warm and ready to use. This improves start speeds
+
+- Or have expensive operations outside of lambda function handler (such as DB connection initializations etc).
 
 ### Lambda Demo
 
-Let's create a lambda function that gets triggered whenever an EC2 instance is created. We'll check to see if the EC2 instance launched has a name tag. If so, we do nothing, otherwise, we kill that instnace. As with every AWS service, we need to add EC2 access policy and Lambda execution policy to the lambda function IAM role.
+Let's create a lambda function that gets triggered whenever an EC2 instance is created. We'll check to see if the EC2 instance launched has a name tag. If so, we do nothing, otherwise, we kill that instance. As with every AWS service, we need to add EC2 access policy and Lambda execution policy to the lambda function IAM role.
 
 <!-- copy and paste. Modify height and width if desired. -->
 <iframe class="embeddedObject shadow resizable" name="embedded_content" scrolling="no" frameborder="0" type="text/html" 
