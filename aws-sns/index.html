@@ -99,6 +99,7 @@ void function() {
 <li><a href="#subscriptions">Subscriptions</a>
 <ul>
 <li><a href="#subscription-filter-policy">Subscription Filter Policy</a></li>
+<li><a href="#fanout">Fanout</a></li>
 <li><a href="#redrive-policy-dlq">Redrive policy (DLQ)</a></li>
 </ul>
 </li>
@@ -157,24 +158,26 @@ You can use an access policy to control who can access your topics and how the t
 <p>and then choose a protocol. The protocol could be Kinesis Data Firehose, SQS, Lambda, Email, Email-JSON, HTTP, HTTPS, SMS and Platform application endpoint. In most cases, you'll provide the relevant ARN. You'll also determine these settings for subscriptions:</p>
 <h3 id="subscription-filter-policy" style="position:relative;"><a href="#subscription-filter-policy" aria-label="subscription filter policy permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Subscription Filter Policy</h3>
 <p>You can assign filter policies to Amazon SNS subscriptions by specifying attribute names, and adding a list of one or more values to each name. A subscription accepts a message only if the message contains attributes that match those specified in the subscription's filter policy.</p>
+<h3 id="fanout" style="position:relative;"><a href="#fanout" aria-label="fanout permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Fanout</h3>
+<p>You can also have a fanout architecture with SNS topics where a single topic can have multiple SQS queues as subscribers.</p>
 <h3 id="redrive-policy-dlq" style="position:relative;"><a href="#redrive-policy-dlq" aria-label="redrive policy dlq permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Redrive policy (DLQ)</h3>
 <p>You can send undeliverable messages to a dead-letter queue. You can assign a redrive policy to Amazon SNS subscriptions by specifying the Amazon SQS queue that captures messages that can't be delivered to subscribers successfully.</p>
 <h2 id="sns-demo" style="position:relative;"><a href="#sns-demo" aria-label="sns demo permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>SNS Demo</h2>
 <p>Let's look at a demo where we have an SQS queue as a subscriber for our SNS topic. Now, if you create an SNS topic, add a subscription for SQS queue, you also need to edit the access policy in your SQS queue to allow all actions from your SNS topic. That's what we'll do in this demo. Here's the policy I attached to my testQ so that it's able to receive messages from my SNS topic in the same account:</p>
-<div class="gatsby-highlight" data-language="json"><pre class="language-cppjson"><code class="language-cppjson">    <span class="token punctuation">{</span>
-      <span class="token property">"Sid"</span><span class="token operator">:</span> <span class="token string">"SNSPolicy"</span><span class="token punctuation">,</span>
-      <span class="token property">"Effect"</span><span class="token operator">:</span> <span class="token string">"Allow"</span><span class="token punctuation">,</span>
-      <span class="token property">"Principal"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"Service"</span><span class="token operator">:</span> <span class="token string">"sns.amazonaws.com"</span>
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      <span class="token property">"Action"</span><span class="token operator">:</span> <span class="token string">"sqs:SendMessage"</span><span class="token punctuation">,</span>
-      <span class="token property">"Resource"</span><span class="token operator">:</span> <span class="token string">"arn:aws:sqs:us-east-1:864122064012:testQ"</span><span class="token punctuation">,</span>
-      <span class="token property">"Condition"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"ArnEquals"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-          <span class="token property">"aws:SourceArn"</span><span class="token operator">:</span> <span class="token string">"arn:aws:sns:us-east-1:864122064012:testTopic"</span>
-        <span class="token punctuation">}</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span></code></pre></div>
+<div class="gatsby-highlight" data-language="json"><pre class="language-cppjson"><code class="language-cppjson"><span class="token punctuation">{</span>
+  <span class="token property">"Sid"</span><span class="token operator">:</span> <span class="token string">"SNSPolicy"</span><span class="token punctuation">,</span>
+  <span class="token property">"Effect"</span><span class="token operator">:</span> <span class="token string">"Allow"</span><span class="token punctuation">,</span>
+  <span class="token property">"Principal"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"Service"</span><span class="token operator">:</span> <span class="token string">"sns.amazonaws.com"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"Action"</span><span class="token operator">:</span> <span class="token string">"sqs:SendMessage"</span><span class="token punctuation">,</span>
+  <span class="token property">"Resource"</span><span class="token operator">:</span> <span class="token string">"arn:aws:sqs:us-east-1:864122064012:testQ"</span><span class="token punctuation">,</span>
+  <span class="token property">"Condition"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"ArnEquals"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"aws:SourceArn"</span><span class="token operator">:</span> <span class="token string">"arn:aws:sns:us-east-1:864122064012:testTopic"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
 <p>This means that it has the allow effect for sns service where the action allowed for SNS is <code class="language-cpptext">sqs:SendMessage</code> on the resource <code class="language-cpptext">arn:aws:sqs:us-east-1:864122064012:testQ</code>. And only allow the SNS service to send message to sqs if the source arn is: <code class="language-cpptext">arn:aws:sns:us-east-1:864122064012:testTopic</code>.</p>
 <p>Check out more IAM role information for SQS and SNS <a href="https://docs.aws.amazon.com/sns/latest/dg/subscribe-sqs-queue-to-sns-topic.html">here</a>.</p>
 <!-- copy and paste. Modify height and width if desired. -->

@@ -98,7 +98,11 @@ void function() {
 <ul>
 <li><a href="#lambda-function">Lambda Function</a></li>
 <li><a href="#lambda-concurrency">Lambda Concurrency</a></li>
-<li><a href="#synch-vs-asynch-invocation">Synch vs Asynch Invocation</a></li>
+<li><a href="#lambda-invocations">Lambda Invocations</a></li>
+<li><a href="#lambda-permissions">Lambda Permissions</a></li>
+<li><a href="#lambda-logging">Lambda Logging</a></li>
+<li><a href="#lambda-version-and-aliases">Lambda Version and Aliases</a></li>
+<li><a href="#lambda-startup-times">Lambda Startup Times</a></li>
 <li><a href="#lambda-demo">Lambda Demo</a></li>
 </ul>
 </li>
@@ -228,11 +232,139 @@ void function() {
 <h3 id="lambda-concurrency" style="position:relative;"><a href="#lambda-concurrency" aria-label="lambda concurrency permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Lambda Concurrency</h3>
 <p>Use concurrency settings to ensure that your production applications are highly available and highly responsive. To prevent a function from using too much concurrency, and to reserve a portion of your account's available concurrency for a function, use reserved concurrency. Reserved concurrency splits the pool of available concurrency into subsets. A function with reserved concurrency only uses concurrency from its dedicated pool.</p>
 <p>To enable functions to scale without fluctuations in latency, use provisioned concurrency. For functions that take a long time to initialize, or that require extremely low latency for all invocations, provisioned concurrency enables you to pre-initialize instances of your function and keep them running at all times. Lambda integrates with Application Auto Scaling to support autoscaling for provisioned concurrency based on utilization.</p>
-<h3 id="synch-vs-asynch-invocation" style="position:relative;"><a href="#synch-vs-asynch-invocation" aria-label="synch vs asynch invocation permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Synch vs Asynch Invocation</h3>
-<p>When you invoke a function, you can choose to invoke it synchronously or asynchronously. With synchronous invocation, you wait for the function to process the event and return a response. With asynchronous invocation, Lambda queues the event for processing and returns a response immediately.</p>
-<p>For asynchronous invocations, Lambda handles retries if the function returns an error or is throttled. To customize this behavior, you can configure error handling settings on a function, version, or alias. You can also configure Lambda to send events that failed processing to a dead-letter queue, or to send a record of any invocation to a destination.</p>
+<h3 id="lambda-invocations" style="position:relative;"><a href="#lambda-invocations" aria-label="lambda invocations permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Lambda Invocations</h3>
+<p>When you invoke a function, you can choose to invoke it synchronously, asynchronously or via event source mappings. Let's take a look at each:</p>
+<p><strong>Synchronous</strong></p>
+<p>With synchronous invocation, you wait for the function to process the event and return a response. Examples include lambda invocations via CLI or clients making requests via API Gateway and the API Gateway directly calls our lambda. This implies that any failures or errors need to be handled on client side.</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 49.13294797687862%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAAAsTAAALEwEAmpwYAAACRUlEQVQoz02PS08aURiG5282/RlNd20TN03adU2bmHTTpLrxAjOANiog4AVFLcpdEEEG53YGBs4ZWD3NTEPTxZOzeN/vOd+nzYMZaqawnSGP/QqBZzJ6fGLQaCG6A7qNBt16g36zxcN9jV6zyajdY/po4j8MmQzGBLaDP+wx8z20qekS2j6Xl3l+bm4xtHuMXYcXz6ZvWtzW69y36tQHPWpPXaqNGp1Ok7E5jHtj18ZyLKz7c6bWM5oKFeFiSRB4+FMTqRQqDAnDBTOvjnD6+N4EZzbBmk/wPY+JayPlPO5E3QgpJUopNCkVch6g5gGhnKPm0ziUMsRKvkKc/yCoCfqtHp12n9bVFfblNcHI+SdayWQsDJeol3vksIw0b5GjCjLwkGqBaGcIRjXCqUT5guXEw3JsXFcQiEksWAlXaJFZRZupv7+EKjolOmOBa7zm+WSdSvGCh8o5YfeObqVK57qG67osl0vCaP4/NE8IPN9HCIErHBzH4eXFihm2awweuwxMM95KuAG+K3DGFpZlMx6PsSwLEc37PpFLa1VrdOsdSoU99r6vcXWRpZjNU8rlKJ0UKWazXJXLnH5Yo/zpM7/v7igcHcV54fiY80KB+s0N1eIhjeoN2lmuQPnklGRmk631j+SLh+gH+2wndkmkdBKpJLmLM/bevEV/9x4je8hOYpc9I8mukWRHT5A+yJA3tinljtDSmQwRmYhfB+xn9jEMAz2ZRNd1DN0gnU7z5etXvm1skE6l0JN6nK3eVCpFZv8g9vwBwK3FG0RwI4oAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Lambda Synchronous Calls"
+        title="Lambda Synchronous Calls"
+        src="/static/9aca8dfaf4fa06ae210f58e6e35f1971/1e043/lambda-synch.png"
+        srcset="/static/9aca8dfaf4fa06ae210f58e6e35f1971/991de/lambda-synch.png 173w,
+/static/9aca8dfaf4fa06ae210f58e6e35f1971/e4d6b/lambda-synch.png 345w,
+/static/9aca8dfaf4fa06ae210f58e6e35f1971/1e043/lambda-synch.png 690w,
+/static/9aca8dfaf4fa06ae210f58e6e35f1971/e3189/lambda-synch.png 1035w,
+/static/9aca8dfaf4fa06ae210f58e6e35f1971/60fa0/lambda-synch.png 1315w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span><a href="https://learn.cantrill.io/courses/730712/lectures/36049040">Image Credit: learn.cantrill.io</a></p>
+<p><strong>Asynchronous</strong></p>
+<p>With asynchronous invocation, Lambda queues the event for processing and returns a response immediately. This type of invocations occurs when AWS services invoke lambda functions on your behalf. For asynchronous invocations, Lambda handles retries if the function returns an error or is throttled. To make this possible your function needs to be idempotent: meaning that your function shouldn't be additive or subtractive, it should just provide a specific task.</p>
+<p>To customize retries, you can configure error handling settings on a function, version, or alias. You can also configure Lambda to send events that failed processing to a dead-letter queue, or to send a record of any invocation to a destination.</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 47.398843930635834%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAAAsTAAALEwEAmpwYAAACBElEQVQoz12SzW7aUBCFebS+V7et+gBdtW9QVaoqVWmyyI8SklIg2Nj8GAymdiA2Bgw2vva9/Omr7DSbLo5mce6cmTn3VLI8J89z4qcW0eiWyKmxGlXZLANyKcmyjI+fr/hx3mAyGTGeTMh2R7bWN3rNC+5qDeqNOv1+n/l8TqVoKESHwyGa1kLXtZIMw5BUCPZKojsB4WaLFILUn5POQ7bTgNCw8a7qRNMAfx4ghKBSbHeUOQel2CnFcX/gdDhy2O1RBbfb4fgh62iNnPnkywgZx8hoTeL5LLpj0mhDtI5eBEW+43f1HY5zi7/Z0jR16oZO2+oxW69YLHwCvUpk97BME7PfpzcY0e33cT0PqVRpmZSyrJUsy/nw9T1nrZ8Emxj72WMwdXFDn8nIZtzVWDYvmbbvsAZDeh2DzuMlHdPEe56hOJWWvVpXemh1LWoPNX7dPxAtV5xOJ1SyJZsFqOOB2B4wn7lMkgiZrokH56jDDjELSTQbUbzNs1K0FBw7YwzTwHEctmlaThJJQuo+IeME4XgcMslKbLEWzzjLJT0VM/x0hvvmLf7AwbKHPHney6cU9yulSuT/1i/q0DDR7h/oNJoYhsFsOkXKgpdI4eMbTdrfr7Etiz+uWybjJTb/4VW0pWncVqsldF3H933yTJDvIbEvGDe+cF1/5ObmmlqtVsbtL+Qwkne1C8RRAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Lambda Asynchronous Calls"
+        title="Lambda Asynchronous Calls"
+        src="/static/fb2fb6f9442f9ab344f6ee1465865582/1e043/lambda-asynch.png"
+        srcset="/static/fb2fb6f9442f9ab344f6ee1465865582/991de/lambda-asynch.png 173w,
+/static/fb2fb6f9442f9ab344f6ee1465865582/e4d6b/lambda-asynch.png 345w,
+/static/fb2fb6f9442f9ab344f6ee1465865582/1e043/lambda-asynch.png 690w,
+/static/fb2fb6f9442f9ab344f6ee1465865582/e3189/lambda-asynch.png 1035w,
+/static/fb2fb6f9442f9ab344f6ee1465865582/b1001/lambda-asynch.png 1380w,
+/static/fb2fb6f9442f9ab344f6ee1465865582/b30aa/lambda-asynch.png 1405w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span><a href="https://learn.cantrill.io/courses/730712/lectures/36049040">Image Credit: learn.cantrill.io</a></p>
+<p><strong>Event Source Mapping</strong></p>
+<p>What if an event is not generated when something happens in our service? What if we're pushing data to Kinesis Data Stream that doesn't generate an event when data is added? Event Source Mappings (ESMs) can be used on streams or queues which don't support event generation to invoke lambda. We can use ESMs to poll sources and get batches of source's data that can be processed by our lambda. Lambda can then process the batch.</p>
+<p>One thing to note is that the batch would either be ENTIRELY successful or fail ENTIRELY. Lambda will fail the entire batch if a single transaction fails. The lambda execution role needs data source permissions to be able to process batches from said source.</p>
+<p>Any failed batches can be sent SQS or SNS for further processing.</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 690px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 47.97687861271676%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAAAsTAAALEwEAmpwYAAACZklEQVQozz2SS2/bVhBG+Wu76yrLbLsrECDZBG0RZBUEaeu2RtzGjtzIDmNZqSnFFCk5lvUkKUoynxIv7+WlUJzCWnSAA8zqw3cGYyilWNyvuU8iql2N1BVVrVFao+sd4Srkyrrk5quDVDW5b5N+PSEbm3vyUZO0f8hmYiJFjKG14sXrQ47OLqijhHzqEU1nRJMZKom5c6b89OyQo19Maq3puQNOTs8wW585bZqcmy2aZpuBaxN/eIThr5eMw4C1FyJuA6L+CPf8E47Zouy7/PH0dx5984LvH78hSzekSUzge4ThgiDw9/tiEVAUG0QWYTx9+TNdZwBZxjZcIMIlah1RzHzq+ZzW2zZPvvuNNy8/IISk17NpNBp73p8c8+6vP7nqusTWczb+FcZkEbAVBe1rl1dHDbarFUW4oshytkWB1Jq7wZw4vEcpSRAEjEYjPM8jWKZ4nk9RCLbxArFJMPQOtK5wboeY1jVCSVRVIYSg33exWn1uelOKPMd1HTodC9u2mU3uENN3KJEilUZWNVIpjGL4K7t/+X9kWSIfQmuNkCWyUszGS9J4Q+vyM42/m3y6/Aen5xDZBySTEZkXUIqCsiwxrNPX2D0Hq9PB7VyzbLuELZuoPyafheQTn9EP35J+/JFk3mN9e0k2sZDLG1Q8p/Rtlp0z0tmQUpQYUy/Etq/pfuly2x+wdu5Y94aIOEVsCpLVmtHBM1bdYx5eTCQhi4uD/c0edEUUEA9tMm9MWUqMWlfsdru9bpzEND+eY33pkuU59W7HzJvz9viUi7aFKCVpljOdjEnTDFVpSqn2zR6QUvIfguPQVhR59BkAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Lambda Event Source Mapping"
+        title="Lambda Event Source Mapping"
+        src="/static/b776e89a0279265977e04ec1b4101218/1e043/lambda-esm.png"
+        srcset="/static/b776e89a0279265977e04ec1b4101218/991de/lambda-esm.png 173w,
+/static/b776e89a0279265977e04ec1b4101218/e4d6b/lambda-esm.png 345w,
+/static/b776e89a0279265977e04ec1b4101218/1e043/lambda-esm.png 690w,
+/static/b776e89a0279265977e04ec1b4101218/e3189/lambda-esm.png 1035w,
+/static/b776e89a0279265977e04ec1b4101218/b1001/lambda-esm.png 1380w,
+/static/b776e89a0279265977e04ec1b4101218/da20e/lambda-esm.png 1397w"
+        sizes="(max-width: 690px) 100vw, 690px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span><a href="https://learn.cantrill.io/courses/730712/lectures/36049040">Image Credit: learn.cantrill.io</a></p>
+<h3 id="lambda-permissions" style="position:relative;"><a href="#lambda-permissions" aria-label="lambda permissions permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Lambda Permissions</h3>
+<p><strong><a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-intro-execution-role.html">AWS Lambda Execution Role</a></strong></p>
+<p>A Lambda function's execution role is an AWS Identity and Access Management (IAM) role that grants the function permission to access AWS services and resources. You provide this role when you create a function, and Lambda assumes the role when your function is invoked. You can create an execution role for development that has permission to send logs to Amazon CloudWatch and to upload trace data to AWS X-Ray.</p>
+<p>Here's a sample creating lambda function and adding policy to its role:</p>
+<div class="gatsby-highlight" data-language="typescript"><pre class="language-cpptypescript"><code class="language-cpptypescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token builtin">Function</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"monocdk/aws-lambda"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> lambdaFunction <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Function</span></span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> lambdaFunctionName<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  functionName<span class="token operator">:</span> lambdaFunctionName<span class="token punctuation">,</span>
+  runtime<span class="token operator">:</span> Runtime<span class="token punctuation">.</span><span class="token constant">NODEJS_12_X</span><span class="token punctuation">,</span>
+  memorySize<span class="token operator">:</span> <span class="token number">512</span><span class="token punctuation">,</span>
+  timeout<span class="token operator">:</span> Duration<span class="token punctuation">.</span><span class="token function">seconds</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  deadLetterQueue<span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>dlq<span class="token punctuation">,</span>
+  <span class="token comment">//Lambda insights</span>
+  insightsVersion<span class="token operator">:</span> lambda<span class="token punctuation">.</span>LambdaInsightsVersion<span class="token punctuation">.</span><span class="token constant">VERSION_1_0_98_0</span><span class="token punctuation">,</span>
+  <span class="token comment">//Xray Tracing</span>
+  tracing<span class="token operator">:</span> lambda<span class="token punctuation">.</span>Tracing<span class="token punctuation">.</span><span class="token constant">ACTIVE</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+lambdaFunction<span class="token punctuation">.</span><span class="token function">addToRolePolicy</span><span class="token punctuation">(</span>
+  <span class="token keyword">new</span> <span class="token class-name">PolicyStatement</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    actions<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"s3:GetObject"</span><span class="token punctuation">,</span> <span class="token string">"s3:ListBucket"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    resources<span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">arn:aws:s3:::</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>myBucketName<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">*</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
+      <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">arn:aws:s3:::</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>myBucketName<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">/*</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<p><strong><a href="https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html">AWS Lambda Resource Based Policy</a></strong></p>
+<p>You use a resource-based policy to allow an AWS service to invoke your function on your behalf.</p>
+<h3 id="lambda-logging" style="position:relative;"><a href="#lambda-logging" aria-label="lambda logging permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Lambda Logging</h3>
+<p>Lambda uses Cloudwatch (for metrics), Cloudwatch logs (for logs) and X-ray (for distributed tracing) for logging purposes. But remember, cloudwatch logs requires permissions via execution role</p>
+<h3 id="lambda-version-and-aliases" style="position:relative;"><a href="#lambda-version-and-aliases" aria-label="lambda version and aliases permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Lambda Version and Aliases</h3>
+<p>Lambda functions have versions (v1, v2, etc) where a version refers to lambda code and configuration of the lambda function. Once published, a lambda version is immutable and has its own ARN. <code class="language-cpptext">$Latest</code> points to the latest version.</p>
+<p>Lambda functions have aliases (dev, stage, prod) that point to a version. These can be changed.</p>
+<h3 id="lambda-startup-times" style="position:relative;"><a href="#lambda-startup-times" aria-label="lambda startup times permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Lambda Startup Times</h3>
+<p>When a lambda is invoked, the environment is created (physical hardware is allocated), then any run-times required are downloaded and installed. The function package is downloaded and installed. This process is known as <strong>cold start</strong>.It is the process of creation and configuration of our lambda function including function code download.</p>
+<p>If the same lambda is executed again, lambda doesn't need to setup the environment or download function code since all that info is already present in the execution context. This reduces lambda execution time. This is called a warm start.</p>
+<p>To remedy this:</p>
+<ul>
+<li>
+<p>We can use <strong>provisioned concurrency</strong> where AWS will create and keep a certain number of contexts warm and ready to use. This improves start speeds</p>
+</li>
+<li>
+<p>Or have expensive operations outside of lambda function handler (such as DB connection initializations etc).</p>
+</li>
+</ul>
 <h3 id="lambda-demo" style="position:relative;"><a href="#lambda-demo" aria-label="lambda demo permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Lambda Demo</h3>
-<p>Let's create a lambda function that gets triggered whenever an EC2 instance is created. We'll check to see if the EC2 instance launched has a name tag. If so, we do nothing, otherwise, we kill that instnace. As with every AWS service, we need to add EC2 access policy and Lambda execution policy to the lambda function IAM role.</p>
+<p>Let's create a lambda function that gets triggered whenever an EC2 instance is created. We'll check to see if the EC2 instance launched has a name tag. If so, we do nothing, otherwise, we kill that instance. As with every AWS service, we need to add EC2 access policy and Lambda execution policy to the lambda function IAM role.</p>
 <!-- copy and paste. Modify height and width if desired. -->
 <div class="gatsby-resp-iframe-wrapper" style="padding-bottom: 53.2033426183844%; position: relative; height: 0; overflow: hidden; " > <iframe class="embeddedObject shadow resizable" name="embedded_content" scrolling="no" frameborder="0" type="text/html" style="overflow:hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; " src="https://www.screencast.com/users/IqbalKhan8502/folders/Capture/media/215ef001-a6f3-403e-b3a0-227367ddaefe/embed" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe> </div>
 <h2 id="what-is-a-container" style="position:relative;"><a href="#what-is-a-container" aria-label="what is a container permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What is a Container?</h2>
