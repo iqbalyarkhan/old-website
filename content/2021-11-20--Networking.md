@@ -54,12 +54,11 @@ Let's start with layer 1. If you want to connect 2 machines (laptops, servers et
 
 ![Physical-Layer](./images/aws/physical-layer.png)
 
-Layer 1 specs define how data is transmitted where data is raw bit (1s and 0s) streams between 2 devices using a shared physical medium. The specs define what voltage levels will be used, the timing of our signals, the rates etc. It is at this layer wher we determine what level of voltage would represent 1 bit and what level would represent 0 bit. Therefore a layer 1 device just understands layer 1 communication methods. While a layer 3 device would understand layers 1, 2 AND 3.
+Layer 1 specs define how data is transmitted where data is raw bit (1s and 0s) streams between 2 devices using a shared physical medium. The specs define what voltage levels will be used, the timing of our signals, the rates etc. It is at this layer where we determine what level of voltage would represent 1 bit and what level would represent 0 bit. Therefore a layer 1 device just understands layer 1 communication methods. While a layer 3 device would understand layers 1, 2 AND 3.
 
-What if we need more devices connect to each other? Say 4 devices? You can use a hub to connect 4 devices together. A hub's job is to transmit a message received on any port to every other port. However, with hub communication, you can:
+What if we need more devices connected to each other? Say 4 devices? You can use a hub to connect 4 devices together. A hub's job is to transmit a message received on any port to every other port. However, with hub communication, you can:
 
 - only have 1 device transmitting at a time
-- because there're no device addresses!
 - If 2 devices transmit at the same time, the message is corrupted.
 - there's no method to control media collision or media access control
 - not scalable if we can't handle collision
@@ -82,7 +81,7 @@ Remember we used hub for layer 1? If we use layer 2 devices using a hub, we'd st
 
 Layer 3 requires a functional layer 2. The job of layer 3 is to move data from source to destination: for example, from youtube server to your local device via the internet.
 
-Say we have 2 layer 2 local are networks that are geographically separated and isolated (one is in us-east-1 and the other is in us-west-2). Devices can communicate with each other within their LANs but not outside of their local networks. You can use a point-to-point (or P2P) link to connect these 2 LANs but that would be expensive and is not scalable!
+Say we have 2 layer 2 local area networks that are geographically separated and isolated (one is in us-east-1 and the other is in us-west-2). Devices can communicate with each other within their LANs but not outside of their local networks. You can use a point-to-point (or P2P) link to connect these 2 LANs but that would be expensive and is not scalable!
 
 Layer 3 is that common protocol that can be used to connect layer 2 networks that are using different protocols. This adds internet protocol or IP addresses to the LANs and routing to move data between LANs without using direct P2P links. This means that the source and destination have IP addresses and the destination can request for data from source. IP "packets" are moved from source to destination via intermediate networks (or internet!) and the information is encapsulated in different frames along the way.
 
@@ -152,11 +151,9 @@ UDP is faster as compared to TCP because it doesn't bother with data order or re
 
 ### TCP
 
-TCP allows for reliable, error free and ordered data delivery. It is used for important application layer protocols such as HTTP, HTTPS and SSH. TCP is a connection oriented protocol, meaning that you need to first establish a connection between two devices and once set up, it creates a bi-directional channel of communications.
+TCP allows for reliable, error free and ordered data delivery. It is used for important application layer protocols such as HTTP, HTTPS and SSH. TCP is a connection oriented protocol, meaning that you need to first establish a connection between two devices and once set up, it creates a bi-directional channel of communications. Port on the client is said to be random. It is an ephemeral (short-lived), temporary port. However, on the server receiving the TCP connection, the port must be 443.
 
-TCP is a connection based protocol where a "connection" is established between 2 devices using a port on the client and the server. Once established, this connection is bi-directional. Port on the client is said to be random. It is an ephemeral (short-lived), temporary port. However, on the server receiving the TCP connection, the port must be 443.
-
-Using TCP, we introduce the idea of a "segment". Segment is similar to frames and segments are encapsulated within IP packets. Packets carry segments from their source to their destination. Segments don't have source or destination IP addresses because they use IP packets for transit. However, TCP segments add more capabilities to IP pacjets.
+Using TCP, we introduce the idea of a "segment". Segment is similar to frames and segments are encapsulated within IP packets. Packets carry segments from their source to their destination. Segments don't have source or destination IP addresses because they use IP packets for transit. However, TCP segments add more capabilities to IP packets.
 
 - source and destination ports: allows for multiple connection types: ssh, https (port 443), http etc!
 - sequence number: for ordering
@@ -174,7 +171,7 @@ ephemeral -> 443
 443       -> ephemeral
 ```
 
-This is hwy you need 2 sets of rules on NACL in AWS (more on this in VPC section).
+This is why you need 2 sets of rules on NACL in AWS (more on this in VPC section).
 
 ### TCP 3-way handshakes
 
