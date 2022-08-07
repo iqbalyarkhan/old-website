@@ -35,10 +35,11 @@ tags:
 - [Encryption](#encryption)
   - [Encryption at Rest](#encryption-at-rest)
   - [Encryption in Transit](#encryption-in-transit)
+  - [Hashing Algorithms](#hashing-algorithms)
 
 ## Intro
 
-Before we can fully understand what VPC is and how it operates, it is important to understand fundamentals of networking. As an intro, we'll be going through some of the important layers present in the OSI network model:
+As an intro to networking, we'll be going through some of the important layers present in the OSI network model:
 
 ![OSI-Networking](./images/aws/osi-model.png)[Image Credit](https://www.geeksforgeeks.org/layers-of-osi-model/)
 
@@ -117,7 +118,7 @@ This IP address, `133.33.3.7` , has a /16 prefix. Meaning, the first 16 bits, or
 
 ### Default Gateway
 
-An item configured on network interfaces is a default gateway. Default gateway is nothing but an IP address on the local network to whcih packets are fowarded to generally if the destination is not a local IP address.
+One item configured on network interfaces is a default gateway. Default gateway is nothing but an IP address on the local network to which packets are fowarded to generally if the destination is not a local IP address.
 
 ### Subnet Mask
 
@@ -137,7 +138,7 @@ The subnet mask allows the device to figure out whether to communicate directly 
 
 ### Route Table
 
-When a request created on your laptop for AWS us-east-1 s3 endpoint, it first goes to your home router and next to your ISP where it encounters a route table. The route table has specific `Next Hop/Target` fields for `Destinations`. Meaning, if the packet is for a particular destination, it needs to be sent to the `Next Hop/Target` address. This is where the packet is wrapped in a frame and is forwarded!
+When a request is created on your laptop for AWS us-east-1 s3 endpoint, it first goes to your home router and next to your ISP where it encounters a route table. The route table has specific `Next Hop/Target` fields for `Destinations`. Meaning, if the packet is for a particular destination, it needs to be sent to the `Next Hop/Target` address. This is where the packet is wrapped in a frame and is forwarded!
 
 ## Layer 4 & 5 - Transport & Session
 
@@ -214,3 +215,7 @@ Encryption at rest is where you encrypt (scramble) stored data on a hard disk fo
 ### Encryption in Transit
 
 Here you provide a "tunnel" around your data as the data is transferred from one party to another.
+
+### Hashing Algorithms
+
+We have plenty of hash algorithms out there but it is recommended to use SHA2-256 (rather than md5). Interesting [link](https://natmchugh.blogspot.com/2015/02/create-your-own-md5-collisions.html) for creating collisions using md5
