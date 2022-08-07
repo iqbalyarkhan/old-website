@@ -20,7 +20,6 @@ tags:
 - [Fault Tolerance](#fault-tolerance)
 - [Disaster Recovery](#disaster-recovery)
 - [Well Architected Framework](#well-architected-framework)
-- [AWS Accounts](#aws-accounts)
 
 ## Building Blocks
 
@@ -51,15 +50,15 @@ Within the AWS eco-system, you're responsible for security **IN** the cloud whil
 
 A HA system is one designed to be online and "available" (ie providing services that it promises), as often as possible. So, when a highly available system fails, it components are replaced or fixed as fast as possible often using automation and are brought back online to keep the service running. HA aims to maximize the time a service/system is online.
 
-Availability is usually measured as a percentage: 99.999% (five nines) means that a system is down only 5.26 minutes in a year! That's because there're 525,600 minutes in a year and the system can only be down 0.001% or 0.00001 \* 525,600 = 5.26 minutes in a year. This down time includes the time it takes for your team to find out that the system is down, finding the root cause and getting it back up. That's time consuming though! A better approach is to have a standby system that's the exact copy of our primary system that takes over if the primary system goes down! That's definitely faster. It is similar to having a spare tire instead of trying to fix the flat tire!
+Availability is usually measured as a percentage: 99.999% (five nines) means that a system is down only 5.26 minutes in a year! That's because there're 525,600 minutes in a year and the system can only be down 0.001% or 0.00001 \* 525,600 = 5.26 minutes in a year. This down time includes the time it takes for your team to find out that the system is down, finding the root cause and getting it back up.
 
 ## Fault Tolerance
 
-Fault tolerance is when the system continues to operate smoothly even if one or more of its parts fail! See the difference as compared to HA? HA said it is ok to have issues and go offline but FT says even if there's an issue, we don't go offline AT ALL! Mission critical systems (surgical operation machines, flight control machines etc) cannot be just highly available; they need to be fault tolerant. With FT, you need to minimize outages and then be ale to tolerate any failures that occur. This is similar to an aircraft: it comes with duplicate hydraulic systems so if one goes down, the other keeps things running.
+Fault tolerance is when the system continues to operate smoothly even if one or more of its parts fail! See the difference as compared to HA? HA said it is ok to have issues and go offline but FT says even if there's an issue, we don't go offline AT ALL! Mission critical systems (surgical operation machines, flight control machines etc) cannot be just highly available; they need to be fault tolerant. With FT, you need to minimize outages and then be able to tolerate any failures that occur. This is similar to an aircraft: it comes with duplicate hydraulic systems so if one goes down, the other is online.
 
 ## Disaster Recovery
 
-DR is a set of policies and tools that enable reovery of continuation of vital infra following a disaster (earthquake, fire, flooding etc). So, HA and FT are about keeping systems running, DR allows us to determine what should be done when a disaster's affects are felt. In AWS systems, that means taking backups of your data, having standby power generators etc.
+DR is a set of policies and tools that enable recovery of vital infra following a disaster (earthquake, fire, flooding etc). So, HA and FT are about keeping systems running, DR allows us to determine what should be done when a disaster's affects are felt. In AWS systems, that means taking backups of your data, having standby power generators etc.
 
 ## Well Architected Framework
 
@@ -67,15 +66,10 @@ Well architected framework consists of 6 pillars:
 
 - Operational Excellence: The ability to support development and run workloads effectively, gain insight into their operations, and to continuously improve supporting processes and procedures to deliver business value.
 - Security: The security pillar describes how to take advantage of cloud technologies to protect data, systems, and assets in a way that can improve your security posture.
-- Reliability: The reliability pillar encompasses the ability of a workload to perform its intended function correctly and consistently when it’s expected to. This includes the ability to operate and test the workload through its total lifecycle. This paper provides in-depth, best practice guidance for implementing reliable workloads on AWS.
+- Reliability: The reliability pillar encompasses the ability of a workload to perform its intended function correctly and consistently when it’s expected to. This includes the ability to operate and test the workload through its total lifecycle.
 - Performance Efficiency: The ability to use computing resources efficiently to meet system requirements, and to maintain that efficiency as demand changes and technologies evolve.
 - Cost Optimization: The ability to run systems to deliver business value at the lowest price point.
-
 - Sustainability: The ability to continually improve sustainability impacts by reducing energy consumption and increasing efficiency across all components of a workload by maximizing the benefits from the provisioned resources and minimizing the total resources required.
 
 It is suggested to re-visit these once you're done with familiarizing yourself with common AWS services.
 You can read more on well architected frameworks using white-papers [here](https://aws.amazon.com/whitepapers/?whitepapers-main.sort-by=item.additionalFields.sortDate&whitepapers-main.sort-order=desc&awsf.whitepapers-content-type=*all&awsf.whitepapers-tech-category=*all&awsf.whitepapers-industries=*all&awsf.whitepapers-business-category=*all&awsf.whitepapers-global-methodology=methodology%23well-arch-framework) and [here](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html?did=wp_card&trk=wp_card).
-
-## AWS Accounts
-
-An AWS account is a container for identities (users) and resources (services offered by AWS). When you create a new account, a new root usre is created. Root user will have access to everything in that account. You should use MFA to secure the root account.
