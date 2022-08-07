@@ -20,6 +20,7 @@ tags:
 - [Fault Tolerance](#fault-tolerance)
 - [Disaster Recovery](#disaster-recovery)
 - [Well Architected Framework](#well-architected-framework)
+- [AWS Services](#aws-services)
 
 ## Building Blocks
 
@@ -73,3 +74,7 @@ Well architected framework consists of 6 pillars:
 
 It is suggested to re-visit these once you're done with familiarizing yourself with common AWS services.
 You can read more on well architected frameworks using white-papers [here](https://aws.amazon.com/whitepapers/?whitepapers-main.sort-by=item.additionalFields.sortDate&whitepapers-main.sort-order=desc&awsf.whitepapers-content-type=*all&awsf.whitepapers-tech-category=*all&awsf.whitepapers-industries=*all&awsf.whitepapers-business-category=*all&awsf.whitepapers-global-methodology=methodology%23well-arch-framework) and [here](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html?did=wp_card&trk=wp_card).
+
+## AWS Services
+
+AWS services can be broken down into 2 main sections: public and private. Public services are accessed using a public endpoints (such as S3) while private services are accessed using private endpoints (that run within a VPC). For both, there are permissions associated. Even though, S3 is a public service, you can contorl who/what accesses your S3 buckets. These two zones (public and private) are separate from the public internet zone where, for example, your home network resides.
